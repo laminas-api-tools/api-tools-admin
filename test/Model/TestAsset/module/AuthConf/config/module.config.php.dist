@@ -1,13 +1,13 @@
 <?php
 return array(
-    'zf-rest' => array(
+    'api-tools-rest' => array(
         'AuthConf\V1\Rest\Foo\Controller' => array(),
         'AuthConf\V1\Rest\Bar\Controller' => array(),
         'AuthConf\V2\Rest\Foo\Controller' => array(),
         'AuthConf\V2\Rest\Bar\Controller' => array(),
         'AuthConf\V2\Rest\New\Controller' => array(),
     ),
-    'zf-rpc' => array(
+    'api-tools-rpc' => array(
         'AuthConf\V1\Rpc\Baz\Controller' => array(
             'route_name' => 'auth-conf.rpc.baz',
         ),
