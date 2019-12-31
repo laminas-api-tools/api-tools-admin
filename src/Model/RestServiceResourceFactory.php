@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 
 class RestServiceResourceFactory
 {
@@ -18,14 +20,18 @@ class RestServiceResourceFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        if (! $container->has(RestServiceModelFactory::class)) {
+        if (! $container->has(RestServiceModelFactory::class)
+            && ! $container->has(\ZF\Apigility\Admin\Model\RestServiceModelFactory::class)
+        ) {
             throw new ServiceNotCreatedException(sprintf(
                 '%s is missing its %s dependency and cannot be created',
                 RestServiceResource::class,
                 RestServiceModelFactory::class
             ));
         }
-        if (! $container->has(InputFilterModel::class)) {
+        if (! $container->has(InputFilterModel::class)
+            && ! $container->has(\ZF\Apigility\Admin\Model\InputFilterModel::class)
+        ) {
             throw new ServiceNotCreatedException(sprintf(
                 '%s is missing its %s dependency and cannot be created',
                 RestServiceResource::class,
@@ -34,8 +40,8 @@ class RestServiceResourceFactory
         }
 
         return new RestServiceResource(
-            $container->get(RestServiceModelFactory::class),
-            $container->get(InputFilterModel::class),
+            $container->has(RestServiceModelFactory::class) ? $container->get(RestServiceModelFactory::class) : $container->get(\ZF\Apigility\Admin\Model\RestServiceModelFactory::class),
+            $container->has(InputFilterModel::class) ? $container->get(InputFilterModel::class) : $container->get(\ZF\Apigility\Admin\Model\InputFilterModel::class),
             $container->get(DocumentationModel::class)
         );
     }

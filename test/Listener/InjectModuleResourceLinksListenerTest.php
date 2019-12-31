@@ -1,35 +1,37 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Listener;
+namespace LaminasTest\ApiTools\Admin\Listener;
 
 use Closure;
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Listener\InjectModuleResourceLinksListener;
+use Laminas\ApiTools\Admin\Model\DocumentationEntity;
+use Laminas\ApiTools\Admin\Model\InputFilterEntity;
+use Laminas\ApiTools\Admin\Model\ModuleEntity;
+use Laminas\ApiTools\Admin\Model\RestInputFilterEntity;
+use Laminas\ApiTools\Admin\Model\RestServiceEntity;
+use Laminas\ApiTools\Admin\Model\RpcInputFilterEntity;
+use Laminas\ApiTools\Admin\Model\RpcServiceEntity;
+use Laminas\ApiTools\Hal\Entity;
+use Laminas\ApiTools\Hal\Link\Link;
+use Laminas\ApiTools\Hal\Link\LinkCollection;
+use Laminas\ApiTools\Hal\Plugin\Hal;
+use Laminas\ApiTools\Hal\View\HalJsonModel;
+use Laminas\EventManager\EventInterface;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\Mvc\MvcEvent;
+use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
+use LaminasTest\ApiTools\Admin\TestAsset\Closure as MockClosure;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use ReflectionProperty;
 use stdClass;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\EventManagerInterface;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Listener\InjectModuleResourceLinksListener;
-use ZF\Apigility\Admin\Model\DocumentationEntity;
-use ZF\Apigility\Admin\Model\InputFilterEntity;
-use ZF\Apigility\Admin\Model\ModuleEntity;
-use ZF\Apigility\Admin\Model\RestInputFilterEntity;
-use ZF\Apigility\Admin\Model\RestServiceEntity;
-use ZF\Apigility\Admin\Model\RpcInputFilterEntity;
-use ZF\Apigility\Admin\Model\RpcServiceEntity;
-use ZF\Hal\Entity;
-use ZF\Hal\Link\Link;
-use ZF\Hal\Link\LinkCollection;
-use ZF\Hal\Plugin\Hal;
-use ZF\Hal\View\HalJsonModel;
-use ZFTest\Apigility\Admin\RouteAssetsTrait;
-use ZFTest\Apigility\Admin\TestAsset\Closure as MockClosure;
 
 class InjectModuleResourceLinksListenerTest extends TestCase
 {
@@ -164,39 +166,39 @@ class InjectModuleResourceLinksListenerTest extends TestCase
 
         $this->urlHelper
             ->call(
-                'zf-apigility/api/module/authorization',
+                'api-tools/api/module/authorization',
                 ['name' => 'FooConf'],
                 [],
                 false
             )
-            ->willReturn('/zf-apigility/api/module/authorization');
+            ->willReturn('/api-tools/api/module/authorization');
         $this->serverUrlHelper
-            ->call('/zf-apigility/api/module/authorization')
-            ->willReturn('http://localhost/zf-apigility/api/module/authorization');
+            ->call('/api-tools/api/module/authorization')
+            ->willReturn('http://localhost/api-tools/api/module/authorization');
 
         $this->urlHelper
             ->call(
-                'zf-apigility/api/module/rest-service',
+                'api-tools/api/module/rest-service',
                 ['name' => 'FooConf'],
                 [],
                 false
             )
-            ->willReturn('/zf-apigility/api/module/rest-service');
+            ->willReturn('/api-tools/api/module/rest-service');
         $this->serverUrlHelper
-            ->call('/zf-apigility/api/module/rest-service')
-            ->willReturn('http://localhost/zf-apigility/api/module/rest-service');
+            ->call('/api-tools/api/module/rest-service')
+            ->willReturn('http://localhost/api-tools/api/module/rest-service');
 
         $this->urlHelper
             ->call(
-                'zf-apigility/api/module/rpc-service',
+                'api-tools/api/module/rpc-service',
                 ['name' => 'FooConf'],
                 [],
                 false
             )
-            ->willReturn('/zf-apigility/api/module/rpc-service');
+            ->willReturn('/api-tools/api/module/rpc-service');
         $this->serverUrlHelper
-            ->call('/zf-apigility/api/module/rpc-service')
-            ->willReturn('http://localhost/zf-apigility/api/module/rpc-service');
+            ->call('/api-tools/api/module/rpc-service')
+            ->willReturn('http://localhost/api-tools/api/module/rpc-service');
 
         $links->add(Argument::type(Link::class))->shouldBeCalledTimes(3);
 
@@ -467,7 +469,7 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         $this->hal
             ->injectSelfLink(
                 $halEntity,
-                'zf-apigility/api/module/' . $serviceType,
+                'api-tools/api/module/' . $serviceType,
                 'controller_service_name'
             )
             ->shouldBeCalled();
@@ -512,7 +514,7 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         $this->hal
             ->injectSelfLink(
                 $halEntity,
-                sprintf('zf-apigility/api/module/%s/input-filter', $serviceType),
+                sprintf('api-tools/api/module/%s/input-filter', $serviceType),
                 'input_filter_name'
             )
             ->shouldBeCalled();
@@ -591,7 +593,7 @@ class InjectModuleResourceLinksListenerTest extends TestCase
 
         $this->urlHelper
             ->call(
-                'zf-apigility/api/module',
+                'api-tools/api/module',
                 Argument::any(),
                 [],
                 false
@@ -599,28 +601,28 @@ class InjectModuleResourceLinksListenerTest extends TestCase
             ->shouldNotBeCalled();
         $this->urlHelper
             ->call(
-                'zf-apigility/api/module/authorization',
+                'api-tools/api/module/authorization',
                 ['name' => 'FooConf'],
                 [],
                 false
             )
-            ->willReturn('/zf-apigility/api/module/authorization');
+            ->willReturn('/api-tools/api/module/authorization');
         $this->urlHelper
             ->call(
-                'zf-apigility/api/module/rest-service',
+                'api-tools/api/module/rest-service',
                 ['name' => 'FooConf'],
                 [],
                 false
             )
-            ->willReturn('/zf-apigility/api/module/rest-service');
+            ->willReturn('/api-tools/api/module/rest-service');
         $this->urlHelper
             ->call(
-                'zf-apigility/api/module/rpc-service',
+                'api-tools/api/module/rpc-service',
                 ['name' => 'FooConf'],
                 [],
                 false
             )
-            ->willReturn('/zf-apigility/api/module/rpc-service');
+            ->willReturn('/api-tools/api/module/rpc-service');
 
         $this->assertNull($this->listener->onRenderCollectionEntity($event->reveal()));
     }

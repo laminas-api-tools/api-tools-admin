@@ -1,19 +1,21 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Controller;
+namespace Laminas\ApiTools\Admin\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use ZF\Apigility\Admin\Model\DbAutodiscoveryModel;
-use ZF\ContentNegotiation\ViewModel;
+use Laminas\ApiTools\Admin\Model\DbAutodiscoveryModel;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 /**
  * Class DbAutodiscoveryController
  *
- * @package ZF\Apigility\Admin\Controller
+ * @package Laminas\ApiTools\Admin\Controller
  */
 class DbAutodiscoveryController extends AbstractActionController
 {

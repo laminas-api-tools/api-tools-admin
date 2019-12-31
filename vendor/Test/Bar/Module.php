@@ -2,9 +2,9 @@
 
 namespace Test\Bar;
 
-use ZF\Apigility\Provider\ApigilityProviderInterface;
+use Laminas\ApiTools\Provider\ApiToolsProviderInterface;
 
-class Module implements ApigilityProviderInterface
+class Module implements ApiToolsProviderInterface
 {
     public function getConfig()
     {

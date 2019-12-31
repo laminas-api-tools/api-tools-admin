@@ -1,10 +1,10 @@
 <?php
 return [
-    'zf-mvc-auth' => [
+    'api-tools-mvc-auth' => [
         'authentication' => [
             'adapters' => [
                 'testbasic' => [
-                    'adapter' => 'ZF\\MvcAuth\\Authentication\\HttpAdapter',
+                    'adapter' => 'Laminas\\ApiTools\\MvcAuth\\Authentication\\HttpAdapter',
                     'options' => [
                         'accept_schemes' => ['basic'],
                         'realm' => 'api',
@@ -12,7 +12,7 @@ return [
                     ],
                 ],
                 'testdigest' => [
-                    'adapter' => 'ZF\\MvcAuth\\Authentication\\HttpAdapter',
+                    'adapter' => 'Laminas\\ApiTools\\MvcAuth\\Authentication\\HttpAdapter',
                     'options' => [
                         'accept_schemes' => ['digest'],
                         'realm' => 'api',
@@ -22,7 +22,7 @@ return [
                     ],
                 ],
                 'testoauth2pdo' => [
-                    'adapter' => 'ZF\\MvcAuth\\Authentication\\OAuth2Adapter',
+                    'adapter' => 'Laminas\\ApiTools\\MvcAuth\\Authentication\\OAuth2Adapter',
                     'storage' => [
                         'adapter' => 'pdo',
                         'route' => '/oauth2pdo',
@@ -35,7 +35,7 @@ return [
                     ],
                 ],
                 'testoauth2mongo' => [
-                    'adapter' => 'ZF\\MvcAuth\\Authentication\\OAuth2Adapter',
+                    'adapter' => 'Laminas\\ApiTools\\MvcAuth\\Authentication\\OAuth2Adapter',
                     'storage' => [
                         'adapter' => 'mongo',
                         'route' => '/oauth2mongo',
