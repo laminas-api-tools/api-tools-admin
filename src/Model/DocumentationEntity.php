@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
 class DocumentationEntity extends \ArrayObject
 {

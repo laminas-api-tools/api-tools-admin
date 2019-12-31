@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
+use Laminas\ServiceManager\FactoryInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class ValidatorsModelFactory implements FactoryInterface
 {
@@ -27,7 +29,7 @@ class ValidatorsModelFactory implements FactoryInterface
             ));
         }
 
-        if (! $services->has('ZF\Apigility\Admin\Model\ValidatorMetadataModel')) {
+        if (! $services->has('Laminas\ApiTools\Admin\Model\ValidatorMetadataModel')) {
             throw new ServiceNotCreatedException(sprintf(
                 '%s requires that the %s\ValidatorMetadataModel service be present; service not found',
                 get_class($this),
@@ -35,6 +37,6 @@ class ValidatorsModelFactory implements FactoryInterface
             ));
         }
 
-        return new ValidatorsModel($services->get('ValidatorManager'), $services->get('ZF\Apigility\Admin\Model\ValidatorMetadataModel'));
+        return new ValidatorsModel($services->get('ValidatorManager'), $services->get('Laminas\ApiTools\Admin\Model\ValidatorMetadataModel'));
     }
 }

@@ -1,24 +1,26 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use Zend\EventManager\EventManager;
-use Zend\EventManager\EventManagerAwareInterface;
-use Zend\EventManager\EventManagerInterface;
-use Zend\Filter\FilterChain;
-use Zend\Stdlib\ArrayUtils;
-use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\Resolver;
-use ZF\Apigility\Admin\Exception;
-use ZF\Configuration\ConfigResource;
-use ZF\Configuration\ModuleUtils;
-use ZF\Rest\Exception\CreationException;
-use ZF\Apigility\Admin\Utility;
+use Laminas\ApiTools\Admin\Exception;
+use Laminas\ApiTools\Admin\Utility;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Rest\Exception\CreationException;
+use Laminas\EventManager\EventManager;
+use Laminas\EventManager\EventManagerAwareInterface;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\Filter\FilterChain;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Renderer\PhpRenderer;
+use Laminas\View\Resolver;
 use ReflectionClass;
 
 class RestServiceModel implements EventManagerAwareInterface
@@ -157,8 +159,8 @@ class RestServiceModel implements EventManagerAwareInterface
     public function fetch($controllerService)
     {
         $config = $this->configResource->fetch(true);
-        if (!isset($config['zf-rest'])
-            || !isset($config['zf-rest'][$controllerService])
+        if (!isset($config['api-tools-rest'])
+            || !isset($config['api-tools-rest'][$controllerService])
         ) {
             throw new Exception\RuntimeException(sprintf(
                 'Could not find REST resource by name of %s',
@@ -166,7 +168,7 @@ class RestServiceModel implements EventManagerAwareInterface
             ), 404);
         }
 
-        $restConfig = $config['zf-rest'][$controllerService];
+        $restConfig = $config['api-tools-rest'][$controllerService];
 
         $restConfig['controllerServiceName'] = $controllerService;
         $restConfig['module']                = $this->module;
@@ -216,7 +218,7 @@ class RestServiceModel implements EventManagerAwareInterface
     public function fetchAll($version = null)
     {
         $config = $this->configResource->fetch(true);
-        if (!isset($config['zf-rest'])) {
+        if (!isset($config['api-tools-rest'])) {
             return array();
         }
 
@@ -241,7 +243,7 @@ class RestServiceModel implements EventManagerAwareInterface
             );
         }
 
-        foreach (array_keys($config['zf-rest']) as $controllerService) {
+        foreach (array_keys($config['api-tools-rest']) as $controllerService) {
             if (!$pattern) {
                 $services[] = $this->fetch($controllerService);
                 continue;
@@ -603,7 +605,7 @@ class RestServiceModel implements EventManagerAwareInterface
                     ),
                 )
             ),
-            'zf-versioning' => array(
+            'api-tools-versioning' => array(
                 'uri' => array(
                     $routeName
                 )
@@ -641,7 +643,7 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     public function createRestConfig(RestServiceEntity $details, $controllerService, $resourceClass, $routeName)
     {
-        $config = array('zf-rest' => array(
+        $config = array('api-tools-rest' => array(
             $controllerService => array(
                 'listener'                   => $resourceClass,
                 'route_name'                 => $routeName,
@@ -682,7 +684,7 @@ class RestServiceModel implements EventManagerAwareInterface
         if (!empty($whitelist)) {
             $config['content_type_whitelist'] = array($controllerService => $whitelist);
         }
-        $config = array('zf-content-negotiation' => $config);
+        $config = array('api-tools-content-negotiation' => $config);
         $this->configResource->patch($config, true);
     }
 
@@ -696,7 +698,7 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     public function createHalConfig(RestServiceEntity $details, $entityClass, $collectionClass, $routeName)
     {
-        $config = array('zf-hal' => array('metadata_map' => array(
+        $config = array('api-tools-hal' => array('metadata_map' => array(
             $entityClass => array(
                 'entity_identifier_name' => $details->entityIdentifierName,
                 'route_name'             => $routeName,
@@ -710,7 +712,7 @@ class RestServiceModel implements EventManagerAwareInterface
             ),
         )));
         if (isset($details->hydratorName) && $details->hydratorName) {
-            $config['zf-hal']['metadata_map'][$entityClass]['hydrator'] = $details->hydratorName;
+            $config['api-tools-hal']['metadata_map'][$entityClass]['hydrator'] = $details->hydratorName;
         }
         $this->configResource->patch($config, true);
     }
@@ -756,7 +758,7 @@ class RestServiceModel implements EventManagerAwareInterface
             goto updateArrayOptions;
         }
 
-        $config = array('zf-rest' => array(
+        $config = array('api-tools-rest' => array(
             $original->controllerServiceName => $patch,
         ));
         $this->configResource->patch($config, true);
@@ -764,7 +766,7 @@ class RestServiceModel implements EventManagerAwareInterface
         updateArrayOptions:
 
         foreach ($this->restArrayUpdateOptions as $property => $configKey) {
-            $key = sprintf('zf-rest.%s.%s', $original->controllerServiceName, $configKey);
+            $key = sprintf('api-tools-rest.%s.%s', $original->controllerServiceName, $configKey);
             $this->configResource->patchKey($key, $update->$property);
         }
     }
@@ -777,7 +779,7 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     public function updateContentNegotiationConfig(RestServiceEntity $original, RestServiceEntity $update)
     {
-        $baseKey = 'zf-content-negotiation.';
+        $baseKey = 'api-tools-content-negotiation.';
         $service = $original->controllerServiceName;
 
         if ($update->selector) {
@@ -812,11 +814,11 @@ class RestServiceModel implements EventManagerAwareInterface
     public function updateHalConfig(RestServiceEntity $original, RestServiceEntity $update)
     {
         $service = $original->controllerServiceName;
-        $baseKey = 'zf-hal.metadata_map.';
+        $baseKey = 'api-tools-hal.metadata_map.';
 
         $entityClass      = $update->entityClass     ?: $original->entityClass;
         $collectionClass  = $update->collectionClass ?: $original->collectionClass;
-        $halConfig        = $this->getConfigForSubkey('zf-hal.metadata_map');
+        $halConfig        = $this->getConfigForSubkey('api-tools-hal.metadata_map');
 
         $entityUpdated     = false;
         $collectionUpdated = false;
@@ -832,7 +834,7 @@ class RestServiceModel implements EventManagerAwareInterface
             if ($hydratorName) {
                 $data[$entityClass]['hydrator'] = $hydratorName;
             }
-            $data = array('zf-hal' => array('metadata_map' => $data));
+            $data = array('api-tools-hal' => array('metadata_map' => $data));
             $this->configResource->patch($data, true);
             $entityUpdated = true;
         }
@@ -845,7 +847,7 @@ class RestServiceModel implements EventManagerAwareInterface
                 'route_identifier_name'  => $update->routeIdentifierName  ?: $original->routeIdentifierName,
                 'is_collection'          => true,
             ));
-            $data = array('zf-hal' => array('metadata_map' => $data));
+            $data = array('api-tools-hal' => array('metadata_map' => $data));
             $this->configResource->patch($data, true);
             $collectionUpdated = true;
         }
@@ -925,7 +927,7 @@ class RestServiceModel implements EventManagerAwareInterface
     public function deleteRestConfig(RestServiceEntity $entity)
     {
         $controllerService = $entity->controllerServiceName;
-        $key = array('zf-rest', $controllerService);
+        $key = array('api-tools-rest', $controllerService);
         $this->configResource->deleteKey($key);
     }
 
@@ -938,7 +940,7 @@ class RestServiceModel implements EventManagerAwareInterface
     {
         $controller = $entity->controllerServiceName;
 
-        $key = array('zf-content-negotiation', 'controllers', $controller);
+        $key = array('api-tools-content-negotiation', 'controllers', $controller);
         $this->configResource->deleteKey($key);
 
         $key[1] = 'accept_whitelist';
@@ -956,7 +958,7 @@ class RestServiceModel implements EventManagerAwareInterface
     public function deleteContentValidationConfig(RestServiceEntity $entity)
     {
         $controllerService = $entity->controllerServiceName;
-        $key = array('zf-content-validation', $controllerService);
+        $key = array('api-tools-content-validation', $controllerService);
         $this->configResource->deleteKey($key);
     }
 
@@ -967,7 +969,7 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     public function deleteHalConfig(RestServiceEntity $entity)
     {
-        $key = array('zf-hal', 'metadata_map');
+        $key = array('api-tools-hal', 'metadata_map');
         $entityClass = $entity->entityClass;
         array_push($key, $entityClass);
         $this->configResource->deleteKey($key);
@@ -985,14 +987,14 @@ class RestServiceModel implements EventManagerAwareInterface
     public function deleteAuthorizationConfig(RestServiceEntity $entity)
     {
         $controllerService = $entity->controllerServiceName;
-        $key = array('zf-mvc-auth', 'authorization', $controllerService);
+        $key = array('api-tools-mvc-auth', 'authorization', $controllerService);
         $this->configResource->deleteKey($key);
     }
 
     /**
      * Delete versioning configuration for a service
      *
-     * Removes the route name from zf-versioning.
+     * Removes the route name from api-tools-versioning.
      *
      * @param  RestServiceEntity $entity
      */
@@ -1005,23 +1007,23 @@ class RestServiceModel implements EventManagerAwareInterface
         }
 
         $config = $this->configResource->fetch(true);
-        if (! isset($config['zf-versioning']['uri'])) {
+        if (! isset($config['api-tools-versioning']['uri'])) {
             return;
         }
 
         $route = $entity->routeName;
-        if (! in_array($route, $config['zf-versioning']['uri'], true)) {
+        if (! in_array($route, $config['api-tools-versioning']['uri'], true)) {
             return;
         }
 
-        $versioning = array_filter($config['zf-versioning']['uri'], function ($value) use ($route) {
+        $versioning = array_filter($config['api-tools-versioning']['uri'], function ($value) use ($route) {
             if ($route === $value) {
                 return false;
             }
             return true;
         });
 
-        $key = array('zf-versioning', 'uri');
+        $key = array('api-tools-versioning', 'uri');
         $this->configResource->patchKey($key, $versioning);
     }
 
@@ -1175,10 +1177,10 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     protected function mergeContentNegotiationConfig($controllerServiceName, RestServiceEntity $metadata, array $config)
     {
-        if (!isset($config['zf-content-negotiation'])) {
+        if (!isset($config['api-tools-content-negotiation'])) {
             return;
         }
-        $config = $config['zf-content-negotiation'];
+        $config = $config['api-tools-content-negotiation'];
 
         if (isset($config['controllers'])
             && isset($config['controllers'][$controllerServiceName])
@@ -1214,8 +1216,8 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     protected function mergeHalConfig($controllerServiceName, RestServiceEntity $metadata, array $config)
     {
-        if (!isset($config['zf-hal'])
-            || !isset($config['zf-hal']['metadata_map'])
+        if (!isset($config['api-tools-hal'])
+            || !isset($config['api-tools-hal']['metadata_map'])
         ) {
             return;
         }
@@ -1223,7 +1225,7 @@ class RestServiceModel implements EventManagerAwareInterface
         $entityClass     = $this->deriveEntityClass($controllerServiceName, $metadata, $config);
         $collectionClass = $this->deriveCollectionClass($controllerServiceName, $metadata, $config);
 
-        $config = $config['zf-hal']['metadata_map'];
+        $config = $config['api-tools-hal']['metadata_map'];
         $merge  = array();
 
         if (isset($config[$entityClass])) {
@@ -1259,8 +1261,8 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     protected function deriveEntityClass($controllerServiceName, RestServiceEntity $metadata, array $config)
     {
-        if (isset($config['zf-rest'][$controllerServiceName]['entity_class'])) {
-            return $config['zf-rest'][$controllerServiceName]['entity_class'];
+        if (isset($config['api-tools-rest'][$controllerServiceName]['entity_class'])) {
+            return $config['api-tools-rest'][$controllerServiceName]['entity_class'];
         }
 
         $module = ($metadata->module == $this->module) ? $this->module : $metadata->module;
@@ -1285,11 +1287,11 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     protected function deriveCollectionClass($controllerServiceName, RestServiceEntity $metadata, array $config)
     {
-        if (isset($config['zf-rest'])
-            && isset($config['zf-rest'][$controllerServiceName])
-            && isset($config['zf-rest'][$controllerServiceName]['collection_class'])
+        if (isset($config['api-tools-rest'])
+            && isset($config['api-tools-rest'][$controllerServiceName])
+            && isset($config['api-tools-rest'][$controllerServiceName]['collection_class'])
         ) {
-            return $config['zf-rest'][$controllerServiceName]['collection_class'];
+            return $config['api-tools-rest'][$controllerServiceName]['collection_class'];
         }
 
         $module = ($metadata->module == $this->module) ? $this->module : $metadata->module;

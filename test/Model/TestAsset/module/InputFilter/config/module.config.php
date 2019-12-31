@@ -16,12 +16,12 @@ return array(
             ),
         ),
     ),
-    'zf-content-validation' => array(
+    'api-tools-content-validation' => array(
         'InputFilter\V1\Rest\Foo\Controller' => array(
             'input_filter' => 'InputFilter\V1\Rest\Foo\Validator',
         ),
     ),
-    'zf-rest' => array(
+    'api-tools-rest' => array(
         'InputFilter\V1\Rest\Foo\Controller' => array(),
         'InputFilter\V1\Rest\Bar\Controller' => array(),
     ),
