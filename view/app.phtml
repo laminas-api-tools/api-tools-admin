@@ -3,41 +3,41 @@
 <head>
     <meta charset="utf-8">
     <base href="<?php echo $this->basePath() ?>/" />
-    <script type="text/javascript" src="zf-apigility/js/jquery.min.js"></script>
-    <script type="text/javascript" src="zf-apigility/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/lodash.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/q.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/URI.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/URITemplate.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/hyperagent.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/typeahead.min.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/angular.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/angular-route.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/angular-sanitize.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/angular-flash.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/sortable.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/ng-tags-input.min.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/jquery-ui/js/jquery-ui-1.10.3.custom.min.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/select2/select2.js"></script>
-    <script type="text/javascript" src="zf-apigility-admin/js/vendor/angular-ui-select2.js"></script>
-    <link rel="stylesheet" type="text/css" href="zf-apigility/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="zf-apigility/css/main.css" />
-    <link rel="stylesheet" type="text/css" href="zf-apigility-admin/css/main.css" />
-    <link rel="stylesheet" type="text/css" href="zf-apigility-admin/css/ng-tags-input.min.css" />
-    <link rel="stylesheet" type="text/css" href="zf-apigility-admin/css/bootstrap-glyphicons.css" />
-    <link rel="stylesheet" type="text/css" href="zf-apigility-admin/css/typeahead.css" />
-    <link rel="stylesheet" type="text/css" href="zf-apigility-admin/js/vendor/select2/select2.css" />
-<!--    <link rel="stylesheet" type="text/css" href="zf-apigility-admin/js/vendor/select2/select2-bootstrap.css" />-->
-    <link rel="stylesheet" href="zf-apigility-admin/js/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.3.custom.min.css" />
+    <script type="text/javascript" src="api-tools/js/jquery.min.js"></script>
+    <script type="text/javascript" src="api-tools/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/lodash.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/q.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/URI.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/URITemplate.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/hyperagent.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/typeahead.min.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/angular.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/angular-route.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/angular-sanitize.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/angular-flash.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/sortable.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/ng-tags-input.min.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/jquery-ui/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/select2/select2.js"></script>
+    <script type="text/javascript" src="api-tools-admin/js/vendor/angular-ui-select2.js"></script>
+    <link rel="stylesheet" type="text/css" href="api-tools/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="api-tools/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="api-tools-admin/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="api-tools-admin/css/ng-tags-input.min.css" />
+    <link rel="stylesheet" type="text/css" href="api-tools-admin/css/bootstrap-glyphicons.css" />
+    <link rel="stylesheet" type="text/css" href="api-tools-admin/css/typeahead.css" />
+    <link rel="stylesheet" type="text/css" href="api-tools-admin/js/vendor/select2/select2.css" />
+<!--    <link rel="stylesheet" type="text/css" href="api-tools-admin/js/vendor/select2/select2-bootstrap.css" />-->
+    <link rel="stylesheet" href="api-tools-admin/js/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.3.custom.min.css" />
 
 </head>
-<body id="ng-app" ng-app="ag-admin" data-api-base-path="<?php echo preg_replace('/\/config$/', '', $this->url('zf-apigility-admin/api/config')) ?>">
+<body id="ng-app" ng-app="ag-admin" data-api-base-path="<?php echo preg_replace('/\/config$/', '', $this->url('api-tools-admin/api/config')) ?>">
     <a class="sr-only" href="admin#content"> … </a>
     <header class="navbar navbar-inverse navbar-fixed-top ag-admin-nav" role="banner">
         <div class="container">
             <div class="navbar-header">
-                <a href="<?php echo $this->url('zf-apigility-admin') ?>" class="navbar-brand">
-                    <img src="<?php echo $this->basePath('/zf-apigility/img/ag-logo.png') ?>">
+                <a href="<?php echo $this->url('api-tools-admin') ?>" class="navbar-brand">
+                    <img src="<?php echo $this->basePath('/api-tools/img/ag-logo.png') ?>">
                 </a>
                 <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".ag-admin-navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -112,6 +112,6 @@
         <span class="alert-message">{{flash.message}}</span>
     </div>
 
-    <script type="text/javascript" src="<?php echo $this->basePath('/zf-apigility-admin/js/app.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->basePath('/api-tools-admin/js/app.js') ?>"></script>
     </body>
 </html>

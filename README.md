@@ -1,8 +1,8 @@
-Apigility Admin
+Laminas API Tools Admin
 ===============
 
 This module provides the admin interface and API service for the
-[Apigility](http://apigility.org) project.
+[Laminas API Tools](https://api-tools.getlaminas.org) project.
 
 API Resources
 -------------
@@ -87,7 +87,7 @@ meaning of the flags is reversed; `true` then means the method is public,
 }
 ```
 
-Additionally, any other properties used to create the `Zend\Db\Adapter\Adapter`
+Additionally, any other properties used to create the `Laminas\Db\Adapter\Adapter`
 instance may be composed: e.g., "username", "password", etc.
 
 ### `inputfilter`
@@ -109,8 +109,8 @@ instance may be composed: e.g., "username", "password", etc.
 ```
 
 An input filter may contain any number of inputs, and the format follows that
-used by `Zend\InputFilter\Factory` as described here:
-http://zf2.readthedocs.org/en/latest/modules/zend.input-filter.intro.html
+used by `Laminas\InputFilter\Factory` as described here:
+http://laminas.readthedocs.org/en/latest/modules/laminas.input-filter.intro.html
 
 Currently, we do not expose the `required` flag for inputs, utilize filters, nor
 allow nesting input filters.
@@ -182,7 +182,7 @@ respectively.
         "Accept",
         "mediatypes"
     ],
-    "adapter_name": "(Only in DB-Connected resources) Name of Zend\\DB adapter service used for this resource",
+    "adapter_name": "(Only in DB-Connected resources) Name of Laminas\\DB adapter service used for this resource",
     "collection_class": "(Only in representation) Name of class representing collection",
     "collection_http_options": [
         "(Required)",
@@ -209,7 +209,7 @@ respectively.
         "mediatypes"
     ],
     "entity_class": "(Only in representation) Name of class representing resource entity",
-    "hydrator_name": "(Only in DB-Connected resources) Name of Zend\\Stdlib\\Hydrator service used for this resource",
+    "hydrator_name": "(Only in DB-Connected resources) Name of Laminas\\Stdlib\\Hydrator service used for this resource",
     "identifier_name": "(Optional) Name of route parameter and entity property representing the resource identifier; defaults to resource_name + _id",
     "input_filter": "(Optional) Present in returned REST services, when one or more input filters are present; see the inputfilter resource for details",
     "module": "(Only in representation) Name of module in which resource resides",
@@ -240,16 +240,16 @@ API services
 This endpoint is for examining the application configuration, and providing
 overrides of individual values in it. All overrides are written to a single
 file, `config/autoload/development.php`; you can override that location in your
-configuration via the `zf-configuration/config-file` key.
+configuration via the `api-tools-configuration/config-file` key.
 
-- Accept: `application/json`, `application/vnd.zfcampus.v1.config+json`
+- Accept: `application/json`, `application/vnd.laminascampus.v1.config+json`
 
   The first will deliver representations as a flat array of key/value pairs,
   with the keys being dot-separated values, just as you would find in INI.
 
   The second will deliver the configuration as a tree.
 
-- Content-Type: `application/json`, `application/vnd.zfcampus.v1.config+json`
+- Content-Type: `application/json`, `application/vnd.laminascampus.v1.config+json`
 
   The first expects key/value pairs, with keys being dot-separated values, as
   you would find in INI files.
@@ -285,7 +285,7 @@ resource](#authentication).
 
 ### `/admin/api/db-adapter[/:adapter\_name]`
 
-This REST endpoint is for creating, updating, and deleting named `Zend\Db`
+This REST endpoint is for creating, updating, and deleting named `Laminas\Db`
 adapters; it uses the [db-adapter resource](#db-adapter).
 
 - Accept `application/json`
@@ -331,7 +331,7 @@ resource](#authorization).
 
 ### `/admin/api/db-adapter[/:adapter\_name]`
 
-This REST endpoint is for creating, updating, and deleting named `Zend\Db`
+This REST endpoint is for creating, updating, and deleting named `Laminas\Db`
 adapters; it uses the [db-adapter resource](#db-adapter).
 
 - Accept `application/json`
@@ -358,7 +358,7 @@ configuration file for that module.
 
 ### `/admin/api/module.enable`
 
-This endpoint will Apigility-enable (Apigilify) an existing module.
+This endpoint will Laminas API Tools-enable (Apigilify) an existing module.
 
 - Accept: `application/json`
 
@@ -366,7 +366,7 @@ This endpoint will Apigility-enable (Apigilify) an existing module.
 
 - Content-Type: `application/json`
 
-  Expects an object with the property "module" describing an existing ZF2 module.
+  Expects an object with the property "module" describing an existing Laminas module.
 
   ```javascript
   {
@@ -414,8 +414,8 @@ passed in the payload, the version number is simply incremented.
 
 - Content-Type: `application/json`
 
-  Expects an object with the property "module", providing the name of a ZF2,
-  Apigility-enabled module; optionally, a "version" property may also be
+  Expects an object with the property "module", providing the name of a Laminas,
+  Laminas API Tools-enabled module; optionally, a "version" property may also be
   provided to indicate the specific version string to use.
 
   ```javascript
