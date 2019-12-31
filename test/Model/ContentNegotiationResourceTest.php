@@ -1,24 +1,26 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\InputFilter\ContentNegotiationInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\CreateContentNegotiationInputFilter;
+use Laminas\ApiTools\Admin\Model\ContentNegotiationModel;
+use Laminas\ApiTools\Admin\Model\ContentNegotiationResource;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\Config\Writer\PhpArray as ConfigWriter;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Config\Writer\PhpArray as ConfigWriter;
-use ZF\Apigility\Admin\InputFilter\ContentNegotiationInputFilter;
-use ZF\Apigility\Admin\InputFilter\CreateContentNegotiationInputFilter;
-use ZF\Apigility\Admin\Model\ContentNegotiationModel;
-use ZF\Apigility\Admin\Model\ContentNegotiationResource;
-use ZF\Configuration\ConfigResource;
 
 class ContentNegotiationResourceTest extends TestCase
 {
     public function setUp()
     {
-        $this->configPath       = sys_get_temp_dir() . '/zf-apigility-admin/config';
+        $this->configPath       = sys_get_temp_dir() . '/api-tools-admin/config';
         $this->globalConfigPath = $this->configPath . '/global.php';
         $this->removeConfigMocks();
         $this->createConfigMocks();
@@ -71,7 +73,7 @@ class ContentNegotiationResourceTest extends TestCase
 
         $entity = $resource->create(array());
 
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\ContentNegotiationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ContentNegotiationEntity', $entity);
         $this->assertEquals('Test', $entity->name);
     }
 
@@ -86,7 +88,7 @@ class ContentNegotiationResourceTest extends TestCase
         $entity = $resource->create(array());
 
         $data = array('selectors' => array(
-            'Zend\View\Model\ViewModel' => array(
+            'Laminas\View\Model\ViewModel' => array(
                 'text/html',
                 'application/xhtml+xml',
             ),
@@ -96,7 +98,7 @@ class ContentNegotiationResourceTest extends TestCase
         $resource->setInputFilter($updateFilter);
 
         $entity = $resource->patch('Test', array());
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\ContentNegotiationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ContentNegotiationEntity', $entity);
         $this->assertEquals('Test', $entity->name);
         $this->assertEquals($data['selectors'], $entity->config);
     }

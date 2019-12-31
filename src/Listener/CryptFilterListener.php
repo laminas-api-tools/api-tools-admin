@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Listener;
+namespace Laminas\ApiTools\Admin\Listener;
 
+use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
+use Laminas\EventManager\AbstractListenerAggregate;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\Mvc\MvcEvent;
 use ReflectionClass;
-use Zend\EventManager\AbstractListenerAggregate;
-use Zend\EventManager\EventManagerInterface;
-use Zend\Mvc\MvcEvent;
-use ZF\ContentNegotiation\ParameterDataContainer;
 
 class CryptFilterListener extends AbstractListenerAggregate
 {
@@ -42,12 +44,12 @@ class CryptFilterListener extends AbstractListenerAggregate
         }
 
         $controller = $matches->getParam('controller', false);
-        if ($controller !== 'ZF\Apigility\Admin\Controller\InputFilter') {
+        if ($controller !== 'Laminas\ApiTools\Admin\Controller\InputFilter') {
             // Not the InputFilter controller; nothing to do
             return;
         }
 
-        $data = $e->getParam('ZFContentNegotiationParameterData', false);
+        $data = $e->getParam('LaminasContentNegotiationParameterData', false);
         if (! $data) {
             // No data; nothing to do
             return;
@@ -72,8 +74,8 @@ class CryptFilterListener extends AbstractListenerAggregate
 
             // If filter implements CompressionAlgorithmInterface or EncryptionAlgorithmInterface,
             // we change the filter's name to the parent, and we add the adapter param to filter's name.
-            if ($class->implementsInterface('Zend\Filter\Compress\CompressionAlgorithmInterface')
-                || $class->implementsInterface('Zend\Filter\Encrypt\EncryptionAlgorithmInterface')
+            if ($class->implementsInterface('Laminas\Filter\Compress\CompressionAlgorithmInterface')
+                || $class->implementsInterface('Laminas\Filter\Encrypt\EncryptionAlgorithmInterface')
             ) {
                 $name    = substr($filter, 0, strrpos($filter, '\\'));
                 $adapter = substr($filter, strrpos($filter, '\\') + 1);
@@ -83,7 +85,7 @@ class CryptFilterListener extends AbstractListenerAggregate
         }
 
         // Inject altered data back into event
-        $e->setParam('ZFContentNegotiationParameterData', $data);
+        $e->setParam('LaminasContentNegotiationParameterData', $data);
         return true;
     }
 }
