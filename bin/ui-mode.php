@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-use Zend\Console\Exception\RuntimeException;
-use Zend\Console\Getopt;
+use Laminas\Console\Exception\RuntimeException;
+use Laminas\Console\Getopt;
 
 chdir(__DIR__ . '/../');
 require_once 'vendor/autoload.php';

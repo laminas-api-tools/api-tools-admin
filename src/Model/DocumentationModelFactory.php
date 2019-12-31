@@ -1,28 +1,30 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
+use Laminas\ServiceManager\FactoryInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class DocumentationModelFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $services)
     {
-        if (! $services->has('ZF\Configuration\ConfigResourceFactory')) {
+        if (! $services->has('Laminas\ApiTools\Configuration\ConfigResourceFactory')) {
             throw new ServiceNotCreatedException(sprintf(
-                '%s\\InputFilterModel requires that the ZF\Configuration\ConfigResourceFactory service be present; service not found',
+                '%s\\InputFilterModel requires that the Laminas\ApiTools\Configuration\ConfigResourceFactory service be present; service not found',
                 __NAMESPACE__
             ));
         }
         return new DocumentationModel(
-            $services->get('ZF\Configuration\ConfigResourceFactory'),
-            $services->get('ZF\Configuration\ModuleUtils')
+            $services->get('Laminas\ApiTools\Configuration\ConfigResourceFactory'),
+            $services->get('Laminas\ApiTools\Configuration\ModuleUtils')
         );
     }
 }

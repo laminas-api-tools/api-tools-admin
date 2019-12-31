@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\VersioningModel;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\Config\Writer\PhpArray;
 use PHPUnit_Framework_TestCase as TestCase;
 use Version;
-use Zend\Config\Writer\PhpArray;
-use ZF\Apigility\Admin\Model\VersioningModel;
-use ZF\Configuration\ConfigResource;
 
 require_once __DIR__ . '/TestAsset/module/Version/Module.php';
 
@@ -96,39 +98,39 @@ class VersioningModelTest extends TestCase
         $this->assertEquals('Version\\V1\\Rest\Message\Controller', $config['router']['routes']['version.rest.message']['options']['defaults']['controller']);
         $this->assertEquals('Version\\V1\\Rest\Comment\Controller', $config['router']['routes']['version.rest.comment']['options']['defaults']['controller']);
 
-        $this->assertArrayHasKey('zf-rest', $config);
-        $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\Controller', $config['zf-rest']);
-        $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\Controller', $config['zf-rest'], var_export($config, 1));
-        $this->assertEquals('Version\\V1\\Rest\\Message\\MessageResource', $config['zf-rest']['Version\\V1\\Rest\\Message\\Controller']['listener']);
-        $this->assertEquals('Version\\V2\\Rest\\Message\\MessageResource', $config['zf-rest']['Version\\V2\\Rest\\Message\\Controller']['listener']);
-        $this->assertEquals('Version\\V1\\Rest\\Message\\MessageEntity', $config['zf-rest']['Version\\V1\\Rest\\Message\\Controller']['entity_class']);
-        $this->assertEquals('Version\\V2\\Rest\\Message\\MessageEntity', $config['zf-rest']['Version\\V2\\Rest\\Message\\Controller']['entity_class']);
-        $this->assertEquals('Version\\V1\\Rest\\Message\\MessageCollection', $config['zf-rest']['Version\\V1\\Rest\\Message\\Controller']['collection_class']);
-        $this->assertEquals('Version\\V2\\Rest\\Message\\MessageCollection', $config['zf-rest']['Version\\V2\\Rest\\Message\\Controller']['collection_class']);
-        $this->assertEquals('Version\\V1\\Rest\\Comment\\CommentResource', $config['zf-rest']['Version\\V1\\Rest\\Comment\\Controller']['listener']);
-        $this->assertEquals('Version\\V2\\Rest\\Comment\\CommentResource', $config['zf-rest']['Version\\V2\\Rest\\Comment\\Controller']['listener']);
-        $this->assertEquals('Version\\V1\\Rest\\Comment\\CommentEntity', $config['zf-rest']['Version\\V1\\Rest\\Comment\\Controller']['entity_class']);
-        $this->assertEquals('Version\\V2\\Rest\\Comment\\CommentEntity', $config['zf-rest']['Version\\V2\\Rest\\Comment\\Controller']['entity_class']);
-        $this->assertEquals('Version\\V1\\Rest\\Comment\\CommentCollection', $config['zf-rest']['Version\\V1\\Rest\\Comment\\Controller']['collection_class']);
-        $this->assertEquals('Version\\V2\\Rest\\Comment\\CommentCollection', $config['zf-rest']['Version\\V2\\Rest\\Comment\\Controller']['collection_class']);
+        $this->assertArrayHasKey('api-tools-rest', $config);
+        $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\Controller', $config['api-tools-rest']);
+        $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\Controller', $config['api-tools-rest'], var_export($config, 1));
+        $this->assertEquals('Version\\V1\\Rest\\Message\\MessageResource', $config['api-tools-rest']['Version\\V1\\Rest\\Message\\Controller']['listener']);
+        $this->assertEquals('Version\\V2\\Rest\\Message\\MessageResource', $config['api-tools-rest']['Version\\V2\\Rest\\Message\\Controller']['listener']);
+        $this->assertEquals('Version\\V1\\Rest\\Message\\MessageEntity', $config['api-tools-rest']['Version\\V1\\Rest\\Message\\Controller']['entity_class']);
+        $this->assertEquals('Version\\V2\\Rest\\Message\\MessageEntity', $config['api-tools-rest']['Version\\V2\\Rest\\Message\\Controller']['entity_class']);
+        $this->assertEquals('Version\\V1\\Rest\\Message\\MessageCollection', $config['api-tools-rest']['Version\\V1\\Rest\\Message\\Controller']['collection_class']);
+        $this->assertEquals('Version\\V2\\Rest\\Message\\MessageCollection', $config['api-tools-rest']['Version\\V2\\Rest\\Message\\Controller']['collection_class']);
+        $this->assertEquals('Version\\V1\\Rest\\Comment\\CommentResource', $config['api-tools-rest']['Version\\V1\\Rest\\Comment\\Controller']['listener']);
+        $this->assertEquals('Version\\V2\\Rest\\Comment\\CommentResource', $config['api-tools-rest']['Version\\V2\\Rest\\Comment\\Controller']['listener']);
+        $this->assertEquals('Version\\V1\\Rest\\Comment\\CommentEntity', $config['api-tools-rest']['Version\\V1\\Rest\\Comment\\Controller']['entity_class']);
+        $this->assertEquals('Version\\V2\\Rest\\Comment\\CommentEntity', $config['api-tools-rest']['Version\\V2\\Rest\\Comment\\Controller']['entity_class']);
+        $this->assertEquals('Version\\V1\\Rest\\Comment\\CommentCollection', $config['api-tools-rest']['Version\\V1\\Rest\\Comment\\Controller']['collection_class']);
+        $this->assertEquals('Version\\V2\\Rest\\Comment\\CommentCollection', $config['api-tools-rest']['Version\\V2\\Rest\\Comment\\Controller']['collection_class']);
 
-        $this->assertArrayHasKey('zf-hal', $config);
-        $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\MessageEntity', $config['zf-hal']['metadata_map']);
-        $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\MessageEntity', $config['zf-hal']['metadata_map']);
-        $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\MessageCollection', $config['zf-hal']['metadata_map']);
-        $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\MessageCollection', $config['zf-hal']['metadata_map']);
-        $this->assertArrayHasKey('Version\\V1\\Rest\\Comment\\CommentEntity', $config['zf-hal']['metadata_map']);
-        $this->assertArrayHasKey('Version\\V2\\Rest\\Comment\\CommentEntity', $config['zf-hal']['metadata_map']);
-        $this->assertArrayHasKey('Version\\V1\\Rest\\Comment\\CommentCollection', $config['zf-hal']['metadata_map']);
-        $this->assertArrayHasKey('Version\\V2\\Rest\\Comment\\CommentCollection', $config['zf-hal']['metadata_map']);
+        $this->assertArrayHasKey('api-tools-hal', $config);
+        $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\MessageEntity', $config['api-tools-hal']['metadata_map']);
+        $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\MessageEntity', $config['api-tools-hal']['metadata_map']);
+        $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\MessageCollection', $config['api-tools-hal']['metadata_map']);
+        $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\MessageCollection', $config['api-tools-hal']['metadata_map']);
+        $this->assertArrayHasKey('Version\\V1\\Rest\\Comment\\CommentEntity', $config['api-tools-hal']['metadata_map']);
+        $this->assertArrayHasKey('Version\\V2\\Rest\\Comment\\CommentEntity', $config['api-tools-hal']['metadata_map']);
+        $this->assertArrayHasKey('Version\\V1\\Rest\\Comment\\CommentCollection', $config['api-tools-hal']['metadata_map']);
+        $this->assertArrayHasKey('Version\\V2\\Rest\\Comment\\CommentCollection', $config['api-tools-hal']['metadata_map']);
 
-        $this->assertArrayHasKey('zf-apigility', $config);
-        $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\MessageResource', $config['zf-apigility']['db-connected']);
-        $this->assertEquals('Version\\V1\\Rest\\Message\\Controller', $config['zf-apigility']['db-connected']['Version\\V1\\Rest\\Message\\MessageResource']['controller_service_name']);
-        $this->assertEquals('Version\\V1\\Rest\\Message\\MessageResource\\Table', $config['zf-apigility']['db-connected']['Version\\V1\\Rest\\Message\\MessageResource']['table_service']);
-        $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\MessageResource', $config['zf-apigility']['db-connected']);
-        $this->assertEquals('Version\\V2\\Rest\\Message\\Controller', $config['zf-apigility']['db-connected']['Version\\V2\\Rest\\Message\\MessageResource']['controller_service_name']);
-        $this->assertEquals('Version\\V2\\Rest\\Message\\MessageResource\\Table', $config['zf-apigility']['db-connected']['Version\\V2\\Rest\\Message\\MessageResource']['table_service']);
+        $this->assertArrayHasKey('api-tools', $config);
+        $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\MessageResource', $config['api-tools']['db-connected']);
+        $this->assertEquals('Version\\V1\\Rest\\Message\\Controller', $config['api-tools']['db-connected']['Version\\V1\\Rest\\Message\\MessageResource']['controller_service_name']);
+        $this->assertEquals('Version\\V1\\Rest\\Message\\MessageResource\\Table', $config['api-tools']['db-connected']['Version\\V1\\Rest\\Message\\MessageResource']['table_service']);
+        $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\MessageResource', $config['api-tools']['db-connected']);
+        $this->assertEquals('Version\\V2\\Rest\\Message\\Controller', $config['api-tools']['db-connected']['Version\\V2\\Rest\\Message\\MessageResource']['controller_service_name']);
+        $this->assertEquals('Version\\V2\\Rest\\Message\\MessageResource\\Table', $config['api-tools']['db-connected']['Version\\V2\\Rest\\Message\\MessageResource']['table_service']);
 
         $this->assertArrayHasKey('service_manager', $config);
         $this->assertEquals('Version\V1\Rest\Comment\CommentModelFactory', $config['service_manager']['factories']['Version\V1\Rest\Comment\Model']);
@@ -169,18 +171,18 @@ class VersioningModelTest extends TestCase
     public function testCreateNewVersionClonesAuthorizationConfigurationForNewVersion()
     {
         $originalConfig = include __DIR__ . '/TestAsset/module/Version/config/module.config.php';
-        $this->assertArrayHasKey('zf-mvc-auth', $originalConfig);
-        $this->assertArrayHasKey('authorization', $originalConfig['zf-mvc-auth']);
-        $this->assertEquals(4, count($originalConfig['zf-mvc-auth']['authorization']));
-        $originalAuthorization = $originalConfig['zf-mvc-auth']['authorization'];
+        $this->assertArrayHasKey('api-tools-mvc-auth', $originalConfig);
+        $this->assertArrayHasKey('authorization', $originalConfig['api-tools-mvc-auth']);
+        $this->assertEquals(4, count($originalConfig['api-tools-mvc-auth']['authorization']));
+        $originalAuthorization = $originalConfig['api-tools-mvc-auth']['authorization'];
 
         $result = $this->model->createVersion('Version', 2, __DIR__ . '/TestAsset/module/Version/src/Version');
 
         $updatedConfig = include __DIR__ . '/TestAsset/module/Version/config/module.config.php';
-        $this->assertArrayHasKey('zf-mvc-auth', $updatedConfig);
-        $this->assertArrayHasKey('authorization', $updatedConfig['zf-mvc-auth']);
+        $this->assertArrayHasKey('api-tools-mvc-auth', $updatedConfig);
+        $this->assertArrayHasKey('authorization', $updatedConfig['api-tools-mvc-auth']);
 
-        $updatedAuthorization = $updatedConfig['zf-mvc-auth']['authorization'];
+        $updatedAuthorization = $updatedConfig['api-tools-mvc-auth']['authorization'];
 
         // loop through all services, ensure for any V1 versions, we also have V2 variants
         foreach (array_keys($originalAuthorization) as $serviceName) {
@@ -198,9 +200,9 @@ class VersioningModelTest extends TestCase
     public function testCreateNewVersionClonesValidationConfigurationForNewVersion()
     {
         $originalConfig = include __DIR__ . '/TestAsset/module/Version/config/module.config.php';
-        $this->assertArrayHasKey('zf-content-validation', $originalConfig);
-        $this->assertArrayHasKey('Version\V1\Rest\Message\Controller', $originalConfig['zf-content-validation']);
-        $this->assertArrayHasKey('input_filter', $originalConfig['zf-content-validation']['Version\V1\Rest\Message\Controller']);
+        $this->assertArrayHasKey('api-tools-content-validation', $originalConfig);
+        $this->assertArrayHasKey('Version\V1\Rest\Message\Controller', $originalConfig['api-tools-content-validation']);
+        $this->assertArrayHasKey('input_filter', $originalConfig['api-tools-content-validation']['Version\V1\Rest\Message\Controller']);
         $this->assertArrayHasKey('input_filter_specs', $originalConfig);
         $this->assertArrayHasKey('Version\V1\Rest\Message\Validator', $originalConfig['input_filter_specs']);
 
@@ -208,14 +210,14 @@ class VersioningModelTest extends TestCase
 
         $updatedConfig = include __DIR__ . '/TestAsset/module/Version/config/module.config.php';
 
-        $this->assertArrayHasKey('zf-content-validation', $updatedConfig);
-        $this->assertArrayHasKey('Version\V1\Rest\Message\Controller', $updatedConfig['zf-content-validation']);
-        $this->assertArrayHasKey('input_filter', $updatedConfig['zf-content-validation']['Version\V1\Rest\Message\Controller']);
-        $this->assertEquals('Version\V1\Rest\Message\Validator', $updatedConfig['zf-content-validation']['Version\V1\Rest\Message\Controller']['input_filter']);
+        $this->assertArrayHasKey('api-tools-content-validation', $updatedConfig);
+        $this->assertArrayHasKey('Version\V1\Rest\Message\Controller', $updatedConfig['api-tools-content-validation']);
+        $this->assertArrayHasKey('input_filter', $updatedConfig['api-tools-content-validation']['Version\V1\Rest\Message\Controller']);
+        $this->assertEquals('Version\V1\Rest\Message\Validator', $updatedConfig['api-tools-content-validation']['Version\V1\Rest\Message\Controller']['input_filter']);
 
-        $this->assertArrayHasKey('Version\V2\Rest\Message\Controller', $updatedConfig['zf-content-validation']);
-        $this->assertArrayHasKey('input_filter', $updatedConfig['zf-content-validation']['Version\V2\Rest\Message\Controller']);
-        $this->assertEquals('Version\V2\Rest\Message\Validator', $updatedConfig['zf-content-validation']['Version\V2\Rest\Message\Controller']['input_filter']);
+        $this->assertArrayHasKey('Version\V2\Rest\Message\Controller', $updatedConfig['api-tools-content-validation']);
+        $this->assertArrayHasKey('input_filter', $updatedConfig['api-tools-content-validation']['Version\V2\Rest\Message\Controller']);
+        $this->assertEquals('Version\V2\Rest\Message\Validator', $updatedConfig['api-tools-content-validation']['Version\V2\Rest\Message\Controller']['input_filter']);
 
         $this->assertArrayHasKey('input_filter_specs', $updatedConfig);
         $this->assertArrayHasKey('Version\V1\Rest\Message\Validator', $updatedConfig['input_filter_specs']);
@@ -226,12 +228,12 @@ class VersioningModelTest extends TestCase
     public function testSettingTheApiDefaultVersion()
     {
         $config = include $this->moduleConfigFile;
-        $this->assertSame(1, $config['zf-versioning']['default_version']);
+        $this->assertSame(1, $config['api-tools-versioning']['default_version']);
 
         $this->assertTrue($this->model->setDefaultVersion(1337));
 
         $newConfig = include $this->moduleConfigFile;
-        $this->assertSame(1337, $newConfig['zf-versioning']['default_version']);
+        $this->assertSame(1337, $newConfig['api-tools-versioning']['default_version']);
     }
 
     public function testCreateNewVersionClonesDocumentationForNewVersion()

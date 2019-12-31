@@ -1,10 +1,12 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\InputFilter\RpcService;
+namespace Laminas\ApiTools\Admin\InputFilter\RpcService;
 
 class PatchInputFilter extends PostInputFilter
 {
@@ -21,14 +23,14 @@ class PatchInputFilter extends PostInputFilter
         $this->add(array(
             'name' => 'accept_whitelist',
             'validators' => array(
-                array('name' => 'ZF\Apigility\Admin\InputFilter\Validator\MediaTypeArrayValidator')
+                array('name' => 'Laminas\ApiTools\Admin\InputFilter\Validator\MediaTypeArrayValidator')
             ),
             'error_message' => 'The Accept Whitelist must be an array of valid media type expressions',
         ));
         $this->add(array(
             'name' => 'content_type_whitelist',
             'validators' => array(
-                array('name' => 'ZF\Apigility\Admin\InputFilter\Validator\MediaTypeArrayValidator')
+                array('name' => 'Laminas\ApiTools\Admin\InputFilter\Validator\MediaTypeArrayValidator')
             ),
             'error_message' => 'The Content-Type Whitelist must be an array of valid media type expressions',
         ));
@@ -36,13 +38,13 @@ class PatchInputFilter extends PostInputFilter
             'name' => 'selector',
             'required' => false,
             'allow_empty' => true,
-            'error_message' => 'The Content Negotiation Selector must be a valid, defined zf-content-negotiation selector name',
+            'error_message' => 'The Content Negotiation Selector must be a valid, defined api-tools-content-negotiation selector name',
         ));
 
         $this->add(array(
             'name' => 'http_methods',
             'validators' => array(
-                array('name' => 'ZF\Apigility\Admin\InputFilter\Validator\HttpMethodArrayValidator')
+                array('name' => 'Laminas\ApiTools\Admin\InputFilter\Validator\HttpMethodArrayValidator')
             ),
             'error_message' => 'The HTTP Methods must be an array of valid HTTP method names',
         ));

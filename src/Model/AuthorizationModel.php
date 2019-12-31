@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use ZF\Configuration\ConfigResource;
-use ZF\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\ApiTools\Configuration\ModuleUtils;
 
 class AuthorizationModel
 {
@@ -59,12 +61,12 @@ class AuthorizationModel
     public function fetch($version = 1)
     {
         $allConfig = $this->configResource->fetch(true);
-        if (! isset($allConfig['zf-mvc-auth']['authorization'])) {
+        if (! isset($allConfig['api-tools-mvc-auth']['authorization'])) {
             // Determine existing services, and return defaults for them
             return $this->createDefaultPrivileges($version, $allConfig);
         }
 
-        $config = $allConfig['zf-mvc-auth']['authorization'];
+        $config = $allConfig['api-tools-mvc-auth']['authorization'];
 
         // Strip out any services that are not for the current $version
         $config = $this->filterServicesByVersion($config, $version);
@@ -90,7 +92,7 @@ class AuthorizationModel
     public function update(array $privileges, $version = 1)
     {
         $toStore = array(
-            'zf-mvc-auth' => array(
+            'api-tools-mvc-auth' => array(
                 'authorization' => $this->remapServiceNamesForStorage($privileges),
             ),
         );
@@ -110,16 +112,16 @@ class AuthorizationModel
     {
         $entity = new AuthorizationEntity();
 
-        if (isset($config['zf-rest'])
-            && is_array($config['zf-rest'])
+        if (isset($config['api-tools-rest'])
+            && is_array($config['api-tools-rest'])
         ) {
-            $this->createDefaultPrivilegesForRestServices(array_keys($config['zf-rest']), $entity, $version);
+            $this->createDefaultPrivilegesForRestServices(array_keys($config['api-tools-rest']), $entity, $version);
         }
 
-        if (isset($config['zf-rpc'])
-            && is_array($config['zf-rpc'])
+        if (isset($config['api-tools-rpc'])
+            && is_array($config['api-tools-rpc'])
         ) {
-            $this->createDefaultPrivilegesForRpcServices($config['zf-rpc'], $entity, $config, $version);
+            $this->createDefaultPrivilegesForRpcServices($config['api-tools-rpc'], $entity, $config, $version);
         }
 
         return $entity;
@@ -290,11 +292,11 @@ class AuthorizationModel
     protected function injectServicesWithoutPrivileges(AuthorizationEntity $entity, $version, array $config)
     {
         $services = $this->getBaseServiceNamesFromEntity($entity);
-        if (isset($config['zf-rest'])
-            && is_array($config['zf-rest'])
+        if (isset($config['api-tools-rest'])
+            && is_array($config['api-tools-rest'])
         ) {
             $missingServices = array();
-            foreach (array_keys($config['zf-rest']) as $serviceName) {
+            foreach (array_keys($config['api-tools-rest']) as $serviceName) {
                 if (!preg_match('/' . preg_quote('\\') . 'V' . $version . preg_quote('\\') . '/', $serviceName)) {
                     continue;
                 }
@@ -306,11 +308,11 @@ class AuthorizationModel
             $this->createDefaultPrivilegesForRestServices($missingServices, $entity, $version);
         }
 
-        if (isset($config['zf-rpc'])
-            && is_array($config['zf-rpc'])
+        if (isset($config['api-tools-rpc'])
+            && is_array($config['api-tools-rpc'])
         ) {
             $missingServices = array();
-            foreach ($config['zf-rpc'] as $serviceName => $serviceConfig) {
+            foreach ($config['api-tools-rpc'] as $serviceName => $serviceConfig) {
                 if (!preg_match('/' . preg_quote('\\') . 'V' . $version . preg_quote('\\') . '/', $serviceName)) {
                     continue;
                 }
