@@ -1,19 +1,21 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Controller;
+namespace LaminasTest\ApiTools\Admin\Controller;
 
+use Laminas\ApiTools\Admin\Controller\SourceController;
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\Http\Request;
+use Laminas\ModuleManager\ModuleManager;
+use LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Module as BarModule;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Http\Request;
-use Zend\ModuleManager\ModuleManager;
-use ZF\Apigility\Admin\Controller\SourceController;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
-use ZF\Configuration\ModuleUtils;
-use ZFTest\Apigility\Admin\Model\TestAsset\Bar\Module as BarModule;
 
 class SourceControllerTest extends TestCase
 {
@@ -47,27 +49,27 @@ class SourceControllerTest extends TestCase
         $request->setMethod($method);
         $this->controller->setRequest($request);
         $result = $this->controller->sourceAction();
-        $this->assertInstanceOf('ZF\ApiProblem\View\ApiProblemModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ApiProblem\View\ApiProblemModel', $result);
         $apiProblem = $result->getApiProblem();
         $this->assertEquals(405, $apiProblem->status);
     }
 
     public function testProcessGetRequest()
     {
-        $moduleManager  = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $moduleManager  = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                ->disableOriginalConstructor()
                                ->getMock();
         $moduleManager->expects($this->any())
                       ->method('getLoadedModules')
-                      ->will($this->returnValue(array('ZFTest\Apigility\Admin\Model\TestAsset\Bar' => new BarModule)));
+                      ->will($this->returnValue(array('LaminasTest\ApiTools\Admin\Model\TestAsset\Bar' => new BarModule)));
 
         $moduleResource = new ModuleModel($moduleManager, array(), array());
         $controller     = new SourceController($moduleResource);
 
         $request = new Request();
         $request->setMethod('get');
-        $request->getQuery()->module = 'ZFTest\Apigility\Admin\Model\TestAsset\Bar';
-        $request->getQuery()->class = 'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Module';
+        $request->getQuery()->module = 'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar';
+        $request->getQuery()->class = 'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Module';
 
         $controller->setRequest($request);
         $result = $controller->sourceAction();

@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Controller;
+namespace Laminas\ApiTools\Admin\Controller;
 
+use Laminas\ApiTools\Admin\Model\AuthorizationModel;
+use Laminas\ApiTools\Admin\Model\AuthorizationModelFactory;
+use Laminas\ApiTools\ApiProblem\ApiProblem;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
+use Laminas\ApiTools\Hal\Entity;
+use Laminas\ApiTools\Hal\Link\Link;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\Mvc\MvcEvent;
 use RuntimeException;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Model\AuthorizationModel;
-use ZF\Apigility\Admin\Model\AuthorizationModelFactory;
-use ZF\ApiProblem\ApiProblem;
-use ZF\ApiProblem\ApiProblemResponse;
-use ZF\ContentNegotiation\ViewModel;
-use ZF\Hal\Entity;
-use ZF\Hal\Link\Link;
 
 class AuthorizationController extends AbstractActionController
 {
@@ -59,7 +61,7 @@ class AuthorizationController extends AbstractActionController
         $entity->getLinks()->add(Link::factory(array(
             'rel'   => 'self',
             'route' => array(
-                'name'    => 'zf-apigility/api/module/authorization',
+                'name'    => 'api-tools/api/module/authorization',
                 'params'  => array(
                     'name' => $this->moduleName,
                 ),

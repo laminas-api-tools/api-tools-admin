@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use Zend\Validator\ValidatorPluginManager;
-use Zend\ServiceManager\ServiceManager;
-use ZF\Apigility\Admin\Exception;
+use Laminas\ApiTools\Admin\Exception;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\Validator\ValidatorPluginManager;
 
 class ValidatorsModel extends AbstractPluginManagerModel
 {
@@ -19,7 +21,7 @@ class ValidatorsModel extends AbstractPluginManagerModel
 
     /**
      * $pluginManager should be an instance of
-     * Zend\Validator\ValidatorPluginManager.
+     * Laminas\Validator\ValidatorPluginManager.
      *
      * @param ServiceManager $pluginManager
      */
@@ -27,7 +29,7 @@ class ValidatorsModel extends AbstractPluginManagerModel
     {
         if (! $pluginManager instanceof ValidatorPluginManager) {
             throw new Exception\InvalidArgumentException(sprintf(
-                '%s expects an instance of Zend\Validator\ValidatorPluginManager; received "%s"',
+                '%s expects an instance of Laminas\Validator\ValidatorPluginManager; received "%s"',
                 __CLASS__,
                 get_class($pluginManager)
             ));
@@ -35,7 +37,7 @@ class ValidatorsModel extends AbstractPluginManagerModel
 
         if (null === $metadata) {
             throw new Exception\InvalidArgumentException(sprintf(
-                '%s expects an instance of Zend\Validator\ValidatorMetadataModel'
+                '%s expects an instance of Laminas\Validator\ValidatorMetadataModel'
                 . ' as the second argument to the constructor',
                 __CLASS__
             ));
