@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Controller;
+namespace Laminas\ApiTools\Admin\Controller;
 
-use Zend\Http\Request;
-use Zend\Http\Response\Stream;
-use Zend\Mvc\Controller\AbstractActionController;
-use ZF\ApiProblem\ApiProblem;
-use ZF\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\ApiProblem\ApiProblem;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\Http\Request;
+use Laminas\Http\Response\Stream;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 class PackageController extends AbstractActionController
 {
@@ -39,7 +41,7 @@ class PackageController extends AbstractActionController
     /**
      * Handle incoming requests
      *
-     * @return array|\Zend\Http\Response|ApiProblemResponse
+     * @return array|\Laminas\Http\Response|ApiProblemResponse
      */
     public function indexAction()
     {
@@ -71,8 +73,8 @@ class PackageController extends AbstractActionController
      *
      * @param string $fileId
      * @param string $format
-     * @param \Zend\Http\Response $response
-     * @return \Zend\Http\Response
+     * @param \Laminas\Http\Response $response
+     * @return \Laminas\Http\Response
      */
     private function fetch($fileId, $format, $response)
     {
@@ -103,7 +105,7 @@ class PackageController extends AbstractActionController
         $response->getHeaders()
             ->addHeaderLine('Content-Type', 'application/octet-stream')
             ->addHeaderLine('Content-Disposition', sprintf(
-                'attachment; filename="apigility_%s.%s"',
+                'attachment; filename="api-tools_%s.%s"',
                 date('Y-m-d_H-i-s'),
                 $format
             ))
@@ -177,7 +179,7 @@ class PackageController extends AbstractActionController
      */
     private function getPackageFile($fileId, $format)
     {
-        return sys_get_temp_dir() . '/apigility_' . $fileId . '.' . strtolower($format);
+        return sys_get_temp_dir() . '/api-tools_' . $fileId . '.' . strtolower($format);
     }
 
     /**

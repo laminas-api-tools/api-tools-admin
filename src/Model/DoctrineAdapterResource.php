@@ -1,15 +1,17 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use Zend\Http\Response;
-use ZF\ApiProblem\ApiProblem;
-use ZF\Rest\Exception\CreationException;
-use ZF\Rest\AbstractResourceListener;
+use Laminas\ApiTools\ApiProblem\ApiProblem;
+use Laminas\ApiTools\Rest\AbstractResourceListener;
+use Laminas\ApiTools\Rest\Exception\CreationException;
+use Laminas\Http\Response;
 
 class DoctrineAdapterResource extends AbstractResourceListener
 {
@@ -53,8 +55,8 @@ class DoctrineAdapterResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
-        if (! isset($this->loadedModules['ZF\Apigility\Doctrine\Admin'])
-            || ! isset($this->loadedModules['ZF\Apigility\Doctrine\Server'])) {
+        if (! isset($this->loadedModules['Laminas\ApiTools\Doctrine\Admin'])
+            || ! isset($this->loadedModules['Laminas\ApiTools\Doctrine\Server'])) {
             $response = new Response();
             $response->setStatusCode(204);
 

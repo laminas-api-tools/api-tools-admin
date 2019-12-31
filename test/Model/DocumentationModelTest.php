@@ -1,15 +1,17 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
-use Zend\Config\Writer\WriterInterface;
-use ZF\Apigility\Admin\Model\DocumentationModel;
-use ZF\Configuration\ModuleUtils;
-use ZF\Configuration\ResourceFactory;
+use Laminas\ApiTools\Admin\Model\DocumentationModel;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\Config\Writer\WriterInterface;
 
 class DocumentationModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,7 +24,7 @@ class DocumentationModelTest extends \PHPUnit_Framework_TestCase
         $this->actualDocData = include __DIR__ . '/TestAsset/module/Doc/config/documentation.config.php';
 
         $mockModuleUtils = $this->getMock(
-            'ZF\Configuration\ModuleUtils',
+            'Laminas\ApiTools\Configuration\ModuleUtils',
             ['getModuleConfigPath'],
             [],
             '',
