@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\InputFilter;
+namespace Laminas\ApiTools\Admin\InputFilter;
 
-use Zend\InputFilter\InputFilter;
+use Laminas\InputFilter\InputFilter;
 
 class ContentNegotiationInputFilter extends InputFilter
 {
@@ -30,8 +32,8 @@ class ContentNegotiationInputFilter extends InputFilter
             }
 
             $interfaces = class_implements($className);
-            if (false === $interfaces || ! in_array('Zend\View\Model\ModelInterface', $interfaces)) {
-                $this->messages[$className][] = 'Class name (' . $className . ') is invalid; must be a valid Zend\View\Model\ModelInterface class';
+            if (false === $interfaces || ! in_array('Laminas\View\Model\ModelInterface', $interfaces)) {
+                $this->messages[$className][] = 'Class name (' . $className . ') is invalid; must be a valid Laminas\View\Model\ModelInterface class';
                 $isValid = false;
                 continue;
             }

@@ -1,20 +1,22 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use FooConf;
+use Laminas\ApiTools\Admin\Model\ModuleEntity;
+use Laminas\ApiTools\Admin\Model\RpcServiceModel;
+use Laminas\ApiTools\Admin\Model\VersioningModel;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\Config\Writer\PhpArray;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionClass;
-use Zend\Config\Writer\PhpArray;
-use ZF\Apigility\Admin\Model\ModuleEntity;
-use ZF\Apigility\Admin\Model\RpcServiceModel;
-use ZF\Apigility\Admin\Model\VersioningModel;
-use ZF\Configuration\ResourceFactory;
-use ZF\Configuration\ModuleUtils;
 
 require_once __DIR__ . '/TestAsset/module/FooConf/Module.php';
 
@@ -60,7 +62,7 @@ class RpcServiceModelTest extends TestCase
         );
 
         $this->moduleEntity  = new ModuleEntity($this->module);
-        $this->moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -83,7 +85,7 @@ class RpcServiceModelTest extends TestCase
         /**
          * @todo define exception in Rpc namespace
          */
-        $this->setExpectedException('ZF\Rest\Exception\CreationException');
+        $this->setExpectedException('Laminas\ApiTools\Rest\Exception\CreationException');
         $this->codeRpc->createService('Foo Bar', 'route', array());
     }
 
@@ -92,7 +94,7 @@ class RpcServiceModelTest extends TestCase
         /**
          * @todo define exception in Rpc namespace
         */
-        $this->setExpectedException('ZF\Rest\Exception\CreationException');
+        $this->setExpectedException('Laminas\ApiTools\Rest\Exception\CreationException');
         $this->codeRpc->createService('Foo:Bar', 'route', array());
     }
 
@@ -101,7 +103,7 @@ class RpcServiceModelTest extends TestCase
         /**
          * @todo define exception in Rpc namespace
         */
-        $this->setExpectedException('ZF\Rest\Exception\CreationException');
+        $this->setExpectedException('Laminas\ApiTools\Rest\Exception\CreationException');
         $this->codeRpc->createService('Foo/Bar', 'route', array());
     }
 
@@ -137,7 +139,7 @@ class RpcServiceModelTest extends TestCase
 
         require_once $fileName;
         $controllerClass = new ReflectionClass($className);
-        $this->assertTrue($controllerClass->isSubclassOf('Zend\Mvc\Controller\AbstractActionController'));
+        $this->assertTrue($controllerClass->isSubclassOf('Laminas\Mvc\Controller\AbstractActionController'));
 
         $actionMethodName = lcfirst($serviceName) . 'Action';
         $this->assertTrue($controllerClass->hasMethod($actionMethodName), 'Expected ' . $actionMethodName . "; class:\n" . file_get_contents($fileName));
@@ -172,7 +174,7 @@ class RpcServiceModelTest extends TestCase
                     ),
                 ),
             )),
-            'zf-versioning' => array(
+            'api-tools-versioning' => array(
                 'uri' => array(
                     'foo-conf.rpc.hello-world'
                 )
@@ -190,7 +192,7 @@ class RpcServiceModelTest extends TestCase
     {
         $result = $this->codeRpc->createRpcConfig('HelloWorld', 'FooConf\Rpc\HelloWorld\Controller', 'foo-conf.rpc.hello-world', array('GET', 'PATCH'));
         $expected = array(
-            'zf-rpc' => array(
+            'api-tools-rpc' => array(
                 'FooConf\Rpc\HelloWorld\Controller' => array(
                     'service_name' => 'HelloWorld',
                     'http_methods' => array('GET', 'PATCH'),
@@ -226,7 +228,7 @@ class RpcServiceModelTest extends TestCase
     {
         $result = $this->codeRpc->createContentNegotiationConfig('FooConf\Rpc\HelloWorld\Controller', $selector);
         $expected = array(
-            'zf-content-negotiation' => array(
+            'api-tools-content-negotiation' => array(
                 'controllers' => array(
                     'FooConf\Rpc\HelloWorld\Controller' => $expected,
                 ),
@@ -265,7 +267,7 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = array('GET', 'PATCH');
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
 
         $configFile = $this->modules->getModuleConfigPath($this->module);
         $expected   = array(
@@ -284,14 +286,14 @@ class RpcServiceModelTest extends TestCase
                     ),
                 ),
             )),
-            'zf-rpc' => array(
+            'api-tools-rpc' => array(
                 'FooConf\V1\Rpc\HelloWorld\Controller' => array(
                     'service_name' => 'HelloWorld',
                     'http_methods' => array('GET', 'PATCH'),
                     'route_name'   => 'foo-conf.rpc.hello-world',
                 ),
             ),
-            'zf-content-negotiation' => array(
+            'api-tools-content-negotiation' => array(
                 'controllers' => array(
                     'FooConf\V1\Rpc\HelloWorld\Controller' => $selector,
                 ),
@@ -309,7 +311,7 @@ class RpcServiceModelTest extends TestCase
                     ),
                 ),
             ),
-            'zf-versioning' => array(
+            'api-tools-versioning' => array(
                 'uri' => array(
                     'foo-conf.rpc.hello-world'
                 )
@@ -327,7 +329,7 @@ class RpcServiceModelTest extends TestCase
 
         require_once $classFile;
         $controllerClass = new ReflectionClass($class);
-        $this->assertTrue($controllerClass->isSubclassOf('Zend\Mvc\Controller\AbstractActionController'));
+        $this->assertTrue($controllerClass->isSubclassOf('Laminas\Mvc\Controller\AbstractActionController'));
 
         $actionMethodName = lcfirst($serviceName) . 'Action';
         $this->assertTrue($controllerClass->hasMethod($actionMethodName), 'Expected ' . $actionMethodName . "; class:\n" . file_get_contents($classFile));
@@ -368,14 +370,14 @@ class RpcServiceModelTest extends TestCase
         $this->writer->toFile($configData->config_file, $configData->config);
         $this->assertTrue($this->codeRpc->updateHttpMethods($configData->controller_service, $methods));
         $config = include $configData->config_file;
-        $this->assertEquals($methods, $config['zf-rpc'][$configData->controller_service]['http_methods']);
+        $this->assertEquals($methods, $config['api-tools-rpc'][$configData->controller_service]['http_methods']);
     }
 
     public function testCanUpdateContentNegotiationSelector()
     {
         $configFile = $this->modules->getModuleConfigPath($this->module);
         $this->writer->toFile($configFile, array(
-            'zf-content-negotiation' => array(
+            'api-tools-content-negotiation' => array(
                 'controllers' => array(
                     'FooConf\Rpc\HelloWorld\Controller' => 'Json',
                 ),
@@ -383,14 +385,14 @@ class RpcServiceModelTest extends TestCase
         ));
         $this->assertTrue($this->codeRpc->updateSelector('FooConf\Rpc\HelloWorld\Controller', 'MyCustomSelector'));
         $config = include $configFile;
-        $this->assertEquals('MyCustomSelector', $config['zf-content-negotiation']['controllers']['FooConf\Rpc\HelloWorld\Controller']);
+        $this->assertEquals('MyCustomSelector', $config['api-tools-content-negotiation']['controllers']['FooConf\Rpc\HelloWorld\Controller']);
     }
 
     public function testCanUpdateContentNegotiationWhitelists()
     {
         $configFile = $this->modules->getModuleConfigPath($this->module);
         $this->writer->toFile($configFile, array(
-            'zf-content-negotiation' => array(
+            'api-tools-content-negotiation' => array(
                 'accept_whitelist' => array(
                     'FooConf\Rpc\HelloWorld\Controller' => array(
                         'application/json',
@@ -410,10 +412,10 @@ class RpcServiceModelTest extends TestCase
         $this->assertEquals(array(
             'application/xml',
             'application/*+xml',
-        ), $config['zf-content-negotiation']['accept_whitelist']['FooConf\Rpc\HelloWorld\Controller']);
+        ), $config['api-tools-content-negotiation']['accept_whitelist']['FooConf\Rpc\HelloWorld\Controller']);
         $this->assertEquals(array(
             'application/xml',
-        ), $config['zf-content-negotiation']['content_type_whitelist']['FooConf\Rpc\HelloWorld\Controller']);
+        ), $config['api-tools-content-negotiation']['content_type_whitelist']['FooConf\Rpc\HelloWorld\Controller']);
     }
 
     public function testDeleteServiceRemovesExpectedConfigurationElements()
@@ -424,7 +426,7 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = array('GET', 'PATCH');
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
 
         $moduleSrcPath = sprintf('%s/TestAsset/module/%s/src/%s', __DIR__, $this->module, $this->module);
         $servicePath = $moduleSrcPath . '/V1/Rpc/' . $serviceName;
@@ -436,18 +438,18 @@ class RpcServiceModelTest extends TestCase
         $config     = include $configFile;
 
         $this->assertInternalType('array', $config);
-        $this->assertInternalType('array', $config['zf-rpc']);
-        $this->assertInternalType('array', $config['zf-versioning']);
+        $this->assertInternalType('array', $config['api-tools-rpc']);
+        $this->assertInternalType('array', $config['api-tools-versioning']);
         $this->assertInternalType('array', $config['router']['routes']);
-        $this->assertInternalType('array', $config['zf-content-negotiation']);
+        $this->assertInternalType('array', $config['api-tools-content-negotiation']);
         $this->assertInternalType('array', $config['controllers']);
 
         $this->assertArrayNotHasKey($result->routeName, $config['router']['routes']);
-        $this->assertArrayNotHasKey($result->controllerServiceName, $config['zf-rpc']);
-        $this->assertArrayNotHasKey($result->controllerServiceName, $config['zf-content-negotiation']['controllers']);
-        $this->assertArrayNotHasKey($result->controllerServiceName, $config['zf-content-negotiation']['accept_whitelist']);
-        $this->assertArrayNotHasKey($result->controllerServiceName, $config['zf-content-negotiation']['content_type_whitelist']);
-        $this->assertNotContains($result->routeName, $config['zf-versioning']['uri']);
+        $this->assertArrayNotHasKey($result->controllerServiceName, $config['api-tools-rpc']);
+        $this->assertArrayNotHasKey($result->controllerServiceName, $config['api-tools-content-negotiation']['controllers']);
+        $this->assertArrayNotHasKey($result->controllerServiceName, $config['api-tools-content-negotiation']['accept_whitelist']);
+        $this->assertArrayNotHasKey($result->controllerServiceName, $config['api-tools-content-negotiation']['content_type_whitelist']);
+        $this->assertNotContains($result->routeName, $config['api-tools-versioning']['uri']);
         foreach ($config['controllers'] as $serviceType => $services) {
             $this->assertArrayNotHasKey($result->controllerServiceName, $services);
         }
@@ -460,7 +462,7 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = array('GET', 'PATCH');
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
 
         $moduleSrcPath = sprintf('%s/TestAsset/module/%s/src/%s', __DIR__, $this->module, $this->module);
         $servicePath = $moduleSrcPath . '/V1/Rpc/' . $serviceName;
@@ -479,7 +481,7 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = array('GET', 'PATCH');
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
 
         $path = __DIR__ . '/TestAsset/module/FooConf';
         $versioningModel = new VersioningModel($this->resource->factory('FooConf'));
@@ -491,13 +493,13 @@ class RpcServiceModelTest extends TestCase
 
         $config = include($path . '/config/module.config.php');
         $this->assertInternalType('array', $config);
-        $this->assertInternalType('array', $config['zf-versioning']);
+        $this->assertInternalType('array', $config['api-tools-versioning']);
         $this->assertInternalType('array', $config['router']['routes']);
 
-        $this->assertArrayHasKey($result->controllerServiceName, $config['zf-rpc']);
-        $this->assertArrayNotHasKey($serviceName, $config['zf-rpc']);
+        $this->assertArrayHasKey($result->controllerServiceName, $config['api-tools-rpc']);
+        $this->assertArrayNotHasKey($serviceName, $config['api-tools-rpc']);
         $this->assertArrayHasKey($result->routeName, $config['router']['routes'], 'Route DELETED');
-        $this->assertContains($result->routeName, $config['zf-versioning']['uri'], 'Versioning DELETED');
+        $this->assertContains($result->routeName, $config['api-tools-versioning']['uri'], 'Versioning DELETED');
     }
 
     /**
@@ -510,6 +512,6 @@ class RpcServiceModelTest extends TestCase
         $this->writer->toFile($configData->config_file, $configData->config);
         $this->assertTrue($this->codeRpc->updateHttpMethods($configData->controller_service, $methods));
         $config = include $configData->config_file;
-        $this->assertEquals($methods, $config['zf-rpc'][$configData->controller_service]['http_methods']);
+        $this->assertEquals($methods, $config['api-tools-rpc'][$configData->controller_service]['http_methods']);
     }
 }
