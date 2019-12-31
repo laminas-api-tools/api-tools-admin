@@ -1,15 +1,17 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use Zend\Filter\FilterChain;
-use Zend\Stdlib\Glob;
-use ZF\Apigility\Admin\Exception;
-use ZF\Configuration\ConfigResource;
+use Laminas\ApiTools\Admin\Exception;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\Filter\FilterChain;
+use Laminas\Stdlib\Glob;
 
 /**
  * Allows management of module versions
@@ -168,15 +170,15 @@ final class ModuleVersioningModel
         $defaultVersion = (int) $defaultVersion;
 
         $this->configResource->patch([
-            'zf-versioning' => [
+            'api-tools-versioning' => [
                 'default_version' => $defaultVersion,
             ],
         ], true);
 
         $config = $this->configResource->fetch(true);
 
-        return isset($config['zf-versioning']['default_version'])
-            && $config['zf-versioning']['default_version'] === $defaultVersion;
+        return isset($config['api-tools-versioning']['default_version'])
+            && $config['api-tools-versioning']['default_version'] === $defaultVersion;
     }
 
     /**
@@ -239,36 +241,36 @@ final class ModuleVersioningModel
             return false;
         }
 
-        // update zf-hal.metadata_map
-        if (isset($config['zf-hal']['metadata_map'])) {
-            $newValues = $this->changeVersionArray($config['zf-hal']['metadata_map'], $previous, $version);
+        // update api-tools-hal.metadata_map
+        if (isset($config['api-tools-hal']['metadata_map'])) {
+            $newValues = $this->changeVersionArray($config['api-tools-hal']['metadata_map'], $previous, $version);
             $this->configResource->patch([
-                'zf-hal' => ['metadata_map' => $newValues],
+                'api-tools-hal' => ['metadata_map' => $newValues],
             ], true);
         }
 
-        // update zf-rpc
-        if (isset($config['zf-rpc'])) {
-            $newValues = $this->changeVersionArray($config['zf-rpc'], $previous, $version);
+        // update api-tools-rpc
+        if (isset($config['api-tools-rpc'])) {
+            $newValues = $this->changeVersionArray($config['api-tools-rpc'], $previous, $version);
             $this->configResource->patch([
-                'zf-rpc' => $newValues,
+                'api-tools-rpc' => $newValues,
             ], true);
         }
 
-        // update zf-rest
-        if (isset($config['zf-rest'])) {
-            $newValues = $this->changeVersionArray($config['zf-rest'], $previous, $version);
+        // update api-tools-rest
+        if (isset($config['api-tools-rest'])) {
+            $newValues = $this->changeVersionArray($config['api-tools-rest'], $previous, $version);
             $this->configResource->patch([
-                'zf-rest' => $newValues,
+                'api-tools-rest' => $newValues,
             ], true);
         }
 
-        // update zf-content-negotiation
-        if (isset($config['zf-content-negotiation'])) {
+        // update api-tools-content-negotiation
+        if (isset($config['api-tools-content-negotiation'])) {
             foreach (['controllers', 'accept_whitelist', 'content_type_whitelist'] as $key) {
-                if (isset($config['zf-content-negotiation'][$key])) {
+                if (isset($config['api-tools-content-negotiation'][$key])) {
                     $newValues = $this->changeVersionArray(
-                        $config['zf-content-negotiation'][$key],
+                        $config['api-tools-content-negotiation'][$key],
                         $previous,
                         $version
                     );
@@ -289,25 +291,25 @@ final class ModuleVersioningModel
                     }
 
                     $this->configResource->patch([
-                        'zf-content-negotiation' => [$key => $newValues],
+                        'api-tools-content-negotiation' => [$key => $newValues],
                     ], true);
                 }
             }
         }
 
-        // update zf-mvc-auth
-        if (isset($config['zf-mvc-auth']['authorization'])) {
-            $newValues = $this->changeVersionArray($config['zf-mvc-auth']['authorization'], $previous, $version);
+        // update api-tools-mvc-auth
+        if (isset($config['api-tools-mvc-auth']['authorization'])) {
+            $newValues = $this->changeVersionArray($config['api-tools-mvc-auth']['authorization'], $previous, $version);
             $this->configResource->patch([
-                'zf-mvc-auth' => ['authorization' => $newValues],
+                'api-tools-mvc-auth' => ['authorization' => $newValues],
             ], true);
         }
 
-        // update zf-content-validation and input_filter_specs
-        if (isset($config['zf-content-validation'])) {
-            $newValues = $this->changeVersionArray($config['zf-content-validation'], $previous, $version);
+        // update api-tools-content-validation and input_filter_specs
+        if (isset($config['api-tools-content-validation'])) {
+            $newValues = $this->changeVersionArray($config['api-tools-content-validation'], $previous, $version);
             $this->configResource->patch([
-                'zf-content-validation' => $newValues,
+                'api-tools-content-validation' => $newValues,
             ], true);
         }
 
@@ -318,11 +320,11 @@ final class ModuleVersioningModel
             ], true);
         }
 
-        // update zf-apigility
-        if (isset($config['zf-apigility']['db-connected'])) {
-            $newValues = $this->changeVersionArray($config['zf-apigility']['db-connected'], $previous, $version);
+        // update api-tools
+        if (isset($config['api-tools']['db-connected'])) {
+            $newValues = $this->changeVersionArray($config['api-tools']['db-connected'], $previous, $version);
             $this->configResource->patch([
-                'zf-apigility' => ['db-connected' => $newValues],
+                'api-tools' => ['db-connected' => $newValues],
             ], true);
         }
 

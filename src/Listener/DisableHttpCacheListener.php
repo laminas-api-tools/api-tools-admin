@@ -1,17 +1,19 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Listener;
+namespace Laminas\ApiTools\Admin\Listener;
 
-use Zend\Http\Header\GenericHeader;
-use Zend\Http\Header\GenericMultiHeader;
-use Zend\Http\Headers;
-use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\RouteMatch as V2RouteMatch;
-use Zend\Router\RouteMatch;
+use Laminas\Http\Header\GenericHeader;
+use Laminas\Http\Header\GenericMultiHeader;
+use Laminas\Http\Headers;
+use Laminas\Mvc\MvcEvent;
+use Laminas\Mvc\Router\RouteMatch as V2RouteMatch;
+use Laminas\Router\RouteMatch;
 
 class DisableHttpCacheListener
 {
@@ -28,8 +30,8 @@ class DisableHttpCacheListener
             return;
         }
 
-        if (! $matches->getParam('is_apigility_admin_api', false)) {
-            // Not part of the Apigility Admin API; nothing to do
+        if (! $matches->getParam('is_api-tools_admin_api', false)) {
+            // Not part of the Laminas API Tools Admin API; nothing to do
             return;
         }
 
