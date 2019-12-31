@@ -1,9 +1,9 @@
 <?php
 
-namespace ZFTest\Apigility\Admin\InputFilter;
+namespace LaminasTest\ApiTools\Admin\InputFilter;
 
+use Laminas\InputFilter\Factory;
 use PHPUnit\Framework\TestCase;
-use Zend\InputFilter\Factory;
 
 class DocumentationInputFilterTest extends TestCase
 {
@@ -11,7 +11,7 @@ class DocumentationInputFilterTest extends TestCase
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'ZF\Apigility\Admin\InputFilter\DocumentationInputFilter',
+            'type' => 'Laminas\ApiTools\Admin\InputFilter\DocumentationInputFilter',
         ]);
     }
 

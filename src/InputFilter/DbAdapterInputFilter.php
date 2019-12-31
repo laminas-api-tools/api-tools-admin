@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\InputFilter;
+namespace Laminas\ApiTools\Admin\InputFilter;
 
-use Zend\InputFilter\InputFilter;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Validator\Callback as CallbackValidator;
+use Laminas\InputFilter\InputFilter;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Validator\Callback as CallbackValidator;
 
 class DbAdapterInputFilter extends InputFilter
 {
@@ -28,7 +30,7 @@ class DbAdapterInputFilter extends InputFilter
         ]);
         $this->add([
             'name' => 'driver',
-            'error_message' => 'Please provide a Database Adapter driver name available to Zend Framework',
+            'error_message' => 'Please provide a Database Adapter driver name available to Laminas',
         ]);
         $this->add([
             'name' => 'dsn',

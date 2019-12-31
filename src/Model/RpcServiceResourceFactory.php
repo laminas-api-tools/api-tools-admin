@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 
 class RpcServiceResourceFactory
 {
@@ -18,14 +20,18 @@ class RpcServiceResourceFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        if (! $container->has(RpcServiceModelFactory::class)) {
+        if (! $container->has(RpcServiceModelFactory::class)
+            && ! $container->has(\ZF\Apigility\Admin\Model\RpcServiceModelFactory::class)
+        ) {
             throw new ServiceNotCreatedException(sprintf(
                 '%s is missing its %s dependency',
                 RpcServiceResource::class,
                 RpcServiceModelFactory::class
             ));
         }
-        if (! $container->has(InputFilterModel::class)) {
+        if (! $container->has(InputFilterModel::class)
+            && ! $container->has(\ZF\Apigility\Admin\Model\InputFilterModel::class)
+        ) {
             throw new ServiceNotCreatedException(sprintf(
                 '%s is missing its %s dependency',
                 RpcServiceResource::class,
@@ -40,8 +46,8 @@ class RpcServiceResourceFactory
         }
 
         return new RpcServiceResource(
-            $container->get(RpcServiceModelFactory::class),
-            $container->get(InputFilterModel::class),
+            $container->has(RpcServiceModelFactory::class) ? $container->get(RpcServiceModelFactory::class) : $container->get(\ZF\Apigility\Admin\Model\RpcServiceModelFactory::class),
+            $container->has(InputFilterModel::class) ? $container->get(InputFilterModel::class) : $container->get(\ZF\Apigility\Admin\Model\InputFilterModel::class),
             $container->get('ControllerManager'),
             $container->get(DocumentationModel::class)
         );

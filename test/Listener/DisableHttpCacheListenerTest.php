@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Listener;
+namespace LaminasTest\ApiTools\Admin\Listener;
 
+use Laminas\ApiTools\Admin\Listener\DisableHttpCacheListener;
+use Laminas\Http\Header\GenericHeader;
+use Laminas\Http\Header\GenericMultiHeader;
+use Laminas\Http\Headers;
+use Laminas\Http\Request;
+use Laminas\Http\Response;
+use Laminas\Mvc\MvcEvent;
+use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Zend\Http\Header\GenericHeader;
-use Zend\Http\Header\GenericMultiHeader;
-use Zend\Http\Headers;
-use Zend\Http\Request;
-use Zend\Http\Response;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Listener\DisableHttpCacheListener;
-use ZFTest\Apigility\Admin\RouteAssetsTrait;
 
 class DisableHttpCacheListenerTest extends TestCase
 {
@@ -48,7 +50,7 @@ class DisableHttpCacheListenerTest extends TestCase
 
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal']);
 
-        $this->routeMatch->getParam('is_apigility_admin_api', false)->willReturn(false);
+        $this->routeMatch->getParam('is_api-tools_admin_api', false)->willReturn(false);
         $this->event->getRequest()->shouldNotBeCalled();
 
         $this->assertNull($listener($this->event->reveal()));
@@ -60,7 +62,7 @@ class DisableHttpCacheListenerTest extends TestCase
 
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal']);
 
-        $this->routeMatch->getParam('is_apigility_admin_api', false)->willReturn(true);
+        $this->routeMatch->getParam('is_api-tools_admin_api', false)->willReturn(true);
         $this->event->getRequest()->will([$this->request, 'reveal']);
         $this->request->isGet()->willReturn(false);
         $this->request->isHead()->willReturn(false);
@@ -75,7 +77,7 @@ class DisableHttpCacheListenerTest extends TestCase
 
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal']);
 
-        $this->routeMatch->getParam('is_apigility_admin_api', false)->willReturn(true);
+        $this->routeMatch->getParam('is_api-tools_admin_api', false)->willReturn(true);
         $this->event->getRequest()->will([$this->request, 'reveal']);
         $this->request->isGet()->willReturn(true);
         $this->request->isHead()->willReturn(false);
@@ -128,7 +130,7 @@ class DisableHttpCacheListenerTest extends TestCase
 
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal']);
 
-        $this->routeMatch->getParam('is_apigility_admin_api', false)->willReturn(true);
+        $this->routeMatch->getParam('is_api-tools_admin_api', false)->willReturn(true);
         $this->event->getRequest()->will([$this->request, 'reveal']);
         $this->request->isGet()->willReturn(false);
         $this->request->isHead()->willReturn(true);

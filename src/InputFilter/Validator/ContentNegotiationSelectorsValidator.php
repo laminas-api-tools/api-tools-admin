@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\InputFilter\Validator;
+namespace Laminas\ApiTools\Admin\InputFilter\Validator;
 
-use Zend\Validator\AbstractValidator as ZfAbstractValidator;
+use Laminas\Validator\AbstractValidator as LaminasAbstractValidator;
 
-class ContentNegotiationSelectorsValidator extends ZfAbstractValidator
+class ContentNegotiationSelectorsValidator extends LaminasAbstractValidator
 {
     const INVALID_VALUE       = 'invalidValue';
     const CLASS_NOT_FOUND     = 'classNotFound';
@@ -20,7 +22,7 @@ class ContentNegotiationSelectorsValidator extends ZfAbstractValidator
         self::INVALID_VALUE       => 'Value must be an array; received %value%',
         self::CLASS_NOT_FOUND     => 'Class name (%value%) does not exist',
         self::INVALID_VIEW_MODEL  =>
-            'Class name (%value%) is invalid; must be a valid Zend\View\Model\ModelInterface instance',
+            'Class name (%value%) is invalid; must be a valid Laminas\View\Model\ModelInterface instance',
         self::INVALID_MEDIA_TYPES => 'Values for the media-types must be provided as an indexed array',
         self::INVALID_MEDIA_TYPE  => 'Invalid media type (%value%) provided',
     ];
@@ -51,7 +53,7 @@ class ContentNegotiationSelectorsValidator extends ZfAbstractValidator
             }
 
             $interfaces = class_implements($className);
-            if (false === $interfaces || ! in_array(\Zend\View\Model\ModelInterface::class, $interfaces)) {
+            if (false === $interfaces || ! in_array(\Laminas\View\Model\ModelInterface::class, $interfaces)) {
                 $isValid = false;
                 $this->error(self::INVALID_VIEW_MODEL, $className);
                 continue;

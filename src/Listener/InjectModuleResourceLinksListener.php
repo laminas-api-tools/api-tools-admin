@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Listener;
+namespace Laminas\ApiTools\Admin\Listener;
 
 use Interop\Container\ContainerInterface;
-use Zend\EventManager\EventInterface;
-use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\RouteMatch as V2RouteMatch;
-use Zend\Router\RouteMatch;
-use ZF\Apigility\Admin\Model;
-use ZF\Hal\Entity;
-use ZF\Hal\Link\Link;
-use ZF\Hal\Link\LinkCollection;
-use ZF\Hal\View\HalJsonModel;
+use Laminas\ApiTools\Admin\Model;
+use Laminas\ApiTools\Hal\Entity;
+use Laminas\ApiTools\Hal\Link\Link;
+use Laminas\ApiTools\Hal\Link\LinkCollection;
+use Laminas\ApiTools\Hal\View\HalJsonModel;
+use Laminas\EventManager\EventInterface;
+use Laminas\Mvc\MvcEvent;
+use Laminas\Mvc\Router\RouteMatch as V2RouteMatch;
+use Laminas\Router\RouteMatch;
 
 class InjectModuleResourceLinksListener
 {
@@ -156,7 +158,7 @@ class InjectModuleResourceLinksListener
             }
 
             if (! $links->has('self')) {
-                $route  = 'zf-apigility/api/module/';
+                $route  = 'api-tools/api/module/';
                 $route .= $entity instanceof Model\RestServiceEntity ? 'rest-service' : 'rpc-service';
                 $hal->injectSelfLink($halEntity, $route, 'controller_service_name');
             }
@@ -179,7 +181,7 @@ class InjectModuleResourceLinksListener
             $links = $halEntity->getLinks();
 
             if (! $links->has('self')) {
-                $route = sprintf('zf-apigility/api/module/%s/input-filter', $type);
+                $route = sprintf('api-tools/api/module/%s/input-filter', $type);
                 $hal->injectSelfLink($halEntity, $route, 'input_filter_name');
             }
             return;
@@ -238,7 +240,7 @@ class InjectModuleResourceLinksListener
         $links->add(Link::factory([
             'rel' => 'self',
             'route' => [
-                'name' => 'zf-apigility/api/module',
+                'name' => 'api-tools/api/module',
                 'params' => [
                     'name' => $module,
                 ],
@@ -274,7 +276,7 @@ class InjectModuleResourceLinksListener
         $links->add(Link::factory([
             'rel' => 'self',
             'route' => [
-                'name' => sprintf('zf-apigility/api/module/%s-service', $type),
+                'name' => sprintf('api-tools/api/module/%s-service', $type),
                 'params' => [
                     'name' => $module,
                     'controller_service_name' => $service,
@@ -286,7 +288,7 @@ class InjectModuleResourceLinksListener
         $links->add(Link::factory([
             'rel' => 'input_filter',
             'route' => [
-                'name' => sprintf('zf-apigility/api/module/%s-service/input-filter', $type),
+                'name' => sprintf('api-tools/api/module/%s-service/input-filter', $type),
                 'params' => [
                     'name' => $module,
                     'controller_service_name' => $service,
@@ -298,7 +300,7 @@ class InjectModuleResourceLinksListener
         $links->add(Link::factory([
             'rel' => 'documentation',
             'route' => [
-                'name' => sprintf('zf-apigility/api/module/%s-service/doc', $type),
+                'name' => sprintf('api-tools/api/module/%s-service/doc', $type),
                 'params' => [
                     'name' => $module,
                     'controller_service_name' => $service,
@@ -462,7 +464,7 @@ class InjectModuleResourceLinksListener
         if (in_array($type, ['rpc', 'rest'])) {
             $linkType .= '-service';
         }
-        $routeName = sprintf('zf-apigility/api/module/%s', $linkType);
+        $routeName = sprintf('api-tools/api/module/%s', $linkType);
 
         $routeParams = [];
         if (null !== $module) {
