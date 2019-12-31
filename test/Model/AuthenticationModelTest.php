@@ -1,22 +1,24 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\AuthenticationModel;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\Config\Writer\PhpArray as ConfigWriter;
+use Laminas\Stdlib\ArrayUtils;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Config\Writer\PhpArray as ConfigWriter;
-use Zend\Stdlib\ArrayUtils;
-use ZF\Apigility\Admin\Model\AuthenticationModel;
-use ZF\Configuration\ConfigResource;
 
 class AuthenticationModelTest extends TestCase
 {
     public function setUp()
     {
-        $this->configPath       = sys_get_temp_dir() . '/zf-apigility-admin/config';
+        $this->configPath       = sys_get_temp_dir() . '/api-tools-admin/config';
         $this->globalConfigPath = $this->configPath . '/global.php';
         $this->localConfigPath  = $this->configPath . '/local.php';
         $this->removeConfigMocks();
@@ -68,22 +70,22 @@ class AuthenticationModelTest extends TestCase
 
     public function assertAuthenticationConfigExists($key, array $config)
     {
-        $this->assertArrayHasKey('zf-mvc-auth', $config);
-        $this->assertArrayHasKey('authentication', $config['zf-mvc-auth']);
-        $this->assertArrayHasKey($key, $config['zf-mvc-auth']['authentication']);
+        $this->assertArrayHasKey('api-tools-mvc-auth', $config);
+        $this->assertArrayHasKey('authentication', $config['api-tools-mvc-auth']);
+        $this->assertArrayHasKey($key, $config['api-tools-mvc-auth']['authentication']);
     }
 
     public function assertAuthenticationConfigEquals($key, array $expected, array $config)
     {
         $this->assertAuthenticationConfigExists($key, $config);
-        $config = $config['zf-mvc-auth']['authentication'][$key];
+        $config = $config['api-tools-mvc-auth']['authentication'][$key];
         $this->assertEquals($expected, $config);
     }
 
     public function assertAuthenticationConfigContains($authKey, array $expected, array $config)
     {
         $this->assertAuthenticationConfigExists($authKey, $config);
-        $config = $config['zf-mvc-auth']['authentication'][$authKey];
+        $config = $config['api-tools-mvc-auth']['authentication'][$authKey];
         foreach ($expected as $key => $value) {
             $this->assertArrayHasKey($key, $config);
             $this->assertEquals($value, $config[$key]);
@@ -94,7 +96,7 @@ class AuthenticationModelTest extends TestCase
     {
         $toCreate = array(
             'accept_schemes' => array('basic'),
-            'realm'          => 'zendcon',
+            'realm'          => 'laminascon',
             'htpasswd'       => __DIR__ . '/htpasswd',
         );
 
@@ -104,7 +106,7 @@ class AuthenticationModelTest extends TestCase
         $global = include $this->globalConfigPath;
         $this->assertAuthenticationConfigEquals('http', array(
             'accept_schemes' => array('basic'),
-            'realm'          => 'zendcon',
+            'realm'          => 'laminascon',
         ), $global);
 
         $local  = include $this->localConfigPath;
@@ -116,17 +118,17 @@ class AuthenticationModelTest extends TestCase
     public function testCanRetrieveAuthenticationConfig()
     {
         $globalSeedConfig = array(
-            'zf-mvc-auth' => array(
+            'api-tools-mvc-auth' => array(
                 'authentication' => array(
                     'http' => array(
                         'accept_schemes' => array('basic'),
-                        'realm'          => 'zendcon',
+                        'realm'          => 'laminascon',
                     ),
                 ),
             ),
         );
         $localSeedConfig = array(
-            'zf-mvc-auth' => array(
+            'api-tools-mvc-auth' => array(
                 'authentication' => array(
                     'http' => array(
                         'htpasswd' => __DIR__ . '/htpasswd',
@@ -136,11 +138,11 @@ class AuthenticationModelTest extends TestCase
         );
         $model  = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
         $entity = $model->fetch();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\AuthenticationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthenticationEntity', $entity);
         $expected = array_merge(
             array('type' => 'http_basic'),
-            $globalSeedConfig['zf-mvc-auth']['authentication']['http'],
-            $localSeedConfig['zf-mvc-auth']['authentication']['http']
+            $globalSeedConfig['api-tools-mvc-auth']['authentication']['http'],
+            $localSeedConfig['api-tools-mvc-auth']['authentication']['http']
         );
         $this->assertEquals($expected, $entity->getArrayCopy());
     }
@@ -149,7 +151,7 @@ class AuthenticationModelTest extends TestCase
     {
         $toCreate = array(
             'accept_schemes' => array('basic'),
-            'realm'          => 'zendcon',
+            'realm'          => 'laminascon',
             'htpasswd'       => __DIR__ . '/htpasswd',
         );
         $model = $this->createModelFromConfigArrays(array(), array());
@@ -162,7 +164,7 @@ class AuthenticationModelTest extends TestCase
         $entity = $model->update($newConfig);
 
         // Ensure the entity returned from the update is what we expect
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\AuthenticationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthenticationEntity', $entity);
         $expected = array_merge(array('type' => 'http_basic'), $toCreate, $newConfig);
         $this->assertEquals($expected, $entity->getArrayCopy());
 
@@ -181,7 +183,7 @@ class AuthenticationModelTest extends TestCase
     {
         $toCreate = array(
             'accept_schemes' => array('basic'),
-            'realm'          => 'zendcon',
+            'realm'          => 'laminascon',
             'htpasswd'       => __DIR__ . '/htpasswd',
         );
         $model    = $this->createModelFromConfigArrays(array(), array());
@@ -189,9 +191,9 @@ class AuthenticationModelTest extends TestCase
 
         $model->remove();
         $global = include $this->globalConfigPath;
-        $this->assertArrayNotHasKey('http', $global['zf-mvc-auth']['authentication']);
+        $this->assertArrayNotHasKey('http', $global['api-tools-mvc-auth']['authentication']);
         $local = include $this->localConfigPath;
-        $this->assertArrayNotHasKey('http', $local['zf-mvc-auth']['authentication']);
+        $this->assertArrayNotHasKey('http', $local['api-tools-mvc-auth']['authentication']);
     }
 
     public function testCreatingOAuth2ConfigurationWritesToEachConfigFile()
@@ -216,14 +218,14 @@ class AuthenticationModelTest extends TestCase
 
         $local  = include $this->localConfigPath;
         $this->assertEquals(array(
-            'storage' => 'ZF\OAuth2\Adapter\PdoAdapter',
+            'storage' => 'Laminas\ApiTools\OAuth2\Adapter\PdoAdapter',
             'db' => array(
                 'dsn_type'    => 'PDO',
                 'dsn'         => 'sqlite::memory:',
                 'username'    => 'me',
                 'password'    => 'too',
             ),
-        ), $local['zf-oauth2']);
+        ), $local['api-tools-oauth2']);
     }
 
     public function testCreatingOAuth2ConfigurationWritesToEachConfigFileForMongo()
@@ -234,7 +236,7 @@ class AuthenticationModelTest extends TestCase
 
         $toCreate = array(
             'dsn'         => 'mongodb://localhost:27017',
-            'database'    => 'apigilityTest',
+            'database'    => 'apiToolsTest',
             'dsn_type'    => 'Mongo',
             'route_match' => '/api/oauth',
         );
@@ -252,15 +254,15 @@ class AuthenticationModelTest extends TestCase
 
         $local  = include $this->localConfigPath;
         $this->assertEquals(array(
-            'storage' => 'ZF\OAuth2\Adapter\MongoAdapter',
+            'storage' => 'Laminas\ApiTools\OAuth2\Adapter\MongoAdapter',
             'mongo' => array(
                 'dsn_type'    => 'Mongo',
                 'dsn'         => 'mongodb://localhost:27017',
                 'username'    => null,
                 'password'    => null,
-                'database'    => 'apigilityTest',
+                'database'    => 'apiToolsTest',
             ),
-        ), $local['zf-oauth2']);
+        ), $local['api-tools-oauth2']);
     }
 
     public function testRemovingOAuth2ConfigurationRemovesConfigurationFromEachFile()
@@ -282,8 +284,8 @@ class AuthenticationModelTest extends TestCase
         $this->assertFalse(isset($global['router']['routes']['oauth']));
         $local = include $this->localConfigPath;
         $this->assertFalse(isset($local['router']['routes']['oauth']));
-        $this->assertArrayNotHasKey('db', $local['zf-oauth2']);
-        $this->assertArrayNotHasKey('storage', $local['zf-oauth2']);
+        $this->assertArrayNotHasKey('db', $local['api-tools-oauth2']);
+        $this->assertArrayNotHasKey('storage', $local['api-tools-oauth2']);
     }
 
     /**
@@ -297,7 +299,7 @@ class AuthenticationModelTest extends TestCase
 
         $toCreate = array(
             'dsn_type'    => 'mongo',
-            'dsn'         => 'mongodb://localhost:27017/apigility',
+            'dsn'         => 'mongodb://localhost:27017/api-tools',
             'route_match' => '/api/oauth',
         );
 
@@ -311,12 +313,12 @@ class AuthenticationModelTest extends TestCase
         $this->assertFalse(isset($global['router']['routes']['oauth']));
         $local = include $this->localConfigPath;
         $this->assertFalse(isset($local['router']['routes']['oauth']));
-        $this->assertArrayNotHasKey('mongo', $local['zf-oauth2']);
-        $this->assertArrayNotHasKey('storage', $local['zf-oauth2']);
+        $this->assertArrayNotHasKey('mongo', $local['api-tools-oauth2']);
+        $this->assertArrayNotHasKey('storage', $local['api-tools-oauth2']);
     }
 
     /**
-     * @group zf-oauth2-19
+     * @group api-tools-oauth2-19
      */
     public function testAttemptingToCreateOAuth2ConfigurationWithInvalidMongoDsnRaisesException()
     {
@@ -332,12 +334,12 @@ class AuthenticationModelTest extends TestCase
         );
         $model = $this->createModelFromConfigArrays(array(), array());
 
-        $this->setExpectedException('ZF\Apigility\Admin\Exception\InvalidArgumentException', 'DSN', 422);
+        $this->setExpectedException('Laminas\ApiTools\Admin\Exception\InvalidArgumentException', 'DSN', 422);
         $model->create($toCreate);
     }
 
     /**
-     * @group zf-oauth2-19
+     * @group api-tools-oauth2-19
      */
     public function testAttemptingToCreateOAuth2ConfigurationWithInvalidDsnRaisesException()
     {
@@ -349,12 +351,12 @@ class AuthenticationModelTest extends TestCase
         );
         $model = $this->createModelFromConfigArrays(array(), array());
 
-        $this->setExpectedException('ZF\Apigility\Admin\Exception\InvalidArgumentException', 'DSN', 422);
+        $this->setExpectedException('Laminas\ApiTools\Admin\Exception\InvalidArgumentException', 'DSN', 422);
         $model->create($toCreate);
     }
 
     /**
-     * @group zf-oauth2-19
+     * @group api-tools-oauth2-19
      */
     public function testAttemptingToUpdateOAuth2ConfigurationWithInvalidDsnRaisesException()
     {
@@ -371,7 +373,7 @@ class AuthenticationModelTest extends TestCase
             'dsn' => 'sqlite:/tmp/' . uniqid() . '/.db',
         );
 
-        $this->setExpectedException('ZF\Apigility\Admin\Exception\InvalidArgumentException', 'DSN', 422);
+        $this->setExpectedException('Laminas\ApiTools\Admin\Exception\InvalidArgumentException', 'DSN', 422);
         $entity = $model->update($newConfig);
     }
 }

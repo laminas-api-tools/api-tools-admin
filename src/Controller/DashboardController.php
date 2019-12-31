@@ -1,23 +1,25 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Controller;
+namespace Laminas\ApiTools\Admin\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use ZF\Apigility\Admin\Model\AuthenticationEntity;
-use ZF\Apigility\Admin\Model\AuthenticationModel;
-use ZF\Apigility\Admin\Model\ContentNegotiationModel;
-use ZF\Apigility\Admin\Model\DbAdapterModel;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\Apigility\Admin\Model\RestServiceModelFactory;
-use ZF\Apigility\Admin\Model\RpcServiceModelFactory;
-use ZF\ContentNegotiation\ViewModel;
-use ZF\Hal\Entity;
-use ZF\Hal\Collection;
-use ZF\Hal\Link\Link;
+use Laminas\ApiTools\Admin\Model\AuthenticationEntity;
+use Laminas\ApiTools\Admin\Model\AuthenticationModel;
+use Laminas\ApiTools\Admin\Model\ContentNegotiationModel;
+use Laminas\ApiTools\Admin\Model\DbAdapterModel;
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\Admin\Model\RestServiceModelFactory;
+use Laminas\ApiTools\Admin\Model\RpcServiceModelFactory;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
+use Laminas\ApiTools\Hal\Collection;
+use Laminas\ApiTools\Hal\Entity;
+use Laminas\ApiTools\Hal\Link\Link;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 class DashboardController extends AbstractActionController
 {
@@ -62,7 +64,7 @@ class DashboardController extends AbstractActionController
         }
 
         $dbAdapters = new Collection($this->dbAdapters->fetchAll());
-        $dbAdapters->setCollectionRoute('zf-apigility/api/db-adapter');
+        $dbAdapters->setCollectionRoute('api-tools/api/db-adapter');
 
         $modules = $this->modules->getModules();
         $map     = function ($value) {
@@ -85,7 +87,7 @@ class DashboardController extends AbstractActionController
         }
 
         $modulesCollection = new Collection($modules);
-        $modulesCollection->setCollectionRoute('zf-apigility/api/module');
+        $modulesCollection->setCollectionRoute('api-tools/api/module');
 
         $dashboard = array(
             'authentication' => $authentication,
@@ -98,7 +100,7 @@ class DashboardController extends AbstractActionController
         $links->add(Link::factory(array(
             'rel' => 'self',
             'route' => array(
-                'name' => 'zf-apigility/api/dashboard',
+                'name' => 'api-tools/api/dashboard',
             ),
         )));
 
@@ -118,10 +120,10 @@ class DashboardController extends AbstractActionController
         }
 
         $dbAdapters = new Collection($this->dbAdapters->fetchAll());
-        $dbAdapters->setCollectionRoute('zf-apigility/api/db-adapter');
+        $dbAdapters->setCollectionRoute('api-tools/api/db-adapter');
 
         $contentNegotiation = new Collection($this->contentNegotiation->fetchAll());
-        $contentNegotiation->setCollectionRoute('zf-apigility/api/content-negotiation');
+        $contentNegotiation->setCollectionRoute('api-tools/api/content-negotiation');
 
         $dashboard = array(
             'authentication'      => $authentication,
@@ -134,7 +136,7 @@ class DashboardController extends AbstractActionController
         $links->add(Link::factory(array(
             'rel' => 'self',
             'route' => array(
-                'name' => 'zf-apigility/api/settings-dashboard',
+                'name' => 'api-tools/api/settings-dashboard',
             ),
         )));
 
@@ -151,7 +153,7 @@ class DashboardController extends AbstractActionController
      */
     protected function getRouteForEntity(AuthenticationEntity $entity)
     {
-        $baseRoute = 'zf-apigility/api/authentication';
+        $baseRoute = 'api-tools/api/authentication';
 
         if ($entity->isBasic()) {
             return $baseRoute . '/http-basic';

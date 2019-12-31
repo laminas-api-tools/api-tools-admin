@@ -1,17 +1,19 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Exception;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\ApiTools\Rest\Exception\CreationException;
+use MongoConnectionException;
 use PDO;
 use PDOException;
-use MongoConnectionException;
-use ZF\Apigility\Admin\Exception;
-use ZF\Configuration\ConfigResource;
-use ZF\Rest\Exception\CreationException;
 
 class AuthenticationModel
 {
@@ -40,7 +42,7 @@ class AuthenticationModel
      *
      * @param array $authenticationConfig
      * @return AuthenticationEntity
-     * @throws \ZF\Rest\Exception\CreationException
+     * @throws \Laminas\ApiTools\Rest\Exception\CreationException
      */
     public function create(array $authenticationConfig)
     {
@@ -119,10 +121,10 @@ class AuthenticationModel
     public function remove()
     {
         $configKeys = array(
-            'zf-mvc-auth.authentication.http',
-            'zf-oauth2.db',
-            'zf-oauth2.mongo',
-            'zf-oauth2.storage',
+            'api-tools-mvc-auth.authentication.http',
+            'api-tools-oauth2.db',
+            'api-tools-oauth2.mongo',
+            'api-tools-oauth2.storage',
             'router.routes.oauth',
         );
         foreach ($configKeys as $key) {
@@ -140,7 +142,7 @@ class AuthenticationModel
     public function fetch()
     {
         $config = $this->globalConfig->fetch(true);
-        if (isset($config['zf-mvc-auth']['authentication']['http'])) {
+        if (isset($config['api-tools-mvc-auth']['authentication']['http'])) {
             $config = $this->fetchHttpAuthConfiguration($config);
         } else {
             $config = $this->fetchOAuth2Configuration($config);
@@ -225,19 +227,19 @@ class AuthenticationModel
      */
     protected function fetchHttpAuthConfiguration(array $config)
     {
-        if (!isset($config['zf-mvc-auth']['authentication']['http']['accept_schemes'])
-            || !is_array($config['zf-mvc-auth']['authentication']['http']['accept_schemes'])
+        if (!isset($config['api-tools-mvc-auth']['authentication']['http']['accept_schemes'])
+            || !is_array($config['api-tools-mvc-auth']['authentication']['http']['accept_schemes'])
         ) {
             return false;
         }
 
-        $config = $config['zf-mvc-auth']['authentication']['http'];
+        $config = $config['api-tools-mvc-auth']['authentication']['http'];
 
         $localConfig = $this->localConfig->fetch(true);
-        if (isset($localConfig['zf-mvc-auth']['authentication']['http'])
-            && is_array($localConfig['zf-mvc-auth']['authentication']['http'])
+        if (isset($localConfig['api-tools-mvc-auth']['authentication']['http'])
+            && is_array($localConfig['api-tools-mvc-auth']['authentication']['http'])
         ) {
-            $config = array_merge($config, $localConfig['zf-mvc-auth']['authentication']['http']);
+            $config = array_merge($config, $localConfig['api-tools-mvc-auth']['authentication']['http']);
         }
 
         return $config;
@@ -259,16 +261,16 @@ class AuthenticationModel
         }
 
         $localConfig = $this->localConfig->fetch(true);
-        if (isset($localConfig['zf-oauth2']['db'])
-            && is_array($localConfig['zf-oauth2']['db'])
+        if (isset($localConfig['api-tools-oauth2']['db'])
+            && is_array($localConfig['api-tools-oauth2']['db'])
         ) {
-            return array_merge($oauth2Config, $localConfig['zf-oauth2']['db']);;
+            return array_merge($oauth2Config, $localConfig['api-tools-oauth2']['db']);;
         }
 
-        if (isset($localConfig['zf-oauth2']['mongo'])
-            && is_array($localConfig['zf-oauth2']['mongo'])
+        if (isset($localConfig['api-tools-oauth2']['mongo'])
+            && is_array($localConfig['api-tools-oauth2']['mongo'])
         ) {
-            return array_merge($oauth2Config, $localConfig['zf-oauth2']['mongo']);;
+            return array_merge($oauth2Config, $localConfig['api-tools-oauth2']['mongo']);;
         }
 
 
@@ -285,7 +287,7 @@ class AuthenticationModel
      */
     protected function patchHttpAuthConfig(AuthenticationEntity $entity, array $global, array $local)
     {
-        $key = 'zf-mvc-auth.authentication.http';
+        $key = 'api-tools-mvc-auth.authentication.http';
         $this->globalConfig->patchKey($key, $global);
         $this->localConfig->patchKey($key, $local);
     }
@@ -307,20 +309,20 @@ class AuthenticationModel
         switch ($entity->getDsnType()) {
             case AuthenticationEntity::DSN_MONGO:
                 $toSet = array(
-                    'storage' => 'ZF\OAuth2\Adapter\MongoAdapter',
+                    'storage' => 'Laminas\ApiTools\OAuth2\Adapter\MongoAdapter',
                     'mongo'   => $local,
                 );
                 break;
             case AuthenticationEntity::DSN_PDO:
             default:
                 $toSet = array(
-                    'storage' => 'ZF\OAuth2\Adapter\PdoAdapter',
+                    'storage' => 'Laminas\ApiTools\OAuth2\Adapter\PdoAdapter',
                     'db'      => $local,
                 );
                 break;
         }
 
-        $key = 'zf-oauth2';
+        $key = 'api-tools-oauth2';
         $this->localConfig->patchKey($key, $toSet);
     }
 
