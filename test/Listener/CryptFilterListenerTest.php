@@ -1,15 +1,17 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Listener;
+namespace LaminasTest\ApiTools\Admin\Listener;
 
+use Laminas\ApiTools\Admin\Listener\CryptFilterListener;
+use Laminas\Mvc\MvcEvent;
+use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Listener\CryptFilterListener;
-use ZFTest\Apigility\Admin\RouteAssetsTrait;
 
 class CryptFilterListenerTest extends TestCase
 {
@@ -19,7 +21,7 @@ class CryptFilterListenerTest extends TestCase
     {
         $this->listener   = new CryptFilterListener();
         $this->event      = new MvcEvent();
-        $this->request    = $this->getMock('Zend\Http\Request');
+        $this->request    = $this->getMock('Laminas\Http\Request');
         $this->routeMatch = $this->getMockBuilder($this->getRouteMatchClass())
             ->disableOriginalConstructor(true)
             ->getMock();
@@ -38,13 +40,13 @@ class CryptFilterListenerTest extends TestCase
         $this->routeMatch->expects($this->once())
             ->method('getParam')
             ->with($this->equalTo('controller'), $this->equalTo(false))
-            ->will($this->returnValue('ZF\Apigility\Admin\Controller\InputFilter'));
+            ->will($this->returnValue('Laminas\ApiTools\Admin\Controller\InputFilter'));
         $this->event->setRouteMatch($this->routeMatch);
     }
 
     public function testReturnsNullIfRequestIsNotAnHttpRequest()
     {
-        $request = $this->getMock('Zend\Stdlib\RequestInterface');
+        $request = $this->getMock('Laminas\Stdlib\RequestInterface');
         $this->event->setRequest($request);
         $this->assertNull($this->listener->onRoute($this->event));
     }
@@ -86,7 +88,7 @@ class CryptFilterListenerTest extends TestCase
     {
         $this->initRequestMethod();
         $this->initRouteMatch();
-        $this->event->setParam('ZFContentNegotiationParameterData', ['foo' => 'bar']);
+        $this->event->setParam('LaminasContentNegotiationParameterData', ['foo' => 'bar']);
         $this->assertNull($this->listener->onRoute($this->event));
     }
 
@@ -94,7 +96,7 @@ class CryptFilterListenerTest extends TestCase
     {
         $this->initRequestMethod();
         $this->initRouteMatch();
-        $this->event->setParam('ZFContentNegotiationParameterData', ['filters' => []]);
+        $this->event->setParam('LaminasContentNegotiationParameterData', ['filters' => []]);
         $this->assertTrue($this->listener->onRoute($this->event));
     }
 
@@ -102,18 +104,18 @@ class CryptFilterListenerTest extends TestCase
     {
         $filters = [
             [
-                'name' => 'Zend\Filter\Encrypt\BlockCipher',
+                'name' => 'Laminas\Filter\Encrypt\BlockCipher',
             ],
             [
-                'name' => 'Zend\Filter\Compress\Gz',
+                'name' => 'Laminas\Filter\Compress\Gz',
             ],
         ];
 
         $this->initRequestMethod();
         $this->initRouteMatch();
-        $this->event->setParam('ZFContentNegotiationParameterData', ['filters' => $filters]);
+        $this->event->setParam('LaminasContentNegotiationParameterData', ['filters' => $filters]);
         $this->assertTrue($this->listener->onRoute($this->event));
-        $data = $this->event->getParam('ZFContentNegotiationParameterData');
+        $data = $this->event->getParam('LaminasContentNegotiationParameterData');
         $filters = $data['filters'];
 
         foreach ($filters as $filter) {
@@ -122,10 +124,10 @@ class CryptFilterListenerTest extends TestCase
             $this->assertArrayHasKey('adapter', $filter['options']);
 
             switch ($filter['name']) {
-                case 'Zend\Filter\Compress':
+                case 'Laminas\Filter\Compress':
                     $this->assertEquals('Gz', $filter['options']['adapter']);
                     break;
-                case 'Zend\Filter\Encrypt':
+                case 'Laminas\Filter\Encrypt':
                     $this->assertEquals('BlockCipher', $filter['options']['adapter']);
                     break;
                 default:

@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Listener;
+namespace LaminasTest\ApiTools\Admin\Listener;
 
+use Laminas\ApiTools\Admin\Listener\NormalizeMatchedControllerServiceNameListener;
+use Laminas\Mvc\MvcEvent;
+use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Listener\NormalizeMatchedControllerServiceNameListener;
-use ZFTest\Apigility\Admin\RouteAssetsTrait;
 
 class NormalizeMatchedControllerServiceNameListenerTest extends TestCase
 {

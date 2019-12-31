@@ -1,15 +1,17 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin;
+namespace LaminasTest\ApiTools\Admin;
 
-use Zend\Mvc\Router\Http\TreeRouteStack as V2TreeRouteStack;
-use Zend\Mvc\Router\RouteMatch as V2RouteMatch;
-use Zend\Router\Http\TreeRouteStack;
-use Zend\Router\RouteMatch;
+use Laminas\Mvc\Router\Http\TreeRouteStack as V2TreeRouteStack;
+use Laminas\Mvc\Router\RouteMatch as V2RouteMatch;
+use Laminas\Router\Http\TreeRouteStack;
+use Laminas\Router\RouteMatch;
 
 trait RouteAssetsTrait
 {
@@ -34,8 +36,8 @@ trait RouteAssetsTrait
     public function createRouter(array $config = [])
     {
         $class = class_exists(V2TreeRouteStack::class) ? V2TreeRouteStack::class : TreeRouteStack::class;
-        $config['routes']['zf-apigility']['type'] = 'literal';
-        $config['routes']['zf-apigility']['options'] = ['route' => '/apigility'];
+        $config['routes']['api-tools']['type'] = 'literal';
+        $config['routes']['api-tools']['options'] = ['route' => '/api-tools'];
         return $class::factory($config);
     }
 
