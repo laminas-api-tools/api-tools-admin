@@ -1,18 +1,20 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Listener;
+namespace LaminasTest\ApiTools\Admin\Listener;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Listener\EnableHalRenderCollectionsListener;
+use Laminas\ApiTools\Hal\Plugin\Hal;
+use Laminas\Mvc\ApplicationInterface;
+use Laminas\Mvc\MvcEvent;
+use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Mvc\ApplicationInterface;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Listener\EnableHalRenderCollectionsListener;
-use ZF\Hal\Plugin\Hal;
-use ZFTest\Apigility\Admin\RouteAssetsTrait;
 
 class EnableHalRenderCollectionsListenerTest extends TestCase
 {
@@ -77,7 +79,7 @@ class EnableHalRenderCollectionsListenerTest extends TestCase
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal'])->shouldBeCalled();
         $this->routeMatch
             ->getParam('controller')
-            ->willReturn('ZF\Apigility\Admin\Model\RestServiceModel')
+            ->willReturn('Laminas\ApiTools\Admin\Model\RestServiceModel')
             ->shouldBeCalled();
 
         $this->event->getTarget()->will([$app, 'reveal'])->shouldBeCalled();
