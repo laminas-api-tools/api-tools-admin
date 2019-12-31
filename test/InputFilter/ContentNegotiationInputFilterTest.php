@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\InputFilter;
+namespace LaminasTest\ApiTools\Admin\InputFilter;
 
+use Laminas\ApiTools\Admin\InputFilter\ContentNegotiationInputFilter;
 use PHPUnit_Framework_TestCase as TestCase;
-use ZF\Apigility\Admin\InputFilter\ContentNegotiationInputFilter;
 
 class ContentNegotiationInputFilterTest extends TestCase
 {
@@ -16,7 +18,7 @@ class ContentNegotiationInputFilterTest extends TestCase
         return array(
             'valid' => array(array('selectors' =>
                 array(
-                    'Zend\View\Model\ViewModel' => array('text/html', 'application/xhtml+xml'),
+                    'Laminas\View\Model\ViewModel' => array('text/html', 'application/xhtml+xml'),
                 ),
             )),
         );
@@ -27,10 +29,10 @@ class ContentNegotiationInputFilterTest extends TestCase
         return array(
             'class-does-not-exist' => array(
                 array('selectors' => array(
-                    'Zend\View\Model\ViewMode' => array('text/html', 'application/xhtml+xml'),
+                    'Laminas\View\Model\ViewMode' => array('text/html', 'application/xhtml+xml'),
                 )),
                 array('selectors' => array(
-                    'classNotFound' => 'Class name (Zend\View\Model\ViewMode) does not exist',
+                    'classNotFound' => 'Class name (Laminas\View\Model\ViewMode) does not exist',
                 )),
             ),
             'class-is-not-view-model' => array(
@@ -39,12 +41,12 @@ class ContentNegotiationInputFilterTest extends TestCase
                 )),
                 array('selectors' => array(
                     'invalidViewModel' => 'Class name (' . __CLASS__ . ') is invalid;'
-                    . ' must be a valid Zend\View\Model\ModelInterface instance',
+                    . ' must be a valid Laminas\View\Model\ModelInterface instance',
                 )),
             ),
             'media-types-not-array' => array(
                 array('selectors' => array(
-                    'Zend\View\Model\ViewModel' => 'foo',
+                    'Laminas\View\Model\ViewModel' => 'foo',
                 )),
                 array('selectors' => array(
                     'invalidMediaTypes' => 'Values for the media-types must be provided as an indexed array',
@@ -52,7 +54,7 @@ class ContentNegotiationInputFilterTest extends TestCase
             ),
             'invalid-media-type' => array(
                 array('selectors' => array(
-                    'Zend\View\Model\ViewModel' => array('texthtml', 'application/xhtml+xml'),
+                    'Laminas\View\Model\ViewModel' => array('texthtml', 'application/xhtml+xml'),
                 )),
                 array('selectors' => array(
                     'invalidMediaType' => 'Invalid media type (texthtml) provided',

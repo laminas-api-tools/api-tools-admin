@@ -1,10 +1,10 @@
 <?php
 
-namespace ZFTest\Apigility\Admin\InputFilter;
+namespace LaminasTest\ApiTools\Admin\InputFilter;
 
+use Laminas\ApiTools\Admin\InputFilter\InputFilterInputFilter;
+use Laminas\InputFilter\Factory;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\InputFilter\Factory;
-use ZF\Apigility\Admin\InputFilter\InputFilterInputFilter;
 
 class InputFilterInputFilterTest extends TestCase
 {
@@ -23,7 +23,7 @@ class InputFilterInputFilterTest extends TestCase
                         'required' => true,
                         'filters' => array(
                             array(
-                                'name' => 'Zend\Filter\Boolean',
+                                'name' => 'Laminas\Filter\Boolean',
                                 'options' => array('casting' => false),
                             )
                         ),
@@ -42,7 +42,7 @@ class InputFilterInputFilterTest extends TestCase
             array(
                 array('foobar' => 'baz'),
                 array(
-                    'inputFilter' => 'Zend\InputFilter\Factory::createInput expects'
+                    'inputFilter' => 'Laminas\InputFilter\Factory::createInput expects'
                     . ' an array or Traversable; received "string"',
                 ),
             ),
@@ -53,7 +53,7 @@ class InputFilterInputFilterTest extends TestCase
                         'required' => true,
                         'filters' => array(
                             array(
-                                'name' => 'Zend\Filter\Bool',
+                                'name' => 'Laminas\Filter\Bool',
                                 'options' => array('casting' => false),
                             )
                         ),
@@ -63,8 +63,8 @@ class InputFilterInputFilterTest extends TestCase
                     )
                 ),
                 array(
-                    'inputFilter' => 'Zend\Filter\FilterPluginManager::get was unable'
-                    . ' to fetch or create an instance for Zend\Filter\Bool'
+                    'inputFilter' => 'Laminas\Filter\FilterPluginManager::get was unable'
+                    . ' to fetch or create an instance for Laminas\Filter\Bool'
                 ),
             ),
         );

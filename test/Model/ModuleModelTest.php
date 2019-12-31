@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Configuration\ModuleUtils;
 use PHPUnit_Framework_TestCase as TestCase;
-use ZF\Apigility\Admin\Model\ModuleModel;
 use Test;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
-use ZF\Configuration\ModuleUtils;
 
 class ModuleModelTest extends TestCase
 {
@@ -24,14 +26,14 @@ class ModuleModelTest extends TestCase
         }
 
         $modules = array(
-            'ZFTest\Apigility\Admin\Model\TestAsset\Foa' => new TestAsset\Foa\Module(),
-            'ZFTest\Apigility\Admin\Model\TestAsset\Foo' => new TestAsset\Foo\Module(),
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bar' => new TestAsset\Bar\Module(),
-            'ZFTest\Apigility\Admin\Model\TestAsset\Baz' => new TestAsset\Baz\Module(),
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bat' => new TestAsset\Bat\Module(),
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bob' => new TestAsset\Bob\Module(),
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Foa' => new TestAsset\Foa\Module(),
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Foo' => new TestAsset\Foo\Module(),
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar' => new TestAsset\Bar\Module(),
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Baz' => new TestAsset\Baz\Module(),
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bat' => new TestAsset\Bat\Module(),
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bob' => new TestAsset\Bob\Module(),
         );
-        $this->moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -39,19 +41,19 @@ class ModuleModelTest extends TestCase
                             ->will($this->returnValue($modules));
 
         $restConfig           = array(
-            'ZFTest\Apigility\Admin\Model\TestAsset\Foo\Controller\Foo' => null, // this should never be returned
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Bar' => null,
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Baz' => null,
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bat\Controller\Bat' => null, // this should never be returned
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Foo\Controller\Foo' => null, // this should never be returned
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Bar' => null,
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Baz' => null,
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bat\Controller\Bat' => null, // this should never be returned
         );
 
         $rpcConfig          = array(
             // controller => empty pairs
-            'ZFTest\Apigility\Admin\Model\TestAsset\Foo\Controller\Act' => null, // this should never be returned
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Act' => null,
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Do'  => null,
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bat\Controller\Act' => null, // this should never be returned
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bob\Controller\Do'  => null,
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Foo\Controller\Act' => null, // this should never be returned
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Act' => null,
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Do'  => null,
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bat\Controller\Act' => null, // this should never be returned
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bob\Controller\Do'  => null,
         );
 
         $this->model         = new ModuleModel(
@@ -69,12 +71,12 @@ class ModuleModelTest extends TestCase
         }
     }
 
-    public function testEnabledModulesOnlyReturnsThoseThatImplementApigilityProviderInterface()
+    public function testEnabledModulesOnlyReturnsThoseThatImplementApiToolsProviderInterface()
     {
         $expected = array(
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bar',
-            'ZFTest\Apigility\Admin\Model\TestAsset\Baz',
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bob',
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar',
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Baz',
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bob',
         );
 
         $modules = $this->model->getModules();
@@ -97,39 +99,39 @@ class ModuleModelTest extends TestCase
     public function invalidModules()
     {
         return array(
-            array('ZFTest\Apigility\Admin\Model\TestAsset\Foo'),
-            array('ZFTest\Apigility\Admin\Model\TestAsset\Bat'),
+            array('LaminasTest\ApiTools\Admin\Model\TestAsset\Foo'),
+            array('LaminasTest\ApiTools\Admin\Model\TestAsset\Bat'),
         );
     }
 
     /**
      * @dataProvider invalidModules
      */
-    public function testNullIsReturnedWhenGettingServicesForNonApigilityModules($module)
+    public function testNullIsReturnedWhenGettingServicesForNonApiToolsModules($module)
     {
         $this->assertNull($this->model->getModule($module));
     }
 
-    public function testEmptyArraysAreReturnedWhenGettingServicesForApigilityModulesWithNoServices()
+    public function testEmptyArraysAreReturnedWhenGettingServicesForApiToolsModulesWithNoServices()
     {
-        $module = $this->model->getModule('ZFTest\Apigility\Admin\Model\TestAsset\Baz');
+        $module = $this->model->getModule('LaminasTest\ApiTools\Admin\Model\TestAsset\Baz');
         $this->assertEquals(array(), $module->getRestServices());
         $this->assertEquals(array(), $module->getRpcServices());
     }
 
-    public function testRestAndRpcControllersAreDiscoveredWhenGettingServicesForApigilityModules()
+    public function testRestAndRpcControllersAreDiscoveredWhenGettingServicesForApiToolsModules()
     {
         $expected = array(
             'rest' => array(
-                'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Bar',
-                'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Baz',
+                'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Bar',
+                'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Baz',
             ),
             'rpc' => array(
-                'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Act',
-                'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Do',
+                'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Act',
+                'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Do',
             ),
         );
-        $module = $this->model->getModule('ZFTest\Apigility\Admin\Model\TestAsset\Bar');
+        $module = $this->model->getModule('LaminasTest\ApiTools\Admin\Model\TestAsset\Bar');
         $this->assertEquals($expected['rest'], $module->getRestServices());
         $this->assertEquals($expected['rpc'], $module->getRpcServices());
     }
@@ -137,7 +139,7 @@ class ModuleModelTest extends TestCase
     /**
      * @group listofservices
      */
-    public function testCanRetrieveListOfAllApigilityModulesAndTheirServices()
+    public function testCanRetrieveListOfAllApiToolsModulesAndTheirServices()
     {
         /* If this is running from a vendor directory, markTestSkipped() */
         if (preg_match('#[/\\\\]vendor[/\\\\]#', __FILE__)) {
@@ -145,28 +147,28 @@ class ModuleModelTest extends TestCase
         }
 
         $expected = array(
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bar' => array(
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar' => array(
                 'vendor' => false,
                 'rest' => array(
-                    'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Bar',
-                    'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Baz',
+                    'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Bar',
+                    'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Baz',
                 ),
                 'rpc' => array(
-                    'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Act',
-                    'ZFTest\Apigility\Admin\Model\TestAsset\Bar\Controller\Do',
+                    'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Act',
+                    'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Do',
                 ),
             ),
-            'ZFTest\Apigility\Admin\Model\TestAsset\Baz' => array(
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Baz' => array(
                 'vendor' => false,
                 'rest' => array(),
                 'rpc'  => array(),
             ),
-            'ZFTest\Apigility\Admin\Model\TestAsset\Bob' => array(
+            'LaminasTest\ApiTools\Admin\Model\TestAsset\Bob' => array(
                 'vendor' => false,
                 'rest' => array(
                 ),
                 'rpc' => array(
-                    'ZFTest\Apigility\Admin\Model\TestAsset\Bob\Controller\Do',
+                    'LaminasTest\ApiTools\Admin\Model\TestAsset\Bob\Controller\Do',
                 ),
             ),
         );
@@ -361,13 +363,13 @@ class ModuleModelTest extends TestCase
 
     public function testUpdateExistingApiModule()
     {
-        $module = 'ZFTest\Apigility\Admin\Model\TestAsset\Bar';
+        $module = 'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar';
         $this->assertFalse($this->model->updateModule($module));
     }
 
     public function testUpdateModule()
     {
-        $module = 'ZFTest\Apigility\Admin\Model\TestAsset\Foo';
+        $module = 'LaminasTest\ApiTools\Admin\Model\TestAsset\Foo';
         $this->assertTrue($this->model->updateModule($module));
 
         unlink(__DIR__ . '/TestAsset/Foo/Module.php');
@@ -379,7 +381,7 @@ class ModuleModelTest extends TestCase
 
     public function testUpdateModuleWithOtherInterfaces()
     {
-        $module = 'ZFTest\Apigility\Admin\Model\TestAsset\Foa';
+        $module = 'LaminasTest\ApiTools\Admin\Model\TestAsset\Foa';
         $this->assertTrue($this->model->updateModule($module));
 
         unlink(__DIR__ . '/TestAsset/Foa/Module.php');
@@ -415,7 +417,7 @@ class ModuleModelTest extends TestCase
             'Test\Foo' => new Test\Foo\Module(),
             'Test\Bar' => new Test\Foo\Module(),
         );
-        $moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                               ->disableOriginalConstructor()
                               ->getMock();
         $moduleManager->expects($this->any())
@@ -440,7 +442,7 @@ class ModuleModelTest extends TestCase
             'Test\Bar' => new Test\Bar\Module(),
             'Test\Foo' => new Test\Foo\Module(),
         );
-        $moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                               ->disableOriginalConstructor()
                               ->getMock();
         $moduleManager->expects($this->any())

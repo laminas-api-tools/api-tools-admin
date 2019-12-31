@@ -1,22 +1,24 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Exception;
+use Laminas\ApiTools\Admin\Utility;
+use Laminas\ApiTools\ApiToolsModuleInterface;
+use Laminas\ApiTools\Provider\ApiToolsProviderInterface;
+use Laminas\Code\Generator\ValueGenerator;
+use Laminas\ModuleManager\ModuleManager;
+use Laminas\Stdlib\Glob;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Renderer\PhpRenderer;
+use Laminas\View\Resolver;
 use ReflectionObject;
-use Zend\Code\Generator\ValueGenerator;
-use Zend\ModuleManager\ModuleManager;
-use Zend\Stdlib\Glob;
-use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\Resolver;
-use ZF\Apigility\Admin\Exception;
-use ZF\Apigility\Admin\Utility;
-use ZF\Apigility\ApigilityModuleInterface;
-use ZF\Apigility\Provider\ApigilityProviderInterface;
 
 class ModuleModel
 {
@@ -192,7 +194,7 @@ class ModuleModel
     }
 
     /**
-     * Update a module (adding the ApigilityModule interface)
+     * Update a module (adding the ApiToolsModule interface)
      *
      * @param  string $module
      * @return boolean
@@ -205,11 +207,11 @@ class ModuleModel
             return false;
         }
 
-        if ($modules[$module] instanceof ApigilityModuleInterface) {
+        if ($modules[$module] instanceof ApiToolsModuleInterface) {
             return false;
         }
 
-        if ($modules[$module] instanceof ApigilityProviderInterface) {
+        if ($modules[$module] instanceof ApiToolsProviderInterface) {
             return false;
         }
 
@@ -218,15 +220,15 @@ class ModuleModel
 
         $replacement = preg_replace(
             '/' . "\n" . 'class\s([a-z_\x7f-\xff][a-z0-9_\x7f-\xff]*)\s{/i',
-            "\nuse ZF\Apigility\Provider\ApigilityProviderInterface;\n\n'
-            . 'class $1 implements ApigilityProviderInterface\n{",
+            "\nuse Laminas\ApiTools\Provider\ApiToolsProviderInterface;\n\n'
+            . 'class $1 implements ApiToolsProviderInterface\n{",
             $content
         );
 
         if ($replacement === $content) {
             $replacement = preg_replace(
                 '/implements\s/',
-                'implements ZF\Apigility\Provider\ApigilityProviderInterface,',
+                'implements Laminas\ApiTools\Provider\ApiToolsProviderInterface,',
                 $content
             );
         }
@@ -295,14 +297,14 @@ class ModuleModel
 
         $this->modules = array();
         foreach ($this->moduleManager->getLoadedModules() as $moduleName => $module) {
-            if (!$module instanceof ApigilityProviderInterface && !$module instanceof ApigilityModuleInterface) {
+            if (!$module instanceof ApiToolsProviderInterface && !$module instanceof ApiToolsModuleInterface) {
                 continue;
             }
 
-            if ($module instanceof ApigilityModuleInterface) {
+            if ($module instanceof ApiToolsModuleInterface) {
                 trigger_error(
-                    'ZF\Apigility\ApigilityModuleInterface is deprecated,
-                    use ZF\Apigility\Provider\ApigilityProviderInterface instead',
+                    'Laminas\ApiTools\ApiToolsModuleInterface is deprecated,
+                    use Laminas\ApiTools\Provider\ApiToolsProviderInterface instead',
                     E_USER_DEPRECATED
                 );
             }
@@ -324,15 +326,15 @@ class ModuleModel
     /**
      * Retrieves the configured default version for the specified module.
      *
-     * @param  ApigilityModuleInterface|ApigilityProviderInterface $module
-     * @throws \ZF\Apigility\Admin\Exception\InvalidArgumentException
+     * @param  ApiToolsModuleInterface|ApiToolsProviderInterface $module
+     * @throws \Laminas\ApiTools\Admin\Exception\InvalidArgumentException
      * @return int
      */
     protected function getModuleDefaultVersion($module)
     {
-        if (!$module instanceof ApigilityProviderInterface && !$module instanceof ApigilityModuleInterface) {
+        if (!$module instanceof ApiToolsProviderInterface && !$module instanceof ApiToolsModuleInterface) {
             throw new Exception\InvalidArgumentException(
-                'Expected ApigilityProviderInterface or ApigilityModuleInterface'
+                'Expected ApiToolsProviderInterface or ApiToolsModuleInterface'
             );
         }
         if (! method_exists($module, 'getConfig')) {
@@ -340,7 +342,7 @@ class ModuleModel
         }
 
         $config = $module->getConfig();
-        return isset($config['zf-versioning']['default_version']) ? $config['zf-versioning']['default_version'] : 1;
+        return isset($config['api-tools-versioning']['default_version']) ? $config['api-tools-versioning']['default_version'] : 1;
     }
 
     /**
@@ -372,15 +374,15 @@ class ModuleModel
      *
      * @param  string $moduleName
      * @param $module
-     * @throws \ZF\Apigility\Admin\Exception\InvalidArgumentException
+     * @throws \Laminas\ApiTools\Admin\Exception\InvalidArgumentException
      * @internal param array $services
      * @return array
      */
     protected function getVersionsByModule($moduleName, $module)
     {
-        if (!$module instanceof ApigilityProviderInterface && !$module instanceof ApigilityModuleInterface) {
+        if (!$module instanceof ApiToolsProviderInterface && !$module instanceof ApiToolsModuleInterface) {
             throw new Exception\InvalidArgumentException(
-                'Expected ApigilityProviderInterface or ApigilityModuleInterface'
+                'Expected ApiToolsProviderInterface or ApiToolsModuleInterface'
             );
         }
 
@@ -454,8 +456,9 @@ class ModuleModel
         copy("$path/config/application.config.php", "$path/config/application.config.old");
         $content = <<<EOD
 <?php
+
 /**
- * Configuration file generated by ZF Apigility Admin
+ * Configuration file generated by Laminas API Tools Admin
  *
  * The previous config file has been stored in application.config.old
  */
