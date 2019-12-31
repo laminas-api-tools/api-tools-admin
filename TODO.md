@@ -13,7 +13,7 @@ DB-Connected Model
 
 - [X] Test createService() functionality
 - [X] Test and write a listener for RestEndpointModel::fetch that will check for the
-  ResourceClass inside the zf-apigility configuration. The event should pass
+  ResourceClass inside the api-tools configuration. The event should pass
   both the discovered RestEndpointEntity as well as the application
   configuration. If db-connected configuration is found, create a
   DBConnectedRestEndpointEntity and return it.
@@ -32,8 +32,8 @@ RestModel Resource
 Documentation
 -------------
 
-- [ ] Add zf-apigility-documentation as a required dependency of zf-apigility
-- [ ] Add a settings screen for zf-apigility-documentation
+- [ ] Add api-tools-documentation as a required dependency of api-tools
+- [ ] Add a settings screen for api-tools-documentation
   - [ ] Capture route endpoint for docs
   - [ ] Allow specifying a ContentNegotiation selector for the route endpoint
 
@@ -55,7 +55,7 @@ Admin UI Improvements
 ### General
 
 - [ ] Have a consistent color scheme. 
-  - [ ] It should be consistent with the Zend, ZF2, and/or Apigility website
+  - [ ] It should be consistent with the Laminas, Laminas, and/or Laminas API Tools website
     color scheme. This should pull through to the panel titles, sidebars, table
     highlights, etc.
 
