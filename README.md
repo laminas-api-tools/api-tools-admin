@@ -1,13 +1,13 @@
-Apigility Admin
+Laminas API Tools Admin
 ===============
 
-[![Build Status](https://travis-ci.org/zfcampus/zf-apigility-admin.png)](https://travis-ci.org/zfcampus/zf-apigility-admin)
+[![Build Status](https://travis-ci.org/laminas-api-tools/api-tools-admin.png)](https://travis-ci.org/laminas-api-tools/api-tools-admin)
 
 Introduction
 ------------
 
-The `zf-apigility-admin` module delivers the backend management API and frontend Admin UI used to
-manage APIs in Apigility.
+The `api-tools-admin` module delivers the backend management API and frontend Admin UI used to
+manage APIs in Laminas API Tools.
 
 > ### NOTE
 >
@@ -24,7 +24,7 @@ Installation
 Run the following `composer` command:
 
 ```console
-$ composer require --dev "zfcampus/zf-apigility-admin"
+$ composer require --dev "laminas-api-tools/api-tools-admin"
 ```
 
 And then run `composer install` to ensure the module is installed.
@@ -37,14 +37,14 @@ return array(
     /* ... */
     'modules' => array(
         /* ... */
-        'ZF\Apigility\Admin',
+        'Laminas\ApiTools\Admin',
     ),
     /* ... */
 );
 ```
 
 Typically, this module should be used along with
-[zf-development-mode](https://github.com/zfcampus/zf-development-mode) in order to conditionally
+[laminas-development-mode](https://github.com/laminas/laminas-development-mode) in order to conditionally
 enable the module in your application. When doing so, you will add the module to your project's
 `config/development.config.php.dist` file instead of the `config/application.config.php` file, and
 enable it via `php public/index.php development enable`.
@@ -62,19 +62,19 @@ a few changes to be aware of.
 
 First, version 1.5 drops the requirement for rwoverdijk/assetmanager. However,
 in order to use the admin UI, you will need some way to access the public assets
-provided by the UI and zf-apigility modules. You have three options:
+provided by the UI and api-tools modules. You have three options:
 
 1. Install rwoverdijk/assetmanager: `composer require rwoverdijk/assetmanager`.
    Be aware, however, that as of the time of the 1.5.0 release, this module is
-   not compatible with v3 releases of zend-mvc. If you are looking for a quick
-   upgrade, and do not care what versions of Zend Framework components you
+   not compatible with v3 releases of laminas-mvc. If you are looking for a quick
+   upgrade, and do not care what versions of Laminas components you
    install, this is the easiest path.
 
-2. Install [zf-asset-manager](https://github.com/zfcampus/zf-asset-manager). This
+2. Install [api-tools-asset-manager](https://github.com/laminas-api-tools/api-tools-asset-manager). This
    is a Composer plugin, and operates when installing or uninstalling a package.
    If you add this, you will need to follow these steps:
 
-    - `composer require --dev zfcampus/zf-asset-manager`
+    - `composer require --dev laminas-api-tools/api-tools-asset-manager`
     - `rm -Rf ./vendor`
     - `composer install`
     -
@@ -84,24 +84,24 @@ provided by the UI and zf-apigility modules. You have three options:
 3. Manually copy or symlink in the assets required to your public directory. As
    examples:
    
-    - `ln -s vendor/zfcampus/zf-apigility/asset/zf-apigility public/zf-apigility`
-    - `ln -s vendor/zfcampus/zf-apigility-admin-ui/dist/apigility-ui public/apigility-ui`
+    - `ln -s vendor/laminas-api-tools/api-tools/asset/api-tools public/api-tools`
+    - `ln -s vendor/laminas-api-tools/api-tools-admin-ui/dist/api-tools-ui public/api-tools-ui`
 
 Each of the three will accomplish the goal of making the assets publicly
 available via your application's web server.
 
-### Upgrading to v3 Zend Framework components from 1.5
+### Upgrading to v3 Laminas components from 1.5
 
 After upgrading to version 1.5 of this module, you can then upgrade your
-application to take advantage of Zend Framework v3 components. The easiest way
+application to take advantage of Laminas v3 components. The easiest way
 to do that is to use the provided script:
 
 ```bash
-$ ./vendor/bin/apigility-upgrade-to-1.5
+$ ./vendor/bin/api-tools-upgrade-to-1.5
 ```
 
 This script will update your Composer requirements and constraints, update your
-modules list to list ZF components and remove unneeded/obsolete components, and
+modules list to list Laminas components and remove unneeded/obsolete components, and
 then re-install all dependencies.
 
 If you do not wish to use the script, or the script fails, you may manually
@@ -109,32 +109,32 @@ update your application using the following steps:
 
 - Update your `composer.json`:
   - Remove:
-    - `require.zendframework/zendframework`
+    - `require.laminas/laminas`
     - `require.rwoverdijk/assetmanager`
-    - `require-dev.zendframework/zftool`
+    - `require-dev.laminas/laminastool`
   - Update:
-    - `require.zfcampus/zf-development-mode` constraint becomes `^3.0`
-    - `require-dev.zendframework/zend-developer-tools` becomes `^1.0`
+    - `require.laminas/laminas-development-mode` constraint becomes `^3.0`
+    - `require-dev.laminas/laminas-developer-tools` becomes `^1.0`
   - Add:
-    - `require.zendframework/zend-cache`, with a constraint of `2.7.1`
-    - `require.zendframework/zend-log`, with a constraint of `2.9`
-    - `require-dev.zfcampus/zf-asset-manager`, with a constraint of `^1.0`
+    - `require.laminas/laminas-cache`, with a constraint of `2.7.1`
+    - `require.laminas/laminas-log`, with a constraint of `2.9`
+    - `require-dev.laminas-api-tools/api-tools-asset-manager`, with a constraint of `^1.0`
 - Update your `config/modules.config.php`:
   - Remove:
     - `AssetManager`
-    - `ZF\DevelopmentMode`
+    - `Laminas\DevelopmentMode`
   - Add, at the top of the list:
-    - `Zend\Db`
-    - `Zend\Filter`
-    - `Zend\Hydrator`
-    - `Zend\InputFilter`
-    - `Zend\Paginator`
-    - `Zend\Router`
-    - `Zend\Validator`
+    - `Laminas\Db`
+    - `Laminas\Filter`
+    - `Laminas\Hydrator`
+    - `Laminas\InputFilter`
+    - `Laminas\Paginator`
+    - `Laminas\Router`
+    - `Laminas\Validator`
 - Update your `config/development.config.php` and
   `config/development.config.php.dist` files:
   - Remove from the modules list:
-    - 'ZFTool`
+    - 'LaminasTool`
 - Remove `composer.lock`
 - Remove, recursively, the `vendor/` subdirectory
 - Execute `composer install`
@@ -142,27 +142,27 @@ update your application using the following steps:
 > ### Development Mode
 >
 > Prior to 1.5 and running the upgrade script or following the upgrade
-> instructions from above, Apigility used zf-development-mode v2 releases,
+> instructions from above, Laminas API Tools used laminas-development-mode v2 releases,
 > which relied on the Console &lt;-&gt; MVC integration present by default in
-> zend-mvc v2 releases.
+> laminas-mvc v2 releases.
 >
-> zf-development-mode v3 operates differently, however, and instead ships as
+> laminas-development-mode v3 operates differently, however, and instead ships as
 > a Composer vendor binary, with no additional requirements. Invocation is now:
 >
 > ```bash
-> $ ./vendor/bin/zf-development-mode enable
+> $ ./vendor/bin/laminas-development-mode enable
 > ```
 >
 > and
 >
 > ```bash
-> $ ./vendor/bin/zf-development-mode disable
+> $ ./vendor/bin/laminas-development-mode disable
 > ```
 >
 > You can also query for status:
 >
 > ```bash
-> $ ./vendor/bin/zf-development-mode status
+> $ ./vendor/bin/laminas-development-mode status
 > ```
 
 
@@ -171,11 +171,11 @@ Configuration
 
 There is no custom user level configuration for this module.
 
-Since this particular module is responsible for providing APIs and the Apigility Admin UI, it has a
+Since this particular module is responsible for providing APIs and the Laminas API Tools Admin UI, it has a
 significant amount of configuration that it requires in order to function in a development
 environment. Since it is highly unlikely that developers would need to modify the system-level
 configuration, it is omitted in this README, but can be found [within the
-repository](https://github.com/zfcampus/zf-apigility-admin/tree/master/config/module.config.php).
+repository](https://github.com/laminas-api-tools/api-tools-admin/tree/master/config/module.config.php).
 
 Routes
 ------
@@ -185,28 +185,28 @@ This module exposes HTTP accessible API endpoints and static assets.
 API Endpoints
 -------------
 
-All routes are prefixed with `/apigility` by default.
+All routes are prefixed with `/api-tools` by default.
 
 ### api/config
 
 This endpoint is for examining the application configuration, and providing
 overrides of individual values in it. All overrides are written to a single
 file, `config/autoload/development.php`; you can override that location in your
-configuration via the `zf-configuration.config-file` key.
+configuration via the `api-tools-configuration.config-file` key.
 
-- `Accept`: `application/json`, `application/vnd.zfcampus.v1.config+json`
+- `Accept`: `application/json`, `application/vnd.laminascampus.v1.config+json`
 
   `application/json` will deliver representations as a flat array of key/value pairs,
   with the keys being dot-separated values, just as you would find in INI.
 
-  `application/vnd.zfcampus.v1.config+json` will deliver the configuration as a tree.
+  `application/vnd.laminascampus.v1.config+json` will deliver the configuration as a tree.
 
-- `Content-Type`: `application/json`, `application/vnd.zfcampus.v1.config+json`
+- `Content-Type`: `application/json`, `application/vnd.laminascampus.v1.config+json`
 
   `application/json` indicates you are sending key/value pairs, with keys being dot-separated
   values, as you would find in INI files.
 
-  `application/vnd.zfcampus.v1.config+json` indicates you are sending a nested array/object of
+  `application/vnd.laminascampus.v1.config+json` indicates you are sending a nested array/object of
   configuration.
 
 - Methods: `GET`, `PATCH`
@@ -245,14 +245,14 @@ resource](#authentication).
 ### api/authentication[/:authentication_adapter] (API V2)
 
 This REST endpoint is for fetching and updating the authentication
-adapters to be used in Apigility. It uses the [authentication
+adapters to be used in Laminas API Tools. It uses the [authentication
 resource ver. 2](#authentication2).
 
 This endpoint is only available for API **version 2**. You need to pass the
 following mediatype in the Appect header:
 
 ```
-Accept: application/vnd.apigility.v2+json
+Accept: application/vnd.api-tools.v2+json
 ```
 
 - `Accept`: `application/json`
@@ -280,7 +280,7 @@ This endpoint is only available for API **version 2**. You need to pass the
 following mediatype in the Appect header:
 
 ```
-Accept: application/vnd.apigility.v2+json
+Accept: application/vnd.api-tools.v2+json
 ```
 
 - `Accept`: `application/json`
@@ -330,7 +330,7 @@ resource](#authorization).
 
 ### api/db-adapter[/:adapter_name]
 
-This REST endpoint is for creating, updating, and deleting named `Zend\Db`
+This REST endpoint is for creating, updating, and deleting named `Laminas\Db`
 adapters; it uses the [db-adapter resource](#db-adapter).
 
 - `Accept`: `application/json`
@@ -350,7 +350,7 @@ adapters; it uses the [db-adapter resource](#db-adapter).
 
 ### api/module.enable
 
-This endpoint will Apigility-enable (Apigilify?) an existing module.
+This endpoint will Laminas API Tools-enable (Apigilify?) an existing module.
 
 - `Accept`: `application/json`
 
@@ -358,7 +358,7 @@ This endpoint will Apigility-enable (Apigilify?) an existing module.
 
 - `Content-Type`: `application/json`
 
-  Expects an object with the property "module" describing an existing ZF2 module.
+  Expects an object with the property "module" describing an existing Laminas module.
 
 - Methods: `PUT`
 
@@ -376,7 +376,7 @@ The request payload should hav ethe following structure:
 
 This endpoint provides a sorted list of all registered validator plugins; the
 use case is for building a drop-down of available plugins when creating an
-input filter for a service. Any validator present in the ZF2 `ValidatorPluginManager`
+input filter for a service. Any validator present in the Laminas `ValidatorPluginManager`
 service will be represented.
 
 - `Accept`: `application/json`
@@ -410,8 +410,8 @@ passed in the payload, the version number is simply incremented.
 
 - `Content-Type`: `application/json`
 
-  Expects an object with the property "module", providing the name of a ZF2,
-  Apigility-enabled module; optionally, a "version" property may also be
+  Expects an object with the property "module", providing the name of a Laminas,
+  Laminas API Tools-enabled module; optionally, a "version" property may also be
   provided to indicate the specific version string to use.
 
 
@@ -771,7 +771,7 @@ authorization is required.
 }
 ```
 
-Additionally, any other properties used to create the `Zend\Db\Adapter\Adapter`
+Additionally, any other properties used to create the `Laminas\Db\Adapter\Adapter`
 instance may be composed: e.g., "username", "password", etc.
 
 ### inputfilter
@@ -793,8 +793,8 @@ instance may be composed: e.g., "username", "password", etc.
 ```
 
 An input filter may contain any number of inputs, and the format follows that
-used by `Zend\InputFilter\Factory` as described in the [Zend Framework 2 input filter documentation]
-(http://framework.zend.com/manual/2.3/en/modules/zend.input-filter.intro.html).
+used by `Laminas\InputFilter\Factory` as described in the [Laminas input filter documentation]
+(https://getlaminas.org/manual/2.3/en/modules/laminas.input-filter.intro.html).
 
 Currently, we do not allow nesting input filters.
 
@@ -865,7 +865,7 @@ respectively.
         "Accept",
         "mediatypes"
     ],
-    "adapter_name": "(Only in DB-Connected resources) Name of Zend\\DB adapter service used for this resource",
+    "adapter_name": "(Only in DB-Connected resources) Name of Laminas\\DB adapter service used for this resource",
     "collection_class": "(Only in representation) Name of class representing collection",
     "collection_http_options": [
         "(Required)",
@@ -893,7 +893,7 @@ respectively.
     ],
     "entity_class": "(Only in representation) Name of class representing resource entity",
     "entity_identifier_name": "(Optional) Name of entity field representing the identifier; defaults to 'id'",
-    "hydrator_name": "(Only in DB-Connected resources) Name of Zend\\Stdlib\\Hydrator service used for this resource",
+    "hydrator_name": "(Only in DB-Connected resources) Name of Laminas\\Stdlib\\Hydrator service used for this resource",
     "route_identifier_name": "(Optional) Name of route parameter representing the resource identifier; defaults to resource_name + _id",
     "input_filter": "(Optional) Present in returned REST services, when one or more input filters are present; see the inputfilter resource for details",
     "module": "(Only in representation) Name of module in which resource resides",
@@ -916,74 +916,74 @@ respectively.
 }
 ```
 
-ZF2 Events
+Laminas Events
 ----------
 
 ### Listeners
 
-#### ZF\Apigility\Admin\Module
+#### Laminas\ApiTools\Admin\Module
 
 This listener is attached to `MvcEvent::EVENT_RENDER` at priority `100`.  It is responsible for
 conditionally attaching a listener depending on if the controller service result is that of
 an _entity_ or that of a _collection_.  If either is detected, the listener is attached
-to the `ZF\Hal\Plugin\Hal` events `renderEntity` and `renderCollection.entity`, which
+to the `Laminas\ApiTools\Hal\Plugin\Hal` events `renderEntity` and `renderCollection.entity`, which
 ensures they will be dispatched when the HAL plugin has an opportunity to start rendering.
 
-ZF2 Services
+Laminas Services
 ------------
 
 ### Models
 
-Many of the model services provided by `zf-apigility-admin` either deal with the generation and
+Many of the model services provided by `api-tools-admin` either deal with the generation and
 modification of PHP code, or the generation and modification of PHP based configuration files.
 
-- `ZF\Apigility\Admin\Model\AuthenticationModel` - responsible for creating and modifying the
+- `Laminas\ApiTools\Admin\Model\AuthenticationModel` - responsible for creating and modifying the
   authentication specific configuration of HTTP Basic, HTTP Digest and OAuth2 strategies. Sensitive
   information will be written to local configuration files while structural information is
   written to global and module files.
-- `ZF\Apigility\Admin\Model\AuthorizationModelFactory` - responsible for writing the authorization
+- `Laminas\ApiTools\Admin\Model\AuthorizationModelFactory` - responsible for writing the authorization
   specific details (the ACL matrix of allow/disallow rules) to the module configuration file.
-- `ZF\Apigility\Admin\Model\ContentNegotiationModel` - responsible for writing custom
+- `Laminas\ApiTools\Admin\Model\ContentNegotiationModel` - responsible for writing custom
   content-negotiation selectors to the global configuration file.
-- `ZF\Apigility\Admin\Model\ContentNegotiationResource` - REST resource that consumes the
+- `Laminas\ApiTools\Admin\Model\ContentNegotiationResource` - REST resource that consumes the
   `ContentNegotiationModel` in order to expose an API endpoint for content-negotiation
   configuration management.
-- `ZF\Apigility\Admin\Model\DbAdapterModel` - responsible for writing database adapter specific
+- `Laminas\ApiTools\Admin\Model\DbAdapterModel` - responsible for writing database adapter specific
   configuration between application level global and local configuration files. Sensitive
   information is written to local configuration files.
-- `ZF\Apigility\Admin\Model\DbAdapterResource` - REST resource that consumes the `DbAdapterModel`
+- `Laminas\ApiTools\Admin\Model\DbAdapterResource` - REST resource that consumes the `DbAdapterModel`
   in order to expose an API endpoint for database adapter configuration management.
-- `ZF\Apigility\Admin\Model\DbConnectedRestServiceModel` - responsible for writing the required
+- `Laminas\ApiTools\Admin\Model\DbConnectedRestServiceModel` - responsible for writing the required
   configuration information necessary to expose a database table as a REST resource.
-- `ZF\Apigility\Admin\Model\DocumentationModel` - responsible for writing a special named
+- `Laminas\ApiTools\Admin\Model\DocumentationModel` - responsible for writing a special named
   file in the module's configuration directory that will contain all custom API documentation
   for requests, responses, and all other documentable elements of an API.
-- `ZF\Apigility\Admin\Model\InputFilterModel` - responsible for writing the input filter
+- `Laminas\ApiTools\Admin\Model\InputFilterModel` - responsible for writing the input filter
   specification configuration for each module.
-- `ZF\Apigility\Admin\Model\FiltersModel` - responsible for providing, through the API, a list of
+- `Laminas\ApiTools\Admin\Model\FiltersModel` - responsible for providing, through the API, a list of
   built-in filters and their metadata.
-- `ZF\Apigility\Admin\Model\HydratorsModel` - responsible for configuring and managing the
+- `Laminas\ApiTools\Admin\Model\HydratorsModel` - responsible for configuring and managing the
   global list of hydrator service names.
-- `ZF\Apigility\Admin\Model\ModuleModel` - responsible for aggregating module information including
+- `Laminas\ApiTools\Admin\Model\ModuleModel` - responsible for aggregating module information including
   REST and RPC services and exposing this information through the API.  Additionally, when creating
-  a new module, this will create the code artifacts necessary for an Apigility-enabled module.
-- `ZF\Apigility\Admin\Model\ModuleResource` - responsible for exposing the `ModuleModel` as a
-  REST resource in the Apigility API.
-- `ZF\Apigility\Admin\Model\RestServiceModel` - responsible for presenting REST services, as they
-  are defined in `zf-rest` in a way that can be created and modified, to be used in the Admin UI.
-- `ZF\Apigility\Admin\Model\RestServiceResource` - responsible for consuming `RestServiceModel` and
-  exposing this model as a REST resource in the Apigility API.
-- `ZF\Apigility\Admin\Model\RestServiceModelFactory` - responsible for creating `RestServiceModel`s.
-- `ZF\Apigility\Admin\Model\RpcServiceModel` - responsible for presenting RPC services, as they are
-  defined in `zf-rpc` in a way that can be created and modified, to be used in the Admin UI.
-- `ZF\Apigility\Admin\Model\RpcServiceResource` - responsible for consuming `RpcServiceModel`s and
-  exposing this model as a REST resource in the Apigility API.
-- `ZF\Apigility\Admin\Model\RpcServiceModelFactory` - responsible for creating `RpcServiceModel`s.
-- `ZF\Apigility\Admin\Model\ValidatorsModel` - responsible for providing, through the API, a list of
+  a new module, this will create the code artifacts necessary for an Laminas API Tools-enabled module.
+- `Laminas\ApiTools\Admin\Model\ModuleResource` - responsible for exposing the `ModuleModel` as a
+  REST resource in the Laminas API Tools API.
+- `Laminas\ApiTools\Admin\Model\RestServiceModel` - responsible for presenting REST services, as they
+  are defined in `api-tools-rest` in a way that can be created and modified, to be used in the Admin UI.
+- `Laminas\ApiTools\Admin\Model\RestServiceResource` - responsible for consuming `RestServiceModel` and
+  exposing this model as a REST resource in the Laminas API Tools API.
+- `Laminas\ApiTools\Admin\Model\RestServiceModelFactory` - responsible for creating `RestServiceModel`s.
+- `Laminas\ApiTools\Admin\Model\RpcServiceModel` - responsible for presenting RPC services, as they are
+  defined in `api-tools-rpc` in a way that can be created and modified, to be used in the Admin UI.
+- `Laminas\ApiTools\Admin\Model\RpcServiceResource` - responsible for consuming `RpcServiceModel`s and
+  exposing this model as a REST resource in the Laminas API Tools API.
+- `Laminas\ApiTools\Admin\Model\RpcServiceModelFactory` - responsible for creating `RpcServiceModel`s.
+- `Laminas\ApiTools\Admin\Model\ValidatorsModel` - responsible for providing, through the API, a list of
   available validators.
-- `ZF\Apigility\Admin\Model\ValidatorMetadataModel` - responsible for providing metadata about
+- `Laminas\ApiTools\Admin\Model\ValidatorMetadataModel` - responsible for providing metadata about
   validators provided through, and in conjunction with, the `ValidatorModel` and validator API.
-- `ZF\Apigility\Admin\Model\VersioningModel` - responsible for modeling the workflow and module
-  code creation artifacts that are required to provide a new version of a particular Apigility-based
+- `Laminas\ApiTools\Admin\Model\VersioningModel` - responsible for modeling the workflow and module
+  code creation artifacts that are required to provide a new version of a particular Laminas API Tools-based
   REST or RPC service.
-- `ZF\Apigility\Admin\Model\ModuleVersioningModelFactory` - responsible for creating `ModuleVersioningModel`s.
+- `Laminas\ApiTools\Admin\Model\ModuleVersioningModelFactory` - responsible for creating `ModuleVersioningModel`s.

@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use ZF\Configuration\ConfigResource;
+use Laminas\ApiTools\Configuration\ConfigResource;
 
 class ContentNegotiationModel
 {
@@ -32,7 +34,7 @@ class ContentNegotiationModel
      */
     public function create($name, array $contentConfig)
     {
-        $key = 'zf-content-negotiation.selectors.' . $name;
+        $key = 'api-tools-content-negotiation.selectors.' . $name;
         $this->globalConfig->patchKey($key, $contentConfig);
         return new ContentNegotiationEntity($name, $contentConfig);
     }
@@ -57,7 +59,7 @@ class ContentNegotiationModel
      */
     public function remove($name)
     {
-        $key = 'zf-content-negotiation.selectors.' . $name;
+        $key = 'api-tools-content-negotiation.selectors.' . $name;
         $this->globalConfig->deleteKey($key);
         return true;
     }
@@ -71,10 +73,10 @@ class ContentNegotiationModel
     {
         $config = [];
         $fromConfigFile = $this->globalConfig->fetch(true);
-        if (isset($fromConfigFile['zf-content-negotiation']['selectors'])
-            && is_array($fromConfigFile['zf-content-negotiation']['selectors'])
+        if (isset($fromConfigFile['api-tools-content-negotiation']['selectors'])
+            && is_array($fromConfigFile['api-tools-content-negotiation']['selectors'])
         ) {
-            $config = $fromConfigFile['zf-content-negotiation']['selectors'];
+            $config = $fromConfigFile['api-tools-content-negotiation']['selectors'];
         }
 
         $negotiations = [];
@@ -94,12 +96,12 @@ class ContentNegotiationModel
     public function fetch($name)
     {
         $config = $this->globalConfig->fetch(true);
-        if (! isset($config['zf-content-negotiation']['selectors'][$name])
-            || ! is_array($config['zf-content-negotiation']['selectors'][$name])
+        if (! isset($config['api-tools-content-negotiation']['selectors'][$name])
+            || ! is_array($config['api-tools-content-negotiation']['selectors'][$name])
         ) {
             return false;
         }
 
-        return new ContentNegotiationEntity($name, $config['zf-content-negotiation']['selectors'][$name]);
+        return new ContentNegotiationEntity($name, $config['api-tools-content-negotiation']['selectors'][$name]);
     }
 }

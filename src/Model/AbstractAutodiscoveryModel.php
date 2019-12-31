@@ -1,20 +1,22 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
 use Exception;
-use Zend\Filter\Digits;
-use Zend\Filter\StaticFilter;
-use Zend\Filter\StringTrim;
-use Zend\Filter\StripTags;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Validator\StringLength;
-use ZF\ContentValidation\Validator\DbNoRecordExists;
-use ZF\ContentValidation\Validator\DbRecordExists;
+use Laminas\ApiTools\ContentValidation\Validator\DbNoRecordExists;
+use Laminas\ApiTools\ContentValidation\Validator\DbRecordExists;
+use Laminas\Filter\Digits;
+use Laminas\Filter\StaticFilter;
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\StripTags;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\Validator\StringLength;
 
 /**
  * This class is instantiated with a $config in some implementations (DbAutodiscoveryModel)

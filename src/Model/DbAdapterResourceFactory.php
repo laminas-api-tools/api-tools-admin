@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 
 class DbAdapterResourceFactory
 {
@@ -18,13 +20,15 @@ class DbAdapterResourceFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        if (! $container->has(DbAdapterModel::class)) {
+        if (! $container->has(DbAdapterModel::class)
+            && ! $container->has(\ZF\Apigility\Admin\Model\DbAdapterModel::class)
+        ) {
             throw new ServiceNotCreatedException(sprintf(
                 'Cannot create %s service because %s service is not present',
                 DbAdapterResource::class,
                 DbAdapterModel::class
             ));
         }
-        return new DbAdapterResource($container->get(DbAdapterModel::class));
+        return new DbAdapterResource($container->has(DbAdapterModel::class) ? $container->get(DbAdapterModel::class) : $container->get(\ZF\Apigility\Admin\Model\DbAdapterModel::class));
     }
 }

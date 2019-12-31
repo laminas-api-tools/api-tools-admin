@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\InputFilter\RestService;
+namespace LaminasTest\ApiTools\Admin\InputFilter\RestService;
 
+use Laminas\InputFilter\Factory;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\InputFilter\Factory;
 
 class PostInputFilterTest extends TestCase
 {
@@ -15,7 +17,7 @@ class PostInputFilterTest extends TestCase
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'ZF\Apigility\Admin\InputFilter\RestService\PostInputFilter',
+            'type' => 'Laminas\ApiTools\Admin\InputFilter\RestService\PostInputFilter',
         ]);
     }
 
