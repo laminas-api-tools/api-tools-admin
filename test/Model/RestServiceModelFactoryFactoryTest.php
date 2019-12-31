@@ -1,30 +1,32 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Model\DbConnectedRestServiceModel;
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Admin\Model\RestServiceModel;
+use Laminas\ApiTools\Admin\Model\RestServiceModelFactory;
+use Laminas\ApiTools\Admin\Model\RestServiceModelFactoryFactory;
+use Laminas\ApiTools\Configuration\ConfigResourceFactory;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\ApiTools\Doctrine\Admin\Model\DoctrineRestServiceModel;
+use Laminas\EventManager\SharedEventManagerInterface;
+use Laminas\ModuleManager\ModuleManager;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use PHPUnit\Framework\TestCase;
-use Zend\EventManager\SharedEventManagerInterface;
-use Zend\ModuleManager\ModuleManager;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use ZF\Apigility\Admin\Model\DbConnectedRestServiceModel;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
-use ZF\Apigility\Admin\Model\RestServiceModel;
-use ZF\Apigility\Admin\Model\RestServiceModelFactory;
-use ZF\Apigility\Admin\Model\RestServiceModelFactoryFactory;
-use ZF\Apigility\Doctrine\Admin\Model\DoctrineRestServiceModel;
-use ZF\Configuration\ConfigResourceFactory;
-use ZF\Configuration\ResourceFactory;
 
 /**
  * @todo Write a test to demonstrate that the DoctrineRestServiceModel::onFetch
  *     method is attached to the shared events; requires a stable
- *     zf-apigility-doctrine module that is forwards compatible with v3
+ *     api-tools-doctrine module that is forwards compatible with v3
  *     components first.
  */
 class RestServiceModelFactoryFactoryTest extends TestCase

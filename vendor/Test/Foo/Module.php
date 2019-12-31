@@ -2,14 +2,14 @@
 
 namespace Test\Foo;
 
-use ZF\Apigility\Provider\ApigilityProviderInterface;
+use Laminas\ApiTools\Provider\ApiToolsProviderInterface;
 
-class Module implements ApigilityProviderInterface
+class Module implements ApiToolsProviderInterface
 {
     public function getConfig()
     {
         return array(
-            'zf-versioning' => array(
+            'api-tools-versioning' => array(
                 'default_version' => 123,
             ),
         );

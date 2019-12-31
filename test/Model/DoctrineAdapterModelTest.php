@@ -1,20 +1,22 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\DoctrineAdapterModel;
+use Laminas\ApiTools\Configuration\ConfigResource;
 use PHPUnit\Framework\TestCase;
-use ZF\Apigility\Admin\Model\DoctrineAdapterModel;
-use ZF\Configuration\ConfigResource;
 
 class DoctrineAdapterModelTest extends TestCase
 {
     public function getMockWriter()
     {
-        return $this->createMock('Zend\Config\Writer\WriterInterface');
+        return $this->createMock('Laminas\Config\Writer\WriterInterface');
     }
 
     public function getGlobalConfig()
@@ -62,7 +64,7 @@ class DoctrineAdapterModelTest extends TestCase
         $this->assertInternalType('array', $adapters);
 
         foreach ($adapters as $adapter) {
-            $this->assertInstanceOf('ZF\Apigility\Admin\Model\DoctrineAdapterEntity', $adapter);
+            $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DoctrineAdapterEntity', $adapter);
             $data = $adapter->getArrayCopy();
             $this->assertArrayHasKey('adapter_name', $data);
             if (strrpos($data['adapter_name'], 'odm_')) {

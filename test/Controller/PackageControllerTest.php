@@ -1,20 +1,22 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Controller;
+namespace LaminasTest\ApiTools\Admin\Controller;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Controller\PackageController;
+use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParam;
+use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParams;
+use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
+use Laminas\Http\Request;
+use Laminas\Mvc\Controller\PluginManager as ControllerPluginManager;
+use Laminas\Mvc\MvcEvent;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Request;
-use Zend\Mvc\Controller\PluginManager as ControllerPluginManager;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Controller\PackageController;
-use ZF\ContentNegotiation\ControllerPlugin\BodyParam;
-use ZF\ContentNegotiation\ControllerPlugin\BodyParams;
-use ZF\ContentNegotiation\ParameterDataContainer;
 
 class PackageControllerTest extends TestCase
 {
@@ -46,7 +48,7 @@ class PackageControllerTest extends TestCase
         $request->setMethod($method);
         $this->controller->setRequest($request);
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf('ZF\ApiProblem\ApiProblemResponse', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ApiProblem\ApiProblemResponse', $result);
         $apiProblem = $result->getApiProblem();
         $this->assertEquals(405, $apiProblem->status);
     }
@@ -60,7 +62,7 @@ class PackageControllerTest extends TestCase
         $parameters = new ParameterDataContainer();
         $parameters->setBodyParam('format', 'ZIP');
         $event = new MvcEvent();
-        $event->setParam('ZFContentNegotiationParameterData', $parameters);
+        $event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $request->getHeaders()->addHeaderLine('Accept', 'application/json');
@@ -76,7 +78,7 @@ class PackageControllerTest extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertTrue(isset($result['token']));
         $this->assertTrue(isset($result['format']));
-        $package = sys_get_temp_dir() . '/apigility_' . $result['token'] . '.' . $result['format'];
+        $package = sys_get_temp_dir() . '/api-tools_' . $result['token'] . '.' . $result['format'];
         $this->assertTrue(file_exists($package));
 
         return $result;
@@ -94,7 +96,7 @@ class PackageControllerTest extends TestCase
 
         $this->controller->setRequest($request);
 
-        $package = sys_get_temp_dir() . '/apigility_' . $data['token'] . '.' . $data['format'];
+        $package = sys_get_temp_dir() . '/api-tools_' . $data['token'] . '.' . $data['format'];
         $content = file_get_contents($package);
 
         $response = $this->controller->indexAction();

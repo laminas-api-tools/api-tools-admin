@@ -1,5 +1,3 @@
-sudo: false
-
 language: php
 
 services:
@@ -22,12 +20,8 @@ matrix:
         - ENABLE_EXT_MONGO=true
     - php: 5.6
       env:
-        - DEPS=locked
-        - ENABLE_EXT_MONGO=true
-        - ALTERNATE_DEPS="phpunit/phpunit zendframework/zend-code zendframework/zend-permissions-rbac"
-    - php: 5.6
-      env:
         - DEPS=latest
+        - ALTERNATE_DEPS="phpunit/phpunit laminas/laminas-code laminas/laminas-permissions-rbac"
         - ENABLE_EXT_MONGO=true
     - php: 7
       env:
@@ -35,21 +29,13 @@ matrix:
         - ENABLE_EXT_MONGODB=true
     - php: 7
       env:
-        - DEPS=locked
-        - ALTERNATE_DEPS="phpunit/phpunit zendframework/zend-code zendframework/zend-permissions-rbac"
-        - ENABLE_EXT_MONGODB=true
+        - DEPS=latest
+        - ALTERNATE_DEPS="phpunit/phpunit laminas/laminas-code laminas/laminas-permissions-rbac"
         - CS_CHECK=true
-    - php: 7
-      env:
-        - DEPS=latest
         - ENABLE_EXT_MONGODB=true
     - php: 7.1
       env:
         - DEPS=lowest
-        - ENABLE_EXT_MONGODB=true
-    - php: 7.1
-      env:
-        - DEPS=locked
         - ENABLE_EXT_MONGODB=true
     - php: 7.1
       env:
@@ -58,10 +44,6 @@ matrix:
     - php: 7.2
       env:
         - DEPS=lowest
-        - ENABLE_EXT_MONGODB=true
-    - php: 7.2
-      env:
-        - DEPS=locked
         - ENABLE_EXT_MONGODB=true
     - php: 7.2
       env:
