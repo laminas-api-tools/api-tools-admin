@@ -1,2 +1,2 @@
-composer.lock
-test/ZFTest/Apigility\Admin/Model/TestAsset/module/BarConf/config/module.config.php
+/composer.lock
+test/LaminasTest/ApiTools\Admin/Model/TestAsset/module/BarConf/config/module.config.php

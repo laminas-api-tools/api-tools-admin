@@ -1,41 +1,45 @@
 {
-    "name": "zfcampus/zf-apigility-admin",
-    "description": "Apigility Admin module",
-    "type": "library",
+    "name": "laminas-api-tools/api-tools-admin",
+    "description": "Laminas API Tools Admin module",
     "license": "BSD-3-Clause",
     "keywords": [
+        "laminas",
+        "api-tools",
         "api",
-        "apigility",
-        "framework",
-        "zf2"
+        "framework"
     ],
-    "homepage": "http://apigility.org/",
+    "homepage": "https://api-tools.getlaminas.org",
     "support": {
-        "email": "apigility-users@zend.com",
-        "irc": "irc://irc.freenode.net/apigility",
-        "source": "https://github.com/zfcampus/zf-apigility-admin",
-        "issues": "https://github.com/zfcampus/zf-apigility-admin/issues"
+        "docs": "https://api-tools.getlaminas.org/documentation",
+        "issues": "https://github.com/laminas-api-tools/api-tools-admin/issues",
+        "source": "https://github.com/laminas-api-tools/api-tools-admin",
+        "rss": "https://github.com/laminas-api-tools/api-tools-admin/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
     },
-    "repositories": [
-        { "type": "composer", "url": "https://packages.zendframework.com/" }
-    ],
-    "minimum-stability": "dev",
+    "config": {
+        "sort-packages": true
+    },
     "require": {
         "php": ">=5.3.3",
-        "zendframework/zendframework": "dev-develop",
-        "zfcampus/zf-apigility": "dev-master",
-        "rwoverdijk/assetmanager": "dev-master",
-        "zfcampus/zf-api-problem": "dev-master",
-        "zfcampus/zf-configuration": "dev-master"
+        "laminas-api-tools/api-tools": "dev-master",
+        "laminas-api-tools/api-tools-api-problem": "dev-master",
+        "laminas-api-tools/api-tools-configuration": "dev-master",
+        "laminas/laminas": "dev-develop",
+        "laminas/laminas-zendframework-bridge": "^1.0",
+        "rwoverdijk/assetmanager": "dev-master"
     },
     "require-dev": {
-        "phpunit/PHPUnit": "3.7.*"
+        "phpunit/phpunit": "3.7.*"
     },
     "autoload": {
         "psr-0": {
-            "ZF\\Apigility\\Admin\\": "src/",
-            "ZFTest\\": "test/",
+            "Laminas\\ApiTools\\Admin\\": "src/",
+            "LaminasTest\\ApiTools\\": "test/",
             "Test\\": "vendor/"
         }
+    },
+    "replace": {
+        "zfcampus/zf-apigility-admin": "self.version"
     }
 }
