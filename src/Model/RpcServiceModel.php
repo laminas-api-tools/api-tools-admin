@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use Zend\Filter\FilterChain;
-use Zend\View\Model\ViewModel;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\Resolver;
-use ZF\Apigility\Admin\Exception;
-use ZF\Apigility\Admin\Utility;
-use ZF\Configuration\ConfigResource;
-use ZF\Configuration\ModuleUtils;
-use ZF\Rest\Exception\PatchException;
-use ZF\Rest\Exception\CreationException;
+use Laminas\ApiTools\Admin\Exception;
+use Laminas\ApiTools\Admin\Utility;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Rest\Exception\CreationException;
+use Laminas\ApiTools\Rest\Exception\PatchException;
+use Laminas\Filter\FilterChain;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Renderer\PhpRenderer;
+use Laminas\View\Resolver;
 use ReflectionClass;
 
 class RpcServiceModel
@@ -70,11 +72,11 @@ class RpcServiceModel
         $data   = array('controller_service_name' => $controllerServiceName);
         $config = $this->configResource->fetch(true);
 
-        if (!isset($config['zf-rpc'][$controllerServiceName])) {
+        if (!isset($config['api-tools-rpc'][$controllerServiceName])) {
             return false;
         }
 
-        $rpcConfig = $config['zf-rpc'][$controllerServiceName];
+        $rpcConfig = $config['api-tools-rpc'][$controllerServiceName];
 
         if (isset($rpcConfig['route_name'])) {
             $data['route_name']  = $rpcConfig['route_name'];
@@ -100,8 +102,8 @@ class RpcServiceModel
             }
         }
 
-        if (isset($config['zf-content-negotiation'])) {
-            $contentNegotiationConfig = $config['zf-content-negotiation'];
+        if (isset($config['api-tools-content-negotiation'])) {
+            $contentNegotiationConfig = $config['api-tools-content-negotiation'];
             if (isset($contentNegotiationConfig['controllers'])
                 && isset($contentNegotiationConfig['controllers'][$controllerServiceName])
             ) {
@@ -135,7 +137,7 @@ class RpcServiceModel
     public function fetchAll($version = null)
     {
         $config = $this->configResource->fetch(true);
-        if (!isset($config['zf-rpc'])) {
+        if (!isset($config['api-tools-rpc'])) {
             return array();
         }
 
@@ -159,7 +161,7 @@ class RpcServiceModel
             );
         }
 
-        foreach (array_keys($config['zf-rpc']) as $controllerService) {
+        foreach (array_keys($config['api-tools-rpc']) as $controllerService) {
             if (!$pattern) {
                 $services[] = $this->fetch($controllerService);
                 continue;
@@ -398,7 +400,7 @@ class RpcServiceModel
                     ),
                 )
             ),
-            'zf-versioning' => array(
+            'api-tools-versioning' => array(
                 'uri' => array (
                     $routeName
                 )
@@ -410,7 +412,7 @@ class RpcServiceModel
     }
 
     /*
-     * Create the zf-rpc configuration for the controller service
+     * Create the api-tools-rpc configuration for the controller service
      *
      * @param  string $serviceName
      * @param  string $controllerService
@@ -426,7 +428,7 @@ class RpcServiceModel
         array $httpMethods = array('GET'),
         $callable = null
     ) {
-        $config = array('zf-rpc' => array(
+        $config = array('api-tools-rpc' => array(
             $controllerService => array(
                 'service_name' => $serviceName,
                 'http_methods' => $httpMethods,
@@ -454,7 +456,7 @@ class RpcServiceModel
 
         $mediaType = $this->createMediaType();
 
-        $config = array('zf-content-negotiation' => array(
+        $config = array('api-tools-content-negotiation' => array(
             'controllers' => array(
                 $controllerService => $selector,
             ),
@@ -507,7 +509,7 @@ class RpcServiceModel
     public function updateHttpMethods($controllerService, array $httpMethods)
     {
         $config = $this->configResource->fetch(true);
-        $config['zf-rpc'][$controllerService]['http_methods'] = $httpMethods;
+        $config['api-tools-rpc'][$controllerService]['http_methods'] = $httpMethods;
         $this->configResource->overwrite($config);
         return true;
     }
@@ -522,7 +524,7 @@ class RpcServiceModel
     public function updateSelector($controllerService, $selector)
     {
         $config = $this->configResource->fetch(true);
-        $config['zf-content-negotiation']['controllers'][$controllerService] = $selector;
+        $config['api-tools-content-negotiation']['controllers'][$controllerService] = $selector;
         $this->configResource->overwrite($config);
         return true;
     }
@@ -543,7 +545,7 @@ class RpcServiceModel
         }
         $headerType .= '_whitelist';
         $config = $this->configResource->fetch(true);
-        $config['zf-content-negotiation'][$headerType][$controllerService] = $whitelist;
+        $config['api-tools-content-negotiation'][$headerType][$controllerService] = $whitelist;
         $this->configResource->overwrite($config);
         return true;
     }
@@ -581,22 +583,22 @@ class RpcServiceModel
         }
 
         $config = $this->configResource->fetch(true);
-        if (! isset($config['zf-versioning']['uri'])) {
+        if (! isset($config['api-tools-versioning']['uri'])) {
             return;
         }
 
-        if (! in_array($routeName, $config['zf-versioning']['uri'], true)) {
+        if (! in_array($routeName, $config['api-tools-versioning']['uri'], true)) {
             return;
         }
 
-        $versioning = array_filter($config['zf-versioning']['uri'], function ($value) use ($routeName) {
+        $versioning = array_filter($config['api-tools-versioning']['uri'], function ($value) use ($routeName) {
             if ($routeName === $value) {
                 return false;
             }
             return true;
         });
 
-        $key = array('zf-versioning', 'uri');
+        $key = array('api-tools-versioning', 'uri');
         $this->configResource->patchKey($key, $versioning);
     }
 
@@ -620,7 +622,7 @@ class RpcServiceModel
      */
     public function deleteRpcConfig($serviceName)
     {
-        $key = array('zf-rpc', $serviceName);
+        $key = array('api-tools-rpc', $serviceName);
         $this->configResource->deleteKey($key);
     }
 
@@ -632,13 +634,13 @@ class RpcServiceModel
      */
     public function deleteContentNegotiationConfig($serviceName)
     {
-        $key = array('zf-content-negotiation', 'controllers', $serviceName);
+        $key = array('api-tools-content-negotiation', 'controllers', $serviceName);
         $this->configResource->deleteKey($key);
 
-        $key = array('zf-content-negotiation', 'accept_whitelist', $serviceName);
+        $key = array('api-tools-content-negotiation', 'accept_whitelist', $serviceName);
         $this->configResource->deleteKey($key);
 
-        $key = array('zf-content-negotiation', 'content_type_whitelist', $serviceName);
+        $key = array('api-tools-content-negotiation', 'content_type_whitelist', $serviceName);
         $this->configResource->deleteKey($key);
     }
 
@@ -649,7 +651,7 @@ class RpcServiceModel
      */
     public function deleteContentValidationConfig($serviceName)
     {
-        $key = array('zf-content-validation', $serviceName);
+        $key = array('api-tools-content-validation', $serviceName);
         $this->configResource->deleteKey($key);
     }
 
@@ -660,7 +662,7 @@ class RpcServiceModel
      */
     public function deleteAuthorizationConfig($serviceName)
     {
-        $key = array('zf-mvc-auth', 'authorization', $serviceName);
+        $key = array('api-tools-mvc-auth', 'authorization', $serviceName);
         $this->configResource->deleteKey($key);
     }
 
