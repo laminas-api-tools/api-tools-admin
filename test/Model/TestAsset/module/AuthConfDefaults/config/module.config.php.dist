@@ -1,10 +1,10 @@
 <?php
 return [
-    'zf-rest' => [
+    'api-tools-rest' => [
         'AuthConfDefaults\V1\Rest\Foo\Controller' => [],
         'AuthConfDefaults\V1\Rest\Bar\Controller' => [],
     ],
-    'zf-rpc' => [
+    'api-tools-rpc' => [
         'AuthConfDefaults\V1\Rpc\Baz\Controller' => [
             'route_name' => 'auth-conf.rpc.baz',
         ],

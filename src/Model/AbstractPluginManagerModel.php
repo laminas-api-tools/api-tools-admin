@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
+use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\ServiceManager;
 use ReflectionClass;
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\ServiceManager;
 
 class AbstractPluginManagerModel
 {
@@ -24,7 +26,7 @@ class AbstractPluginManagerModel
 
     /**
      * $pluginManager should typically be an instance of
-     * Zend\ServiceManager\AbstractPluginManager.
+     * Laminas\ServiceManager\AbstractPluginManager.
      *
      * @param ServiceManager $pluginManager
      */
@@ -106,6 +108,6 @@ class AbstractPluginManagerModel
      */
     private function filterPluginName($name)
     {
-        return ! preg_match('/^zend(filter|hydrator|i18n|stdlib|validator)/', $name);
+        return ! preg_match('/^(laminas|zend)(filter|hydrator|i18n|stdlib|validator)/', $name);
     }
 }

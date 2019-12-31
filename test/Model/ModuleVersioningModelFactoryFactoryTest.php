@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Configuration\ConfigResourceFactory;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use ZF\Configuration\ConfigResourceFactory;
-use ZF\Configuration\ResourceFactory;
 
 class ModuleVersioningModelFactoryFactoryTest extends TestCase
 {
