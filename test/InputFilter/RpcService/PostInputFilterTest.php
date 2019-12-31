@@ -1,9 +1,9 @@
 <?php
 
-namespace ZFTest\Apigility\Admin\InputFilter\RpcService;
+namespace LaminasTest\ApiTools\Admin\InputFilter\RpcService;
 
+use Laminas\InputFilter\Factory;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\InputFilter\Factory;
 
 class PostInputFilterTest extends TestCase
 {
@@ -11,7 +11,7 @@ class PostInputFilterTest extends TestCase
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'ZF\Apigility\Admin\InputFilter\RpcService\PostInputFilter',
+            'type' => 'Laminas\ApiTools\Admin\InputFilter\RpcService\PostInputFilter',
         ]);
     }
 

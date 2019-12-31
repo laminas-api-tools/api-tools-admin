@@ -1,22 +1,24 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\DbAdapterModel;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\Config\Writer\PhpArray as ConfigWriter;
+use Laminas\Stdlib\ArrayUtils;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Config\Writer\PhpArray as ConfigWriter;
-use Zend\Stdlib\ArrayUtils;
-use ZF\Apigility\Admin\Model\DbAdapterModel;
-use ZF\Configuration\ConfigResource;
 
 class DbAdapterModelTest extends TestCase
 {
     public function setUp()
     {
-        $this->configPath       = sys_get_temp_dir() . '/zf-apigility-admin/config';
+        $this->configPath       = sys_get_temp_dir() . '/api-tools-admin/config';
         $this->globalConfigPath = $this->configPath . '/global.php';
         $this->localConfigPath  = $this->configPath . '/local.php';
         $this->removeConfigMocks();
@@ -192,7 +194,7 @@ class DbAdapterModelTest extends TestCase
         $adapters     = $model->fetchAll();
         $adapterNames = [];
         foreach ($adapters as $adapter) {
-            $this->assertInstanceOf('ZF\Apigility\Admin\Model\DbAdapterEntity', $adapter);
+            $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbAdapterEntity', $adapter);
             $adapter = $adapter->getArrayCopy();
             $adapterNames[] = $adapter['adapter_name'];
         }
@@ -234,7 +236,7 @@ class DbAdapterModelTest extends TestCase
         ];
         $model       = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
         $adapter     = $model->fetch('Db\New');
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\DbAdapterEntity', $adapter);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbAdapterEntity', $adapter);
         $adapter = $adapter->getArrayCopy();
         $this->assertEquals('Db\New', $adapter['adapter_name']);
         unset($adapter['adapter_name']);
@@ -249,14 +251,14 @@ class DbAdapterModelTest extends TestCase
 
         $newConfig = [
             'driver'   => 'Pdo_Mysql',
-            'database' => 'zf_apigility',
+            'database' => 'laminas_api-tools',
             'username' => 'username',
             'password' => 'password',
         ];
         $entity = $model->update('Db\New', $newConfig);
 
         // Ensure the entity returned from the update is what we expect
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\DbAdapterEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbAdapterEntity', $entity);
         $entity = $entity->getArrayCopy();
         $expected = array_merge(['adapter_name' => 'Db\New'], $newConfig);
         $this->assertEquals($expected, $entity);
@@ -329,7 +331,7 @@ class DbAdapterModelTest extends TestCase
 
         $newConfig = [
             'driver'   => $driver,
-            'database' => 'zf_apigility',
+            'database' => 'laminas_api-tools',
             'username' => 'test',
             'password' => 'test',
             'charset'  => 'latin-1',
@@ -337,7 +339,7 @@ class DbAdapterModelTest extends TestCase
         $entity = $model->update('Db\New', $newConfig);
 
         // Ensure the entity returned from the update is what we expect
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\DbAdapterEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbAdapterEntity', $entity);
         $entity = $entity->getArrayCopy();
         $expected = array_merge(['adapter_name' => 'Db\New'], $newConfig);
         unset($expected['charset']);
