@@ -1,6 +1,6 @@
 <?php
 return [
-    'zf-mvc-auth' => [
+    'api-tools-mvc-auth' => [
         'authorization' => [
             'AuthConfWithConfig\V1\Rest\Foo\Controller' => [
                 'entity' => [
@@ -58,11 +58,11 @@ return [
             ],
         ],
     ],
-    'zf-rest' => [
+    'api-tools-rest' => [
         'AuthConfWithConfig\V1\Rest\Foo\Controller' => [],
         'AuthConfWithConfig\V1\Rest\Bar\Controller' => [],
     ],
-    'zf-rpc' => [
+    'api-tools-rpc' => [
         'AuthConfWithConfig\V1\Rpc\Baz\Controller' => [
             'route_name' => 'auth-conf.rpc.baz',
         ],

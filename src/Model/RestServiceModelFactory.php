@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Exception;
+use Laminas\EventManager\EventManager;
 use ReflectionClass;
-use Zend\EventManager\EventManager;
-use ZF\Apigility\Admin\Exception;
 
 class RestServiceModelFactory extends RpcServiceModelFactory
 {
@@ -60,13 +62,13 @@ class RestServiceModelFactory extends RpcServiceModelFactory
         $r = new ReflectionClass(EventManager::class);
 
         if ($r->hasMethod('setSharedManager')) {
-            // zend-eventmanager v2 initialization
+            // laminas-eventmanager v2 initialization
             $eventManager = new EventManager();
             $eventManager->setSharedManager($this->sharedEventManager);
             return $eventManager;
         }
 
-        // zend-eventmanager v3 initialization
+        // laminas-eventmanager v3 initialization
         return new EventManager($this->sharedEventManager);
     }
 }

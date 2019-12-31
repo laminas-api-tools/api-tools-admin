@@ -6,10 +6,17 @@
  * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace Version\V1\Ping;
+namespace Laminas\ApiTools\Admin\Controller;
 
 use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\JsonModel;
 
-class PingController extends AbstractActionController
+class ApiToolsVersionController extends AbstractActionController
 {
+    public function indexAction()
+    {
+        return new JsonModel([
+            'version' => defined('ApiTools\VERSION') ? \ApiTools\VERSION : '@dev',
+        ]);
+    }
 }
