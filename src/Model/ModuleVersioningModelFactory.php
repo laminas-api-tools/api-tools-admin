@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use ZF\Configuration\ResourceFactory;
+use Laminas\ApiTools\Configuration\ResourceFactory;
 
 /**
  * Class ModuleVersioningModelFactory
@@ -62,7 +64,7 @@ class ModuleVersioningModelFactory implements ModuleVersioningModelFactoryInterf
     /**
      * getDocsConfig
      * @param $module
-     * @return null|\ZF\Configuration\ConfigResource
+     * @return null|\Laminas\ApiTools\Configuration\ConfigResource
      */
     protected function getDocsConfig($module)
     {

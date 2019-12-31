@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\InputFilterModel;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
+use Laminas\Config\Writer\PhpArray;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Config\Writer\PhpArray;
-use ZF\Apigility\Admin\Model\InputFilterModel;
-use ZF\Configuration\ModuleUtils;
-use ZF\Configuration\ResourceFactory as ConfigResourceFactory;
 
 class InputFilterModelTest extends TestCase
 {
@@ -21,7 +23,7 @@ class InputFilterModelTest extends TestCase
         ];
 
 
-        $this->moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
 
@@ -49,10 +51,10 @@ class InputFilterModelTest extends TestCase
     public function testFetch()
     {
         $result = $this->model->fetch('InputFilter', 'InputFilter\V1\Rest\Foo\Controller');
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\InputFilterCollection', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterCollection', $result);
         $this->assertEquals(1, count($result));
         $inputFilter = $result->dequeue();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\InputFilterEntity', $inputFilter);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $inputFilter);
         $this->assertEquals(
             $this->config['input_filter_specs']['InputFilter\V1\Rest\Foo\Validator']['foo'],
             $inputFilter['foo']
@@ -74,7 +76,7 @@ class InputFilterModelTest extends TestCase
             ],
         ];
         $result = $this->model->update('InputFilter', 'InputFilter\V1\Rest\Foo\Controller', $inputFilter);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\InputFilterEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $result);
         $this->assertEquals(
             $inputFilter['bar'],
             $result['bar'],
@@ -100,13 +102,13 @@ class InputFilterModelTest extends TestCase
         // new controller
         $controller = 'InputFilter\V1\Rest\Bar\Controller';
         $result = $this->model->update('InputFilter', $controller, $inputfilter);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\InputFilterEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $result);
         $this->assertEquals($inputfilter['bar'], $result['bar']);
 
         $config = include $this->basePath . '/module.config.php';
         $this->assertEquals(
             'InputFilter\V1\Rest\Bar\Validator',
-            $config['zf-content-validation'][$controller]['input_filter']
+            $config['api-tools-content-validation'][$controller]['input_filter']
         );
     }
 

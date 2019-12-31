@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\ContentNegotiationModel;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\Config\Writer\PhpArray as ConfigWriter;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Config\Writer\PhpArray as ConfigWriter;
-use ZF\Apigility\Admin\Model\ContentNegotiationModel;
-use ZF\Configuration\ConfigResource;
 
 class ContentNegotiationTest extends TestCase
 {
     public function setUp()
     {
-        $this->configPath       = sys_get_temp_dir() . '/zf-apigility-admin/config';
+        $this->configPath       = sys_get_temp_dir() . '/api-tools-admin/config';
         $this->globalConfigPath = $this->configPath . '/global.php';
         $this->removeConfigMocks();
         $this->createConfigMocks();
@@ -59,23 +61,23 @@ class ContentNegotiationTest extends TestCase
 
     public function assertContentConfigExists($contentName, array $config)
     {
-        $this->assertArrayHasKey('zf-content-negotiation', $config);
-        $this->assertArrayHasKey('selectors', $config['zf-content-negotiation']);
-        $this->assertArrayHasKey($contentName, $config['zf-content-negotiation']['selectors']);
-        $this->assertInternalType('array', $config['zf-content-negotiation']['selectors'][$contentName]);
+        $this->assertArrayHasKey('api-tools-content-negotiation', $config);
+        $this->assertArrayHasKey('selectors', $config['api-tools-content-negotiation']);
+        $this->assertArrayHasKey($contentName, $config['api-tools-content-negotiation']['selectors']);
+        $this->assertInternalType('array', $config['api-tools-content-negotiation']['selectors'][$contentName]);
     }
 
     public function assertContentConfigEquals(array $expected, $contentName, array $config)
     {
         $this->assertContentConfigExists($contentName, $config);
-        $config = $config['zf-content-negotiation']['selectors'][$contentName];
+        $config = $config['api-tools-content-negotiation']['selectors'][$contentName];
         $this->assertEquals($expected, $config);
     }
 
     public function assertContentConfigContains(array $expected, $contentName, array $config)
     {
         $this->assertContentConfigExists($contentName, $config);
-        $config = $config['zf-content-negotiation']['selectors'][$contentName];
+        $config = $config['api-tools-content-negotiation']['selectors'][$contentName];
         foreach ($expected as $key => $value) {
             $this->assertArrayHasKey($key, $config);
             $this->assertEquals($value, $config[$key]);
@@ -85,7 +87,7 @@ class ContentNegotiationTest extends TestCase
     public function testCreateContentNegotiation()
     {
         $toCreate = [
-            'ZF\ContentNegotiation\JsonModel' => [
+            'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
                 'application/json',
                 'application/*+json',
             ],
@@ -100,7 +102,7 @@ class ContentNegotiationTest extends TestCase
     public function testUpdateContentNegotiation()
     {
         $toCreate = [
-           'ZF\ContentNegotiation\JsonModel' => [
+           'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
                 'application/json',
                 'application/*+json',
             ],
@@ -109,7 +111,7 @@ class ContentNegotiationTest extends TestCase
         $model->create('Json', $toCreate);
 
         $toUpdate = [
-            'ZF\ContentNegotiation\JsonModel' => [
+            'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
                 'application/json',
             ],
         ];
@@ -121,7 +123,7 @@ class ContentNegotiationTest extends TestCase
     public function testRemoveContentNegotiation()
     {
         $toCreate = [
-           'ZF\ContentNegotiation\JsonModel' => [
+           'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
                 'application/json',
                 'application/*+json',
             ],
@@ -131,13 +133,13 @@ class ContentNegotiationTest extends TestCase
 
         $model->remove('Json');
         $global = include $this->globalConfigPath;
-        $this->assertArrayNotHasKey('Json', $global['zf-content-negotiation']['selectors']);
+        $this->assertArrayNotHasKey('Json', $global['api-tools-content-negotiation']['selectors']);
     }
 
     public function testFetchAllContentNegotiation()
     {
         $toCreate = [
-            'ZF\ContentNegotiation\JsonModel' => [
+            'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
                 'application/json',
                 'application/*+json',
             ],
@@ -146,7 +148,7 @@ class ContentNegotiationTest extends TestCase
         $model->create('Json', $toCreate);
 
         $toCreate2 = [
-            'ZF\ContentNegotiation\FooModel' => [
+            'Laminas\ApiTools\ContentNegotiation\FooModel' => [
                 'application/foo',
             ],
         ];
@@ -159,14 +161,14 @@ class ContentNegotiationTest extends TestCase
         $result = $model->fetchAll();
         $this->assertInternalType('array', $result);
         foreach ($result as $value) {
-            $this->assertInstanceOf('ZF\Apigility\Admin\Model\ContentNegotiationEntity', $value);
+            $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ContentNegotiationEntity', $value);
         }
     }
 
     public function testFetchContentNegotiation()
     {
         $toCreate = [
-            'ZF\ContentNegotiation\JsonModel' => [
+            'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
                 'application/json',
                 'application/*+json',
             ],
@@ -175,7 +177,7 @@ class ContentNegotiationTest extends TestCase
         $model->create('Json', $toCreate);
 
         $content = $model->fetch('Json');
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\ContentNegotiationEntity', $content);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ContentNegotiationEntity', $content);
         $arrayCopy = $content->getArrayCopy();
         $this->assertArrayHasKey('content_name', $arrayCopy);
         $this->assertEquals('Json', $arrayCopy['content_name']);

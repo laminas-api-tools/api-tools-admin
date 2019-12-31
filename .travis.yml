@@ -1,5 +1,3 @@
-sudo: false
-
 language: php
 
 services:
@@ -22,9 +20,6 @@ matrix:
         - DEPS=lowest
     - php: 5.6
       env:
-        - DEPS=locked
-    - php: 5.6
-      env:
         - DEPS=latest
     - php: 7
       env:
@@ -32,12 +27,8 @@ matrix:
         - EXT_MONGODB=true
     - php: 7
       env:
-        - DEPS=locked
-        - EXT_MONGODB=true
-        - CS_CHECK=true
-    - php: 7
-      env:
         - DEPS=latest
+        - CS_CHECK=true
         - EXT_MONGODB=true
     - php: hhvm
       env:
