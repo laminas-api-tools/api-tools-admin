@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\InputFilter\Authentication;
+namespace LaminasTest\ApiTools\Admin\InputFilter\Authentication;
 
+use Laminas\InputFilter\Factory;
 use PHPUnit\Framework\TestCase;
-use Zend\InputFilter\Factory;
 
 class DigestInputFilterTest extends TestCase
 {
@@ -26,7 +28,7 @@ class DigestInputFilterTest extends TestCase
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'ZF\Apigility\Admin\InputFilter\Authentication\DigestInputFilter',
+            'type' => 'Laminas\ApiTools\Admin\InputFilter\Authentication\DigestInputFilter',
         ]);
     }
 

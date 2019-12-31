@@ -1,25 +1,27 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Controller;
+namespace LaminasTest\ApiTools\Admin\Controller;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Controller\AuthenticationController;
+use Laminas\ApiTools\Admin\Model\AuthenticationModel;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParam;
+use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParams;
+use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
+use Laminas\Config\Writer\PhpArray as ConfigWriter;
+use Laminas\Http\Request;
+use Laminas\Mvc\Controller\Plugin\Params;
+use Laminas\Mvc\Controller\PluginManager as ControllerPluginManager;
+use Laminas\Mvc\MvcEvent;
+use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
-use Zend\Config\Writer\PhpArray as ConfigWriter;
-use Zend\Http\Request;
-use Zend\Mvc\Controller\Plugin\Params;
-use Zend\Mvc\Controller\PluginManager as ControllerPluginManager;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Controller\AuthenticationController;
-use ZF\Apigility\Admin\Model\AuthenticationModel;
-use ZF\Configuration\ConfigResource;
-use ZF\ContentNegotiation\ControllerPlugin\BodyParam;
-use ZF\ContentNegotiation\ControllerPlugin\BodyParams;
-use ZF\ContentNegotiation\ParameterDataContainer;
-use ZFTest\Apigility\Admin\RouteAssetsTrait;
 
 class AuthenticationControllerTest extends TestCase
 {
@@ -36,7 +38,7 @@ class AuthenticationControllerTest extends TestCase
         $global = new ConfigResource(require $this->globalFile, $this->globalFile, $writer);
         $local  = new ConfigResource(require $this->localFile, $this->localFile, $writer);
 
-        $moduleModel = $this->getMockBuilder('ZF\Apigility\Admin\Model\ModuleModel')
+        $moduleModel = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\ModuleModel')
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -50,7 +52,7 @@ class AuthenticationControllerTest extends TestCase
         $this->controller->setPluginManager($this->plugins);
 
         $this->routeMatch = $this->createRouteMatch();
-        $this->routeMatch->setMatchedRouteName('zf-apigility/api/authentication');
+        $this->routeMatch->setMatchedRouteName('api-tools/api/authentication');
         $this->event = new MvcEvent();
         $this->event->setRouteMatch($this->routeMatch);
 
@@ -80,11 +82,11 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod($method);
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $this->controller->setRequest($request);
 
         $result = $this->controller->authenticationAction();
-        $this->assertInstanceOf('ZF\ApiProblem\ApiProblemResponse', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ApiProblem\ApiProblemResponse', $result);
         $apiProblem = $result->getApiProblem();
         $this->assertEquals(405, $apiProblem->status);
     }
@@ -94,7 +96,7 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('get');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $this->controller->setRequest($request);
 
         $params = [
@@ -105,9 +107,9 @@ class AuthenticationControllerTest extends TestCase
 
         $result = $this->controller->authenticationAction();
 
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf('ZF\Hal\Entity', $payload);
+        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
 
         $metadata = $payload->getEntity();
         $this->assertEquals('testbasic', $metadata['name']);
@@ -117,17 +119,17 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('get');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $this->controller->setRequest($request);
 
         $result = $this->controller->authenticationAction();
 
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf('ZF\Hal\Collection', $payload);
+        $this->assertInstanceOf('Laminas\ApiTools\Hal\Collection', $payload);
         $collection = $payload->getCollection();
         foreach ($collection as $entity) {
-            $this->assertInstanceOf('ZF\Hal\Entity', $entity);
+            $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $entity);
         }
         $this->assertEquals(4, count($collection));
     }
@@ -179,7 +181,7 @@ class AuthenticationControllerTest extends TestCase
                     'oauth2_type'         => 'mongo',
                     'oauth2_route'        => '/oauth-mongo',
                     'oauth2_dsn'          => 'mongodb://localhost',
-                    'oauth2_database'     => 'zf-apigility-admin-test',
+                    'oauth2_database'     => 'api-tools-admin-test',
                     'oauth2_locator_name' => null,
                     'oauth2_options'      => null,
                 ],
@@ -195,20 +197,20 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('post');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $this->controller->setRequest($request);
 
         $parameters = new ParameterDataContainer();
         $parameters->setBodyParams($postData);
-        $this->event->setParam('ZFContentNegotiationParameterData', $parameters);
+        $this->event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
         $result = $this->controller->authenticationAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf('ZF\Hal\Entity', $payload);
+        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
         $self = $payload->getLinks()->get('self');
-        $this->assertEquals('zf-apigility/api/authentication', $self->getRoute());
+        $this->assertEquals('api-tools/api/authentication', $self->getRoute());
         $params = $self->getRouteParams();
         $this->assertEquals($postData['name'], $params['authentication_adapter']);
     }
@@ -220,13 +222,13 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('put');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $this->controller->setRequest($request);
 
         $parameters = new ParameterDataContainer();
         $parameters->setBodyParams($postData);
-        $this->event->setParam('ZFContentNegotiationParameterData', $parameters);
+        $this->event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
         $params = [
             'authentication_adapter' => 'testbasic',
@@ -235,11 +237,11 @@ class AuthenticationControllerTest extends TestCase
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->authenticationAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf('ZF\Hal\Entity', $payload);
+        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
         $self = $payload->getLinks()->get('self');
-        $this->assertEquals('zf-apigility/api/authentication', $self->getRoute());
+        $this->assertEquals('api-tools/api/authentication', $self->getRoute());
         $params = $self->getRouteParams();
         $this->assertEquals('testbasic', $params['authentication_adapter']);
 
@@ -251,7 +253,7 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('delete');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $this->controller->setRequest($request);
 
@@ -262,7 +264,7 @@ class AuthenticationControllerTest extends TestCase
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->authenticationAction();
-        $this->assertInstanceOf('Zend\Http\PhpEnvironment\Response', $result);
+        $this->assertInstanceOf('Laminas\Http\PhpEnvironment\Response', $result);
         $this->assertEquals(204, $result->getStatusCode());
     }
 
@@ -270,7 +272,7 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('get');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $request->getQuery()->set('version', 1);
         $this->controller->setRequest($request);
@@ -279,14 +281,14 @@ class AuthenticationControllerTest extends TestCase
             'name' => 'Status',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
-        $this->routeMatch->setMatchedRouteName('zf-apigility/api/module/authentication');
+        $this->routeMatch->setMatchedRouteName('api-tools/api/module/authentication');
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->mappingAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $config = require $this->globalFile;
         $this->assertEquals(
-            $config['zf-mvc-auth']['authentication']['map']['Status\V1'],
+            $config['api-tools-mvc-auth']['authentication']['map']['Status\V1'],
             $result->getVariable('authentication')
         );
     }
@@ -295,7 +297,7 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('get');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $request->getQuery()->set('version', 1);
         $this->controller->setRequest($request);
@@ -304,11 +306,11 @@ class AuthenticationControllerTest extends TestCase
             'name' => 'Status2',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
-        $this->routeMatch->setMatchedRouteName('zf-apigility/api/module/authentication');
+        $this->routeMatch->setMatchedRouteName('api-tools/api/module/authentication');
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->mappingAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $this->assertFalse($result->getVariable('authentication'));
     }
 
@@ -316,7 +318,7 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('put');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $this->controller->setRequest($request);
 
@@ -324,17 +326,17 @@ class AuthenticationControllerTest extends TestCase
         $parameters->setBodyParams([
             'authentication' => 'testoauth2pdo',
         ]);
-        $this->event->setParam('ZFContentNegotiationParameterData', $parameters);
+        $this->event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
         $params = [
             'name' => 'Foo',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
-        $this->routeMatch->setMatchedRouteName('zf-apigility/api/module/authentication');
+        $this->routeMatch->setMatchedRouteName('api-tools/api/module/authentication');
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->mappingAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $this->assertEquals('testoauth2pdo', $result->getVariable('authentication'));
     }
 
@@ -342,7 +344,7 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('put');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $request->getQuery()->set('version', 2);
         $this->controller->setRequest($request);
@@ -351,17 +353,17 @@ class AuthenticationControllerTest extends TestCase
         $parameters->setBodyParams([
             'authentication' => 'testoauth2mongo',
         ]);
-        $this->event->setParam('ZFContentNegotiationParameterData', $parameters);
+        $this->event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
         $params = [
             'name' => 'Status',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
-        $this->routeMatch->setMatchedRouteName('zf-apigility/api/module/authentication');
+        $this->routeMatch->setMatchedRouteName('api-tools/api/module/authentication');
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->mappingAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $this->assertEquals('testoauth2mongo', $result->getVariable('authentication'));
     }
 
@@ -369,7 +371,7 @@ class AuthenticationControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('delete');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $request->getQuery()->set('version', 1);
         $this->controller->setRequest($request);
@@ -378,11 +380,11 @@ class AuthenticationControllerTest extends TestCase
             'name' => 'Status',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
-        $this->routeMatch->setMatchedRouteName('zf-apigility/api/module/authentication');
+        $this->routeMatch->setMatchedRouteName('api-tools/api/module/authentication');
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->mappingAction();
-        $this->assertInstanceOf('Zend\Http\PhpEnvironment\Response', $result);
+        $this->assertInstanceOf('Laminas\Http\PhpEnvironment\Response', $result);
         $this->assertEquals(204, $result->getStatusCode());
     }
 }

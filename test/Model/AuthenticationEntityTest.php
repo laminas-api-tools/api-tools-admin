@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\AuthenticationEntity;
 use PHPUnit\Framework\TestCase;
-use ZF\Apigility\Admin\Model\AuthenticationEntity;
 
 class AuthenticationEntityTest extends TestCase
 {
@@ -43,13 +45,13 @@ class AuthenticationEntityTest extends TestCase
 
     public function testCanSpecifyRealmDuringInstantiation()
     {
-        $entity = new AuthenticationEntity(AuthenticationEntity::TYPE_BASIC, 'zendcon');
-        $this->assertAttributeEquals('zendcon', 'realm', $entity);
+        $entity = new AuthenticationEntity(AuthenticationEntity::TYPE_BASIC, 'laminascon');
+        $this->assertAttributeEquals('laminascon', 'realm', $entity);
     }
 
     public function testCanSetBasicParametersDuringInstantiation()
     {
-        $entity = new AuthenticationEntity(AuthenticationEntity::TYPE_BASIC, 'zendcon', [
+        $entity = new AuthenticationEntity(AuthenticationEntity::TYPE_BASIC, 'laminascon', [
             'htpasswd' => __DIR__ . '/htpasswd',
             'htdigest' => __DIR__ . '/htdigest',
         ]);
@@ -59,7 +61,7 @@ class AuthenticationEntityTest extends TestCase
 
     public function testCanSetDigestParametersDuringInstantiation()
     {
-        $entity = new AuthenticationEntity(AuthenticationEntity::TYPE_DIGEST, 'zendcon', [
+        $entity = new AuthenticationEntity(AuthenticationEntity::TYPE_DIGEST, 'laminascon', [
             'htpasswd'       => __DIR__ . '/htpasswd',
             'htdigest'       => __DIR__ . '/htdigest',
             'nonce_timeout'  => 3600,
@@ -90,21 +92,21 @@ class AuthenticationEntityTest extends TestCase
 
     public function testSerializationOfBasicAuthReturnsOnlyKeysSpecificToType()
     {
-        $entity = new AuthenticationEntity(AuthenticationEntity::TYPE_BASIC, 'zendcon', [
+        $entity = new AuthenticationEntity(AuthenticationEntity::TYPE_BASIC, 'laminascon', [
             'htpasswd' => __DIR__ . '/htpasswd',
             'htdigest' => __DIR__ . '/htdigest',
         ]);
         $this->assertEquals([
             'type'           => 'http_basic',
             'accept_schemes' => ['basic'],
-            'realm'          => 'zendcon',
+            'realm'          => 'laminascon',
             'htpasswd'       => __DIR__ . '/htpasswd',
         ], $entity->getArrayCopy());
     }
 
     public function testSerializationOfDigestAuthReturnsOnlyKeysSpecificToType()
     {
-        $entity = new AuthenticationEntity(AuthenticationEntity::TYPE_DIGEST, 'zendcon', [
+        $entity = new AuthenticationEntity(AuthenticationEntity::TYPE_DIGEST, 'laminascon', [
             'htpasswd'       => __DIR__ . '/htpasswd',
             'htdigest'       => __DIR__ . '/htdigest',
             'nonce_timeout'  => 3600,
@@ -113,7 +115,7 @@ class AuthenticationEntityTest extends TestCase
         $this->assertEquals([
             'type'           => 'http_digest',
             'accept_schemes' => ['digest'],
-            'realm'          => 'zendcon',
+            'realm'          => 'laminascon',
             'htdigest'       => __DIR__ . '/htdigest',
             'nonce_timeout'  => 3600,
             'digest_domains' => '/api',

@@ -1,24 +1,59 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin;
+namespace Laminas\ApiTools\Admin;
 
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    'zf-apigility-admin' => [
+    'api-tools-admin' => [
         // path_spec defines whether modules should be created using PSR-0
         //     or PSR-4 module structure; the default is to use PSR-0.
         //     Valid values are:
-        //     - ZF\Apigility\Admin\Model\ModulePathSpec::PSR_0 ("psr-0")
-        //     - ZF\Apigility\Admin\Model\ModulePathSpec::PSR_4 ("psr-4")
+        //     - Laminas\ApiTools\Admin\Model\ModulePathSpec::PSR_0 ("psr-0")
+        //     - Laminas\ApiTools\Admin\Model\ModulePathSpec::PSR_4 ("psr-4")
         // 'path_spec' => 'psr-0',
     ],
 
     'service_manager' => [
+        // Legacy Zend Framework aliases
+        'aliases' => [
+            \ZF\Apigility\Admin\Listener\CryptFilterListener::class => Listener\CryptFilterListener::class,
+            \ZF\Apigility\Admin\Listener\DisableHttpCacheListener::class => Listener\DisableHttpCacheListener::class,
+            \ZF\Apigility\Admin\Listener\EnableHalRenderCollectionsListener::class => Listener\EnableHalRenderCollectionsListener::class,
+            \ZF\Apigility\Admin\Listener\InjectModuleResourceLinksListener::class => Listener\InjectModuleResourceLinksListener::class,
+            \ZF\Apigility\Admin\Listener\NormalizeMatchedControllerServiceNameListener::class => Listener\NormalizeMatchedControllerServiceNameListener::class,
+            \ZF\Apigility\Admin\Listener\NormalizeMatchedInputFilterNameListener::class => Listener\NormalizeMatchedInputFilterNameListener::class,
+            \ZF\Apigility\Admin\Model\AuthenticationModel::class => Model\AuthenticationModel::class,
+            \ZF\Apigility\Admin\Model\AuthorizationModelFactory::class => Model\AuthorizationModelFactory::class,
+            \ZF\Apigility\Admin\Model\ContentNegotiationModel::class => Model\ContentNegotiationModel::class,
+            \ZF\Apigility\Admin\Model\ContentNegotiationResource::class => Model\ContentNegotiationResource::class,
+            \ZF\Apigility\Admin\Model\DbAdapterModel::class => Model\DbAdapterModel::class,
+            \ZF\Apigility\Admin\Model\DbAdapterResource::class => Model\DbAdapterResource::class,
+            \ZF\Apigility\Admin\Model\DbAutodiscoveryModel::class => Model\DbAutodiscoveryModel::class,
+            \ZF\Apigility\Admin\Model\DoctrineAdapterModel::class => Model\DoctrineAdapterModel::class,
+            \ZF\Apigility\Admin\Model\DoctrineAdapterResource::class => Model\DoctrineAdapterResource::class,
+            \ZF\Apigility\Admin\Model\DocumentationModel::class => Model\DocumentationModel::class,
+            \ZF\Apigility\Admin\Model\FiltersModel::class => Model\FiltersModel::class,
+            \ZF\Apigility\Admin\Model\HydratorsModel::class => Model\HydratorsModel::class,
+            \ZF\Apigility\Admin\Model\InputFilterModel::class => Model\InputFilterModel::class,
+            \ZF\Apigility\Admin\Model\ModuleModel::class => Model\ModuleModel::class,
+            \ZF\Apigility\Admin\Model\ModulePathSpec::class => Model\ModulePathSpec::class,
+            \ZF\Apigility\Admin\Model\ModuleResource::class => Model\ModuleResource::class,
+            \ZF\Apigility\Admin\Model\ModuleVersioningModelFactory::class => Model\ModuleVersioningModelFactory::class,
+            \ZF\Apigility\Admin\Model\RestServiceModelFactory::class => Model\RestServiceModelFactory::class,
+            \ZF\Apigility\Admin\Model\RestServiceResource::class => Model\RestServiceResource::class,
+            \ZF\Apigility\Admin\Model\RpcServiceModelFactory::class => Model\RpcServiceModelFactory::class,
+            \ZF\Apigility\Admin\Model\RpcServiceResource::class => Model\RpcServiceResource::class,
+            \ZF\Apigility\Admin\Model\ValidatorMetadataModel::class => Model\ValidatorMetadataModel::class,
+            \ZF\Apigility\Admin\Model\ValidatorsModel::class => Model\ValidatorsModel::class,
+            \ZF\Apigility\Admin\Model\VersioningModelFactory::class => Model\VersioningModelFactory::class,
+        ],
         'factories' => [
             // @codingStandardsIgnoreStart
             Listener\CryptFilterListener::class                           => InvokableFactory::class,
@@ -71,9 +106,47 @@ return [
             Controller\Package::class                  => Controller\PackageController::class,
             Controller\Source::class                   => Controller\SourceController::class,
             Controller\Versioning::class               => Controller\VersioningController::class,
+
+            // Legacy Zend Framework aliases
+            \ZF\Apigility\Admin\Controller\App::class => Controller\App::class,
+            \ZF\Apigility\Admin\Controller\Authentication::class => Controller\Authentication::class,
+            \ZF\Apigility\Admin\Controller\Authorization::class => Controller\Authorization::class,
+            \ZF\Apigility\Admin\Controller\CacheEnabled::class => Controller\CacheEnabled::class,
+            \ZF\Apigility\Admin\Controller\Config::class => Controller\Config::class,
+            \ZF\Apigility\Admin\Controller\FsPermissions::class => Controller\FsPermissions::class,
+            \ZF\Apigility\Admin\Controller\HttpBasicAuthentication::class => Controller\HttpBasicAuthentication::class,
+            \ZF\Apigility\Admin\Controller\HttpDigestAuthentication::class => Controller\HttpDigestAuthentication::class,
+            \ZF\Apigility\Admin\Controller\ModuleConfig::class => Controller\ModuleConfig::class,
+            \ZF\Apigility\Admin\Controller\ModuleCreation::class => Controller\ModuleCreation::class,
+            \ZF\Apigility\Admin\Controller\OAuth2Authentication::class => Controller\OAuth2Authentication::class,
+            \ZF\Apigility\Admin\Controller\Package::class => Controller\Package::class,
+            \ZF\Apigility\Admin\Controller\Source::class => Controller\Source::class,
+            \ZF\Apigility\Admin\Controller\Versioning::class => Controller\Versioning::class,
+            \ZF\Apigility\Admin\Controller\ApigilityVersionController::class => Controller\ApiToolsVersionController::class,
+            \ZF\Apigility\Admin\Controller\AppController::class => Controller\AppController::class,
+            \ZF\Apigility\Admin\Controller\AuthenticationController::class => Controller\AuthenticationController::class,
+            \ZF\Apigility\Admin\Controller\AuthenticationType::class => Controller\AuthenticationType::class,
+            \ZF\Apigility\Admin\Controller\AuthorizationController::class => Controller\AuthorizationController::class,
+            \ZF\Apigility\Admin\Controller\CacheEnabledController::class => Controller\CacheEnabledController::class,
+            \ZF\Apigility\Admin\Controller\ConfigController::class => Controller\ConfigController::class,
+            \ZF\Apigility\Admin\Controller\Dashboard::class => Controller\Dashboard::class,
+            \ZF\Apigility\Admin\Controller\DbAutodiscovery::class => Controller\DbAutodiscovery::class,
+            \ZF\Apigility\Admin\Controller\Documentation::class => Controller\Documentation::class,
+            \ZF\Apigility\Admin\Controller\Filters::class => Controller\Filters::class,
+            \ZF\Apigility\Admin\Controller\FsPermissionsController::class => Controller\FsPermissionsController::class,
+            \ZF\Apigility\Admin\Controller\Hydrators::class => Controller\Hydrators::class,
+            \ZF\Apigility\Admin\Controller\InputFilter::class => Controller\InputFilter::class,
+            \ZF\Apigility\Admin\Controller\ModuleConfigController::class => Controller\ModuleConfigController::class,
+            \ZF\Apigility\Admin\Controller\ModuleCreationController::class => Controller\ModuleCreationController::class,
+            \ZF\Apigility\Admin\Controller\PackageController::class => Controller\PackageController::class,
+            \ZF\Apigility\Admin\Controller\SettingsDashboard::class => Controller\SettingsDashboard::class,
+            \ZF\Apigility\Admin\Controller\SourceController::class => Controller\SourceController::class,
+            \ZF\Apigility\Admin\Controller\Strategy::class => Controller\Strategy::class,
+            \ZF\Apigility\Admin\Controller\Validators::class => Controller\Validators::class,
+            \ZF\Apigility\Admin\Controller\VersioningController::class => Controller\VersioningController::class,
         ],
         'factories' => [
-            Controller\ApigilityVersionController::class => InvokableFactory::class,
+            Controller\ApiToolsVersionController::class => InvokableFactory::class,
             Controller\AppController::class            => InvokableFactory::class,
             Controller\AuthenticationController::class => Controller\AuthenticationControllerFactory::class,
             Controller\AuthenticationType::class       => Controller\AuthenticationTypeControllerFactory::class,
@@ -100,7 +173,7 @@ return [
 
     'router' => [
         'routes' => [
-            'zf-apigility' => [
+            'api-tools' => [
                 'child_routes' => [
                     'ui' => [
                         'type'  => 'Literal',
@@ -117,18 +190,18 @@ return [
                         'options' => [
                             'route' => '/api',
                             'defaults' => [
-                                'is_apigility_admin_api' => true,
+                                'is_api-tools_admin_api' => true,
                                 'action'                 => false,
                             ],
                         ],
                         'may_terminate' => false,
                         'child_routes' => [
-                            'apigility-version' => [
+                            'api-tools-version' => [
                                 'type' => 'Literal',
                                 'options' => [
-                                    'route' => '/apigility-version',
+                                    'route' => '/api-tools-version',
                                     'defaults' => [
-                                        'controller' => Controller\ApigilityVersionController::class,
+                                        'controller' => Controller\ApiToolsVersionController::class,
                                         'action'     => 'index',
                                     ],
                                 ],
@@ -477,9 +550,9 @@ return [
         ],
     ],
 
-    'zf-content-negotiation' => [
+    'api-tools-content-negotiation' => [
         'controllers' => [
-            Controller\ApigilityVersionController::class => 'Json',
+            Controller\ApiToolsVersionController::class => 'Json',
             Controller\Authentication::class           => 'HalJson',
             Controller\AuthenticationType::class       => 'Json',
             Controller\Authorization::class            => 'HalJson',
@@ -509,7 +582,7 @@ return [
             Controller\Versioning::class               => 'Json',
         ],
         'accept_whitelist' => [
-            Controller\ApigilityVersionController::class => [
+            Controller\ApiToolsVersionController::class => [
                 'application/json',
                 'application/*+json',
             ],
@@ -703,7 +776,7 @@ return [
         ],
     ],
 
-    'zf-hal' => [
+    'api-tools-hal' => [
         'metadata_map' => [
             Model\AuthenticationEntity::class => [
                 'hydrator'        => 'ArraySerializable',
@@ -715,28 +788,28 @@ return [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'content_name',
                 'entity_identifier_name' => 'content_name',
-                'route_name'      => 'zf-apigility/api/content-negotiation',
+                'route_name'      => 'api-tools/api/content-negotiation',
             ],
             Model\DbConnectedRestServiceEntity::class => [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'controller_service_name',
                 'entity_identifier_name' => 'controller_service_name',
-                'route_name'      => 'zf-apigility/api/module/rest-service',
+                'route_name'      => 'api-tools/api/module/rest-service',
             ],
             Model\DbAdapterEntity::class => [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'adapter_name',
                 'entity_identifier_name' => 'adapter_name',
-                'route_name'      => 'zf-apigility/api/db-adapter',
+                'route_name'      => 'api-tools/api/db-adapter',
             ],
             Model\DoctrineAdapterEntity::class => [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'adapter_name',
                 'entity_identifier_name' => 'adapter_name',
-                'route_name'      => 'zf-apigility/api/doctrine-adapter',
+                'route_name'      => 'api-tools/api/doctrine-adapter',
             ],
             Model\InputFilterCollection::class => [
-                'route_name'      => 'zf-apigility/api/module/rest-service/input-filter',
+                'route_name'      => 'api-tools/api/module/rest-service/input-filter',
                 'is_collection'   => true,
                 'collection_name' => 'input_filter',
                 'route_identifier_name' => 'input_filter_name',
@@ -746,16 +819,16 @@ return [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'input_filter_name',
                 'entity_identifier_name' => 'input_filter_name',
-                'route_name'      => 'zf-apigility/api/module/rest-service/input-filter',
+                'route_name'      => 'api-tools/api/module/rest-service/input-filter',
             ],
             Model\ModuleEntity::class => [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'name',
                 'entity_identifier_name' => 'name',
-                'route_name'      => 'zf-apigility/api/module',
+                'route_name'      => 'api-tools/api/module',
             ],
             Model\RestInputFilterCollection::class => [
-                'route_name'      => 'zf-apigility/api/module/rest-service/input-filter',
+                'route_name'      => 'api-tools/api/module/rest-service/input-filter',
                 'is_collection'   => true,
                 'collection_name' => 'input_filter',
                 'route_identifier_name' => 'input_filter_name',
@@ -764,37 +837,37 @@ return [
             Model\RestInputFilterEntity::class => [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'input_filter_name',
-                'route_name'      => 'zf-apigility/api/module/rest-service/input-filter',
+                'route_name'      => 'api-tools/api/module/rest-service/input-filter',
                 'entity_identifier_name' => 'input_filter_name',
             ],
             Model\DocumentationEntity::class => [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'rest_documentation',
                 'entity_identifier_name' => 'rest_documentation',
-                'route_name'      => 'zf-apigility/api/module/rest-service/rest-doc',
+                'route_name'      => 'api-tools/api/module/rest-service/rest-doc',
             ],
             Model\RestServiceEntity::class => [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'controller_service_name',
                 'entity_identifier_name' => 'controller_service_name',
-                'route_name'      => 'zf-apigility/api/module/rest-service',
+                'route_name'      => 'api-tools/api/module/rest-service',
                 'links'           => [
                     [
                         'rel' => 'input_filter',
                         'route' => [
-                            'name' => 'zf-apigility/api/module/rest-service/input-filter',
+                            'name' => 'api-tools/api/module/rest-service/input-filter',
                         ],
                     ],
                     [
                         'rel' => 'documentation',
                         'route' => [
-                            'name' => 'zf-apigility/api/module/rest-service/doc',
+                            'name' => 'api-tools/api/module/rest-service/doc',
                         ],
                     ],
                 ],
             ],
             Model\RpcInputFilterCollection::class => [
-                'route_name'      => 'zf-apigility/api/module/rpc-service/input-filter',
+                'route_name'      => 'api-tools/api/module/rpc-service/input-filter',
                 'is_collection'   => true,
                 'collection_name' => 'input_filter',
                 'route_identifier_name' => 'input_filter_name',
@@ -803,25 +876,25 @@ return [
             Model\RpcInputFilterEntity::class => [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'input_filter_name',
-                'route_name'      => 'zf-apigility/api/module/rpc-service/input-filter',
+                'route_name'      => 'api-tools/api/module/rpc-service/input-filter',
                 'entity_identifier_name' => 'input_filter_name',
             ],
             Model\RpcServiceEntity::class => [
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'controller_service_name',
                 'entity_identifier_name' => 'controller_service_name',
-                'route_name'      => 'zf-apigility/api/module/rpc-service',
+                'route_name'      => 'api-tools/api/module/rpc-service',
                 'links'           => [
                     [
                         'rel' => 'input_filter',
                         'route' => [
-                            'name' => 'zf-apigility/api/module/rpc-service/input-filter',
+                            'name' => 'api-tools/api/module/rpc-service/input-filter',
                         ],
                     ],
                     [
                         'rel' => 'documentation',
                         'route' => [
-                            'name' => 'zf-apigility/api/module/rpc-service/doc',
+                            'name' => 'api-tools/api/module/rpc-service/doc',
                         ],
                     ],
                 ],
@@ -829,10 +902,10 @@ return [
         ],
     ],
 
-    'zf-rest' => [
+    'api-tools-rest' => [
         Controller\ContentNegotiation::class => [
             'listener'                => Model\ContentNegotiationResource::class,
-            'route_name'              => 'zf-apigility/api/content-negotiation',
+            'route_name'              => 'api-tools/api/content-negotiation',
             'route_identifier_name'   => 'content_name',
             'entity_class'            => Model\ContentNegotiationEntity::class,
             'entity_http_methods'     => ['GET', 'PATCH', 'DELETE'],
@@ -841,7 +914,7 @@ return [
         ],
         Controller\DbAdapter::class => [
             'listener'                => Model\DbAdapterResource::class,
-            'route_name'              => 'zf-apigility/api/db-adapter',
+            'route_name'              => 'api-tools/api/db-adapter',
             'route_identifier_name'   => 'adapter_name',
             'entity_class'            => Model\DbAdapterEntity::class,
             'entity_http_methods'     => ['GET', 'PATCH', 'DELETE'],
@@ -850,7 +923,7 @@ return [
         ],
         Controller\DoctrineAdapter::class => [
             'listener'                => Model\DoctrineAdapterResource::class,
-            'route_name'              => 'zf-apigility/api/doctrine-adapter',
+            'route_name'              => 'api-tools/api/doctrine-adapter',
             'route_identifier_name'   => 'adapter_name',
             'entity_class'            => Model\DoctrineAdapterEntity::class,
             'entity_http_methods'     => ['GET', 'PATCH', 'DELETE'],
@@ -859,7 +932,7 @@ return [
         ],
         Controller\Module::class => [
             'listener'                => Model\ModuleResource::class,
-            'route_name'              => 'zf-apigility/api/module',
+            'route_name'              => 'api-tools/api/module',
             'route_identifier_name'   => 'name',
             'entity_class'            => Model\ModuleEntity::class,
             'entity_http_methods'     => ['GET', 'DELETE'],
@@ -868,7 +941,7 @@ return [
         ],
         Controller\RpcService::class => [
             'listener'                   => Model\RpcServiceResource::class,
-            'route_name'                 => 'zf-apigility/api/module/rpc-service',
+            'route_name'                 => 'api-tools/api/module/rpc-service',
             'entity_class'               => Model\RpcServiceEntity::class,
             'route_identifier_name'      => 'controller_service_name',
             'entity_http_methods'        => ['GET', 'PATCH', 'DELETE'],
@@ -878,7 +951,7 @@ return [
         ],
         Controller\RestService::class => [
             'listener'                   => Model\RestServiceResource::class,
-            'route_name'                 => 'zf-apigility/api/module/rest-service',
+            'route_name'                 => 'api-tools/api/module/rest-service',
             'entity_class'               => Model\RestServiceEntity::class,
             'route_identifier_name'      => 'controller_service_name',
             'entity_http_methods'        => ['GET', 'PATCH', 'DELETE'],
@@ -888,102 +961,102 @@ return [
         ],
     ],
 
-    'zf-rpc' => [
-        Controller\ApigilityVersionController::class => [
+    'api-tools-rpc' => [
+        Controller\ApiToolsVersionController::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/apigility-version',
+            'route_name'   => 'api-tools/api/api-tools-version',
         ],
         Controller\Authentication::class => [
             'http_methods' => ['GET', 'POST', 'PUT', 'DELETE'],
-            'route_name'   => 'zf-apigility/api/authentication',
+            'route_name'   => 'api-tools/api/authentication',
         ],
         Controller\AuthenticationType::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/authentication-type',
+            'route_name'   => 'api-tools/api/authentication-type',
         ],
         Controller\Authorization::class => [
             'http_methods' => ['GET', 'PATCH', 'PUT'],
-            'route_name'   => 'zf-apigility/api/module/authorization',
+            'route_name'   => 'api-tools/api/module/authorization',
         ],
         Controller\CacheEnabled::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/cache-enabled',
+            'route_name'   => 'api-tools/api/cache-enabled',
         ],
         Controller\Config::class => [
             'http_methods' => ['GET', 'PATCH'],
-            'route_name'   => 'zf-apigility/api/config',
+            'route_name'   => 'api-tools/api/config',
         ],
         Controller\Dashboard::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/dashboard',
+            'route_name'   => 'api-tools/api/dashboard',
         ],
         Controller\DbAutodiscovery::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/module/db-autodiscovery',
+            'route_name'   => 'api-tools/api/module/db-autodiscovery',
         ],
         Controller\Documentation::class => [
             'http_methods' => ['GET', 'PATCH', 'PUT', 'DELETE'],
-            'route_name'   => 'zf-apigility/api/rest-service/rest-doc',
+            'route_name'   => 'api-tools/api/rest-service/rest-doc',
         ],
         Controller\Filters::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/filters',
+            'route_name'   => 'api-tools/api/filters',
         ],
         Controller\FsPermissions::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/fs-permissions',
+            'route_name'   => 'api-tools/api/fs-permissions',
         ],
         Controller\HttpBasicAuthentication::class => [
             'http_methods' => ['GET', 'POST', 'PATCH', 'DELETE'],
-            'route_name'   => 'zf-apigility/api/authentication/http-basic',
+            'route_name'   => 'api-tools/api/authentication/http-basic',
         ],
         Controller\HttpDigestAuthentication::class => [
             'http_methods' => ['GET', 'POST', 'PATCH', 'DELETE'],
-            'route_name'   => 'zf-apigility/api/authentication/http-digest',
+            'route_name'   => 'api-tools/api/authentication/http-digest',
         ],
         Controller\Hydrators::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/hydrators',
+            'route_name'   => 'api-tools/api/hydrators',
         ],
         Controller\InputFilter::class => [
             'http_methods' => ['GET', 'POST', 'PUT', 'DELETE'],
-            'route_name'   => 'zf-apigility/api/rpc-service/input-filter',
+            'route_name'   => 'api-tools/api/rpc-service/input-filter',
         ],
         Controller\ModuleConfig::class => [
             'http_methods' => ['GET', 'PATCH'],
-            'route_name'   => 'zf-apigility/api/config/module',
+            'route_name'   => 'api-tools/api/config/module',
         ],
         Controller\ModuleCreation::class => [
             'http_methods' => ['PUT'],
-            'route_name'   => 'zf-apigility/api/module-enable',
+            'route_name'   => 'api-tools/api/module-enable',
         ],
         Controller\OAuth2Authentication::class => [
             'http_methods' => ['GET', 'POST', 'PATCH', 'DELETE'],
-            'route_name'   => 'zf-apigility/api/authentication/oauth2',
+            'route_name'   => 'api-tools/api/authentication/oauth2',
         ],
         Controller\SettingsDashboard::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/settings-dashboard',
+            'route_name'   => 'api-tools/api/settings-dashboard',
         ],
         Controller\Source::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/source',
+            'route_name'   => 'api-tools/api/source',
         ],
         Controller\Validators::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/validators',
+            'route_name'   => 'api-tools/api/validators',
         ],
         Controller\Versioning::class => [
             'http_methods' => ['PATCH'],
-            'route_name'   => 'zf-apigility/api/versioning',
+            'route_name'   => 'api-tools/api/versioning',
         ],
         Controller\Strategy::class => [
             'http_methods' => ['GET'],
-            'route_name'   => 'zf-apigility/api/strategy',
+            'route_name'   => 'api-tools/api/strategy',
         ],
         Controller\Package::class => [
             'http_methods' => ['GET', 'POST'],
-            'route_name'   => 'zf-apigility/api/package',
+            'route_name'   => 'api-tools/api/package',
         ],
     ],
 
@@ -995,63 +1068,63 @@ return [
      * OR'd.
      */
     'filter_metadata' => [
-        'Zend\I18n\Filter\Alnum' => [
+        'Laminas\I18n\Filter\Alnum' => [
             'allow_white_space' => 'bool',
             'locale' => 'string',
         ],
-        'Zend\I18n\Filter\Alpha' => [
+        'Laminas\I18n\Filter\Alpha' => [
             'allow_white_space' => 'bool',
             'locale' => 'string',
         ],
-        'Zend\Filter\BaseName' => [],
-        'Zend\Filter\Boolean' => [
+        'Laminas\Filter\BaseName' => [],
+        'Laminas\Filter\Boolean' => [
             'casting' => 'bool',
             'type' => 'string',
         ],
-        'Zend\Filter\Callback' => [
+        'Laminas\Filter\Callback' => [
             'callback' => 'string',
         ],
-        'Zend\Filter\Compress\Bz2' => [
+        'Laminas\Filter\Compress\Bz2' => [
             'archive' => 'string',
             'blocksize' => 'int',
         ],
-        'Zend\Filter\Compress\Gz' => [
+        'Laminas\Filter\Compress\Gz' => [
             'archive' => 'string',
             'level' => 'int',
             'mode' => 'string',
         ],
-        'Zend\Filter\Compress\Lzf' => [],
-        'Zend\Filter\Compress' => [
+        'Laminas\Filter\Compress\Llaminas' => [],
+        'Laminas\Filter\Compress' => [
             'adapter' => 'string',
         ],
-        'Zend\Filter\Compress\Rar' => [
+        'Laminas\Filter\Compress\Rar' => [
             'archive' => 'string',
             'callback' => 'string',
             'password' => 'string',
             'target' => 'string',
         ],
-        'Zend\Filter\Compress\Snappy' => [],
-        'Zend\Filter\Compress\Tar' => [
+        'Laminas\Filter\Compress\Snappy' => [],
+        'Laminas\Filter\Compress\Tar' => [
             'archive' => 'string',
             'target' => 'string',
             'mode' => 'string',
         ],
-        'Zend\Filter\Compress\Zip' => [
+        'Laminas\Filter\Compress\Zip' => [
             'archive' => 'string',
             'target' => 'string',
         ],
-        'Zend\Filter\DateTimeFormatter' => [
+        'Laminas\Filter\DateTimeFormatter' => [
             'format' => 'string',
         ],
-        'Zend\Filter\Decompress' => [
+        'Laminas\Filter\Decompress' => [
             'adapter' => 'string',
         ],
-        'Zend\Filter\Decrypt' => [
+        'Laminas\Filter\Decrypt' => [
             'adapter' => 'string',
         ],
-        'Zend\Filter\Digits' => [],
-        'Zend\Filter\Dir' => [],
-        'Zend\Filter\Encrypt\BlockCipher' => [
+        'Laminas\Filter\Digits' => [],
+        'Laminas\Filter\Dir' => [],
+        'Laminas\Filter\Encrypt\BlockCipher' => [
             'algorithm' => 'string',
             'compression' => 'string',
             'hash' => 'string',
@@ -1059,118 +1132,118 @@ return [
             'key_iteration' => 'int',
             'vector' => 'string',
         ],
-        'Zend\Filter\Encrypt\Openssl' => [
+        'Laminas\Filter\Encrypt\Openssl' => [
             'compression' => 'string',
             'package' => 'bool',
             'passphrase' => 'string',
         ],
-        'Zend\Filter\Encrypt' => [
+        'Laminas\Filter\Encrypt' => [
             'adapter' => 'string',
         ],
-        'Zend\Filter\File\Decrypt' => [
-            'adapter' => 'string',
-            'filename' => 'string',
-        ],
-        'Zend\Filter\File\Encrypt' => [
+        'Laminas\Filter\File\Decrypt' => [
             'adapter' => 'string',
             'filename' => 'string',
         ],
-        'Zend\Filter\File\LowerCase' => [
+        'Laminas\Filter\File\Encrypt' => [
+            'adapter' => 'string',
+            'filename' => 'string',
+        ],
+        'Laminas\Filter\File\LowerCase' => [
             'encoding' => 'string',
         ],
-        'Zend\Filter\File\Rename' => [
+        'Laminas\Filter\File\Rename' => [
             'overwrite' => 'bool',
             'randomize' => 'bool',
             'source' => 'string',
             'target' => 'string',
         ],
-        'Zend\Filter\File\RenameUpload' => [
+        'Laminas\Filter\File\RenameUpload' => [
             'overwrite' => 'bool',
             'randomize' => 'bool',
             'target' => 'string',
             'use_upload_extension' => 'bool',
             'use_upload_name' => 'bool',
         ],
-        'Zend\Filter\File\UpperCase' => [
+        'Laminas\Filter\File\UpperCase' => [
             'encoding' => 'string',
         ],
-        'Zend\Filter\HtmlEntities' => [
+        'Laminas\Filter\HtmlEntities' => [
             'charset' => 'string',
             'doublequote' => 'bool',
             'encoding' => 'string',
             'quotestyle' => 'int',
         ],
-        'Zend\Filter\Inflector' => [
+        'Laminas\Filter\Inflector' => [
             'throwTargetExceptionsOn' => 'bool',
             'targetReplacementIdentifier' => 'string',
             'target' => 'string',
         ],
-        'Zend\Filter\Int' => [],
-        'Zend\Filter\Null' => [
+        'Laminas\Filter\Int' => [],
+        'Laminas\Filter\Null' => [
             'type' => 'int|string',
         ],
-        'Zend\I18n\Filter\NumberFormat' => [
+        'Laminas\I18n\Filter\NumberFormat' => [
             'locale' => 'string',
             'style' => 'int',
             'type' => 'int',
         ],
-        'Zend\I18n\Filter\NumberParse' => [
+        'Laminas\I18n\Filter\NumberParse' => [
             'locale' => 'string',
             'style' => 'int',
             'type' => 'int',
         ],
-        'Zend\Filter\PregReplace' => [
+        'Laminas\Filter\PregReplace' => [
             'pattern' => 'string',
             'replacement' => 'string',
         ],
-        'Zend\Filter\RealPath' => [
+        'Laminas\Filter\RealPath' => [
             'exists' => 'bool',
         ],
-        'Zend\Filter\StringToLower' => [
+        'Laminas\Filter\StringToLower' => [
             'encoding' => 'string',
         ],
-        'Zend\Filter\StringToUpper' => [
+        'Laminas\Filter\StringToUpper' => [
             'encoding' => 'string',
         ],
-        'Zend\Filter\StringTrim' => [
+        'Laminas\Filter\StringTrim' => [
             'charlist' => 'string',
         ],
-        'Zend\Filter\StripNewlines' => [],
-        'Zend\Filter\StripTags' => [
+        'Laminas\Filter\StripNewlines' => [],
+        'Laminas\Filter\StripTags' => [
             'allowAttribs' => 'string',
             'allowTags' => 'string',
         ],
-        'Zend\Filter\ToInt' => [],
-        'Zend\Filter\ToNull' => [
+        'Laminas\Filter\ToInt' => [],
+        'Laminas\Filter\ToNull' => [
             'type' => 'int|string',
         ],
-        'Zend\Filter\UriNormalize' => [
+        'Laminas\Filter\UriNormalize' => [
             'defaultscheme' => 'string',
             'enforcedscheme' => 'string',
         ],
-        'Zend\Filter\Word\CamelCaseToDash' => [],
-        'Zend\Filter\Word\CamelCaseToSeparator' => [
+        'Laminas\Filter\Word\CamelCaseToDash' => [],
+        'Laminas\Filter\Word\CamelCaseToSeparator' => [
             'separator' => 'string',
         ],
-        'Zend\Filter\Word\CamelCaseToUnderscore' => [],
-        'Zend\Filter\Word\DashToCamelCase' => [],
-        'Zend\Filter\Word\DashToSeparator' => [
+        'Laminas\Filter\Word\CamelCaseToUnderscore' => [],
+        'Laminas\Filter\Word\DashToCamelCase' => [],
+        'Laminas\Filter\Word\DashToSeparator' => [
             'separator' => 'string',
         ],
-        'Zend\Filter\Word\DashToUnderscore' => [],
-        'Zend\Filter\Word\SeparatorToCamelCase' => [
+        'Laminas\Filter\Word\DashToUnderscore' => [],
+        'Laminas\Filter\Word\SeparatorToCamelCase' => [
             'separator' => 'string',
         ],
-        'Zend\Filter\Word\SeparatorToDash' => [
+        'Laminas\Filter\Word\SeparatorToDash' => [
             'separator' => 'string',
         ],
-        'Zend\Filter\Word\SeparatorToSeparator' => [
+        'Laminas\Filter\Word\SeparatorToSeparator' => [
             'searchseparator' => 'string',
             'replacementseparator' => 'string',
         ],
-        'Zend\Filter\Word\UnderscoreToCamelCase' => [],
-        'Zend\Filter\Word\UnderscoreToDash' => [],
-        'Zend\Filter\Word\UnderscoreToSeparator' => [
+        'Laminas\Filter\Word\UnderscoreToCamelCase' => [],
+        'Laminas\Filter\Word\UnderscoreToDash' => [],
+        'Laminas\Filter\Word\UnderscoreToSeparator' => [
             'separator' => 'string',
         ],
     ],
@@ -1194,261 +1267,261 @@ return [
             'translatortextdomain' => 'string',
             'translatorenabled' => 'bool',
         ],
-        'Zend\Validator\Barcode\Codabar' => [],
-        'Zend\Validator\Barcode\Code128' => [],
-        'Zend\Validator\Barcode\Code25interleaved' => [],
-        'Zend\Validator\Barcode\Code25' => [],
-        'Zend\Validator\Barcode\Code39ext' => [],
-        'Zend\Validator\Barcode\Code39' => [],
-        'Zend\Validator\Barcode\Code93ext' => [],
-        'Zend\Validator\Barcode\Code93' => [],
-        'Zend\Validator\Barcode\Ean12' => [],
-        'Zend\Validator\Barcode\Ean13' => [],
-        'Zend\Validator\Barcode\Ean14' => [],
-        'Zend\Validator\Barcode\Ean18' => [],
-        'Zend\Validator\Barcode\Ean2' => [],
-        'Zend\Validator\Barcode\Ean5' => [],
-        'Zend\Validator\Barcode\Ean8' => [],
-        'Zend\Validator\Barcode\Gtin12' => [],
-        'Zend\Validator\Barcode\Gtin13' => [],
-        'Zend\Validator\Barcode\Gtin14' => [],
-        'Zend\Validator\Barcode\Identcode' => [],
-        'Zend\Validator\Barcode\Intelligentmail' => [],
-        'Zend\Validator\Barcode\Issn' => [],
-        'Zend\Validator\Barcode\Itf14' => [],
-        'Zend\Validator\Barcode\Leitcode' => [],
-        'Zend\Validator\Barcode' => [
+        'Laminas\Validator\Barcode\Codabar' => [],
+        'Laminas\Validator\Barcode\Code128' => [],
+        'Laminas\Validator\Barcode\Code25interleaved' => [],
+        'Laminas\Validator\Barcode\Code25' => [],
+        'Laminas\Validator\Barcode\Code39ext' => [],
+        'Laminas\Validator\Barcode\Code39' => [],
+        'Laminas\Validator\Barcode\Code93ext' => [],
+        'Laminas\Validator\Barcode\Code93' => [],
+        'Laminas\Validator\Barcode\Ean12' => [],
+        'Laminas\Validator\Barcode\Ean13' => [],
+        'Laminas\Validator\Barcode\Ean14' => [],
+        'Laminas\Validator\Barcode\Ean18' => [],
+        'Laminas\Validator\Barcode\Ean2' => [],
+        'Laminas\Validator\Barcode\Ean5' => [],
+        'Laminas\Validator\Barcode\Ean8' => [],
+        'Laminas\Validator\Barcode\Gtin12' => [],
+        'Laminas\Validator\Barcode\Gtin13' => [],
+        'Laminas\Validator\Barcode\Gtin14' => [],
+        'Laminas\Validator\Barcode\Identcode' => [],
+        'Laminas\Validator\Barcode\Intelligentmail' => [],
+        'Laminas\Validator\Barcode\Issn' => [],
+        'Laminas\Validator\Barcode\Itf14' => [],
+        'Laminas\Validator\Barcode\Leitcode' => [],
+        'Laminas\Validator\Barcode' => [
             'adapter' => 'string', // this is the validator adapter name to use
             'useChecksum' => 'bool',
         ],
-        'Zend\Validator\Barcode\Planet' => [],
-        'Zend\Validator\Barcode\Postnet' => [],
-        'Zend\Validator\Barcode\Royalmail' => [],
-        'Zend\Validator\Barcode\Sscc' => [],
-        'Zend\Validator\Barcode\Upca' => [],
-        'Zend\Validator\Barcode\Upce' => [],
-        'Zend\Validator\Between' => [
+        'Laminas\Validator\Barcode\Planet' => [],
+        'Laminas\Validator\Barcode\Postnet' => [],
+        'Laminas\Validator\Barcode\Royalmail' => [],
+        'Laminas\Validator\Barcode\Sscc' => [],
+        'Laminas\Validator\Barcode\Upca' => [],
+        'Laminas\Validator\Barcode\Upce' => [],
+        'Laminas\Validator\Between' => [
             'inclusive' => 'bool',
             'max' => 'int',
             'min' => 'int',
         ],
-        'Zend\Validator\Bitwise' => [
+        'Laminas\Validator\Bitwise' => [
             'control' => 'int',
             'operator' => 'string',
             'strict' => 'bool',
         ],
-        'Zend\Validator\Callback' => [
+        'Laminas\Validator\Callback' => [
             'callback' => 'string',
         ],
-        'Zend\Validator\CreditCard' => [
+        'Laminas\Validator\CreditCard' => [
             'type' => 'string',
             'service' => 'string',
         ],
-        'Zend\Validator\Csrf' => [
+        'Laminas\Validator\Csrf' => [
             'name' => 'string',
             'salt' => 'string',
             'timeout' => 'int',
         ],
-        'Zend\Validator\Date' => [
+        'Laminas\Validator\Date' => [
             'format' => 'string',
         ],
-        'Zend\Validator\DateStep' => [
+        'Laminas\Validator\DateStep' => [
             'format' => 'string',
             'basevalue' => 'string|int',
         ],
-        'Zend\Validator\Db\NoRecordExists' => [
+        'Laminas\Validator\Db\NoRecordExists' => [
             'table' => 'string',
             'schema' => 'string',
             'field' => 'string',
             'exclude' => 'string',
         ],
-        'Zend\Validator\Db\RecordExists' => [
+        'Laminas\Validator\Db\RecordExists' => [
             'table' => 'string',
             'schema' => 'string',
             'field' => 'string',
             'exclude' => 'string',
         ],
-        'ZF\ContentValidation\Validator\DbNoRecordExists' => [
+        'Laminas\ApiTools\ContentValidation\Validator\DbNoRecordExists' => [
             'adapter' => 'string',
             'table' => 'string',
             'schema' => 'string',
             'field' => 'string',
             'exclude' => 'string',
         ],
-        'ZF\ContentValidation\Validator\DbRecordExists' => [
+        'Laminas\ApiTools\ContentValidation\Validator\DbRecordExists' => [
             'adapter' => 'string',
             'table' => 'string',
             'schema' => 'string',
             'field' => 'string',
             'exclude' => 'string',
         ],
-        'Zend\Validator\Digits' => [],
-        'Zend\Validator\EmailAddress' => [
+        'Laminas\Validator\Digits' => [],
+        'Laminas\Validator\EmailAddress' => [
             'allow' => 'int',
             'useMxCheck' => 'bool',
             'useDeepMxCheck' => 'bool',
             'useDomainCheck' => 'bool',
         ],
-        'Zend\Validator\Explode' => [
+        'Laminas\Validator\Explode' => [
             'valuedelimiter' => 'string',
             'breakonfirstfailure' => 'bool',
         ],
-        'Zend\Validator\File\Count' => [
+        'Laminas\Validator\File\Count' => [
             'max' => 'int',
             'min' => 'int',
         ],
-        'Zend\Validator\File\Crc32' => [
+        'Laminas\Validator\File\Crc32' => [
             'algorithm' => 'string',
             'hash' => 'string',
             'crc32' => 'string',
         ],
-        'Zend\Validator\File\ExcludeExtension' => [
+        'Laminas\Validator\File\ExcludeExtension' => [
             'case' => 'bool',
             'extension' => 'string',
         ],
-        'Zend\Validator\File\ExcludeMimeType' => [
+        'Laminas\Validator\File\ExcludeMimeType' => [
             'disableMagicFile' => 'bool',
             'magicFile' => 'string',
             'enableHeaderCheck' => 'bool',
             'mimeType' => 'string',
         ],
-        'Zend\Validator\File\Exists' => [
+        'Laminas\Validator\File\Exists' => [
             'directory' => 'string',
         ],
-        'Zend\Validator\File\Extension' => [
+        'Laminas\Validator\File\Extension' => [
             'case' => 'bool',
             'extension' => 'string',
         ],
-        'Zend\Validator\File\FilesSize' => [
+        'Laminas\Validator\File\FilesSize' => [
             'max' => 'int',
             'min' => 'int',
             'size' => 'int',
             'useByteString' => 'bool',
         ],
-        'Zend\Validator\File\Hash' => [
+        'Laminas\Validator\File\Hash' => [
             'algorithm' => 'string',
             'hash' => 'string',
         ],
-        'Zend\Validator\File\ImageSize' => [
+        'Laminas\Validator\File\ImageSize' => [
             'maxHeight' => 'int',
             'minHeight' => 'int',
             'maxWidth' => 'int',
             'minWidth' => 'int',
         ],
-        'Zend\Validator\File\IsCompressed' => [
+        'Laminas\Validator\File\IsCompressed' => [
             'disableMagicFile' => 'bool',
             'magicFile' => 'string',
             'enableHeaderCheck' => 'bool',
             'mimeType' => 'string',
         ],
-        'Zend\Validator\File\IsImage' => [
+        'Laminas\Validator\File\IsImage' => [
             'disableMagicFile' => 'bool',
             'magicFile' => 'string',
             'enableHeaderCheck' => 'bool',
             'mimeType' => 'string',
         ],
-        'Zend\Validator\File\Md5' => [
+        'Laminas\Validator\File\Md5' => [
             'algorithm' => 'string',
             'hash' => 'string',
             'md5' => 'string',
         ],
-        'Zend\Validator\File\MimeType' => [
+        'Laminas\Validator\File\MimeType' => [
             'disableMagicFile' => 'bool',
             'magicFile' => 'string',
             'enableHeaderCheck' => 'bool',
             'mimeType' => 'string',
         ],
-        'Zend\Validator\File\NotExists' => [
+        'Laminas\Validator\File\NotExists' => [
             'directory' => 'string',
         ],
-        'Zend\Validator\File\Sha1' => [
+        'Laminas\Validator\File\Sha1' => [
             'algorithm' => 'string',
             'hash' => 'string',
             'sha1' => 'string',
         ],
-        'Zend\Validator\File\Size' => [
+        'Laminas\Validator\File\Size' => [
             'max' => 'int',
             'min' => 'int',
             'size' => 'int',
             'useByteString' => 'bool',
         ],
-        'Zend\Validator\File\UploadFile' => [],
-        'Zend\Validator\File\Upload' => [],
-        'Zend\Validator\File\WordCount' => [
+        'Laminas\Validator\File\UploadFile' => [],
+        'Laminas\Validator\File\Upload' => [],
+        'Laminas\Validator\File\WordCount' => [
             'max' => 'int',
             'min' => 'int',
         ],
-        'Zend\Validator\GreaterThan' => [
+        'Laminas\Validator\GreaterThan' => [
             'inclusive' => 'bool',
             'min' => 'int',
         ],
-        'Zend\Validator\Hex' => [],
-        'Zend\Validator\Hostname' => [
+        'Laminas\Validator\Hex' => [],
+        'Laminas\Validator\Hostname' => [
             'allow' => 'int',
             'useIdnCheck' => 'bool',
             'useTldCheck' => 'bool',
         ],
-        'Zend\Validator\Iban' => [
+        'Laminas\Validator\Iban' => [
             'country_code' => 'string',
             'allow_non_sepa' => 'bool',
         ],
-        'Zend\Validator\Identical' => [
+        'Laminas\Validator\Identical' => [
             'literal' => 'bool',
             'strict' => 'bool',
             'token' => 'string',
         ],
-        'Zend\Validator\InArray' => [
+        'Laminas\Validator\InArray' => [
             'strict' => 'bool',
             'recursive' => 'bool',
         ],
-        'Zend\Validator\Ip' => [
+        'Laminas\Validator\Ip' => [
             'allowipv4' => 'bool',
             'allowipv6' => 'bool',
             'allowipvfuture' => 'bool',
             'allowliteral' => 'bool',
         ],
-        'Zend\Validator\Isbn' => [
+        'Laminas\Validator\Isbn' => [
             'type' => 'string',
             'separator' => 'string',
         ],
-        'Zend\Validator\IsInstanceOf' => [
+        'Laminas\Validator\IsInstanceOf' => [
             'classname' => 'string',
         ],
-        'Zend\Validator\LessThan' => [
+        'Laminas\Validator\LessThan' => [
             'inclusive' => 'bool',
             'max' => 'int',
         ],
-        'Zend\Validator\NotEmpty' => [
+        'Laminas\Validator\NotEmpty' => [
             'type' => 'int',
         ],
-        'Zend\Validator\Regex' => [
+        'Laminas\Validator\Regex' => [
             'pattern' => 'string',
         ],
-        'Zend\Validator\Sitemap\Changefreq' => [],
-        'Zend\Validator\Sitemap\Lastmod' => [],
-        'Zend\Validator\Sitemap\Loc' => [],
-        'Zend\Validator\Sitemap\Priority' => [],
-        'Zend\Validator\Step' => [
+        'Laminas\Validator\Sitemap\Changefreq' => [],
+        'Laminas\Validator\Sitemap\Lastmod' => [],
+        'Laminas\Validator\Sitemap\Loc' => [],
+        'Laminas\Validator\Sitemap\Priority' => [],
+        'Laminas\Validator\Step' => [
             'baseValue' => 'int|float',
             'step' => 'float',
         ],
-        'Zend\Validator\StringLength' => [
+        'Laminas\Validator\StringLength' => [
             'max' => 'int',
             'min' => 'int',
             'encoding' => 'string',
         ],
-        'Zend\Validator\Uri' => [
+        'Laminas\Validator\Uri' => [
             'allowAbsolute' => 'bool',
             'allowRelative' => 'bool',
         ],
-        'Zend\Validator\Uuid' => [],
-        'Zend\I18n\Validator\Alnum' => [
+        'Laminas\Validator\Uuid' => [],
+        'Laminas\I18n\Validator\Alnum' => [
             'allowwhitespace' => 'bool',
         ],
-        'Zend\I18n\Validator\Alpha' => [
+        'Laminas\I18n\Validator\Alpha' => [
             'allowwhitespace' => 'bool',
         ],
-        'Zend\I18n\Validator\DateTime' => [
+        'Laminas\I18n\Validator\DateTime' => [
             'calendar' => 'int',
             'datetype' => 'int',
             'pattern' => 'string',
@@ -1456,23 +1529,23 @@ return [
             'timezone' => 'string',
             'locale' => 'string',
         ],
-        'Zend\I18n\Validator\Float' => [
+        'Laminas\I18n\Validator\Float' => [
             'locale' => 'string',
         ],
-        'Zend\I18n\Validator\Int' => [
+        'Laminas\I18n\Validator\Int' => [
             'locale' => 'string',
         ],
-        'Zend\I18n\Validator\IsFloat' => [
+        'Laminas\I18n\Validator\IsFloat' => [
             'locale' => 'string',
         ],
-        'Zend\I18n\Validator\IsInt' => [
+        'Laminas\I18n\Validator\IsInt' => [
             'locale' => 'string',
         ],
-        'Zend\I18n\Validator\PhoneNumber' => [
+        'Laminas\I18n\Validator\PhoneNumber' => [
             'country' => 'string',
             'allow_possible' => 'bool',
         ],
-        'Zend\I18n\Validator\PostCode' => [
+        'Laminas\I18n\Validator\PostCode' => [
             'locale' => 'string',
             'format' => 'string',
             'service' => 'string',
@@ -1495,6 +1568,37 @@ return [
             InputFilter\RpcService\PATCH::class          => InputFilter\RpcService\PatchInputFilter::class,
             InputFilter\RpcService\POST::class           => InputFilter\RpcService\PostInputFilter::class,
             InputFilter\Version::class                   => InputFilter\VersionInputFilter::class,
+
+            // Legacy Zend Framework aliases
+            \ZF\Apigility\Admin\InputFilter\Authentication\BasicAuth::class => InputFilter\Authentication\BasicAuth::class,
+            \ZF\Apigility\Admin\InputFilter\Authentication\DigestAuth::class => InputFilter\Authentication\DigestAuth::class,
+            \ZF\Apigility\Admin\InputFilter\Authentication\OAuth2::class => InputFilter\Authentication\OAuth2::class,
+            \ZF\Apigility\Admin\InputFilter\Authorization::class => InputFilter\Authorization::class,
+            \ZF\Apigility\Admin\InputFilter\ContentNegotiation::class => InputFilter\ContentNegotiation::class,
+            \ZF\Apigility\Admin\InputFilter\CreateContentNegotiation::class => InputFilter\CreateContentNegotiation::class,
+            \ZF\Apigility\Admin\InputFilter\DbAdapter::class => InputFilter\DbAdapter::class,
+            \ZF\Apigility\Admin\InputFilter\Documentation::class => InputFilter\Documentation::class,
+            \ZF\Apigility\Admin\InputFilter\Module::class => InputFilter\Module::class,
+            \ZF\Apigility\Admin\InputFilter\RestService\PATCH::class => InputFilter\RestService\PATCH::class,
+            \ZF\Apigility\Admin\InputFilter\RestService\POST::class => InputFilter\RestService\POST::class,
+            \ZF\Apigility\Admin\InputFilter\RpcService\PATCH::class => InputFilter\RpcService\PATCH::class,
+            \ZF\Apigility\Admin\InputFilter\RpcService\POST::class => InputFilter\RpcService\POST::class,
+            \ZF\Apigility\Admin\InputFilter\Version::class => InputFilter\Version::class,
+            \ZF\Apigility\Admin\InputFilter\Authentication\BasicInputFilter::class => InputFilter\Authentication\BasicInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\Authentication\DigestInputFilter::class => InputFilter\Authentication\DigestInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\Authentication\OAuth2InputFilter::class => InputFilter\Authentication\OAuth2InputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\AuthorizationInputFilter::class => InputFilter\AuthorizationInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\ContentNegotiationInputFilter::class => InputFilter\ContentNegotiationInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\CreateContentNegotiationInputFilter::class => InputFilter\CreateContentNegotiationInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\DbAdapterInputFilter::class => InputFilter\DbAdapterInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\DocumentationInputFilter::class => InputFilter\DocumentationInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\ModuleInputFilter::class => InputFilter\ModuleInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\RestService\PatchInputFilter::class => InputFilter\RestService\PatchInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\RestService\PostInputFilter::class => InputFilter\RestService\PostInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\RpcService\PatchInputFilter::class => InputFilter\RpcService\PatchInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\RpcService\PostInputFilter::class => InputFilter\RpcService\PostInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\VersionInputFilter::class => InputFilter\VersionInputFilter::class,
+            \ZF\Apigility\Admin\InputFilter\InputFilter::class => InputFilter\InputFilter::class,
         ],
         'factories' => [
             InputFilter\Authentication\BasicInputFilter::class     => InvokableFactory::class,
@@ -1516,7 +1620,7 @@ return [
         ],
     ],
 
-    'zf-content-validation' => [
+    'api-tools-content-validation' => [
         Controller\HttpBasicAuthentication::class => [
             'input_filter' => InputFilter\Authentication\BasicAuth::class,
         ],

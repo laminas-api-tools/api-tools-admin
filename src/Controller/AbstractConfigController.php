@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Controller;
+namespace Laminas\ApiTools\Admin\Controller;
 
-use Zend\Http\Request;
-use Zend\Mvc\Controller\AbstractActionController;
-use ZF\ApiProblem\ApiProblem;
-use ZF\ApiProblem\ApiProblemResponse;
-use ZF\Configuration\ConfigResource;
+use Laminas\ApiTools\ApiProblem\ApiProblem;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\Http\Request;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 abstract class AbstractConfigController extends AbstractActionController
 {
@@ -95,7 +97,7 @@ abstract class AbstractConfigController extends AbstractActionController
     /**
      * Get the mediatype from a given header
      *
-     * @param  \Zend\Http\Headers $headers
+     * @param  \Laminas\Http\Headers $headers
      * @param  string $header
      * @return string
      */
@@ -112,7 +114,7 @@ abstract class AbstractConfigController extends AbstractActionController
         $accept = strtolower(trim($accept));
         switch ($accept) {
             case 'application/json':
-            case 'application/vnd.zfcampus.v1.config+json':
+            case 'application/vnd.laminascampus.v1.config+json':
                 return $accept;
             default:
                 return 'application/json';

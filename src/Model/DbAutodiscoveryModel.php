@@ -1,19 +1,21 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Metadata\Metadata;
-use Zend\Db\Exception\InvalidArgumentException;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Exception\InvalidArgumentException;
+use Laminas\Db\Metadata\Metadata;
 
 /**
  * Class DbAutodiscoveryModel
  *
- * @package ZF\Apigility\Admin\Model
+ * @package Laminas\ApiTools\Admin\Model
  */
 class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
 {
@@ -58,7 +60,7 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
 
             $constraints = $this->getConstraints($metadata, $tableName);
 
-            /** @var \Zend\Db\Metadata\Object\ColumnObject $column */
+            /** @var \Laminas\Db\Metadata\Object\ColumnObject $column */
             foreach ($table->getColumns() as $column) {
                 $item = [
                     'name' => $column->getName(),
@@ -146,7 +148,7 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
     protected function getConstraints(Metadata $metadata, $tableName)
     {
         $constraints = [];
-        /** @var \Zend\Db\Metadata\Object\ConstraintObject $constraint */
+        /** @var \Laminas\Db\Metadata\Object\ConstraintObject $constraint */
         foreach ($metadata->getConstraints($tableName) as $constraint) {
             foreach ($constraint->getColumns() as $column) {
                 $constraints[] = [
@@ -163,11 +165,11 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
      * @param Metadata $metadata
      * @param $tableName
      * @param $columnName
-     * @return null|\Zend\Db\Metadata\Object\ConstraintObject
+     * @return null|\Laminas\Db\Metadata\Object\ConstraintObject
      */
     protected function getConstraintForColumn(Metadata $metadata, $tableName, $columnName)
     {
-        /** @var \Zend\Db\Metadata\Object\ConstraintObject $constraint */
+        /** @var \Laminas\Db\Metadata\Object\ConstraintObject $constraint */
         foreach ($metadata->getConstraints($tableName) as $constraint) {
             foreach ($constraint->getColumns() as $column) {
                 if ($column == $columnName) {

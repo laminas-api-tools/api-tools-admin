@@ -1,17 +1,19 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Model\DbAdapterModel;
+use Laminas\ApiTools\Admin\Model\DbAdapterResource;
+use Laminas\ApiTools\Admin\Model\DbAdapterResourceFactory;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use ZF\Apigility\Admin\Model\DbAdapterModel;
-use ZF\Apigility\Admin\Model\DbAdapterResource;
-use ZF\Apigility\Admin\Model\DbAdapterResourceFactory;
 
 class DbAdapterResourceFactoryTest extends TestCase
 {
@@ -24,6 +26,7 @@ class DbAdapterResourceFactoryTest extends TestCase
     {
         $factory = new DbAdapterResourceFactory();
         $this->container->has(DbAdapterModel::class)->willReturn(false);
+        $this->container->has(\ZF\Apigility\Admin\Model\DbAdapterModel::class)->willReturn(false);
 
         $this->expectException(ServiceNotCreatedException::class);
         $this->expectExceptionMessage(DbAdapterModel::class . ' service is not present');
