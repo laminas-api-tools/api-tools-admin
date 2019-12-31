@@ -1,10 +1,10 @@
 <?php
 return array(
-    'zf-rest' => array(
+    'api-tools-rest' => array(
         'AuthConfDefaults\V1\Rest\Foo\Controller' => array(),
         'AuthConfDefaults\V1\Rest\Bar\Controller' => array(),
     ),
-    'zf-rpc' => array(
+    'api-tools-rpc' => array(
         'AuthConfDefaults\V1\Rpc\Baz\Controller' => array(
             'route_name' => 'auth-conf.rpc.baz',
         ),

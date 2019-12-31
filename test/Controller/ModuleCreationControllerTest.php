@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Controller;
+namespace LaminasTest\ApiTools\Admin\Controller;
 
+use Laminas\ApiTools\Admin\Controller\ModuleCreationController;
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
+use Laminas\Http\Request;
+use Laminas\ModuleManager\ModuleManager;
+use Laminas\Mvc\Controller\PluginManager;
+use Laminas\Mvc\MvcEvent;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Http\Request;
-use Zend\ModuleManager\ModuleManager;
-use Zend\Mvc\Controller\PluginManager;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Controller\ModuleCreationController;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
-use ZF\Configuration\ModuleUtils;
-use ZF\ContentNegotiation\ParameterDataContainer;
 
 class ModuleCreationControllerTest extends TestCase
 {
@@ -49,7 +51,7 @@ class ModuleCreationControllerTest extends TestCase
         $request->setMethod($method);
         $this->controller->setRequest($request);
         $result = $this->controller->apiEnableAction();
-        $this->assertInstanceOf('ZF\ApiProblem\ApiProblemResponse', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ApiProblem\ApiProblemResponse', $result);
         $apiProblem = $result->getApiProblem();
         $this->assertEquals(405, $apiProblem->status);
     }
@@ -71,7 +73,7 @@ class ModuleCreationControllerTest extends TestCase
 
         require 'module/Foo/Module.php';
 
-        $moduleManager  = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $moduleManager  = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                ->disableOriginalConstructor()
                                ->getMock();
         $moduleManager->expects($this->any())
@@ -93,10 +95,10 @@ class ModuleCreationControllerTest extends TestCase
         $parameters = new ParameterDataContainer();
         $parameters->setBodyParam('module', 'Foo');
         $event = new MvcEvent();
-        $event->setParam('ZFContentNegotiationParameterData', $parameters);
+        $event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
         $plugins = new PluginManager();
-        $plugins->setInvokableClass('bodyParam', 'ZF\ContentNegotiation\ControllerPlugin\BodyParam');
+        $plugins->setInvokableClass('bodyParam', 'Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParam');
 
         $controller->setRequest($request);
         $controller->setEvent($event);
@@ -104,10 +106,10 @@ class ModuleCreationControllerTest extends TestCase
 
         $result = $controller->apiEnableAction();
 
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf('ZF\Hal\Entity', $payload);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\ModuleEntity', $payload->entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ModuleEntity', $payload->entity);
 
         $metadata = $payload->entity;
         $this->assertEquals('Foo', $metadata->getName());
