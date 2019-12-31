@@ -1,19 +1,21 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin;
+namespace Laminas\ApiTools\Admin;
 
-use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\RouteMatch;
-use ZF\Configuration\ConfigResource;
-use ZF\Hal\Link\Link;
-use ZF\Hal\Link\LinkCollection;
-use ZF\Hal\Entity;
-use ZF\Hal\View\HalJsonModel;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\ApiTools\Hal\Entity;
+use Laminas\ApiTools\Hal\Link\Link;
+use Laminas\ApiTools\Hal\Link\LinkCollection;
+use Laminas\ApiTools\Hal\View\HalJsonModel;
+use Laminas\Mvc\MvcEvent;
+use Laminas\Mvc\Router\RouteMatch;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 
 class Module
 {
@@ -28,7 +30,7 @@ class Module
     protected $urlHelper;
 
     /**
-     * @var \Zend\ServiceManager\ServiceLocatorInterface
+     * @var \Laminas\ServiceManager\ServiceLocatorInterface
      */
     protected $sm;
 
@@ -45,9 +47,9 @@ class Module
         $this->disableOpCache();
 
         return array(
-            'Zend\Loader\StandardAutoloader' => array(
+            'Laminas\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/ZF/Apigility/Admin/',
+                    __NAMESPACE__ => __DIR__ . '/src/Laminas/ApiTools/Admin/',
                 ),
             ),
         );
@@ -76,81 +78,81 @@ class Module
     public function getServiceConfig()
     {
         return array('factories' => array(
-            'ZF\Apigility\Admin\Model\AuthenticationModel' => function ($services) {
+            'Laminas\ApiTools\Admin\Model\AuthenticationModel' => function ($services) {
                 if (!$services->has('Config')) {
                     throw new ServiceNotCreatedException(
-                        'Cannot create ZF\Apigility\Admin\Model\AuthenticationModel service because Config service is not present'
+                        'Cannot create Laminas\ApiTools\Admin\Model\AuthenticationModel service because Config service is not present'
                     );
                 }
                 $config = $services->get('Config');
-                $writer = $services->get('ZF\Configuration\ConfigWriter');
+                $writer = $services->get('Laminas\ApiTools\Configuration\ConfigWriter');
 
                 $global = new ConfigResource($config, 'config/autoload/global.php', $writer);
                 $local  = new ConfigResource($config, 'config/autoload/local.php', $writer);
                 return new Model\AuthenticationModel($global, $local);
             },
-            'ZF\Apigility\Admin\Model\AuthorizationModelFactory' => function ($services) {
-                if (!$services->has('ZF\Configuration\ModuleUtils')
-                    || !$services->has('ZF\Configuration\ConfigResourceFactory')
-                    || !$services->has('ZF\Apigility\Admin\Model\ModuleModel')
+            'Laminas\ApiTools\Admin\Model\AuthorizationModelFactory' => function ($services) {
+                if (!$services->has('Laminas\ApiTools\Configuration\ModuleUtils')
+                    || !$services->has('Laminas\ApiTools\Configuration\ConfigResourceFactory')
+                    || !$services->has('Laminas\ApiTools\Admin\Model\ModuleModel')
                 ) {;
                     throw new ServiceNotCreatedException(
-                        'ZF\Apigility\Admin\Model\AuthorizationModelFactory is missing one or more dependencies from ZF\Configuration'
+                        'Laminas\ApiTools\Admin\Model\AuthorizationModelFactory is missing one or more dependencies from Laminas\ApiTools\Configuration'
                     );
                 }
-                $moduleModel   = $services->get('ZF\Apigility\Admin\Model\ModuleModel');
-                $moduleUtils   = $services->get('ZF\Configuration\ModuleUtils');
-                $configFactory = $services->get('ZF\Configuration\ConfigResourceFactory');
+                $moduleModel   = $services->get('Laminas\ApiTools\Admin\Model\ModuleModel');
+                $moduleUtils   = $services->get('Laminas\ApiTools\Configuration\ModuleUtils');
+                $configFactory = $services->get('Laminas\ApiTools\Configuration\ConfigResourceFactory');
 
                 return new Model\AuthorizationModelFactory($moduleUtils, $configFactory, $moduleModel);
             },
-            'ZF\Apigility\Admin\Model\ContentNegotiationModel' => function ($services) {
+            'Laminas\ApiTools\Admin\Model\ContentNegotiationModel' => function ($services) {
                 if (!$services->has('Config')) {
                     throw new ServiceNotCreatedException(
-                        'Cannot create ZF\Apigility\Admin\Model\ContentNegotiationModel service because Config service is not present'
+                        'Cannot create Laminas\ApiTools\Admin\Model\ContentNegotiationModel service because Config service is not present'
                     );
                 }
                 $config = $services->get('Config');
-                $writer = $services->get('ZF\Configuration\ConfigWriter');
+                $writer = $services->get('Laminas\ApiTools\Configuration\ConfigWriter');
 
                 $global = new ConfigResource($config, 'config/autoload/global.php', $writer);
                 return new Model\ContentNegotiationModel($global);
             },
-            'ZF\Apigility\Admin\Model\ContentNegotiationResource' => function ($services) {
-                if (!$services->has('ZF\Apigility\Admin\Model\ContentNegotiationModel')) {
+            'Laminas\ApiTools\Admin\Model\ContentNegotiationResource' => function ($services) {
+                if (!$services->has('Laminas\ApiTools\Admin\Model\ContentNegotiationModel')) {
                     throw new ServiceNotCreatedException(
-                        'Cannot create ZF\Apigility\Admin\Model\ContentNegotiationResource service because ZF\Apigility\Admin\Model\ContentNegotiationModel service is not present'
+                        'Cannot create Laminas\ApiTools\Admin\Model\ContentNegotiationResource service because Laminas\ApiTools\Admin\Model\ContentNegotiationModel service is not present'
                     );
                 }
-                $model = $services->get('ZF\Apigility\Admin\Model\ContentNegotiationModel');
+                $model = $services->get('Laminas\ApiTools\Admin\Model\ContentNegotiationModel');
                 return new Model\ContentNegotiationResource($model);
             },
-            'ZF\Apigility\Admin\Model\DbAdapterModel' => function ($services) {
+            'Laminas\ApiTools\Admin\Model\DbAdapterModel' => function ($services) {
                 if (!$services->has('Config')) {
                     throw new ServiceNotCreatedException(
-                        'Cannot create ZF\Apigility\Admin\Model\DbAdapterModel service because Config service is not present'
+                        'Cannot create Laminas\ApiTools\Admin\Model\DbAdapterModel service because Config service is not present'
                     );
                 }
                 $config = $services->get('Config');
-                $writer = $services->get('ZF\Configuration\ConfigWriter');
+                $writer = $services->get('Laminas\ApiTools\Configuration\ConfigWriter');
 
                 $global = new ConfigResource($config, 'config/autoload/global.php', $writer);
                 $local  = new ConfigResource($config, 'config/autoload/local.php', $writer);
                 return new Model\DbAdapterModel($global, $local);
             },
-            'ZF\Apigility\Admin\Model\DbAdapterResource' => function ($services) {
-                if (!$services->has('ZF\Apigility\Admin\Model\DbAdapterModel')) {
+            'Laminas\ApiTools\Admin\Model\DbAdapterResource' => function ($services) {
+                if (!$services->has('Laminas\ApiTools\Admin\Model\DbAdapterModel')) {
                     throw new ServiceNotCreatedException(
-                        'Cannot create ZF\Apigility\Admin\Model\DbAdapterResource service because ZF\Apigility\Admin\Model\DbAdapterModel service is not present'
+                        'Cannot create Laminas\ApiTools\Admin\Model\DbAdapterResource service because Laminas\ApiTools\Admin\Model\DbAdapterModel service is not present'
                     );
                 }
-                $model = $services->get('ZF\Apigility\Admin\Model\DbAdapterModel');
+                $model = $services->get('Laminas\ApiTools\Admin\Model\DbAdapterModel');
                 return new Model\DbAdapterResource($model);
             },
-            'ZF\Apigility\Admin\Model\ModuleModel' => function ($services) {
+            'Laminas\ApiTools\Admin\Model\ModuleModel' => function ($services) {
                 if (!$services->has('ModuleManager')) {
                     throw new ServiceNotCreatedException(
-                        'Cannot create ZF\Apigility\Admin\Model\ModuleModel service because ModuleManager service is not present'
+                        'Cannot create Laminas\ApiTools\Admin\Model\ModuleModel service because ModuleManager service is not present'
                     );
                 }
                 $modules    = $services->get('ModuleManager');
@@ -158,113 +160,113 @@ class Module
                 $rpcConfig  = array();
                 if ($services->has('Config')) {
                     $config = $services->get('Config');
-                    if (isset($config['zf-rest'])) {
-                        $restConfig = $config['zf-rest'];
+                    if (isset($config['api-tools-rest'])) {
+                        $restConfig = $config['api-tools-rest'];
                     }
-                    if (isset($config['zf-rpc'])) {
-                        $rpcConfig = $config['zf-rpc'];
+                    if (isset($config['api-tools-rpc'])) {
+                        $rpcConfig = $config['api-tools-rpc'];
                     }
                 }
                 return new Model\ModuleModel($modules, $restConfig, $rpcConfig);
             },
-            'ZF\Apigility\Admin\Model\ModuleResource' => function ($services) {
-                $moduleModel = $services->get('ZF\Apigility\Admin\Model\ModuleModel');
+            'Laminas\ApiTools\Admin\Model\ModuleResource' => function ($services) {
+                $moduleModel = $services->get('Laminas\ApiTools\Admin\Model\ModuleModel');
                 $listener    = new Model\ModuleResource($moduleModel);
 
                 if ($services->has('Config')) {
                     $config = $services->get('Config');
-                    if (isset($config['zf-apigility-admin'])) {
-                        if (isset($config['zf-apigility-admin']['module_path'])) {
-                            $listener->setModulePath($config['zf-apigility-admin']['module_path']);
+                    if (isset($config['api-tools-admin'])) {
+                        if (isset($config['api-tools-admin']['module_path'])) {
+                            $listener->setModulePath($config['api-tools-admin']['module_path']);
                         }
                     }
                 }
                 return $listener;
             },
-            'ZF\Apigility\Admin\Model\RestServiceModelFactory' => function ($services) {
-                if (!$services->has('ZF\Configuration\ModuleUtils')
-                    || !$services->has('ZF\Configuration\ConfigResourceFactory')
-                    || !$services->has('ZF\Apigility\Admin\Model\ModuleModel')
+            'Laminas\ApiTools\Admin\Model\RestServiceModelFactory' => function ($services) {
+                if (!$services->has('Laminas\ApiTools\Configuration\ModuleUtils')
+                    || !$services->has('Laminas\ApiTools\Configuration\ConfigResourceFactory')
+                    || !$services->has('Laminas\ApiTools\Admin\Model\ModuleModel')
                     || !$services->has('SharedEventManager')
                 ) {
                     throw new ServiceNotCreatedException(
-                        'ZF\Apigility\Admin\Model\RestServiceModelFactory is missing one or more dependencies from ZF\Configuration'
+                        'Laminas\ApiTools\Admin\Model\RestServiceModelFactory is missing one or more dependencies from Laminas\ApiTools\Configuration'
                     );
                 }
-                $moduleModel   = $services->get('ZF\Apigility\Admin\Model\ModuleModel');
-                $moduleUtils   = $services->get('ZF\Configuration\ModuleUtils');
-                $configFactory = $services->get('ZF\Configuration\ConfigResourceFactory');
+                $moduleModel   = $services->get('Laminas\ApiTools\Admin\Model\ModuleModel');
+                $moduleUtils   = $services->get('Laminas\ApiTools\Configuration\ModuleUtils');
+                $configFactory = $services->get('Laminas\ApiTools\Configuration\ConfigResourceFactory');
                 $sharedEvents  = $services->get('SharedEventManager');
 
                 // Wire DB-Connected fetch listener
-                $sharedEvents->attach(__NAMESPACE__ . '\Model\RestServiceModel', 'fetch', 'ZF\Apigility\Admin\Model\DbConnectedRestServiceModel::onFetch');
+                $sharedEvents->attach(__NAMESPACE__ . '\Model\RestServiceModel', 'fetch', 'Laminas\ApiTools\Admin\Model\DbConnectedRestServiceModel::onFetch');
 
                 return new Model\RestServiceModelFactory($moduleUtils, $configFactory, $sharedEvents, $moduleModel);
             },
-            'ZF\Apigility\Admin\Model\RpcServiceModelFactory' => function ($services) {
-                if (!$services->has('ZF\Configuration\ModuleUtils')
-                    || !$services->has('ZF\Configuration\ConfigResourceFactory')
-                    || !$services->has('ZF\Apigility\Admin\Model\ModuleModel')
+            'Laminas\ApiTools\Admin\Model\RpcServiceModelFactory' => function ($services) {
+                if (!$services->has('Laminas\ApiTools\Configuration\ModuleUtils')
+                    || !$services->has('Laminas\ApiTools\Configuration\ConfigResourceFactory')
+                    || !$services->has('Laminas\ApiTools\Admin\Model\ModuleModel')
                     || !$services->has('SharedEventManager')
                 ) {
                     throw new ServiceNotCreatedException(
-                        'ZF\Apigility\Admin\Model\RpcServiceModelFactory is missing one or more dependencies from ZF\Configuration'
+                        'Laminas\ApiTools\Admin\Model\RpcServiceModelFactory is missing one or more dependencies from Laminas\ApiTools\Configuration'
                     );
                 }
-                $moduleModel   = $services->get('ZF\Apigility\Admin\Model\ModuleModel');
-                $moduleUtils   = $services->get('ZF\Configuration\ModuleUtils');
-                $configFactory = $services->get('ZF\Configuration\ConfigResourceFactory');
+                $moduleModel   = $services->get('Laminas\ApiTools\Admin\Model\ModuleModel');
+                $moduleUtils   = $services->get('Laminas\ApiTools\Configuration\ModuleUtils');
+                $configFactory = $services->get('Laminas\ApiTools\Configuration\ConfigResourceFactory');
                 $sharedEvents  = $services->get('SharedEventManager');
                 return new Model\RpcServiceModelFactory($moduleUtils, $configFactory, $sharedEvents, $moduleModel);
             },
-            'ZF\Apigility\Admin\Model\RestServiceResource' => function ($services) {
-                if (!$services->has('ZF\Apigility\Admin\Model\RestServiceModelFactory')) {
+            'Laminas\ApiTools\Admin\Model\RestServiceResource' => function ($services) {
+                if (!$services->has('Laminas\ApiTools\Admin\Model\RestServiceModelFactory')) {
                     throw new ServiceNotCreatedException(
-                        'ZF\Apigility\Admin\Model\RestServiceResource is missing one or more dependencies'
+                        'Laminas\ApiTools\Admin\Model\RestServiceResource is missing one or more dependencies'
                     );
                 }
-                if (!$services->has('ZF\Apigility\Admin\Model\InputFilterModel')) {
+                if (!$services->has('Laminas\ApiTools\Admin\Model\InputFilterModel')) {
                     throw new ServiceNotCreatedException(
-                        'ZF\Apigility\Admin\Model\RestServiceResource is missing one or more dependencies'
+                        'Laminas\ApiTools\Admin\Model\RestServiceResource is missing one or more dependencies'
                     );
                 }
-                $factory = $services->get('ZF\Apigility\Admin\Model\RestServiceModelFactory');
-                $inputFilterModel = $services->get('ZF\Apigility\Admin\Model\InputFilterModel');
-                $documentationModel = $services->get('ZF\Apigility\Admin\Model\DocumentationModel');
+                $factory = $services->get('Laminas\ApiTools\Admin\Model\RestServiceModelFactory');
+                $inputFilterModel = $services->get('Laminas\ApiTools\Admin\Model\InputFilterModel');
+                $documentationModel = $services->get('Laminas\ApiTools\Admin\Model\DocumentationModel');
                 return new Model\RestServiceResource($factory, $inputFilterModel, $documentationModel);
             },
-            'ZF\Apigility\Admin\Model\RpcServiceResource' => function ($services) {
-                if (!$services->has('ZF\Apigility\Admin\Model\RpcServiceModelFactory')) {
+            'Laminas\ApiTools\Admin\Model\RpcServiceResource' => function ($services) {
+                if (!$services->has('Laminas\ApiTools\Admin\Model\RpcServiceModelFactory')) {
                     throw new ServiceNotCreatedException(
-                        'ZF\Apigility\Admin\Model\RpcServiceResource is missing RpcServiceModelFactory dependency'
+                        'Laminas\ApiTools\Admin\Model\RpcServiceResource is missing RpcServiceModelFactory dependency'
                     );
                 }
-                if (!$services->has('ZF\Apigility\Admin\Model\InputFilterModel')) {
+                if (!$services->has('Laminas\ApiTools\Admin\Model\InputFilterModel')) {
                     throw new ServiceNotCreatedException(
-                        'ZF\Apigility\Admin\Model\RpcServiceResource is missing InputFilterModel dependency'
+                        'Laminas\ApiTools\Admin\Model\RpcServiceResource is missing InputFilterModel dependency'
                     );
                 }
                 if (!$services->has('ControllerManager')) {
                     throw new ServiceNotCreatedException(
-                        'ZF\Apigility\Admin\Model\RpcServiceResource is missing ControllerManager dependency'
+                        'Laminas\ApiTools\Admin\Model\RpcServiceResource is missing ControllerManager dependency'
                     );
                 }
-                $factory = $services->get('ZF\Apigility\Admin\Model\RpcServiceModelFactory');
-                $inputFilterModel = $services->get('ZF\Apigility\Admin\Model\InputFilterModel');
+                $factory = $services->get('Laminas\ApiTools\Admin\Model\RpcServiceModelFactory');
+                $inputFilterModel = $services->get('Laminas\ApiTools\Admin\Model\InputFilterModel');
                 $controllerManager = $services->get('ControllerManager');
-                $documentationModel = $services->get('ZF\Apigility\Admin\Model\DocumentationModel');
+                $documentationModel = $services->get('Laminas\ApiTools\Admin\Model\DocumentationModel');
                 return new Model\RpcServiceResource($factory, $inputFilterModel, $controllerManager, $documentationModel);
             },
-            'ZF\Apigility\Admin\Model\VersioningModelFactory' => function ($services) {
-                if (!$services->has('ZF\Configuration\ConfigResourceFactory')
-                    || !$services->has('ZF\Configuration\ModuleUtils')
+            'Laminas\ApiTools\Admin\Model\VersioningModelFactory' => function ($services) {
+                if (!$services->has('Laminas\ApiTools\Configuration\ConfigResourceFactory')
+                    || !$services->has('Laminas\ApiTools\Configuration\ModuleUtils')
                 ) {
                     throw new ServiceNotCreatedException(
-                        'ZF\Apigility\Admin\Model\VersioningModelFactory is missing one or more dependencies from ZF\Configuration'
+                        'Laminas\ApiTools\Admin\Model\VersioningModelFactory is missing one or more dependencies from Laminas\ApiTools\Configuration'
                     );
                 }
-                $configFactory = $services->get('ZF\Configuration\ConfigResourceFactory');
-                $moduleUtils   = $services->get('ZF\Configuration\ModuleUtils');
+                $configFactory = $services->get('Laminas\ApiTools\Configuration\ConfigResourceFactory');
+                $moduleUtils   = $services->get('Laminas\ApiTools\Configuration\ModuleUtils');
                 return new Model\VersioningModelFactory($configFactory, $moduleUtils);
             },
         ));
@@ -273,29 +275,29 @@ class Module
     public function getControllerConfig()
     {
         return array('factories' => array(
-            'ZF\Apigility\Admin\Controller\Authentication' => function ($controllers) {
+            'Laminas\ApiTools\Admin\Controller\Authentication' => function ($controllers) {
                 $services = $controllers->getServiceLocator();
-                $model    = $services->get('ZF\Apigility\Admin\Model\AuthenticationModel');
+                $model    = $services->get('Laminas\ApiTools\Admin\Model\AuthenticationModel');
                 return new Controller\AuthenticationController($model);
             },
-            'ZF\Apigility\Admin\Controller\Authorization' => function ($controllers) {
+            'Laminas\ApiTools\Admin\Controller\Authorization' => function ($controllers) {
                 $services = $controllers->getServiceLocator();
-                $factory  = $services->get('ZF\Apigility\Admin\Model\AuthorizationModelFactory');
+                $factory  = $services->get('Laminas\ApiTools\Admin\Model\AuthorizationModelFactory');
                 return new Controller\AuthorizationController($factory);
             },
-            'ZF\Apigility\Admin\Controller\ModuleCreation' => function ($controllers) {
+            'Laminas\ApiTools\Admin\Controller\ModuleCreation' => function ($controllers) {
                 $services = $controllers->getServiceLocator();
-                $model    = $services->get('ZF\Apigility\Admin\Model\ModuleModel');
+                $model    = $services->get('Laminas\ApiTools\Admin\Model\ModuleModel');
                 return new Controller\ModuleCreationController($model);
             },
-            'ZF\Apigility\Admin\Controller\Source' => function ($controllers) {
+            'Laminas\ApiTools\Admin\Controller\Source' => function ($controllers) {
                 $services = $controllers->getServiceLocator();
-                $model    = $services->get('ZF\Apigility\Admin\Model\ModuleModel');
+                $model    = $services->get('Laminas\ApiTools\Admin\Model\ModuleModel');
                 return new Controller\SourceController($model);
             },
-            'ZF\Apigility\Admin\Controller\Versioning' => function ($controllers) {
+            'Laminas\ApiTools\Admin\Controller\Versioning' => function ($controllers) {
                 $services = $controllers->getServiceLocator();
-                $factory  = $services->get('ZF\Apigility\Admin\Model\VersioningModelFactory');
+                $factory  = $services->get('Laminas\ApiTools\Admin\Model\VersioningModelFactory');
                 return new Controller\VersioningController($factory);
             },
         ));
@@ -304,7 +306,7 @@ class Module
     /**
      * Inject links into Module resources for the service services
      *
-     * @param  \Zend\Mvc\MvcEvent $e
+     * @param  \Laminas\Mvc\MvcEvent $e
      */
     public function onRender($e)
     {
@@ -356,7 +358,7 @@ class Module
      *
      * @param  Entity $entity
      * @param  HalJsonModel $model
-     * @param  \Zend\Mvc\MvcEvent $model
+     * @param  \Laminas\Mvc\MvcEvent $model
      */
     protected function injectServiceLinks(Entity $halEntity, HalJsonModel $model, $e)
     {
@@ -423,7 +425,7 @@ class Module
      * Currently:
      * - Inject RPC/REST service links inside module resources that are composed in collections
      *
-     * @param  \Zend\EventManager\Event $e
+     * @param  \Laminas\EventManager\Event $e
      */
     public function onRenderCollectionEntity($e)
     {
@@ -443,7 +445,7 @@ class Module
      * Inject relational links into a Module resource
      *
      * @param Model\ModuleEntity $resource
-     * @param \Zend\Mvc\MvcEvent $e
+     * @param \Laminas\Mvc\MvcEvent $e
      */
     public function injectModuleCollectionRelationalLinks(Model\ModuleEntity $resource, $e)
     {
@@ -460,7 +462,7 @@ class Module
         $links->add(Link::factory(array(
             'rel' => 'self',
             'route' => array(
-                'name' => 'zf-apigility/api/module',
+                'name' => 'api-tools/api/module',
                 'params' => array(
                     'name' => $module,
                 ),
@@ -487,7 +489,7 @@ class Module
         $links->add(Link::factory(array(
             'rel' => 'self',
             'route' => array(
-                'name' => sprintf('zf-apigility/api/module/%s-service', $type),
+                'name' => sprintf('api-tools/api/module/%s-service', $type),
                 'params' => array(
                     'name' => $module,
                     'controller_service_name' => $service,
@@ -499,7 +501,7 @@ class Module
         $links->add(Link::factory(array(
             'rel' => 'input_filter',
             'route' => array(
-                'name' => sprintf('zf-apigility/api/module/%s-service/input-filter', $type),
+                'name' => sprintf('api-tools/api/module/%s-service/input-filter', $type),
                 'params' => array(
                     'name' => $module,
                     'controller_service_name' => $service,
@@ -511,7 +513,7 @@ class Module
         $links->add(Link::factory(array(
             'rel' => 'documentation',
             'route' => array(
-                'name' => sprintf('zf-apigility/api/module/%s-service/doc', $type),
+                'name' => sprintf('api-tools/api/module/%s-service/doc', $type),
                 'params' => array(
                     'name' => $module,
                     'controller_service_name' => $service,
@@ -538,7 +540,7 @@ class Module
         if (in_array($type, array('rpc', 'rest'))) {
             $linkType .= '-service';
         }
-        $routeName    = sprintf('zf-apigility/api/module/%s', $linkType);
+        $routeName    = sprintf('api-tools/api/module/%s', $linkType);
         $routeParams  = array();
         $routeOptions = array();
         if (null !== $module) {
@@ -579,7 +581,7 @@ class Module
             && preg_match('/^PHP .*? Development Server$/', $_SERVER['SERVER_SOFTWARE'])
         ) {
             // skip the built-in PHP webserver (OPcache reset is not needed + 
-            // it crashes the server in PHP 5.4 with ZendOptimizer+)
+            // it crashes the server in PHP 5.4 with LaminasOptimizer+)
             return;
         }
 
