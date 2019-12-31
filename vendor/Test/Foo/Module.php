@@ -2,8 +2,8 @@
 
 namespace Test\Foo;
 
-use ZF\Apigility\ApigilityModuleInterface;
+use Laminas\ApiTools\ApiToolsModuleInterface;
 
-class Module implements ApigilityModuleInterface
+class Module implements ApiToolsModuleInterface
 {
 }
