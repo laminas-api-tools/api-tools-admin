@@ -1,15 +1,17 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\InputFilter\Factory;
+namespace Laminas\ApiTools\Admin\InputFilter\Factory;
 
-use Zend\InputFilter\Factory as InputFilterFactory;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use ZF\Apigility\Admin\InputFilter\InputFilterInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\InputFilterInputFilter;
+use Laminas\InputFilter\Factory as InputFilterFactory;
+use Laminas\ServiceManager\FactoryInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class InputFilterInputFilterFactory implements FactoryInterface
 {
