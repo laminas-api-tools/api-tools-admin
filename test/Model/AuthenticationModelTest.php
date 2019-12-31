@@ -1,23 +1,25 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\AuthenticationModel;
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\Config\Writer\PhpArray as ConfigWriter;
+use Laminas\Stdlib\ArrayUtils;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Config\Writer\PhpArray as ConfigWriter;
-use Zend\Stdlib\ArrayUtils;
-use ZF\Apigility\Admin\Model\AuthenticationModel;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\Configuration\ConfigResource;
 
 class AuthenticationModelTest extends TestCase
 {
     public function setUp()
     {
-        $this->configPath       = sys_get_temp_dir() . '/zf-apigility-admin/config';
+        $this->configPath       = sys_get_temp_dir() . '/api-tools-admin/config';
         $this->globalConfigPath = $this->configPath . '/global.php';
         $this->localConfigPath  = $this->configPath . '/local.php';
         $this->removeConfigMocks();
@@ -66,7 +68,7 @@ class AuthenticationModelTest extends TestCase
         $localConfig  = new ConfigResource($mergedConfig, $this->localConfigPath, $this->configWriter);
 
 
-        $moduleEntity = $this->getMockBuilder('ZF\Apigility\Admin\Model\ModuleEntity')
+        $moduleEntity = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\ModuleEntity')
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -78,7 +80,7 @@ class AuthenticationModelTest extends TestCase
                      ->method('getVersions')
                      ->will($this->returnValue(array(1,2)));
 
-        $moduleModel = $this->getMockBuilder('ZF\Apigility\Admin\Model\ModuleModel')
+        $moduleModel = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\ModuleModel')
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -91,22 +93,22 @@ class AuthenticationModelTest extends TestCase
 
     public function assertAuthenticationConfigExists($key, array $config)
     {
-        $this->assertArrayHasKey('zf-mvc-auth', $config);
-        $this->assertArrayHasKey('authentication', $config['zf-mvc-auth']);
-        $this->assertArrayHasKey($key, $config['zf-mvc-auth']['authentication']);
+        $this->assertArrayHasKey('api-tools-mvc-auth', $config);
+        $this->assertArrayHasKey('authentication', $config['api-tools-mvc-auth']);
+        $this->assertArrayHasKey($key, $config['api-tools-mvc-auth']['authentication']);
     }
 
     public function assertAuthenticationConfigEquals($key, array $expected, array $config)
     {
         $this->assertAuthenticationConfigExists($key, $config);
-        $config = $config['zf-mvc-auth']['authentication'][$key];
+        $config = $config['api-tools-mvc-auth']['authentication'][$key];
         $this->assertEquals($expected, $config);
     }
 
     public function assertAuthenticationConfigContains($authKey, array $expected, array $config)
     {
         $this->assertAuthenticationConfigExists($authKey, $config);
-        $config = $config['zf-mvc-auth']['authentication'][$authKey];
+        $config = $config['api-tools-mvc-auth']['authentication'][$authKey];
         foreach ($expected as $key => $value) {
             $this->assertArrayHasKey($key, $config);
             $this->assertEquals($value, $config[$key]);
@@ -117,7 +119,7 @@ class AuthenticationModelTest extends TestCase
     {
         $toCreate = array(
             'accept_schemes' => array('basic'),
-            'realm'          => 'zendcon',
+            'realm'          => 'laminascon',
             'htpasswd'       => __DIR__ . '/htpasswd',
         );
 
@@ -127,7 +129,7 @@ class AuthenticationModelTest extends TestCase
         $global = include $this->globalConfigPath;
         $this->assertAuthenticationConfigEquals('http', array(
             'accept_schemes' => array('basic'),
-            'realm'          => 'zendcon',
+            'realm'          => 'laminascon',
         ), $global);
 
         $local  = include $this->localConfigPath;
@@ -139,17 +141,17 @@ class AuthenticationModelTest extends TestCase
     public function testCanRetrieveAuthenticationConfig()
     {
         $globalSeedConfig = array(
-            'zf-mvc-auth' => array(
+            'api-tools-mvc-auth' => array(
                 'authentication' => array(
                     'http' => array(
                         'accept_schemes' => array('basic'),
-                        'realm'          => 'zendcon',
+                        'realm'          => 'laminascon',
                     ),
                 ),
             ),
         );
         $localSeedConfig = array(
-            'zf-mvc-auth' => array(
+            'api-tools-mvc-auth' => array(
                 'authentication' => array(
                     'http' => array(
                         'htpasswd' => __DIR__ . '/htpasswd',
@@ -159,11 +161,11 @@ class AuthenticationModelTest extends TestCase
         );
         $model  = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
         $entity = $model->fetch();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\AuthenticationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthenticationEntity', $entity);
         $expected = array_merge(
             array('type' => 'http_basic'),
-            $globalSeedConfig['zf-mvc-auth']['authentication']['http'],
-            $localSeedConfig['zf-mvc-auth']['authentication']['http']
+            $globalSeedConfig['api-tools-mvc-auth']['authentication']['http'],
+            $localSeedConfig['api-tools-mvc-auth']['authentication']['http']
         );
         $this->assertEquals($expected, $entity->getArrayCopy());
     }
@@ -172,7 +174,7 @@ class AuthenticationModelTest extends TestCase
     {
         $toCreate = array(
             'accept_schemes' => array('basic'),
-            'realm'          => 'zendcon',
+            'realm'          => 'laminascon',
             'htpasswd'       => __DIR__ . '/htpasswd',
         );
         $model = $this->createModelFromConfigArrays(array(), array());
@@ -185,7 +187,7 @@ class AuthenticationModelTest extends TestCase
         $entity = $model->update($newConfig);
 
         // Ensure the entity returned from the update is what we expect
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\AuthenticationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthenticationEntity', $entity);
         $expected = array_merge(array('type' => 'http_basic'), $toCreate, $newConfig);
         $this->assertEquals($expected, $entity->getArrayCopy());
 
@@ -204,7 +206,7 @@ class AuthenticationModelTest extends TestCase
     {
         $toCreate = array(
             'accept_schemes' => array('basic'),
-            'realm'          => 'zendcon',
+            'realm'          => 'laminascon',
             'htpasswd'       => __DIR__ . '/htpasswd',
         );
         $model    = $this->createModelFromConfigArrays(array(), array());
@@ -212,9 +214,9 @@ class AuthenticationModelTest extends TestCase
 
         $model->remove();
         $global = include $this->globalConfigPath;
-        $this->assertArrayNotHasKey('http', $global['zf-mvc-auth']['authentication']);
+        $this->assertArrayNotHasKey('http', $global['api-tools-mvc-auth']['authentication']);
         $local = include $this->localConfigPath;
-        $this->assertArrayNotHasKey('http', $local['zf-mvc-auth']['authentication']);
+        $this->assertArrayNotHasKey('http', $local['api-tools-mvc-auth']['authentication']);
     }
 
     public function testCreatingOAuth2ConfigurationWritesToEachConfigFile()
@@ -243,14 +245,14 @@ class AuthenticationModelTest extends TestCase
 
         $local  = include $this->localConfigPath;
         $this->assertEquals(array(
-            'storage' => 'ZF\OAuth2\Adapter\PdoAdapter',
+            'storage' => 'Laminas\ApiTools\OAuth2\Adapter\PdoAdapter',
             'db' => array(
                 'dsn_type'    => 'PDO',
                 'dsn'         => 'sqlite::memory:',
                 'username'    => 'me',
                 'password'    => 'too',
             ),
-        ), $local['zf-oauth2']);
+        ), $local['api-tools-oauth2']);
     }
 
     public function testCreatingOAuth2ConfigurationWritesToEachConfigFileForMongo()
@@ -261,7 +263,7 @@ class AuthenticationModelTest extends TestCase
 
         $toCreate = array(
             'dsn'         => 'mongodb://localhost:27017',
-            'database'    => 'apigilityTest',
+            'database'    => 'apiToolsTest',
             'dsn_type'    => 'Mongo',
             'route_match' => '/api/oauth',
         );
@@ -283,15 +285,15 @@ class AuthenticationModelTest extends TestCase
 
         $local  = include $this->localConfigPath;
         $this->assertEquals(array(
-            'storage' => 'ZF\OAuth2\Adapter\MongoAdapter',
+            'storage' => 'Laminas\ApiTools\OAuth2\Adapter\MongoAdapter',
             'mongo' => array(
                 'dsn_type'    => 'Mongo',
                 'dsn'         => 'mongodb://localhost:27017',
                 'username'    => null,
                 'password'    => null,
-                'database'    => 'apigilityTest',
+                'database'    => 'apiToolsTest',
             ),
-        ), $local['zf-oauth2']);
+        ), $local['api-tools-oauth2']);
     }
 
     public function testRemovingOAuth2ConfigurationRemovesConfigurationFromEachFile()
@@ -313,8 +315,8 @@ class AuthenticationModelTest extends TestCase
         $this->assertFalse(isset($global['router']['routes']['oauth']));
         $local = include $this->localConfigPath;
         $this->assertFalse(isset($local['router']['routes']['oauth']));
-        $this->assertArrayNotHasKey('db', $local['zf-oauth2']);
-        $this->assertArrayNotHasKey('storage', $local['zf-oauth2']);
+        $this->assertArrayNotHasKey('db', $local['api-tools-oauth2']);
+        $this->assertArrayNotHasKey('storage', $local['api-tools-oauth2']);
     }
 
     /**
@@ -328,7 +330,7 @@ class AuthenticationModelTest extends TestCase
 
         $toCreate = array(
             'dsn_type'    => 'mongo',
-            'dsn'         => 'mongodb://localhost:27017/apigility',
+            'dsn'         => 'mongodb://localhost:27017/api-tools',
             'route_match' => '/api/oauth',
         );
 
@@ -342,12 +344,12 @@ class AuthenticationModelTest extends TestCase
         $this->assertFalse(isset($global['router']['routes']['oauth']));
         $local = include $this->localConfigPath;
         $this->assertFalse(isset($local['router']['routes']['oauth']));
-        $this->assertArrayNotHasKey('mongo', $local['zf-oauth2']);
-        $this->assertArrayNotHasKey('storage', $local['zf-oauth2']);
+        $this->assertArrayNotHasKey('mongo', $local['api-tools-oauth2']);
+        $this->assertArrayNotHasKey('storage', $local['api-tools-oauth2']);
     }
 
     /**
-     * @group zf-oauth2-19
+     * @group api-tools-oauth2-19
      */
     public function testAttemptingToCreateOAuth2ConfigurationWithInvalidMongoDsnRaisesException()
     {
@@ -363,12 +365,12 @@ class AuthenticationModelTest extends TestCase
         );
         $model = $this->createModelFromConfigArrays(array(), array());
 
-        $this->setExpectedException('ZF\Apigility\Admin\Exception\InvalidArgumentException', 'DSN', 422);
+        $this->setExpectedException('Laminas\ApiTools\Admin\Exception\InvalidArgumentException', 'DSN', 422);
         $model->create($toCreate);
     }
 
     /**
-     * @group zf-oauth2-19
+     * @group api-tools-oauth2-19
      */
     public function testAttemptingToCreateOAuth2ConfigurationWithInvalidDsnRaisesException()
     {
@@ -380,12 +382,12 @@ class AuthenticationModelTest extends TestCase
         );
         $model = $this->createModelFromConfigArrays(array(), array());
 
-        $this->setExpectedException('ZF\Apigility\Admin\Exception\InvalidArgumentException', 'DSN', 422);
+        $this->setExpectedException('Laminas\ApiTools\Admin\Exception\InvalidArgumentException', 'DSN', 422);
         $model->create($toCreate);
     }
 
     /**
-     * @group zf-oauth2-19
+     * @group api-tools-oauth2-19
      */
     public function testAttemptingToUpdateOAuth2ConfigurationWithInvalidDsnRaisesException()
     {
@@ -402,7 +404,7 @@ class AuthenticationModelTest extends TestCase
             'dsn' => 'sqlite:/tmp/' . uniqid() . '/.db',
         );
 
-        $this->setExpectedException('ZF\Apigility\Admin\Exception\InvalidArgumentException', 'DSN', 422);
+        $this->setExpectedException('Laminas\ApiTools\Admin\Exception\InvalidArgumentException', 'DSN', 422);
         $entity = $model->update($newConfig);
     }
 
@@ -412,7 +414,7 @@ class AuthenticationModelTest extends TestCase
         return array(
           array(
               array( // global
-                  'zf-mvc-auth' => array(
+                  'api-tools-mvc-auth' => array(
                       'authentication' => array(
                           'map' => array(
                               'Status\V1' => 'test1',
@@ -435,11 +437,11 @@ class AuthenticationModelTest extends TestCase
                   )
               ),
               array( // local
-                  'zf-mvc-auth' => array(
+                  'api-tools-mvc-auth' => array(
                       'authentication' => array(
                           'adapters' => array(
                               'test1' => array(
-                                  'adapter' => 'ZF\MvcAuth\Authentication\HttpAdapter',
+                                  'adapter' => 'Laminas\ApiTools\MvcAuth\Authentication\HttpAdapter',
                                   'options' => array(
                                       'accept_schemes' => array('basic'),
                                       'realm' => 'api',
@@ -447,7 +449,7 @@ class AuthenticationModelTest extends TestCase
                                   )
                               ),
                               'test2' => array(
-                                  'adapter' => 'ZF\MvcAuth\Authentication\HttpAdapter',
+                                  'adapter' => 'Laminas\ApiTools\MvcAuth\Authentication\HttpAdapter',
                                   'options' => array(
                                       'accept_schemes' => array('digest'),
                                       'realm' => 'api',
@@ -458,7 +460,7 @@ class AuthenticationModelTest extends TestCase
                                   )
                               ),
                               'test3' => array(
-                                  'adapter' => 'ZF\MvcAuth\Authentication\OAuth2Adapter',
+                                  'adapter' => 'Laminas\ApiTools\MvcAuth\Authentication\OAuth2Adapter',
                                   'storage' => array(
                                       'adapter' => 'pdo',
                                       'route' => '/oauth_pdo',
@@ -471,7 +473,7 @@ class AuthenticationModelTest extends TestCase
                                   )
                               ),
                               'test4' => array(
-                                  'adapter' => 'ZF\MvcAuth\Authentication\OAuth2Adapter',
+                                  'adapter' => 'Laminas\ApiTools\MvcAuth\Authentication\OAuth2Adapter',
                                   'storage' => array(
                                       'adapter' => 'mongo',
                                       'route' => '/oauth_mongo',
@@ -494,7 +496,7 @@ class AuthenticationModelTest extends TestCase
     }
     /**
      * Test fetch all authentication adapters
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
      */
@@ -513,7 +515,7 @@ class AuthenticationModelTest extends TestCase
 
     /**
      * Test fetch a specific authentication adapter
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
      */
@@ -526,19 +528,19 @@ class AuthenticationModelTest extends TestCase
         $this->assertEquals('test3', $result['name']);
         $this->assertEquals('oauth2', $result['type']);
         $this->assertEquals(
-            $local['zf-mvc-auth']['authentication']['adapters']['test3']['storage']['adapter'],
+            $local['api-tools-mvc-auth']['authentication']['adapters']['test3']['storage']['adapter'],
             $result['oauth2_type']
         );
         $this->assertEquals(
-            $local['zf-mvc-auth']['authentication']['adapters']['test3']['storage']['dsn'],
+            $local['api-tools-mvc-auth']['authentication']['adapters']['test3']['storage']['dsn'],
             $result['oauth2_dsn']
         );
         $this->assertEquals(
-            $local['zf-mvc-auth']['authentication']['adapters']['test3']['storage']['route'],
+            $local['api-tools-mvc-auth']['authentication']['adapters']['test3']['storage']['route'],
             $result['oauth2_route']
         );
         $this->assertEquals(
-            $local['zf-mvc-auth']['authentication']['adapters']['test3']['storage']['options'],
+            $local['api-tools-mvc-auth']['authentication']['adapters']['test3']['storage']['options'],
             $result['oauth2_options']
         );
     }
@@ -577,7 +579,7 @@ class AuthenticationModelTest extends TestCase
                 'type'                => 'oauth2',
                 'oauth2_type'         => 'mongo',
                 'oauth2_dsn'          => 'mongodb://localhost',
-                'oauth2_database'     => 'zf-apigility-admin-test',
+                'oauth2_database'     => 'api-tools-admin-test',
                 'oauth2_route'        => '/oauth13',
                 'oauth2_locator_name' => null,
                 'oauth2_options'  => array(
@@ -589,7 +591,7 @@ class AuthenticationModelTest extends TestCase
 
     /**
      * Test create an authentication adapter
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
      */
@@ -611,7 +613,7 @@ class AuthenticationModelTest extends TestCase
 
     /**
      * Test update an authentication adapter
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
      */
@@ -630,7 +632,7 @@ class AuthenticationModelTest extends TestCase
 
     /**
      * Test remove an authentication adapter
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
      */
@@ -640,17 +642,17 @@ class AuthenticationModelTest extends TestCase
 
         $this->assertTrue($model->removeAuthenticationAdapter('test4'));
         $config = include $this->localConfigPath;
-        $this->assertTrue(!isset($config['zf-mvc-auth']['authentication']['adapters']['test4']));
+        $this->assertTrue(!isset($config['api-tools-mvc-auth']['authentication']['adapters']['test4']));
         $config = include $this->globalConfigPath;
         $this->assertTrue(!in_array(
-            $local['zf-mvc-auth']['authentication']['adapters']['test4']['storage']['route'],
+            $local['api-tools-mvc-auth']['authentication']['adapters']['test4']['storage']['route'],
             $model->fromOAuth2RegexToArray($config)
         ));
     }
 
     /**
      * Test get authentication map
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
      */
@@ -659,9 +661,9 @@ class AuthenticationModelTest extends TestCase
         $model = $this->createModelFromConfigArrays($global, array());
 
         $result = $model->getAuthenticationMap('Status', 1);
-        $this->assertEquals($global['zf-mvc-auth']['authentication']['map']['Status\V1'], $result);
+        $this->assertEquals($global['api-tools-mvc-auth']['authentication']['map']['Status\V1'], $result);
         $result = $model->getAuthenticationMap('Foo');
-        $this->assertEquals($global['zf-mvc-auth']['authentication']['map']['Foo'], $result);
+        $this->assertEquals($global['api-tools-mvc-auth']['authentication']['map']['Foo'], $result);
         $result = $model->getAuthenticationMap('User', 1);
         $this->assertFalse($result);
         $result = $model->getAuthenticationMap('Test');
@@ -670,7 +672,7 @@ class AuthenticationModelTest extends TestCase
 
     /**
      * Test add authentication map
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
      */
@@ -684,10 +686,10 @@ class AuthenticationModelTest extends TestCase
 
     /**
      * Test add invalid authentication map
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
-     * @expectedException ZF\Apigility\Admin\Exception\InvalidArgumentException
+     * @expectedException Laminas\ApiTools\Admin\Exception\InvalidArgumentException
      */
     public function testAddInvalidAuthenticationMap($global, $local)
     {
@@ -697,7 +699,7 @@ class AuthenticationModelTest extends TestCase
 
     /**
      * Test update authentication map
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
      */
@@ -713,7 +715,7 @@ class AuthenticationModelTest extends TestCase
 
     /**
      * Test remove authentication map
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
      */
@@ -724,18 +726,18 @@ class AuthenticationModelTest extends TestCase
         $this->assertTrue($model->removeAuthenticationMap('Status', 1));
         $this->assertFalse($model->getAuthenticationMap('Status', 1));
         $config = include $this->globalConfigPath;
-        $this->assertTrue(!isset($config['zf-mvc-auth']['authentication']['map']['Status\V1']));
+        $this->assertTrue(!isset($config['api-tools-mvc-auth']['authentication']['map']['Status\V1']));
         $this->assertTrue($model->removeAuthenticationMap('Foo'));
         $this->assertFalse($model->getAuthenticationMap('Foo'));
         $config = include $this->globalConfigPath;
-        $this->assertTrue(!isset($config['zf-mvc-auth']['authentication']['map']['Foo']));
+        $this->assertTrue(!isset($config['api-tools-mvc-auth']['authentication']['map']['Foo']));
     }
 
     public function getOldAuthenticationConfig()
     {
         return array(
             'http_basic' => array(
-                'zf-mvc-auth' => array(
+                'api-tools-mvc-auth' => array(
                     'authentication' => array(
                         'http' => array(
                             'accept_schemes' => array('basic'),
@@ -746,7 +748,7 @@ class AuthenticationModelTest extends TestCase
                 )
             ),
             'http_digest' => array(
-                'zf-mvc-auth' => array(
+                'api-tools-mvc-auth' => array(
                     'authentication' => array(
                         'http' => array(
                             'accept_schemes' => array('digest'),
@@ -759,8 +761,8 @@ class AuthenticationModelTest extends TestCase
                 )
             ),
             'oauth2_pdo' => array(
-                'zf-oauth2' => array(
-                    'storage' => 'ZF\\OAuth2\\Adapter\\PdoAdapter',
+                'api-tools-oauth2' => array(
+                    'storage' => 'Laminas\\ApiTools\\OAuth2\\Adapter\\PdoAdapter',
                     'db' => array(
                         'dsn_type'  => 'PDO',
                         'dsn'       => 'sqlite:/' . __DIR__ . '/TestAsset/db.sqlite',
@@ -770,12 +772,12 @@ class AuthenticationModelTest extends TestCase
                 )
             ),
             'oauth2_mongo' => array(
-                'zf-oauth2' => array(
-                    'storage' => 'ZF\\OAuth2\\Adapter\\MongoAdapter',
+                'api-tools-oauth2' => array(
+                    'storage' => 'Laminas\\ApiTools\\OAuth2\\Adapter\\MongoAdapter',
                     'mongo' => array(
                         'dsn_type'     => 'Mongo',
                         'dsn'          => 'mongodb://localhost',
-                        'database'     => 'zf-apigility-admin-test',
+                        'database'     => 'api-tools-admin-test',
                         'locator_name' => 'MongoDB'
                     )
                 )
@@ -785,7 +787,7 @@ class AuthenticationModelTest extends TestCase
 
     /**
      * Test transform old authentication configuration in authentication per APIs
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      */
     public function testTransformAuthPerApis()
     {
