@@ -1,15 +1,17 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Controller;
+namespace Laminas\ApiTools\Admin\Controller;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Model;
+use Laminas\ServiceManager\AbstractPluginManager;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\ServiceManager\AbstractPluginManager;
-use ZF\Apigility\Admin\Model;
 
 class DashboardControllerFactoryTest extends TestCase
 {
