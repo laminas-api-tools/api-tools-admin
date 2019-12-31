@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\InputFilter\RestService;
+namespace LaminasTest\ApiTools\Admin\InputFilter\RestService;
 
+use Laminas\InputFilter\Factory;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\InputFilter\Factory;
 
 class PatchInputFilterTest extends TestCase
 {
@@ -15,7 +17,7 @@ class PatchInputFilterTest extends TestCase
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'ZF\Apigility\Admin\InputFilter\RestService\PatchInputFilter',
+            'type' => 'Laminas\ApiTools\Admin\InputFilter\RestService\PatchInputFilter',
         ]);
     }
 
@@ -28,7 +30,7 @@ class PatchInputFilterTest extends TestCase
                     1 => 'application/hal+json',
                     2 => 'application/json',
                 ],
-                'collection_class' => 'Zend\Paginator\Paginator',
+                'collection_class' => 'Laminas\Paginator\Paginator',
                 'collection_http_methods' =>  [
                     0 => 'GET',
                     1 => 'POST',
@@ -48,7 +50,7 @@ class PatchInputFilterTest extends TestCase
                     3 => 'DELETE',
                 ],
                 'entity_identifier_name' => 'id',
-                'hydrator_name' => 'Zend\\Hydrator\\ArraySerializable',
+                'hydrator_name' => 'Laminas\\Hydrator\\ArraySerializable',
                 'page_size' => 25,
                 'page_size_param' => null,
                 'resource_class' => 'Foo_Bar\\V1\\Rest\\Baz_Bat\\Baz_BatResource',
@@ -63,7 +65,7 @@ class PatchInputFilterTest extends TestCase
                     1 => 'application/hal+json',
                     2 => 'application/json',
                 ],
-                'collection_class' => 'Zend\Paginator\Paginator',
+                'collection_class' => 'Laminas\Paginator\Paginator',
                 'collection_http_methods' =>  [
                     0 => 'GET',
                     1 => 'POST',
@@ -83,7 +85,7 @@ class PatchInputFilterTest extends TestCase
                     3 => 'DELETE',
                 ],
                 'entity_identifier_name' => 'id',
-                'hydrator_name' => 'Zend\\Hydrator\\ArraySerializable',
+                'hydrator_name' => 'Laminas\\Hydrator\\ArraySerializable',
                 'page_size' => -1,
                 'page_size_param' => null,
                 'resource_class' => 'Foo_Bar\\V1\\Rest\\Baz_Bat\\Baz_BatResource',

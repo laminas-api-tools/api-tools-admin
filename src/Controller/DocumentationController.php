@@ -1,19 +1,21 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Controller;
+namespace Laminas\ApiTools\Admin\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Http\Request as HttpRequest;
-use ZF\Apigility\Admin\Model\DocumentationModel;
-use ZF\ApiProblem\ApiProblem;
-use ZF\ApiProblem\ApiProblemResponse;
-use ZF\ContentNegotiation\ViewModel;
-use ZF\Hal\Link\Link as HalLink;
-use ZF\Hal\Entity as HalEntity;
+use Laminas\ApiTools\Admin\Model\DocumentationModel;
+use Laminas\ApiTools\ApiProblem\ApiProblem;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
+use Laminas\ApiTools\Hal\Entity as HalEntity;
+use Laminas\ApiTools\Hal\Link\Link as HalLink;
+use Laminas\Http\Request as HttpRequest;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 class DocumentationController extends AbstractActionController
 {
@@ -85,7 +87,7 @@ class DocumentationController extends AbstractActionController
         }
 
         $e = $this->getEvent();
-        $e->setParam('ZFContentNegotiationFallback', 'HalJson');
+        $e->setParam('LaminasContentNegotiationFallback', 'HalJson');
 
         return new ViewModel(['payload' => $result]);
     }
@@ -94,6 +96,6 @@ class DocumentationController extends AbstractActionController
     {
         $matches = [];
         preg_match('/(?P<type>rpc|rest)/', $route, $matches);
-        return sprintf('zf-apigility/api/module/%s-service/doc', $matches['type']);
+        return sprintf('api-tools/api/module/%s-service/doc', $matches['type']);
     }
 }

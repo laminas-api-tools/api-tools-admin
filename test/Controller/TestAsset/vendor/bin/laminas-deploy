@@ -1,4 +1,4 @@
 <?php
-// Mock zfdeloy.php
+// Mock laminasdeloy.php
 $package = $argv[2];
 file_put_contents($package, 'test');
