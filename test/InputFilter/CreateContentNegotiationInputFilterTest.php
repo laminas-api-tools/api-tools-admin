@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\InputFilter;
+namespace LaminasTest\ApiTools\Admin\InputFilter;
 
+use Laminas\ApiTools\Admin\InputFilter\CreateContentNegotiationInputFilter;
 use PHPUnit_Framework_TestCase as TestCase;
-use ZF\Apigility\Admin\InputFilter\CreateContentNegotiationInputFilter;
 
 class CreateContentNegotiationInputFilterTest extends TestCase
 {
@@ -23,7 +25,7 @@ class CreateContentNegotiationInputFilterTest extends TestCase
                 [
                     'content_name' => 'test',
                     'selectors' => [
-                        'Zend\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
             ],
@@ -36,7 +38,7 @@ class CreateContentNegotiationInputFilterTest extends TestCase
             'missing-content-name' => [
                 [
                     'selectors' => [
-                        'Zend\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
                 [
@@ -49,7 +51,7 @@ class CreateContentNegotiationInputFilterTest extends TestCase
                 [
                     'content_name' => null,
                     'selectors' => [
-                        'Zend\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
                 ['content_name' => [
@@ -60,7 +62,7 @@ class CreateContentNegotiationInputFilterTest extends TestCase
                 [
                     'content_name' => true,
                     'selectors' => [
-                        'Zend\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
                 ['content_name' => [
@@ -71,7 +73,7 @@ class CreateContentNegotiationInputFilterTest extends TestCase
                 [
                     'content_name' => 1,
                     'selectors' => [
-                        'Zend\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
                 ['content_name' => [
@@ -82,7 +84,7 @@ class CreateContentNegotiationInputFilterTest extends TestCase
                 [
                     'content_name' => 1.1,
                     'selectors' => [
-                        'Zend\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
                 ['content_name' => [
@@ -93,7 +95,7 @@ class CreateContentNegotiationInputFilterTest extends TestCase
                 [
                     'content_name' => ['content_name'],
                     'selectors' => [
-                        'Zend\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
                 ['content_name' => [
@@ -104,7 +106,7 @@ class CreateContentNegotiationInputFilterTest extends TestCase
                 [
                     'content_name' => (object) ['content_name'],
                     'selectors' => [
-                        'Zend\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
                 ['content_name' => [

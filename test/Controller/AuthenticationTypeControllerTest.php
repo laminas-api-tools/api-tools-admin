@@ -1,17 +1,19 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Controller;
+namespace LaminasTest\ApiTools\Admin\Controller;
 
+use Laminas\ApiTools\Admin\Controller\AuthenticationTypeController;
+use Laminas\ApiTools\MvcAuth\Authentication\DefaultAuthenticationListener as AuthListener;
+use Laminas\Http\Request;
+use Laminas\Mvc\MvcEvent;
+use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Http\Request;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Controller\AuthenticationTypeController;
-use ZF\MvcAuth\Authentication\DefaultAuthenticationListener as AuthListener;
-use ZFTest\Apigility\Admin\RouteAssetsTrait;
 
 class AuthenticationTypeControllerTest extends TestCase
 {
@@ -27,7 +29,7 @@ class AuthenticationTypeControllerTest extends TestCase
         $this->controller = $this->getController($this->localFile, $this->globalFile);
 
         $this->routeMatch = $this->createRouteMatch([]);
-        $this->routeMatch->setMatchedRouteName('zf-apigility/api/authentication-type');
+        $this->routeMatch->setMatchedRouteName('api-tools/api/authentication-type');
         $this->event = new MvcEvent();
         $this->event->setRouteMatch($this->routeMatch);
 
@@ -40,22 +42,22 @@ class AuthenticationTypeControllerTest extends TestCase
         $config = array_merge(require $globalFile, require $localFile);
 
         /* Register old authentication adapter types */
-        if (isset($config['zf-oauth2'])) {
+        if (isset($config['api-tools-oauth2'])) {
             $authListener->addAuthenticationTypes(['oauth2']);
-        } elseif (isset($config['zf-mvc-auth']['authentication']['http'])) {
+        } elseif (isset($config['api-tools-mvc-auth']['authentication']['http'])) {
             $types = [];
-            if (isset($config['zf-mvc-auth']['authentication']['http']['htpasswd'])) {
+            if (isset($config['api-tools-mvc-auth']['authentication']['http']['htpasswd'])) {
                 $types[] = 'basic';
             }
-            if (isset($config['zf-mvc-auth']['authentication']['http']['htdigest'])) {
+            if (isset($config['api-tools-mvc-auth']['authentication']['http']['htdigest'])) {
                 $types[] = 'digest';
             }
             $authListener->addAuthenticationTypes($types);
         }
 
         /* Register v1.1+ adapter types */
-        if (isset($config['zf-mvc-auth']['authentication']['adapters'])) {
-            foreach ($config['zf-mvc-auth']['authentication']['adapters'] as $adapter => $adapterConfig) {
+        if (isset($config['api-tools-mvc-auth']['authentication']['adapters'])) {
+            foreach ($config['api-tools-mvc-auth']['authentication']['adapters'] as $adapter => $adapterConfig) {
                 if (! isset($adapterConfig['adapter'])) {
                     continue;
                 }
@@ -95,11 +97,11 @@ class AuthenticationTypeControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod($method);
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $this->controller->setRequest($request);
 
         $result = $this->controller->authTypeAction();
-        $this->assertInstanceOf('ZF\ApiProblem\ApiProblemResponse', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ApiProblem\ApiProblemResponse', $result);
         $apiProblem = $result->getApiProblem();
         $this->assertEquals(405, $apiProblem->status);
     }
@@ -109,16 +111,16 @@ class AuthenticationTypeControllerTest extends TestCase
     {
         $request = new Request();
         $request->setMethod('get');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $this->controller->setRequest($request);
 
         $result = $this->controller->authTypeAction();
 
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $config = require $this->localFile;
-        $adapters = array_keys($config['zf-mvc-auth']['authentication']['adapters']);
+        $adapters = array_keys($config['api-tools-mvc-auth']['authentication']['adapters']);
 
-        foreach ($config['zf-mvc-auth']['authentication']['adapters'] as $adapter => $adapterConfig) {
+        foreach ($config['api-tools-mvc-auth']['authentication']['adapters'] as $adapter => $adapterConfig) {
             if (false === stristr($adapterConfig['adapter'], 'http')) {
                 continue;
             }
@@ -140,7 +142,7 @@ class AuthenticationTypeControllerTest extends TestCase
         return [
             'basic' => [
                 [
-                    'zf-mvc-auth' => [
+                    'api-tools-mvc-auth' => [
                         'authentication' => [
                             'http' => [
                                 'accept_schemes' => ['basic'],
@@ -150,7 +152,7 @@ class AuthenticationTypeControllerTest extends TestCase
                     ],
                 ],
                 [
-                    'zf-mvc-auth' => [
+                    'api-tools-mvc-auth' => [
                         'authentication' => [
                             'http' => [
                                 'htpasswd' => __DIR__ . '/TestAsset/Auth2/config/autoload/htpasswd',
@@ -162,7 +164,7 @@ class AuthenticationTypeControllerTest extends TestCase
             ],
             'digest' => [
                 [
-                    'zf-mvc-auth' => [
+                    'api-tools-mvc-auth' => [
                         'authentication' => [
                             'http' => [
                                 'accept_schemes' => ['digest'],
@@ -174,7 +176,7 @@ class AuthenticationTypeControllerTest extends TestCase
                     ],
                 ],
                 [
-                    'zf-mvc-auth' => [
+                    'api-tools-mvc-auth' => [
                         'authentication' => [
                             'http' => [
                                 'htdigest' => __DIR__ . '/TestAsset/Auth2/config/autoload/htdigest',
@@ -197,8 +199,8 @@ class AuthenticationTypeControllerTest extends TestCase
                     ],
                 ],
                 [
-                    'zf-oauth2' => [
-                        'storage' => 'ZF\\OAuth2\\Adapter\\PdoAdapter',
+                    'api-tools-oauth2' => [
+                        'storage' => 'Laminas\\ApiTools\\OAuth2\\Adapter\\PdoAdapter',
                         'db' => [
                             'dsn_type'  => 'PDO',
                             'dsn'       => 'sqlite:/' . __DIR__ . '/TestAsset/Auth2/config/autoload/db.sqlite',
@@ -222,12 +224,12 @@ class AuthenticationTypeControllerTest extends TestCase
                     ],
                 ],
                 [
-                    'zf-oauth2' => [
-                        'storage' => 'ZF\\OAuth2\\Adapter\\MongoAdapter',
+                    'api-tools-oauth2' => [
+                        'storage' => 'Laminas\\ApiTools\\OAuth2\\Adapter\\MongoAdapter',
                         'mongo' => [
                             'dsn_type'     => 'Mongo',
                             'dsn'          => 'mongodb://localhost',
-                            'database'     => 'zf-apigility-admin-test',
+                            'database'     => 'api-tools-admin-test',
                             'locator_name' => 'MongoDB',
                         ],
                     ],
@@ -249,18 +251,18 @@ class AuthenticationTypeControllerTest extends TestCase
 
         $request = new Request();
         $request->setMethod('get');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.apigility.v2+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $controller->setRequest($request);
 
         $routeMatch = $this->createRouteMatch([]);
-        $routeMatch->setMatchedRouteName('zf-apigility/api/authentication-type');
+        $routeMatch->setMatchedRouteName('api-tools/api/authentication-type');
         $event = new MvcEvent();
         $event->setRouteMatch($routeMatch);
         $controller->setEvent($event);
 
         $result = $controller->authTypeAction();
 
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
 
         $types = $result->getVariable('auth-types');
         $this->assertEquals($expected, $types);
