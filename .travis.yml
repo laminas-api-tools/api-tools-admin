@@ -18,5 +18,4 @@ script:
   - ./bin/check-cs.sh
   
 notifications:
-  irc: "irc.freenode.org#apigility-dev"
   email: false
