@@ -1,15 +1,17 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
-use ZF\Apigility\Admin\Model\DocumentationModel;
-use ZF\Configuration\ModuleUtils;
-use ZF\Configuration\ResourceFactory;
-use ZFTest\Configuration\TestAsset\ConfigWriter;
+use Laminas\ApiTools\Admin\Model\DocumentationModel;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use LaminasTest\ApiTools\Configuration\TestAsset\ConfigWriter;
 
 class DocumentationModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,7 +23,7 @@ class DocumentationModelTest extends \PHPUnit_Framework_TestCase
     {
         $this->actualDocData = include __DIR__ . '/TestAsset/module/Doc/config/documentation.config.php';
 
-        $mockModuleUtils = $this->getMock('ZF\Configuration\ModuleUtils', array('getModuleConfigPath'), array(), '', false);
+        $mockModuleUtils = $this->getMock('Laminas\ApiTools\Configuration\ModuleUtils', array('getModuleConfigPath'), array(), '', false);
         $mockModuleUtils->expects($this->any())
             ->method('getModuleConfigPath')
             ->will($this->returnValue(__DIR__ . '/TestAsset/module/Doc/config/module.config.php'));

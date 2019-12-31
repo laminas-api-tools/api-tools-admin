@@ -1,22 +1,24 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use BarConf;
+use Laminas\ApiTools\Admin\Model\ModuleEntity;
+use Laminas\ApiTools\Admin\Model\RestServiceEntity;
+use Laminas\ApiTools\Admin\Model\RestServiceModel;
+use Laminas\ApiTools\Admin\Model\RestServiceModelFactory;
+use Laminas\ApiTools\Admin\Model\RestServiceResource;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\Config\Writer\PhpArray;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionObject;
-use Zend\Config\Writer\PhpArray;
-use ZF\Apigility\Admin\Model\ModuleEntity;
-use ZF\Apigility\Admin\Model\RestServiceEntity;
-use ZF\Apigility\Admin\Model\RestServiceModel;
-use ZF\Apigility\Admin\Model\RestServiceModelFactory;
-use ZF\Apigility\Admin\Model\RestServiceResource;
-use ZF\Configuration\ResourceFactory;
-use ZF\Configuration\ModuleUtils;
 
 require_once __DIR__ . '/TestAsset/module/BarConf/Module.php';
 
@@ -64,7 +66,7 @@ class RestServiceResourceTest extends TestCase
 
         $this->moduleEntity = new ModuleEntity($this->module, array(), array(), false);
 
-        $this->moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -78,7 +80,7 @@ class RestServiceResourceTest extends TestCase
 
         $this->restServiceModel = new RestServiceModel($this->moduleEntity, $this->modules, $config);
 
-        $this->restServiceModelFactory = $this->getMockBuilder('ZF\Apigility\Admin\Model\RestServiceModelFactory')
+        $this->restServiceModelFactory = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\RestServiceModelFactory')
             ->disableOriginalConstructor()
             ->getMock();
         $this->restServiceModelFactory
@@ -88,10 +90,10 @@ class RestServiceResourceTest extends TestCase
             ->will($this->returnValue($this->restServiceModel));
 
 
-        $this->filter        = $this->getMockBuilder('ZF\Apigility\Admin\Model\InputFilterModel')
+        $this->filter        = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\InputFilterModel')
                                     ->disableOriginalConstructor()
                                     ->getMock();
-        $this->docs          = $this->getMockBuilder('ZF\Apigility\Admin\Model\DocumentationModel')
+        $this->docs          = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\DocumentationModel')
                                     ->disableOriginalConstructor()
                                     ->getMock();
 
@@ -114,7 +116,7 @@ class RestServiceResourceTest extends TestCase
     public function testCreateReturnsRestServiceEntityWithControllerServiceNamePopulated()
     {
         $entity = $this->resource->create(array('service_name' => 'test'));
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RestServiceEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $entity);
         $controllerServiceName = $entity->controllerServiceName;
         $this->assertNotEmpty($controllerServiceName);
         $this->assertContains('\\Test\\', $controllerServiceName);

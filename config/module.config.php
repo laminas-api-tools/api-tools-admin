@@ -1,7 +1,9 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
 return array(
@@ -15,51 +17,51 @@ return array(
 
     'view_manager' => array(
         'template_map' => array(
-            'zf/app/app' => __DIR__ . '/../view/app.phtml',
+            'laminas/app/app' => __DIR__ . '/../view/app.phtml',
         )
     ),
 
     'service_manager' => array(
         'factories' => array(
-            'ZF\Apigility\Admin\Model\DocumentationModel' => 'ZF\Apigility\Admin\Model\DocumentationModelFactory',
-            'ZF\Apigility\Admin\Model\FiltersModel' => 'ZF\Apigility\Admin\Model\FiltersModelFactory',
-            'ZF\Apigility\Admin\Model\HydratorsModel' => 'ZF\Apigility\Admin\Model\HydratorsModelFactory',
-            'ZF\Apigility\Admin\Model\ValidatorMetadataModel' => 'ZF\Apigility\Admin\Model\ValidatorMetadataModelFactory',
-            'ZF\Apigility\Admin\Model\ValidatorsModel' => 'ZF\Apigility\Admin\Model\ValidatorsModelFactory',
-            'ZF\Apigility\Admin\Model\InputFilterModel' => 'ZF\Apigility\Admin\Model\InputFilterModelFactory',
+            'Laminas\ApiTools\Admin\Model\DocumentationModel' => 'Laminas\ApiTools\Admin\Model\DocumentationModelFactory',
+            'Laminas\ApiTools\Admin\Model\FiltersModel' => 'Laminas\ApiTools\Admin\Model\FiltersModelFactory',
+            'Laminas\ApiTools\Admin\Model\HydratorsModel' => 'Laminas\ApiTools\Admin\Model\HydratorsModelFactory',
+            'Laminas\ApiTools\Admin\Model\ValidatorMetadataModel' => 'Laminas\ApiTools\Admin\Model\ValidatorMetadataModelFactory',
+            'Laminas\ApiTools\Admin\Model\ValidatorsModel' => 'Laminas\ApiTools\Admin\Model\ValidatorsModelFactory',
+            'Laminas\ApiTools\Admin\Model\InputFilterModel' => 'Laminas\ApiTools\Admin\Model\InputFilterModelFactory',
         ),
     ),
 
     'controllers' => array(
         'aliases' => array(
-            'ZF\Apigility\Admin\Controller\HttpBasicAuthentication' => 'ZF\Apigility\Admin\Controller\Authentication',
-            'ZF\Apigility\Admin\Controller\HttpDigestAuthentication' => 'ZF\Apigility\Admin\Controller\Authentication',
-            'ZF\Apigility\Admin\Controller\OAuth2Authentication' => 'ZF\Apigility\Admin\Controller\Authentication',
+            'Laminas\ApiTools\Admin\Controller\HttpBasicAuthentication' => 'Laminas\ApiTools\Admin\Controller\Authentication',
+            'Laminas\ApiTools\Admin\Controller\HttpDigestAuthentication' => 'Laminas\ApiTools\Admin\Controller\Authentication',
+            'Laminas\ApiTools\Admin\Controller\OAuth2Authentication' => 'Laminas\ApiTools\Admin\Controller\Authentication',
         ),
         'invokables' => array(
-            'ZF\Apigility\Admin\Controller\App' => 'ZF\Apigility\Admin\Controller\AppController',
-            'ZF\Apigility\Admin\Controller\CacheEnabled' => 'ZF\Apigility\Admin\Controller\CacheEnabledController',
-            'ZF\Apigility\Admin\Controller\FsPermissions' => 'ZF\Apigility\Admin\Controller\FsPermissionsController',
+            'Laminas\ApiTools\Admin\Controller\App' => 'Laminas\ApiTools\Admin\Controller\AppController',
+            'Laminas\ApiTools\Admin\Controller\CacheEnabled' => 'Laminas\ApiTools\Admin\Controller\CacheEnabledController',
+            'Laminas\ApiTools\Admin\Controller\FsPermissions' => 'Laminas\ApiTools\Admin\Controller\FsPermissionsController',
         ),
         'factories' => array(
-            'ZF\Apigility\Admin\Controller\Documentation' => 'ZF\Apigility\Admin\Controller\DocumentationControllerFactory',
-            'ZF\Apigility\Admin\Controller\Filters' => 'ZF\Apigility\Admin\Controller\FiltersControllerFactory',
-            'ZF\Apigility\Admin\Controller\Hydrators' => 'ZF\Apigility\Admin\Controller\HydratorsControllerFactory',
-            'ZF\Apigility\Admin\Controller\Validators' => 'ZF\Apigility\Admin\Controller\ValidatorsControllerFactory',
-            'ZF\Apigility\Admin\Controller\InputFilter' => 'ZF\Apigility\Admin\Controller\InputFilterControllerFactory',
+            'Laminas\ApiTools\Admin\Controller\Documentation' => 'Laminas\ApiTools\Admin\Controller\DocumentationControllerFactory',
+            'Laminas\ApiTools\Admin\Controller\Filters' => 'Laminas\ApiTools\Admin\Controller\FiltersControllerFactory',
+            'Laminas\ApiTools\Admin\Controller\Hydrators' => 'Laminas\ApiTools\Admin\Controller\HydratorsControllerFactory',
+            'Laminas\ApiTools\Admin\Controller\Validators' => 'Laminas\ApiTools\Admin\Controller\ValidatorsControllerFactory',
+            'Laminas\ApiTools\Admin\Controller\InputFilter' => 'Laminas\ApiTools\Admin\Controller\InputFilterControllerFactory',
         ),
     ),
 
     'router' => array(
         'routes' => array(
-            'zf-apigility' => array(
+            'api-tools' => array(
                 'child_routes' => array(
                     'ui' => array(
-                        'type'  => 'Zend\Mvc\Router\Http\Literal',
+                        'type'  => 'Laminas\Mvc\Router\Http\Literal',
                         'options' => array(
                             'route' => '/ui',
                             'defaults' => array(
-                                'controller' => 'ZF\Apigility\Admin\Controller\App',
+                                'controller' => 'Laminas\ApiTools\Admin\Controller\App',
                                 'action'     => 'app',
                             ),
                         ),
@@ -79,7 +81,7 @@ return array(
                                 'options' => array(
                                     'route' => '/cache-enabled',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\CacheEnabled',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\CacheEnabled',
                                         'action'     => 'cacheEnabled',
                                     ),
                                 ),
@@ -89,7 +91,7 @@ return array(
                                 'options' => array(
                                     'route' => '/fs-permissions',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\FsPermissions',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\FsPermissions',
                                         'action'     => 'fsPermissions',
                                     ),
                                 ),
@@ -99,7 +101,7 @@ return array(
                                 'options' => array(
                                     'route' => '/config',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\Config',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Config',
                                         'action'     => 'process',
                                     ),
                                 ),
@@ -110,7 +112,7 @@ return array(
                                         'options' => array(
                                             'route' => '/module',
                                             'defaults' => array(
-                                                'controller' => 'ZF\Apigility\Admin\Controller\ModuleConfig',
+                                                'controller' => 'Laminas\ApiTools\Admin\Controller\ModuleConfig',
                                             ),
                                         ),
                                     ),
@@ -121,7 +123,7 @@ return array(
                                 'options' => array(
                                     'route' => '/source',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\Source',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Source',
                                         'action'     => 'source',
                                     ),
                                 ),
@@ -131,7 +133,7 @@ return array(
                                 'options' => array(
                                     'route' => '/filters',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\Filters',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Filters',
                                         'action'     => 'filters',
                                     ),
                                 ),
@@ -141,7 +143,7 @@ return array(
                                 'options' => array(
                                     'route' => '/hydrators',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\Hydrators',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Hydrators',
                                         'action'     => 'hydrators',
                                     ),
                                 ),
@@ -151,7 +153,7 @@ return array(
                                 'options' => array(
                                     'route' => '/validators',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\Validators',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Validators',
                                         'action'     => 'validators',
                                     ),
                                 ),
@@ -161,7 +163,7 @@ return array(
                                 'options' => array(
                                     'route' => '/module.enable',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\ModuleCreation',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\ModuleCreation',
                                         'action'     => 'apiEnable',
                                     ),
                                 ),
@@ -171,7 +173,7 @@ return array(
                                 'options' => array(
                                     'route' => '/versioning',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\Versioning',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Versioning',
                                         'action'     => 'versioning',
                                     ),
                                 ),
@@ -181,7 +183,7 @@ return array(
                                 'options' => array(
                                     'route' => '/default-version',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\Versioning',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Versioning',
                                         'action'     => 'defaultVersion',
                                     ),
                                 ),
@@ -191,7 +193,7 @@ return array(
                                 'options' => array(
                                     'route' => '/module[/:name]',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\Module',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Module',
                                     ),
                                 ),
                                 'may_terminate' => true,
@@ -201,7 +203,7 @@ return array(
                                         'options' => array(
                                             'route' => '/authorization',
                                             'defaults' => array(
-                                                'controller' => 'ZF\Apigility\Admin\Controller\Authorization',
+                                                'controller' => 'Laminas\ApiTools\Admin\Controller\Authorization',
                                                 'action'     => 'authorization',
                                             ),
                                         ),
@@ -211,7 +213,7 @@ return array(
                                         'options' => array(
                                             'route' => '/rpc[/:controller_service_name]',
                                             'defaults' => array(
-                                                'controller' => 'ZF\Apigility\Admin\Controller\RpcService',
+                                                'controller' => 'Laminas\ApiTools\Admin\Controller\RpcService',
                                                 'controller_type' => 'rpc'
                                             ),
                                         ),
@@ -222,7 +224,7 @@ return array(
                                                 'options' => array(
                                                     'route' => '/input-filter[/:input_filter_name]',
                                                     'defaults' => array(
-                                                        'controller' => 'ZF\Apigility\Admin\Controller\InputFilter',
+                                                        'controller' => 'Laminas\ApiTools\Admin\Controller\InputFilter',
                                                         'action'     => 'index',
                                                     )
                                                 )
@@ -232,7 +234,7 @@ return array(
                                                 'options' => array(
                                                     'route' => '/doc', // [/:http_method[/:http_direction]]
                                                     'defaults' => array(
-                                                        'controller' => 'ZF\Apigility\Admin\Controller\Documentation',
+                                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Documentation',
                                                         'action'     => 'index',
                                                     )
                                                 )
@@ -244,7 +246,7 @@ return array(
                                         'options' => array(
                                             'route' => '/rest[/:controller_service_name]',
                                             'defaults' => array(
-                                                'controller' => 'ZF\Apigility\Admin\Controller\RestService',
+                                                'controller' => 'Laminas\ApiTools\Admin\Controller\RestService',
                                                 'controller_type' => 'rest'
                                             ),
                                         ),
@@ -255,7 +257,7 @@ return array(
                                                 'options' => array(
                                                     'route' => '/input-filter[/:input_filter_name]',
                                                     'defaults' => array(
-                                                        'controller' => 'ZF\Apigility\Admin\Controller\InputFilter',
+                                                        'controller' => 'Laminas\ApiTools\Admin\Controller\InputFilter',
                                                         'action'     => 'index',
                                                     )
                                                 )
@@ -265,7 +267,7 @@ return array(
                                                 'options' => array(
                                                     'route' => '/doc', // [/:rest_resource_type[/:http_method[/:http_direction]]]
                                                     'defaults' => array(
-                                                        'controller' => 'ZF\Apigility\Admin\Controller\Documentation',
+                                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Documentation',
                                                         'action'     => 'index',
                                                     )
                                                 )
@@ -280,7 +282,7 @@ return array(
                                     'route' => '/authentication',
                                     'defaults' => array(
                                         'action'     => 'authentication',
-                                        'controller' => 'ZF\Apigility\Admin\Controller\Authentication',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\Authentication',
                                     ),
                                 ),
                                 'may_terminate' => true,
@@ -290,7 +292,7 @@ return array(
                                         'options' => array(
                                             'route' => '/oauth2',
                                             'defaults' => array(
-                                                'controller' => 'ZF\Apigility\Admin\Controller\OAuth2Authentication',
+                                                'controller' => 'Laminas\ApiTools\Admin\Controller\OAuth2Authentication',
                                             ),
                                         ),
                                     ),
@@ -299,7 +301,7 @@ return array(
                                         'options' => array(
                                             'route' => '/http-basic',
                                             'defaults' => array(
-                                                'controller' => 'ZF\Apigility\Admin\Controller\HttpBasicAuthentication',
+                                                'controller' => 'Laminas\ApiTools\Admin\Controller\HttpBasicAuthentication',
                                             ),
                                         ),
                                     ),
@@ -308,7 +310,7 @@ return array(
                                         'options' => array(
                                             'route' => '/http-digest',
                                             'defaults' => array(
-                                                'controller' => 'ZF\Apigility\Admin\Controller\HttpDigestAuthentication',
+                                                'controller' => 'Laminas\ApiTools\Admin\Controller\HttpDigestAuthentication',
                                             ),
                                         ),
                                     ),
@@ -319,7 +321,7 @@ return array(
                                 'options' => array(
                                     'route' => '/db-adapter[/:adapter_name]',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\DbAdapter',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\DbAdapter',
                                     ),
                                 ),
                             ),
@@ -328,7 +330,7 @@ return array(
                                 'options' => array(
                                     'route' => '/content-negotiation[/:content_name]',
                                     'defaults' => array(
-                                        'controller' => 'ZF\Apigility\Admin\Controller\ContentNegotiation',
+                                        'controller' => 'Laminas\ApiTools\Admin\Controller\ContentNegotiation',
                                     ),
                                 ),
                             ),
@@ -339,295 +341,295 @@ return array(
         ),
     ),
 
-    'zf-content-negotiation' => array(
+    'api-tools-content-negotiation' => array(
         'controllers' => array(
-            'ZF\Apigility\Admin\Controller\Authentication'           => 'HalJson',
-            'ZF\Apigility\Admin\Controller\Authorization'            => 'HalJson',
-            'ZF\Apigility\Admin\Controller\CacheEnabled'             => 'Json',
-            'ZF\Apigility\Admin\Controller\ContentNegotiation'       => 'HalJson',
-            'ZF\Apigility\Admin\Controller\DbAdapter'                => 'HalJson',
-            'ZF\Apigility\Admin\Controller\Documentation'            => 'HalJson',
-            'ZF\Apigility\Admin\Controller\Filters'                  => 'Json',
-            'ZF\Apigility\Admin\Controller\FsPermissions'            => 'Json',
-            'ZF\Apigility\Admin\Controller\HttpBasicAuthentication'  => 'HalJson',
-            'ZF\Apigility\Admin\Controller\HttpDigestAuthentication' => 'HalJson',
-            'ZF\Apigility\Admin\Controller\Hydrators'                => 'Json',
-            'ZF\Apigility\Admin\Controller\InputFilter'              => 'HalJson',
-            'ZF\Apigility\Admin\Controller\ModuleCreation'           => 'HalJson',
-            'ZF\Apigility\Admin\Controller\Module'                   => 'HalJson',
-            'ZF\Apigility\Admin\Controller\OAuth2Authentication'     => 'HalJson',
-            'ZF\Apigility\Admin\Controller\RestService'              => 'HalJson',
-            'ZF\Apigility\Admin\Controller\RpcService'               => 'HalJson',
-            'ZF\Apigility\Admin\Controller\Source'                   => 'Json',
-            'ZF\Apigility\Admin\Controller\Validators'               => 'Json',
-            'ZF\Apigility\Admin\Controller\Versioning'               => 'Json',
+            'Laminas\ApiTools\Admin\Controller\Authentication'           => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\Authorization'            => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\CacheEnabled'             => 'Json',
+            'Laminas\ApiTools\Admin\Controller\ContentNegotiation'       => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\DbAdapter'                => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\Documentation'            => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\Filters'                  => 'Json',
+            'Laminas\ApiTools\Admin\Controller\FsPermissions'            => 'Json',
+            'Laminas\ApiTools\Admin\Controller\HttpBasicAuthentication'  => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\HttpDigestAuthentication' => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\Hydrators'                => 'Json',
+            'Laminas\ApiTools\Admin\Controller\InputFilter'              => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\ModuleCreation'           => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\Module'                   => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\OAuth2Authentication'     => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\RestService'              => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\RpcService'               => 'HalJson',
+            'Laminas\ApiTools\Admin\Controller\Source'                   => 'Json',
+            'Laminas\ApiTools\Admin\Controller\Validators'               => 'Json',
+            'Laminas\ApiTools\Admin\Controller\Versioning'               => 'Json',
         ),
         'accept_whitelist' => array(
-            'ZF\Apigility\Admin\Controller\Authentication' => array(
+            'Laminas\ApiTools\Admin\Controller\Authentication' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Authorization' => array(
+            'Laminas\ApiTools\Admin\Controller\Authorization' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\CacheEnabled' => array(
+            'Laminas\ApiTools\Admin\Controller\CacheEnabled' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\ContentNegotiation' => array(
+            'Laminas\ApiTools\Admin\Controller\ContentNegotiation' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\DbAdapter' => array(
+            'Laminas\ApiTools\Admin\Controller\DbAdapter' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Documentation' => array(
+            'Laminas\ApiTools\Admin\Controller\Documentation' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Filters' => array(
+            'Laminas\ApiTools\Admin\Controller\Filters' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\FsPermissions' => array(
+            'Laminas\ApiTools\Admin\Controller\FsPermissions' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\HttpBasicAuthentication' => array(
+            'Laminas\ApiTools\Admin\Controller\HttpBasicAuthentication' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\HttpDigestAuthentication' => array(
+            'Laminas\ApiTools\Admin\Controller\HttpDigestAuthentication' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Hydrators' => array(
+            'Laminas\ApiTools\Admin\Controller\Hydrators' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\InputFilter' => array(
+            'Laminas\ApiTools\Admin\Controller\InputFilter' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Module' => array(
+            'Laminas\ApiTools\Admin\Controller\Module' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\ModuleCreation' => array(
+            'Laminas\ApiTools\Admin\Controller\ModuleCreation' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\OAuth2Authentication' => array(
+            'Laminas\ApiTools\Admin\Controller\OAuth2Authentication' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Source' => array(
+            'Laminas\ApiTools\Admin\Controller\Source' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Validators' => array(
+            'Laminas\ApiTools\Admin\Controller\Validators' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Versioning' => array(
+            'Laminas\ApiTools\Admin\Controller\Versioning' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\RestService' => array(
+            'Laminas\ApiTools\Admin\Controller\RestService' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\RpcService' => array(
+            'Laminas\ApiTools\Admin\Controller\RpcService' => array(
                 'application/json',
                 'application/*+json',
             ),
         ),
         'content_type_whitelist' => array(
-            'ZF\Apigility\Admin\Controller\Authorization' => array(
+            'Laminas\ApiTools\Admin\Controller\Authorization' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\CacheEnabled' => array(
+            'Laminas\ApiTools\Admin\Controller\CacheEnabled' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\ContentNegotiation' => array(
+            'Laminas\ApiTools\Admin\Controller\ContentNegotiation' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\DbAdapter' => array(
+            'Laminas\ApiTools\Admin\Controller\DbAdapter' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Filters' => array(
+            'Laminas\ApiTools\Admin\Controller\Filters' => array(
                 'application/json',
             ),
-            'ZF\Apigility\Admin\Controller\FsPermissions' => array(
-                'application/json',
-                'application/*+json',
-            ),
-            'ZF\Apigility\Admin\Controller\Hydrators' => array(
-                'application/json',
-            ),
-            'ZF\Apigility\Admin\Controller\HttpBasicAuthentication' => array(
+            'Laminas\ApiTools\Admin\Controller\FsPermissions' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\HttpDigestAuthentication' => array(
+            'Laminas\ApiTools\Admin\Controller\Hydrators' => array(
+                'application/json',
+            ),
+            'Laminas\ApiTools\Admin\Controller\HttpBasicAuthentication' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\InputFilter' => array(
+            'Laminas\ApiTools\Admin\Controller\HttpDigestAuthentication' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Module' => array(
+            'Laminas\ApiTools\Admin\Controller\InputFilter' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\ModuleCreation' => array(
-                'application/json',
-            ),
-            'ZF\Apigility\Admin\Controller\OAuth2Authentication' => array(
+            'Laminas\ApiTools\Admin\Controller\Module' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\Source' => array(
+            'Laminas\ApiTools\Admin\Controller\ModuleCreation' => array(
                 'application/json',
             ),
-            'ZF\Apigility\Admin\Controller\Validators' => array(
-                'application/json',
-            ),
-            'ZF\Apigility\Admin\Controller\Versioning' => array(
-                'application/json',
-            ),
-            'ZF\Apigility\Admin\Controller\RestService' => array(
+            'Laminas\ApiTools\Admin\Controller\OAuth2Authentication' => array(
                 'application/json',
                 'application/*+json',
             ),
-            'ZF\Apigility\Admin\Controller\RpcService' => array(
+            'Laminas\ApiTools\Admin\Controller\Source' => array(
+                'application/json',
+            ),
+            'Laminas\ApiTools\Admin\Controller\Validators' => array(
+                'application/json',
+            ),
+            'Laminas\ApiTools\Admin\Controller\Versioning' => array(
+                'application/json',
+            ),
+            'Laminas\ApiTools\Admin\Controller\RestService' => array(
+                'application/json',
+                'application/*+json',
+            ),
+            'Laminas\ApiTools\Admin\Controller\RpcService' => array(
                 'application/json',
                 'application/*+json',
             ),
         ),
     ),
 
-    'zf-hal' => array(
+    'api-tools-hal' => array(
         'metadata_map' => array(
-            'ZF\Apigility\Admin\Model\AuthenticationEntity' => array(
+            'Laminas\ApiTools\Admin\Model\AuthenticationEntity' => array(
                 'hydrator'        => 'ArraySerializable',
             ),
-            'ZF\Apigility\Admin\Model\AuthorizationEntity' => array(
+            'Laminas\ApiTools\Admin\Model\AuthorizationEntity' => array(
                 'hydrator'        => 'ArraySerializable',
             ),
-            'ZF\Apigility\Admin\Model\ContentNegotiationEntity' => array(
+            'Laminas\ApiTools\Admin\Model\ContentNegotiationEntity' => array(
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'content_name',
                 'entity_identifier_name' => 'content_name',
-                'route_name'      => 'zf-apigility/api/content-negotiation'
+                'route_name'      => 'api-tools/api/content-negotiation'
             ),
-            'ZF\Apigility\Admin\Model\DbConnectedRestServiceEntity' => array(
+            'Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity' => array(
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'controller_service_name',
                 'entity_identifier_name' => 'controller_service_name',
-                'route_name'      => 'zf-apigility/api/module/rest-service',
+                'route_name'      => 'api-tools/api/module/rest-service',
             ),
-            'ZF\Apigility\Admin\Model\DbAdapterEntity' => array(
+            'Laminas\ApiTools\Admin\Model\DbAdapterEntity' => array(
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'adapter_name',
                 'entity_identifier_name' => 'adapter_name',
-                'route_name'      => 'zf-apigility/api/db-adapter',
+                'route_name'      => 'api-tools/api/db-adapter',
             ),
-            'ZF\Apigility\Admin\Model\InputFilterCollection' => array(
-                'route_name'      => 'zf-apigility/api/module/rest-service/input-filter',
+            'Laminas\ApiTools\Admin\Model\InputFilterCollection' => array(
+                'route_name'      => 'api-tools/api/module/rest-service/input-filter',
                 'is_collection'   => true,
                 'collection_name' => 'input_filter',
                 'route_identifier_name' => 'input_filter_name',
                 'entity_identifier_name' => 'input_filter_name',
             ),
-            'ZF\Apigility\Admin\Model\InputFilterEntity' => array(
+            'Laminas\ApiTools\Admin\Model\InputFilterEntity' => array(
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'input_filter_name',
                 'entity_identifier_name' => 'input_filter_name',
-                'route_name'      => 'zf-apigility/api/module/rest-service/input-filter',
+                'route_name'      => 'api-tools/api/module/rest-service/input-filter',
             ),
-            'ZF\Apigility\Admin\Model\ModuleEntity' => array(
+            'Laminas\ApiTools\Admin\Model\ModuleEntity' => array(
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'name',
-                'route_name'      => 'zf-apigility/api/module',
+                'route_name'      => 'api-tools/api/module',
             ),
-            'ZF\Apigility\Admin\Model\RestInputFilterCollection' => array(
-                'route_name'      => 'zf-apigility/api/module/rest-service/input-filter',
+            'Laminas\ApiTools\Admin\Model\RestInputFilterCollection' => array(
+                'route_name'      => 'api-tools/api/module/rest-service/input-filter',
                 'is_collection'   => true,
                 'collection_name' => 'input_filter',
                 'route_identifier_name' => 'input_filter_name',
                 'entity_identifier_name' => 'input_filter_name',
             ),
-            'ZF\Apigility\Admin\Model\RestInputFilterEntity' => array(
+            'Laminas\ApiTools\Admin\Model\RestInputFilterEntity' => array(
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'input_filter_name',
-                'route_name'      => 'zf-apigility/api/module/rest-service/input-filter',
+                'route_name'      => 'api-tools/api/module/rest-service/input-filter',
                 'route_identifier_name' => 'input_filter_name',
                 'entity_identifier_name' => 'input_filter_name',
             ),
-            'ZF\Apigility\Admin\Model\DocumentationEntity' => array(
+            'Laminas\ApiTools\Admin\Model\DocumentationEntity' => array(
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'rest_documentation',
                 'entity_identifier_name' => 'rest_documentation',
-                'route_name'      => 'zf-apigility/api/module/rest-service/rest-doc',
+                'route_name'      => 'api-tools/api/module/rest-service/rest-doc',
             ),
-            'ZF\Apigility\Admin\Model\RestServiceEntity' => array(
+            'Laminas\ApiTools\Admin\Model\RestServiceEntity' => array(
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'controller_service_name',
                 'entity_identifier_name' => 'controller_service_name',
-                'route_name'      => 'zf-apigility/api/module/rest-service',
+                'route_name'      => 'api-tools/api/module/rest-service',
                 'links'           => array(
                     array(
                         'rel' => 'input_filter',
                         'route' => array(
-                            'name' => 'zf-apigility/api/module/rest-service/input-filter'
+                            'name' => 'api-tools/api/module/rest-service/input-filter'
                         ),
                     ),
                     array(
                         'rel' => 'documentation',
                         'route' => array(
-                            'name' => 'zf-apigility/api/module/rest-service/doc',
+                            'name' => 'api-tools/api/module/rest-service/doc',
                         ),
                     )
                 ),
             ),
-            'ZF\Apigility\Admin\Model\RpcInputFilterCollection' => array(
-                'route_name'      => 'zf-apigility/api/module/rpc-service/input-filter',
+            'Laminas\ApiTools\Admin\Model\RpcInputFilterCollection' => array(
+                'route_name'      => 'api-tools/api/module/rpc-service/input-filter',
                 'is_collection'   => true,
                 'collection_name' => 'input_filter',
                 'route_identifier_name' => 'input_filter_name',
                 'entity_identifier_name' => 'input_filter_name',
             ),
-            'ZF\Apigility\Admin\Model\RpcInputFilterEntity' => array(
+            'Laminas\ApiTools\Admin\Model\RpcInputFilterEntity' => array(
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'input_filter_name',
-                'route_name'      => 'zf-apigility/api/module/rpc-service/input-filter',
+                'route_name'      => 'api-tools/api/module/rpc-service/input-filter',
                 'route_identifier_name' => 'input_filter_name',
                 'entity_identifier_name' => 'input_filter_name',
             ),
-            'ZF\Apigility\Admin\Model\RpcServiceEntity' => array(
+            'Laminas\ApiTools\Admin\Model\RpcServiceEntity' => array(
                 'hydrator'        => 'ArraySerializable',
                 'route_identifier_name' => 'controller_service_name',
                 'entity_identifier_name' => 'controller_service_name',
-                'route_name'      => 'zf-apigility/api/module/rpc-service',
+                'route_name'      => 'api-tools/api/module/rpc-service',
                 'links'           => array(
                     array(
                         'rel' => 'input_filter',
                         'route' => array(
-                            'name' => 'zf-apigility/api/module/rpc-service/input-filter'
+                            'name' => 'api-tools/api/module/rpc-service/input-filter'
                         ),
                     ),
                     array(
                         'rel' => 'documentation',
                         'route' => array(
-                            'name' => 'zf-apigility/api/module/rpc-service/doc',
+                            'name' => 'api-tools/api/module/rpc-service/doc',
                         ),
                     )
                 ),
@@ -635,48 +637,48 @@ return array(
         ),
     ),
 
-    'zf-rest' => array(
-        'ZF\Apigility\Admin\Controller\ContentNegotiation' => array(
-            'listener'                => 'ZF\Apigility\Admin\Model\ContentNegotiationResource',
-            'route_name'              => 'zf-apigility/api/content-negotiation',
+    'api-tools-rest' => array(
+        'Laminas\ApiTools\Admin\Controller\ContentNegotiation' => array(
+            'listener'                => 'Laminas\ApiTools\Admin\Model\ContentNegotiationResource',
+            'route_name'              => 'api-tools/api/content-negotiation',
             'route_identifier_name'   => 'content_name',
-            'entity_class'            => 'ZF\Apigility\Admin\Model\ContentNegotiationEntity',
+            'entity_class'            => 'Laminas\ApiTools\Admin\Model\ContentNegotiationEntity',
             'entity_http_methods'     => array('GET', 'PATCH', 'DELETE'),
             'collection_http_methods' => array('GET', 'POST'),
             'collection_name'         => 'selectors',
         ),
-        'ZF\Apigility\Admin\Controller\DbAdapter' => array(
-            'listener'                => 'ZF\Apigility\Admin\Model\DbAdapterResource',
-            'route_name'              => 'zf-apigility/api/db-adapter',
+        'Laminas\ApiTools\Admin\Controller\DbAdapter' => array(
+            'listener'                => 'Laminas\ApiTools\Admin\Model\DbAdapterResource',
+            'route_name'              => 'api-tools/api/db-adapter',
             'route_identifier_name'   => 'adapter_name',
-            'entity_class'            => 'ZF\Apigility\Admin\Model\DbAdapterEntity',
+            'entity_class'            => 'Laminas\ApiTools\Admin\Model\DbAdapterEntity',
             'entity_http_methods'     => array('GET', 'PATCH', 'DELETE'),
             'collection_http_methods' => array('GET', 'POST'),
             'collection_name'         => 'db_adapter',
         ),
-        'ZF\Apigility\Admin\Controller\Module' => array(
-            'listener'                => 'ZF\Apigility\Admin\Model\ModuleResource',
-            'route_name'              => 'zf-apigility/api/module',
+        'Laminas\ApiTools\Admin\Controller\Module' => array(
+            'listener'                => 'Laminas\ApiTools\Admin\Model\ModuleResource',
+            'route_name'              => 'api-tools/api/module',
             'route_identifier_name'   => 'name',
-            'entity_class'            => 'ZF\Apigility\Admin\Model\ModuleEntity',
+            'entity_class'            => 'Laminas\ApiTools\Admin\Model\ModuleEntity',
             'entity_http_methods'     => array('GET'),
             'collection_http_methods' => array('GET', 'POST'),
             'collection_name'         => 'module',
         ),
-        'ZF\Apigility\Admin\Controller\RpcService' => array(
-            'listener'                   => 'ZF\Apigility\Admin\Model\RpcServiceResource',
-            'route_name'                 => 'zf-apigility/api/module/rpc-service',
-            'entity_class'               => 'ZF\Apigility\Admin\Model\RpcServiceEntity',
+        'Laminas\ApiTools\Admin\Controller\RpcService' => array(
+            'listener'                   => 'Laminas\ApiTools\Admin\Model\RpcServiceResource',
+            'route_name'                 => 'api-tools/api/module/rpc-service',
+            'entity_class'               => 'Laminas\ApiTools\Admin\Model\RpcServiceEntity',
             'route_identifier_name'      => 'controller_service_name',
             'entity_http_methods'        => array('GET', 'PATCH', 'DELETE'),
             'collection_http_methods'    => array('GET', 'POST'),
             'collection_name'            => 'rpc',
             'collection_query_whitelist' => array('version'),
         ),
-        'ZF\Apigility\Admin\Controller\RestService' => array(
-            'listener'                   => 'ZF\Apigility\Admin\Model\RestServiceResource',
-            'route_name'                 => 'zf-apigility/api/module/rest-service',
-            'entity_class'               => 'ZF\Apigility\Admin\Model\RestServiceEntity',
+        'Laminas\ApiTools\Admin\Controller\RestService' => array(
+            'listener'                   => 'Laminas\ApiTools\Admin\Model\RestServiceResource',
+            'route_name'                 => 'api-tools/api/module/rest-service',
+            'entity_class'               => 'Laminas\ApiTools\Admin\Model\RestServiceEntity',
             'route_identifier_name'      => 'controller_service_name',
             'entity_http_methods'        => array('GET', 'PATCH', 'DELETE'),
             'collection_http_methods'    => array('GET', 'POST'),
@@ -685,74 +687,74 @@ return array(
         ),
     ),
 
-    'zf-rpc' => array(
-        'ZF\Apigility\Admin\Controller\Authentication' => array(
+    'api-tools-rpc' => array(
+        'Laminas\ApiTools\Admin\Controller\Authentication' => array(
             'http_methods' => array('GET'),
-            'route_name'   => 'zf-apigility/api/authentication',
+            'route_name'   => 'api-tools/api/authentication',
         ),
-        'ZF\Apigility\Admin\Controller\Authorization' => array(
+        'Laminas\ApiTools\Admin\Controller\Authorization' => array(
             'http_methods' => array('GET', 'PUT'),
-            'route_name'   => 'zf-apigility/api/module/authorization',
+            'route_name'   => 'api-tools/api/module/authorization',
         ),
-        'ZF\Apigility\Admin\Controller\CacheEnabled' => array(
+        'Laminas\ApiTools\Admin\Controller\CacheEnabled' => array(
             'http_methods' => array('GET'),
-            'route_name'   => 'zf-apigility/api/cache-enabled',
+            'route_name'   => 'api-tools/api/cache-enabled',
         ),
-        'ZF\Apigility\Admin\Controller\Config' => array(
+        'Laminas\ApiTools\Admin\Controller\Config' => array(
             'http_methods' => array('GET', 'PATCH'),
-            'route_name'   => 'zf-apigility/api/config',
+            'route_name'   => 'api-tools/api/config',
         ),
-        'ZF\Apigility\Admin\Controller\Documentation' => array(
+        'Laminas\ApiTools\Admin\Controller\Documentation' => array(
             'http_methods' => array('GET', 'PATCH', 'PUT', 'DELETE'),
-            'route_name'   => 'zf-apigility/api/rest-service/rest-doc',
+            'route_name'   => 'api-tools/api/rest-service/rest-doc',
         ),
-        'ZF\Apigility\Admin\Controller\Filters' => array(
+        'Laminas\ApiTools\Admin\Controller\Filters' => array(
             'http_methods' => array('GET'),
-            'route_name'   => 'zf-apigility/api/filters',
+            'route_name'   => 'api-tools/api/filters',
         ),
-        'ZF\Apigility\Admin\Controller\FsPermissions' => array(
+        'Laminas\ApiTools\Admin\Controller\FsPermissions' => array(
             'http_methods' => array('GET'),
-            'route_name'   => 'zf-apigility/api/fs-permissions',
+            'route_name'   => 'api-tools/api/fs-permissions',
         ),
-        'ZF\Apigility\Admin\Controller\HttpBasicAuthentication' => array(
+        'Laminas\ApiTools\Admin\Controller\HttpBasicAuthentication' => array(
             'http_methods' => array('GET', 'POST', 'PATCH', 'DELETE'),
-            'route_name'   => 'zf-apigility/api/authentication/http-basic',
+            'route_name'   => 'api-tools/api/authentication/http-basic',
         ),
-        'ZF\Apigility\Admin\Controller\HttpDigestAuthentication' => array(
+        'Laminas\ApiTools\Admin\Controller\HttpDigestAuthentication' => array(
             'http_methods' => array('GET', 'POST', 'PATCH', 'DELETE'),
-            'route_name'   => 'zf-apigility/api/authentication/http-digest',
+            'route_name'   => 'api-tools/api/authentication/http-digest',
         ),
-        'ZF\Apigility\Admin\Controller\Hydrators' => array(
+        'Laminas\ApiTools\Admin\Controller\Hydrators' => array(
             'http_methods' => array('GET'),
-            'route_name'   => 'zf-apigility/api/hydrators',
+            'route_name'   => 'api-tools/api/hydrators',
         ),
-        'ZF\Apigility\Admin\Controller\InputFilter' => array(
+        'Laminas\ApiTools\Admin\Controller\InputFilter' => array(
             'http_methods' => array('GET', 'POST', 'PUT', 'DELETE'),
-            'route_name'   => 'zf-apigility/api/rpc-service/input-filter',
+            'route_name'   => 'api-tools/api/rpc-service/input-filter',
         ),
-        'ZF\Apigility\Admin\Controller\ModuleConfig' => array(
+        'Laminas\ApiTools\Admin\Controller\ModuleConfig' => array(
             'http_methods' => array('GET', 'PATCH'),
-            'route_name'   => 'zf-apigility/api/config/module',
+            'route_name'   => 'api-tools/api/config/module',
         ),
-        'ZF\Apigility\Admin\Controller\ModuleCreation' => array(
+        'Laminas\ApiTools\Admin\Controller\ModuleCreation' => array(
             'http_methods' => array('PUT'),
-            'route_name'   => 'zf-apigility/api/module-enable',
+            'route_name'   => 'api-tools/api/module-enable',
         ),
-        'ZF\Apigility\Admin\Controller\OAuth2Authentication' => array(
+        'Laminas\ApiTools\Admin\Controller\OAuth2Authentication' => array(
             'http_methods' => array('GET', 'POST', 'PATCH', 'DELETE'),
-            'route_name'   => 'zf-apigility/api/authentication/oauth2',
+            'route_name'   => 'api-tools/api/authentication/oauth2',
         ),
-        'ZF\Apigility\Admin\Controller\Source' => array(
+        'Laminas\ApiTools\Admin\Controller\Source' => array(
             'http_methods' => array('GET'),
-            'route_name'   => 'zf-apigility/api/source',
+            'route_name'   => 'api-tools/api/source',
         ),
-        'ZF\Apigility\Admin\Controller\Validators' => array(
+        'Laminas\ApiTools\Admin\Controller\Validators' => array(
             'http_methods' => array('GET'),
-            'route_name'   => 'zf-apigility/api/validators',
+            'route_name'   => 'api-tools/api/validators',
         ),
-        'ZF\Apigility\Admin\Controller\Versioning' => array(
+        'Laminas\ApiTools\Admin\Controller\Versioning' => array(
             'http_methods' => array('PATCH'),
-            'route_name'   => 'zf-apigility/api/versioning',
+            'route_name'   => 'api-tools/api/versioning',
         ),
     ),
 
@@ -764,63 +766,63 @@ return array(
      * OR'd.
      */
     'filter_metadata' => array(
-        'Zend\I18n\Filter\Alnum' => array(
+        'Laminas\I18n\Filter\Alnum' => array(
             'allow_white_space' => 'bool',
             'locale' => 'string',
         ),
-        'Zend\I18n\Filter\Alpha' => array(
+        'Laminas\I18n\Filter\Alpha' => array(
             'allow_white_space' => 'bool',
             'locale' => 'string',
         ),
-        'Zend\Filter\BaseName' => array(),
-        'Zend\Filter\Boolean' => array(
+        'Laminas\Filter\BaseName' => array(),
+        'Laminas\Filter\Boolean' => array(
             'casting' => 'bool',
             'type' => 'string',
         ),
-        'Zend\Filter\Callback' => array(
+        'Laminas\Filter\Callback' => array(
             'callback' => 'string',
         ),
-        'Zend\Filter\Compress\Bz2' => array(
+        'Laminas\Filter\Compress\Bz2' => array(
             'archive' => 'string',
             'blocksize' => 'int',
         ),
-        'Zend\Filter\Compress\Gz' => array(
+        'Laminas\Filter\Compress\Gz' => array(
             'archive' => 'string',
             'level' => 'int',
             'mode' => 'string',
         ),
-        'Zend\Filter\Compress\Lzf' => array(),
-        'Zend\Filter\Compress' => array(
+        'Laminas\Filter\Compress\Llaminas' => array(),
+        'Laminas\Filter\Compress' => array(
             'adapter' => 'string',
         ),
-        'Zend\Filter\Compress\Rar' => array(
+        'Laminas\Filter\Compress\Rar' => array(
             'archive' => 'string',
             'callback' => 'string',
             'password' => 'string',
             'target' => 'string',
         ),
-        'Zend\Filter\Compress\Snappy' => array(),
-        'Zend\Filter\Compress\Tar' => array(
+        'Laminas\Filter\Compress\Snappy' => array(),
+        'Laminas\Filter\Compress\Tar' => array(
             'archive' => 'string',
             'target' => 'string',
             'mode' => 'string',
         ),
-        'Zend\Filter\Compress\Zip' => array(
+        'Laminas\Filter\Compress\Zip' => array(
             'archive' => 'string',
             'target' => 'string',
         ),
-        'Zend\Filter\DateTimeForatter' => array(
+        'Laminas\Filter\DateTimeForatter' => array(
             'format' => 'string',
         ),
-        'Zend\Filter\Decompress' => array(
+        'Laminas\Filter\Decompress' => array(
             'adapter' => 'string',
         ),
-        'Zend\Filter\Decrypt' => array(
+        'Laminas\Filter\Decrypt' => array(
             'adapter' => 'string',
         ),
-        'Zend\Filter\Digits' => array(),
-        'Zend\Filter\Dir' => array(),
-        'Zend\Filter\Encrypt\BlockCipher' => array(
+        'Laminas\Filter\Digits' => array(),
+        'Laminas\Filter\Dir' => array(),
+        'Laminas\Filter\Encrypt\BlockCipher' => array(
             'algorithm' => 'string',
             'compression' => 'string',
             'hash' => 'string',
@@ -828,114 +830,114 @@ return array(
             'key_iteration' => 'int',
             'vector' => 'string',
         ),
-        'Zend\Filter\Encrypt\Openssl' => array(
+        'Laminas\Filter\Encrypt\Openssl' => array(
             'compression' => 'string',
             'package' => 'bool',
             'passphrase' => 'string',
         ),
-        'Zend\Filter\Encrypt' => array(
+        'Laminas\Filter\Encrypt' => array(
             'adapter' => 'string',
         ),
-        'Zend\Filter\File\Decrypt' => array(
-            'adapter' => 'string',
-            'filename' => 'string',
-        ),
-        'Zend\Filter\File\Encrypt' => array(
+        'Laminas\Filter\File\Decrypt' => array(
             'adapter' => 'string',
             'filename' => 'string',
         ),
-        'Zend\Filter\File\LowerCase' => array(
+        'Laminas\Filter\File\Encrypt' => array(
+            'adapter' => 'string',
+            'filename' => 'string',
+        ),
+        'Laminas\Filter\File\LowerCase' => array(
             'encoding' => 'string',
         ),
-        'Zend\Filter\File\Rename' => array(
+        'Laminas\Filter\File\Rename' => array(
             'overwrite' => 'bool',
             'randomize' => 'bool',
             'source' => 'string',
             'target' => 'string',
         ),
-        'Zend\Filter\File\RenameUpload' => array(
+        'Laminas\Filter\File\RenameUpload' => array(
             'overwrite' => 'bool',
             'randomize' => 'bool',
             'target' => 'string',
             'use_upload_extension' => 'bool',
             'use_upload_name' => 'bool',
         ),
-        'Zend\Filter\File\Uppercase' => array(
+        'Laminas\Filter\File\Uppercase' => array(
             'encoding' => 'string',
         ),
-        'Zend\Filter\HtmlEntities' => array(
+        'Laminas\Filter\HtmlEntities' => array(
             'charset' => 'string',
             'doublequote' => 'bool',
             'encoding' => 'string',
             'quotestyle' => 'int',
         ),
-        'Zend\Filter\Inflector' => array(
+        'Laminas\Filter\Inflector' => array(
             'throwTargetExceptionsOn' => 'bool',
             'targetReplacementIdentifier' => 'string',
             'target' => 'string',
         ),
-        'Zend\Filter\Int' => array(),
-        'Zend\Filter\Null' => array(
+        'Laminas\Filter\Int' => array(),
+        'Laminas\Filter\Null' => array(
             'type' => 'int|string',
         ),
-        'Zend\I18n\Filter\NumberFormat' => array(
+        'Laminas\I18n\Filter\NumberFormat' => array(
             'locale' => 'string',
             'style' => 'int',
             'type' => 'int',
         ),
-        'Zend\I18n\Filter\NumberParse' => array(
+        'Laminas\I18n\Filter\NumberParse' => array(
             'locale' => 'string',
             'style' => 'int',
             'type' => 'int',
         ),
-        'Zend\Filter\PregReplace' => array(
+        'Laminas\Filter\PregReplace' => array(
             'pattern' => 'string',
             'replacement' => 'string',
         ),
-        'Zend\Filter\RealPath' => array(
+        'Laminas\Filter\RealPath' => array(
             'exists' => 'bool',
         ),
-        'Zend\Filter\StringToLower' => array(
+        'Laminas\Filter\StringToLower' => array(
             'encoding' => 'string',
         ),
-        'Zend\Filter\StringToUpper' => array(
+        'Laminas\Filter\StringToUpper' => array(
             'encoding' => 'string',
         ),
-        'Zend\Filter\StringTrim' => array(
+        'Laminas\Filter\StringTrim' => array(
             'charlist' => 'string',
         ),
-        'Zend\Filter\StripNewlines' => array(),
-        'Zend\Filter\StripTags' => array(
+        'Laminas\Filter\StripNewlines' => array(),
+        'Laminas\Filter\StripTags' => array(
             'allowAttribs' => 'string',
             'allowTags' => 'string',
         ),
-        'Zend\Filter\UriNormalize' => array(
+        'Laminas\Filter\UriNormalize' => array(
             'defaultscheme' => 'string',
             'enforcedscheme' => 'string',
         ),
-        'Zend\Filter\Word\CamelCaseToDash' => array(),
-        'Zend\Filter\Word\CamelCaseToSeparator' => array(
+        'Laminas\Filter\Word\CamelCaseToDash' => array(),
+        'Laminas\Filter\Word\CamelCaseToSeparator' => array(
             'separator' => 'string',
         ),
-        'Zend\Filter\Word\CamelCaseToUnderscore' => array(),
-        'Zend\Filter\Word\DashToCamelCase' => array(),
-        'Zend\Filter\Word\DashToSeparator' => array(
+        'Laminas\Filter\Word\CamelCaseToUnderscore' => array(),
+        'Laminas\Filter\Word\DashToCamelCase' => array(),
+        'Laminas\Filter\Word\DashToSeparator' => array(
             'separator' => 'string',
         ),
-        'Zend\Filter\Word\DashToUnderscore' => array(),
-        'Zend\Filter\Word\SeparatorToCamelCase' => array(
+        'Laminas\Filter\Word\DashToUnderscore' => array(),
+        'Laminas\Filter\Word\SeparatorToCamelCase' => array(
             'separator' => 'string',
         ),
-        'Zend\Filter\Word\SeparatorToDash' => array(
+        'Laminas\Filter\Word\SeparatorToDash' => array(
             'separator' => 'string',
         ),
-        'Zend\Filter\Word\SeparatorToSeparator' => array(
+        'Laminas\Filter\Word\SeparatorToSeparator' => array(
             'searchseparator' => 'string',
             'replacementseparator' => 'string',
         ),
-        'Zend\Filter\Word\UnderscoreToCamelCase' => array(),
-        'Zend\Filter\Word\UnderscoreToDash' => array(),
-        'Zend\Filter\Word\UnderscoreToSeparator' => array(
+        'Laminas\Filter\Word\UnderscoreToCamelCase' => array(),
+        'Laminas\Filter\Word\UnderscoreToDash' => array(),
+        'Laminas\Filter\Word\UnderscoreToSeparator' => array(
             'separator' => 'string',
         ),
     ),
@@ -959,260 +961,260 @@ return array(
             'translatortextdomain' => 'string',
             'translatorenabled' => 'bool',
         ),
-        'Zend\Validator\Barcode\Codabar' => array(),
-        'Zend\Validator\Barcode\Code128' => array(),
-        'Zend\Validator\Barcode\Code25interleaved' => array(),
-        'Zend\Validator\Barcode\Code25' => array(),
-        'Zend\Validator\Barcode\Code39ext' => array(),
-        'Zend\Validator\Barcode\Code39' => array(),
-        'Zend\Validator\Barcode\Code93ext' => array(),
-        'Zend\Validator\Barcode\Code93' => array(),
-        'Zend\Validator\Barcode\Ean12' => array(),
-        'Zend\Validator\Barcode\Ean13' => array(),
-        'Zend\Validator\Barcode\Ean14' => array(),
-        'Zend\Validator\Barcode\Ean18' => array(),
-        'Zend\Validator\Barcode\Ean2' => array(),
-        'Zend\Validator\Barcode\Ean5' => array(),
-        'Zend\Validator\Barcode\Ean8' => array(),
-        'Zend\Validator\Barcode\Gtin12' => array(),
-        'Zend\Validator\Barcode\Gtin13' => array(),
-        'Zend\Validator\Barcode\Gtin14' => array(),
-        'Zend\Validator\Barcode\Identcode' => array(),
-        'Zend\Validator\Barcode\Intelligentmail' => array(),
-        'Zend\Validator\Barcode\Issn' => array(),
-        'Zend\Validator\Barcode\Itf14' => array(),
-        'Zend\Validator\Barcode\Leitcode' => array(),
-        'Zend\Validator\Barcode' => array(
+        'Laminas\Validator\Barcode\Codabar' => array(),
+        'Laminas\Validator\Barcode\Code128' => array(),
+        'Laminas\Validator\Barcode\Code25interleaved' => array(),
+        'Laminas\Validator\Barcode\Code25' => array(),
+        'Laminas\Validator\Barcode\Code39ext' => array(),
+        'Laminas\Validator\Barcode\Code39' => array(),
+        'Laminas\Validator\Barcode\Code93ext' => array(),
+        'Laminas\Validator\Barcode\Code93' => array(),
+        'Laminas\Validator\Barcode\Ean12' => array(),
+        'Laminas\Validator\Barcode\Ean13' => array(),
+        'Laminas\Validator\Barcode\Ean14' => array(),
+        'Laminas\Validator\Barcode\Ean18' => array(),
+        'Laminas\Validator\Barcode\Ean2' => array(),
+        'Laminas\Validator\Barcode\Ean5' => array(),
+        'Laminas\Validator\Barcode\Ean8' => array(),
+        'Laminas\Validator\Barcode\Gtin12' => array(),
+        'Laminas\Validator\Barcode\Gtin13' => array(),
+        'Laminas\Validator\Barcode\Gtin14' => array(),
+        'Laminas\Validator\Barcode\Identcode' => array(),
+        'Laminas\Validator\Barcode\Intelligentmail' => array(),
+        'Laminas\Validator\Barcode\Issn' => array(),
+        'Laminas\Validator\Barcode\Itf14' => array(),
+        'Laminas\Validator\Barcode\Leitcode' => array(),
+        'Laminas\Validator\Barcode' => array(
             'adapter' => 'string', // this is the validator adapter name to use
             'useChecksum' => 'bool',
         ),
-        'Zend\Validator\Barcode\Planet' => array(),
-        'Zend\Validator\Barcode\Postnet' => array(),
-        'Zend\Validator\Barcode\Royalmail' => array(),
-        'Zend\Validator\Barcode\Sscc' => array(),
-        'Zend\Validator\Barcode\Upca' => array(),
-        'Zend\Validator\Barcode\Upce' => array(),
-        'Zend\Validator\Between' => array(
+        'Laminas\Validator\Barcode\Planet' => array(),
+        'Laminas\Validator\Barcode\Postnet' => array(),
+        'Laminas\Validator\Barcode\Royalmail' => array(),
+        'Laminas\Validator\Barcode\Sscc' => array(),
+        'Laminas\Validator\Barcode\Upca' => array(),
+        'Laminas\Validator\Barcode\Upce' => array(),
+        'Laminas\Validator\Between' => array(
             'inclusive' => 'bool',
             'max' => 'int',
             'min' => 'int',
         ),
-        'Zend\Validator\Bitwise' => array(
+        'Laminas\Validator\Bitwise' => array(
             'control' => 'int',
             'operator' => 'string',
             'strict' => 'bool',
         ),
-        'Zend\Validator\Callback' => array(
+        'Laminas\Validator\Callback' => array(
             'callback' => 'string',
         ),
-        'Zend\Validator\CreditCard' => array(
+        'Laminas\Validator\CreditCard' => array(
             'type' => 'string',
             'service' => 'string',
         ),
-        'Zend\Validator\Csrf' => array(
+        'Laminas\Validator\Csrf' => array(
             'name' => 'string',
             'salt' => 'string',
             'timeout' => 'int',
         ),
-        'Zend\Validator\Date' => array(
+        'Laminas\Validator\Date' => array(
             'format' => 'string',
         ),
-        'Zend\Validator\DateStep' => array(
+        'Laminas\Validator\DateStep' => array(
             'format' => 'string',
             'basevalue' => 'string|int',
         ),
-        'Zend\Validator\Db\NoRecordExists' => array(
+        'Laminas\Validator\Db\NoRecordExists' => array(
             'table' => 'string',
             'schema' => 'string',
             'field' => 'string',
             'exclude' => 'string',
         ),
-        'Zend\Validator\Db\RecordExists' => array(
+        'Laminas\Validator\Db\RecordExists' => array(
             'table' => 'string',
             'schema' => 'string',
             'field' => 'string',
             'exclude' => 'string',
         ),
-        'ZF\ContentValidation\Validator\DbNoRecordExists' => array(
+        'Laminas\ApiTools\ContentValidation\Validator\DbNoRecordExists' => array(
             'adapter' => 'string',
             'table' => 'string',
             'schema' => 'string',
             'field' => 'string',
             'exclude' => 'string',
         ),
-        'ZF\ContentValidation\Validator\DbRecordExists' => array(
+        'Laminas\ApiTools\ContentValidation\Validator\DbRecordExists' => array(
             'adapter' => 'string',
             'table' => 'string',
             'schema' => 'string',
             'field' => 'string',
             'exclude' => 'string',
         ),
-        'Zend\Validator\Digits' => array(),
-        'Zend\Validator\EmailAddress' => array(
+        'Laminas\Validator\Digits' => array(),
+        'Laminas\Validator\EmailAddress' => array(
             'allow' => 'int',
             'useMxCheck' => 'bool',
             'useDeepMxCheck' => 'bool',
             'useDomainCheck' => 'bool',
         ),
-        'Zend\Validator\Explode' => array(
+        'Laminas\Validator\Explode' => array(
             'valuedelimiter' => 'string',
             'breakonfirstfailure' => 'bool',
         ),
-        'Zend\Validator\File\Count' => array(
+        'Laminas\Validator\File\Count' => array(
             'max' => 'int',
             'min' => 'int',
         ),
-        'Zend\Validator\File\Crc32' => array(
+        'Laminas\Validator\File\Crc32' => array(
             'algorithm' => 'string',
             'hash' => 'string',
             'crc32' => 'string',
         ),
-        'Zend\Validator\File\ExcludeExtension' => array(
+        'Laminas\Validator\File\ExcludeExtension' => array(
             'case' => 'bool',
             'extension' => 'string',
         ),
-        'Zend\Validator\File\ExcludeMimeType' => array(
+        'Laminas\Validator\File\ExcludeMimeType' => array(
             'disableMagicFile' => 'bool',
             'magicFile' => 'string',
             'enableHeaderCheck' => 'bool',
             'mimeType' => 'string',
         ),
-        'Zend\Validator\File\Exists' => array(
+        'Laminas\Validator\File\Exists' => array(
             'directory' => 'string',
         ),
-        'Zend\Validator\File\Extension' => array(
+        'Laminas\Validator\File\Extension' => array(
             'case' => 'bool',
             'extension' => 'string',
         ),
-        'Zend\Validator\File\FilesSize' => array(
+        'Laminas\Validator\File\FilesSize' => array(
             'max' => 'int',
             'min' => 'int',
             'size' => 'int',
             'useByteString' => 'bool',
         ),
-        'Zend\Validator\File\Hash' => array(
+        'Laminas\Validator\File\Hash' => array(
             'algorithm' => 'string',
             'hash' => 'string',
         ),
-        'Zend\Validator\File\ImageSize' => array(
+        'Laminas\Validator\File\ImageSize' => array(
             'maxHeight' => 'int',
             'minHeight' => 'int',
             'maxWidth' => 'int',
             'minWidth' => 'int',
         ),
-        'Zend\Validator\File\IsCompressed' => array(
+        'Laminas\Validator\File\IsCompressed' => array(
             'disableMagicFile' => 'bool',
             'magicFile' => 'string',
             'enableHeaderCheck' => 'bool',
             'mimeType' => 'string',
         ),
-        'Zend\Validator\File\IsImage' => array(
+        'Laminas\Validator\File\IsImage' => array(
             'disableMagicFile' => 'bool',
             'magicFile' => 'string',
             'enableHeaderCheck' => 'bool',
             'mimeType' => 'string',
         ),
-        'Zend\Validator\File\Md5' => array(
+        'Laminas\Validator\File\Md5' => array(
             'algorithm' => 'string',
             'hash' => 'string',
             'md5' => 'string',
         ),
-        'Zend\Validator\File\MimeType' => array(
+        'Laminas\Validator\File\MimeType' => array(
             'disableMagicFile' => 'bool',
             'magicFile' => 'string',
             'enableHeaderCheck' => 'bool',
             'mimeType' => 'string',
         ),
-        'Zend\Validator\File\NotExists' => array(
+        'Laminas\Validator\File\NotExists' => array(
             'directory' => 'string',
         ),
-        'Zend\Validator\File\Sha1' => array(
+        'Laminas\Validator\File\Sha1' => array(
             'algorithm' => 'string',
             'hash' => 'string',
             'sha1' => 'string',
         ),
-        'Zend\Validator\File\Size' => array(
+        'Laminas\Validator\File\Size' => array(
             'max' => 'int',
             'min' => 'int',
             'size' => 'int',
             'useByteString' => 'bool',
         ),
-        'Zend\Validator\File\UploadFile' => array(),
-        'Zend\Validator\File\Upload' => array(),
-        'Zend\Validator\File\WordCount' => array(
+        'Laminas\Validator\File\UploadFile' => array(),
+        'Laminas\Validator\File\Upload' => array(),
+        'Laminas\Validator\File\WordCount' => array(
             'max' => 'int',
             'min' => 'int',
         ),
-        'Zend\Validator\GreaterThan' => array(
+        'Laminas\Validator\GreaterThan' => array(
             'inclusive' => 'bool',
             'min' => 'int',
         ),
-        'Zend\Validator\Hex' => array(),
-        'Zend\Validator\Hostname' => array(
+        'Laminas\Validator\Hex' => array(),
+        'Laminas\Validator\Hostname' => array(
             'allow' => 'int',
             'useIdnCheck' => 'bool',
             'useTldCheck' => 'bool',
         ),
-        'Zend\Validator\Iban' => array(
+        'Laminas\Validator\Iban' => array(
             'country_code' => 'string',
             'allow_non_sepa' => 'bool',
         ),
-        'Zend\Validator\Identical' => array(
+        'Laminas\Validator\Identical' => array(
             'literal' => 'bool',
             'strict' => 'bool',
             'token' => 'string',
         ),
-        'Zend\Validator\InArray' => array(
+        'Laminas\Validator\InArray' => array(
             'strict' => 'bool',
             'recursive' => 'bool',
         ),
-        'Zend\Validator\Ip' => array(
+        'Laminas\Validator\Ip' => array(
             'allowipv4' => 'bool',
             'allowipv6' => 'bool',
             'allowipvfuture' => 'bool',
             'allowliteral' => 'bool',
         ),
-        'Zend\Validator\Isbn' => array(
+        'Laminas\Validator\Isbn' => array(
             'type' => 'string',
             'separator' => 'string',
         ),
-        'Zend\Validator\IsInstanceOf' => array(
+        'Laminas\Validator\IsInstanceOf' => array(
             'classname' => 'string',
         ),
-        'Zend\Validator\LessThan' => array(
+        'Laminas\Validator\LessThan' => array(
             'inclusive' => 'bool',
             'max' => 'int',
         ),
-        'Zend\Validator\NotEmpty' => array(
+        'Laminas\Validator\NotEmpty' => array(
             'type' => 'int',
         ),
-        'Zend\Validator\Regex' => array(
+        'Laminas\Validator\Regex' => array(
             'pattern' => 'string',
         ),
-        'Zend\Validator\Sitemap\Changefreq' => array(),
-        'Zend\Validator\Sitemap\Lastmod' => array(),
-        'Zend\Validator\Sitemap\Loc' => array(),
-        'Zend\Validator\Sitemap\Priority' => array(),
-        'Zend\Validator\Step' => array(
+        'Laminas\Validator\Sitemap\Changefreq' => array(),
+        'Laminas\Validator\Sitemap\Lastmod' => array(),
+        'Laminas\Validator\Sitemap\Loc' => array(),
+        'Laminas\Validator\Sitemap\Priority' => array(),
+        'Laminas\Validator\Step' => array(
             'baseValue' => 'int|float',
             'step' => 'float',
         ),
-        'Zend\Validator\StringLength' => array(
+        'Laminas\Validator\StringLength' => array(
             'max' => 'int',
             'min' => 'int',
             'encoding' => 'string',
         ),
-        'Zend\Validator\Uri' => array(
+        'Laminas\Validator\Uri' => array(
             'allowAbsolute' => 'bool',
             'allowRelative' => 'bool',
         ),
-        'Zend\I18n\Validator\Alnum' => array(
+        'Laminas\I18n\Validator\Alnum' => array(
             'allowwhitespace' => 'bool',
         ),
-        'Zend\I18n\Validator\Alpha' => array(
+        'Laminas\I18n\Validator\Alpha' => array(
             'allowwhitespace' => 'bool',
         ),
-        'Zend\I18n\Validator\DateTime' => array(
+        'Laminas\I18n\Validator\DateTime' => array(
             'calendar' => 'int',
             'datetype' => 'int',
             'pattern' => 'string',
@@ -1220,17 +1222,17 @@ return array(
             'timezone' => 'string',
             'locale' => 'string',
         ),
-        'Zend\I18n\Validator\Float' => array(
+        'Laminas\I18n\Validator\Float' => array(
             'locale' => 'string',
         ),
-        'Zend\I18n\Validator\Int' => array(
+        'Laminas\I18n\Validator\Int' => array(
             'locale' => 'string',
         ),
-        'Zend\I18n\Validator\PhoneNumber' => array(
+        'Laminas\I18n\Validator\PhoneNumber' => array(
             'country' => 'string',
             'allow_possible' => 'bool',
         ),
-        'Zend\I18n\Validator\PostCode' => array(
+        'Laminas\I18n\Validator\PostCode' => array(
             'locale' => 'string',
             'format' => 'string',
             'service' => 'string',
@@ -1239,71 +1241,71 @@ return array(
 
     'input_filters' => array(
         'invokables' => array(
-            'ZF\Apigility\Admin\InputFilter\Authentication\BasicAuth' => 'ZF\Apigility\Admin\InputFilter\Authentication\BasicInputFilter',
-            'ZF\Apigility\Admin\InputFilter\Authentication\DigestAuth' => 'ZF\Apigility\Admin\InputFilter\Authentication\DigestInputFilter',
-            'ZF\Apigility\Admin\InputFilter\Authentication\OAuth2' => 'ZF\Apigility\Admin\InputFilter\Authentication\OAuth2InputFilter',
-            'ZF\Apigility\Admin\InputFilter\Authorization' => 'ZF\Apigility\Admin\InputFilter\AuthorizationInputFilter',
-            'ZF\Apigility\Admin\InputFilter\DbAdapter' => 'ZF\Apigility\Admin\InputFilter\DbAdapterInputFilter',
-            'ZF\Apigility\Admin\InputFilter\ContentNegotiation' => 'ZF\Apigility\Admin\InputFilter\ContentNegotiationInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\Authentication\BasicAuth' => 'Laminas\ApiTools\Admin\InputFilter\Authentication\BasicInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\Authentication\DigestAuth' => 'Laminas\ApiTools\Admin\InputFilter\Authentication\DigestInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\Authentication\OAuth2' => 'Laminas\ApiTools\Admin\InputFilter\Authentication\OAuth2InputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\Authorization' => 'Laminas\ApiTools\Admin\InputFilter\AuthorizationInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\DbAdapter' => 'Laminas\ApiTools\Admin\InputFilter\DbAdapterInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\ContentNegotiation' => 'Laminas\ApiTools\Admin\InputFilter\ContentNegotiationInputFilter',
 
-            'ZF\Apigility\Admin\InputFilter\Module' => 'ZF\Apigility\Admin\InputFilter\ModuleInputFilter',
-            'ZF\Apigility\Admin\InputFilter\Version' => 'ZF\Apigility\Admin\InputFilter\VersionInputFilter',
-            'ZF\Apigility\Admin\InputFilter\RestService\POST' => 'ZF\Apigility\Admin\InputFilter\RestService\PostInputFilter',
-            'ZF\Apigility\Admin\InputFilter\RestService\PATCH' => 'ZF\Apigility\Admin\InputFilter\RestService\PatchInputFilter',
-            'ZF\Apigility\Admin\InputFilter\RpcService\POST' => 'ZF\Apigility\Admin\InputFilter\RpcService\PostInputFilter',
-            'ZF\Apigility\Admin\InputFilter\RpcService\PATCH' => 'ZF\Apigility\Admin\InputFilter\RpcService\PatchInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\Module' => 'Laminas\ApiTools\Admin\InputFilter\ModuleInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\Version' => 'Laminas\ApiTools\Admin\InputFilter\VersionInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\RestService\POST' => 'Laminas\ApiTools\Admin\InputFilter\RestService\PostInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\RestService\PATCH' => 'Laminas\ApiTools\Admin\InputFilter\RestService\PatchInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\RpcService\POST' => 'Laminas\ApiTools\Admin\InputFilter\RpcService\PostInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\RpcService\PATCH' => 'Laminas\ApiTools\Admin\InputFilter\RpcService\PatchInputFilter',
 
-            'ZF\Apigility\Admin\InputFilter\Documentation' => 'ZF\Apigility\Admin\InputFilter\DocumentationInputFilter',
+            'Laminas\ApiTools\Admin\InputFilter\Documentation' => 'Laminas\ApiTools\Admin\InputFilter\DocumentationInputFilter',
         ),
         'factories' => array(
-            'ZF\Apigility\Admin\InputFilter\InputFilter' => 'ZF\Apigility\Admin\InputFilter\Factory\InputFilterInputFilterFactory',
+            'Laminas\ApiTools\Admin\InputFilter\InputFilter' => 'Laminas\ApiTools\Admin\InputFilter\Factory\InputFilterInputFilterFactory',
         )
     ),
 
-    'zf-content-validation' => array(
-        'ZF\Apigility\Admin\Controller\HttpBasicAuthentication' => array(
-            'input_filter' => 'ZF\Apigility\Admin\InputFilter\Authentication\BasicAuth'
+    'api-tools-content-validation' => array(
+        'Laminas\ApiTools\Admin\Controller\HttpBasicAuthentication' => array(
+            'input_filter' => 'Laminas\ApiTools\Admin\InputFilter\Authentication\BasicAuth'
         ),
-        'ZF\Apigility\Admin\Controller\HttpDigestAuthentication' => array(
-            'input_filter' => 'ZF\Apigility\Admin\InputFilter\Authentication\DigestAuth'
+        'Laminas\ApiTools\Admin\Controller\HttpDigestAuthentication' => array(
+            'input_filter' => 'Laminas\ApiTools\Admin\InputFilter\Authentication\DigestAuth'
         ),
-        'ZF\Apigility\Admin\Controller\OAuth2Authentication' => array(
-            'input_filter' => 'ZF\Apigility\Admin\InputFilter\Authentication\OAuth2'
-        ),
-
-        'ZF\Apigility\Admin\Controller\DbAdapter' => array(
-            'input_filter' => 'ZF\Apigility\Admin\InputFilter\DbAdapter',
+        'Laminas\ApiTools\Admin\Controller\OAuth2Authentication' => array(
+            'input_filter' => 'Laminas\ApiTools\Admin\InputFilter\Authentication\OAuth2'
         ),
 
-        'ZF\Apigility\Admin\Controller\ContentNegotiation' => array(
-            'input_filter' => 'ZF\Apigility\Admin\InputFilter\ContentNegotiation',
+        'Laminas\ApiTools\Admin\Controller\DbAdapter' => array(
+            'input_filter' => 'Laminas\ApiTools\Admin\InputFilter\DbAdapter',
         ),
 
-        'ZF\Apigility\Admin\Controller\Module' => array(
-            'POST' => 'ZF\Apigility\Admin\InputFilter\Module',
-        ),
-        'ZF\Apigility\Admin\Controller\Versioning' => array(
-            'PATCH' => 'ZF\Apigility\Admin\InputFilter\Version',
-        ),
-        'ZF\Apigility\Admin\Controller\RestService' => array(
-            'POST' => 'ZF\Apigility\Admin\InputFilter\RestService\POST', // for the collection
-            'PATCH' => 'ZF\Apigility\Admin\InputFilter\RestService\PATCH', // for the entity
-        ),
-        'ZF\Apigility\Admin\Controller\RpcService' => array(
-            'POST' => 'ZF\Apigility\Admin\InputFilter\RpcService\POST', // for the collection
-            'PATCH' => 'ZF\Apigility\Admin\InputFilter\RpcService\PATCH', // for the entity
+        'Laminas\ApiTools\Admin\Controller\ContentNegotiation' => array(
+            'input_filter' => 'Laminas\ApiTools\Admin\InputFilter\ContentNegotiation',
         ),
 
-        'ZF\Apigility\Admin\Controller\InputFilter' => array(
-            'input_filter' => 'ZF\Apigility\Admin\InputFilter\InputFilter',
+        'Laminas\ApiTools\Admin\Controller\Module' => array(
+            'POST' => 'Laminas\ApiTools\Admin\InputFilter\Module',
+        ),
+        'Laminas\ApiTools\Admin\Controller\Versioning' => array(
+            'PATCH' => 'Laminas\ApiTools\Admin\InputFilter\Version',
+        ),
+        'Laminas\ApiTools\Admin\Controller\RestService' => array(
+            'POST' => 'Laminas\ApiTools\Admin\InputFilter\RestService\POST', // for the collection
+            'PATCH' => 'Laminas\ApiTools\Admin\InputFilter\RestService\PATCH', // for the entity
+        ),
+        'Laminas\ApiTools\Admin\Controller\RpcService' => array(
+            'POST' => 'Laminas\ApiTools\Admin\InputFilter\RpcService\POST', // for the collection
+            'PATCH' => 'Laminas\ApiTools\Admin\InputFilter\RpcService\PATCH', // for the entity
         ),
 
-        'ZF\Apigility\Admin\Controller\Documentation' => array(
-            'input_filter' => 'ZF\Apigility\Admin\InputFilter\Documentation',
+        'Laminas\ApiTools\Admin\Controller\InputFilter' => array(
+            'input_filter' => 'Laminas\ApiTools\Admin\InputFilter\InputFilter',
         ),
 
-        'ZF\Apigility\Admin\Controller\Authorization' => array(
-            'input_filter' => 'ZF\Apigility\Admin\InputFilter\Authorization',
+        'Laminas\ApiTools\Admin\Controller\Documentation' => array(
+            'input_filter' => 'Laminas\ApiTools\Admin\InputFilter\Documentation',
+        ),
+
+        'Laminas\ApiTools\Admin\Controller\Authorization' => array(
+            'input_filter' => 'Laminas\ApiTools\Admin\InputFilter\Authorization',
         ),
 
     ),

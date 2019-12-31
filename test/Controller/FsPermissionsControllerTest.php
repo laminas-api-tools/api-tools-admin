@@ -1,17 +1,19 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Controller;
+namespace LaminasTest\ApiTools\Admin\Controller;
 
 use FilesystemIterator;
+use Laminas\ApiTools\Admin\Controller\FsPermissionsController;
+use Laminas\Http\Request;
 use PHPUnit_Framework_TestCase as TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Zend\Http\Request;
-use ZF\Apigility\Admin\Controller\FsPermissionsController;
 
 class FsPermissionsControllerTest extends TestCase
 {
@@ -42,7 +44,7 @@ class FsPermissionsControllerTest extends TestCase
     public function testReturnsTrueIfNeitherConfigNorModuleDirectoriesExistButRootIsWritable()
     {
         $result = $this->controller->fsPermissionsAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $fsPerms = $result->getVariable('fs_perms', null);
         $this->assertNotNull($fsPerms);
         $this->assertTrue($fsPerms);
@@ -54,7 +56,7 @@ class FsPermissionsControllerTest extends TestCase
         mkdir($this->wd . '/module');
 
         $result = $this->controller->fsPermissionsAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $fsPerms = $result->getVariable('fs_perms', null);
         $this->assertNotNull($fsPerms);
         $this->assertTrue($fsPerms);
@@ -71,7 +73,7 @@ class FsPermissionsControllerTest extends TestCase
         // Instantiating new controller, as constructor caches getcwd()
         $controller = new FsPermissionsController();
         $result = $controller->fsPermissionsAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $fsPerms = $result->getVariable('fs_perms', null);
         $this->assertNotNull($fsPerms);
         $this->assertFalse($fsPerms);

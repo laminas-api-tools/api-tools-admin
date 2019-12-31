@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use BarConf;
+use Laminas\ApiTools\Admin\Model\ModuleEntity;
+use Laminas\ApiTools\Admin\Model\NewRestServiceEntity;
+use Laminas\ApiTools\Admin\Model\RestServiceEntity;
+use Laminas\ApiTools\Admin\Model\RestServiceModel;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\Config\Writer\PhpArray;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionClass;
-use Zend\Config\Writer\PhpArray;
-use ZF\Apigility\Admin\Model\ModuleEntity;
-use ZF\Apigility\Admin\Model\NewRestServiceEntity;
-use ZF\Apigility\Admin\Model\RestServiceEntity;
-use ZF\Apigility\Admin\Model\RestServiceModel;
-use ZF\Configuration\ResourceFactory;
-use ZF\Configuration\ModuleUtils;
 
 require_once __DIR__ . '/TestAsset/module/BarConf/Module.php';
 
@@ -62,7 +64,7 @@ class RestServiceModelTest extends TestCase
         );
 
         $this->moduleEntity  = new ModuleEntity($this->module, array(), array(), false);
-        $this->moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -96,7 +98,7 @@ class RestServiceModelTest extends TestCase
             'selector'                   => 'HalJson',
             'accept_whitelist'           => array('application/json', 'application/*+json'),
             'content_type_whitelist'     => array('application/json'),
-            'hydrator_name'              => 'Zend\Stdlib\Hydrator\ObjectProperty',
+            'hydrator_name'              => 'Laminas\Stdlib\Hydrator\ObjectProperty',
         ));
 
         return $payload;
@@ -104,7 +106,7 @@ class RestServiceModelTest extends TestCase
 
     public function testRejectInvalidRestServiceName1()
     {
-        $this->setExpectedException('ZF\Rest\Exception\CreationException');
+        $this->setExpectedException('Laminas\ApiTools\Rest\Exception\CreationException');
         $restServiceEntity = new NewRestServiceEntity();
         $restServiceEntity->exchangeArray(array('servicename' => 'Foo Bar'));
         $this->codeRest->createService($restServiceEntity);
@@ -112,7 +114,7 @@ class RestServiceModelTest extends TestCase
 
     public function testRejectInvalidRestServiceName2()
     {
-        $this->setExpectedException('ZF\Rest\Exception\CreationException');
+        $this->setExpectedException('Laminas\ApiTools\Rest\Exception\CreationException');
         $restServiceEntity = new NewRestServiceEntity();
         $restServiceEntity->exchangeArray(array('serivcename' => 'Foo:Bar'));
         $this->codeRest->createService($restServiceEntity);
@@ -120,7 +122,7 @@ class RestServiceModelTest extends TestCase
 
     public function testRejectInvalidRestServiceName3()
     {
-        $this->setExpectedException('ZF\Rest\Exception\CreationException');
+        $this->setExpectedException('Laminas\ApiTools\Rest\Exception\CreationException');
         $restServiceEntity = new NewRestServiceEntity();
         $restServiceEntity->exchangeArray(array('servicename' => 'Foo/Bar'));
         $this->codeRest->createService($restServiceEntity);
@@ -155,7 +157,7 @@ class RestServiceModelTest extends TestCase
         $r = new ReflectionClass($resourceClass);
         $this->assertInstanceOf('ReflectionClass', $r);
         $parent = $r->getParentClass();
-        $this->assertEquals('ZF\Rest\AbstractResourceListener', $parent->getName());
+        $this->assertEquals('Laminas\ApiTools\Rest\AbstractResourceListener', $parent->getName());
     }
 
     public function testCreateResourceClassAddsInvokableToConfiguration()
@@ -209,7 +211,7 @@ class RestServiceModelTest extends TestCase
         $r = new ReflectionClass($collectionClass);
         $this->assertInstanceOf('ReflectionClass', $r);
         $parent = $r->getParentClass();
-        $this->assertEquals('Zend\Paginator\Paginator', $parent->getName());
+        $this->assertEquals('Laminas\Paginator\Paginator', $parent->getName());
     }
 
     public function testCreateRouteReturnsNewRouteName()
@@ -247,7 +249,7 @@ class RestServiceModelTest extends TestCase
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
         $this->assertArrayHasKey('router', $config);
         $this->assertArrayHasKey('routes', $config['router']);
-        $routes = $config['zf-versioning']['uri'];
+        $routes = $config['api-tools-versioning']['uri'];
 
         $this->assertContains($routeName, $routes);
     }
@@ -262,9 +264,9 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->createRestConfig($details, 'BarConf\Rest\Foo\Controller', 'BarConf\Rest\Foo\FooResource', 'bar-conf.rest.foo');
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
-        $this->assertArrayHasKey('zf-rest', $config);
-        $this->assertArrayHasKey('BarConf\Rest\Foo\Controller', $config['zf-rest']);
-        $config = $config['zf-rest']['BarConf\Rest\Foo\Controller'];
+        $this->assertArrayHasKey('api-tools-rest', $config);
+        $this->assertArrayHasKey('BarConf\Rest\Foo\Controller', $config['api-tools-rest']);
+        $config = $config['api-tools-rest']['BarConf\Rest\Foo\Controller'];
 
         $expected = array(
             'service_name'               => 'foo',
@@ -289,8 +291,8 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->createContentNegotiationConfig($details, 'BarConf\Rest\Foo\Controller');
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
-        $this->assertArrayHasKey('zf-content-negotiation', $config);
-        $config = $config['zf-content-negotiation'];
+        $this->assertArrayHasKey('api-tools-content-negotiation', $config);
+        $config = $config['api-tools-content-negotiation'];
 
         $this->assertArrayHasKey('controllers', $config);
         $this->assertEquals(array(
@@ -314,15 +316,15 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->createHalConfig($details, 'BarConf\Rest\Foo\FooEntity', 'BarConf\Rest\Foo\FooCollection', 'bar-conf.rest.foo');
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
-        $this->assertArrayHasKey('zf-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['zf-hal']);
-        $config = $config['zf-hal']['metadata_map'];
+        $this->assertArrayHasKey('api-tools-hal', $config);
+        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        $config = $config['api-tools-hal']['metadata_map'];
 
         $this->assertArrayHasKey('BarConf\Rest\Foo\FooEntity', $config);
         $this->assertEquals(array(
             'route_identifier_name'  => $details->routeIdentifierName,
             'route_name'             => 'bar-conf.rest.foo',
-            'hydrator'               => 'Zend\Stdlib\Hydrator\ObjectProperty',
+            'hydrator'               => 'Laminas\Stdlib\Hydrator\ObjectProperty',
             'entity_identifier_name' => 'id',
         ), $config['BarConf\Rest\Foo\FooEntity']);
 
@@ -339,7 +341,7 @@ class RestServiceModelTest extends TestCase
     {
         $details = $this->getCreationPayload();
         $result  = $this->codeRest->createService($details);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RestServiceEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $result);
 
         $this->assertEquals('BarConf', $result->module);
         $this->assertEquals('foo', $result->serviceName);
@@ -359,7 +361,7 @@ class RestServiceModelTest extends TestCase
             'service_name' => 'foo',
         ));
         $result  = $this->codeRest->createService($payload);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RestServiceEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $result);
         $this->assertEquals(array('application/vnd.bar-conf.v1+json', 'application/hal+json', 'application/json'), $result->acceptWhitelist);
         $this->assertEquals(array('application/vnd.bar-conf.v1+json', 'application/json'), $result->contentTypeWhitelist);
     }
@@ -370,7 +372,7 @@ class RestServiceModelTest extends TestCase
         $result  = $this->codeRest->createService($details);
 
         $service = $this->codeRest->fetch('BarConf\V1\Rest\Foo\Controller');
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RestServiceEntity', $service);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $service);
 
         $this->assertEquals('BarConf', $service->module);
         $this->assertEquals('foo', $service->serviceName);
@@ -380,23 +382,23 @@ class RestServiceModelTest extends TestCase
         $this->assertEquals('BarConf\V1\Rest\Foo\FooCollection', $service->collectionClass);
         $this->assertEquals('bar-conf.rest.foo', $service->routeName);
         $this->assertEquals('/api/foo[/:foo_id]', $service->routeMatch);
-        $this->assertEquals('Zend\Stdlib\Hydrator\ObjectProperty', $service->hydratorName);
+        $this->assertEquals('Laminas\Stdlib\Hydrator\ObjectProperty', $service->hydratorName);
     }
 
     public function testFetchServiceUsesEntityAndCollectionClassesDiscoveredInRestConfiguration()
     {
         $details = $this->getCreationPayload();
         $details->exchangeArray(array(
-            'entity_class'     => 'ZFTest\Apigility\Admin\Model\TestAsset\Entity',
-            'collection_class' => 'ZFTest\Apigility\Admin\Model\TestAsset\Collection',
+            'entity_class'     => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Entity',
+            'collection_class' => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Collection',
         ));
         $result  = $this->codeRest->createService($details);
 
         $service = $this->codeRest->fetch('BarConf\V1\Rest\Foo\Controller');
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RestServiceEntity', $service);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $service);
 
-        $this->assertEquals('ZFTest\Apigility\Admin\Model\TestAsset\Entity', $service->entityClass);
-        $this->assertEquals('ZFTest\Apigility\Admin\Model\TestAsset\Collection', $service->collectionClass);
+        $this->assertEquals('LaminasTest\ApiTools\Admin\Model\TestAsset\Entity', $service->entityClass);
+        $this->assertEquals('LaminasTest\ApiTools\Admin\Model\TestAsset\Collection', $service->collectionClass);
     }
 
     public function testCanUpdateRouteForExistingService()
@@ -433,8 +435,8 @@ class RestServiceModelTest extends TestCase
             'collection_query_whitelist' => array('f', 's'),
             'collection_http_methods'    => array('GET'),
             'entity_http_methods'        => array('GET'),
-            'entity_class'               => 'ZFTest\Apigility\Admin\Model\TestAsset\Entity',
-            'collection_class'           => 'ZFTest\Apigility\Admin\Model\TestAsset\Collection',
+            'entity_class'               => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Entity',
+            'collection_class'           => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Collection',
         );
         $patch = new RestServiceEntity();
         $patch->exchangeArray($options);
@@ -442,9 +444,9 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateRestConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('zf-rest', $config);
-        $this->assertArrayHasKey($original->controllerServiceName, $config['zf-rest']);
-        $test = $config['zf-rest'][$original->controllerServiceName];
+        $this->assertArrayHasKey('api-tools-rest', $config);
+        $this->assertArrayHasKey($original->controllerServiceName, $config['api-tools-rest']);
+        $test = $config['api-tools-rest'][$original->controllerServiceName];
 
         foreach ($options as $key => $value) {
             $this->assertEquals($value, $test[$key]);
@@ -467,8 +469,8 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateContentNegotiationConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('zf-content-negotiation', $config);
-        $config = $config['zf-content-negotiation'];
+        $this->assertArrayHasKey('api-tools-content-negotiation', $config);
+        $config = $config['api-tools-content-negotiation'];
 
         $this->assertArrayHasKey('controllers', $config);
         $this->assertArrayHasKey($original->controllerServiceName, $config['controllers']);
@@ -489,7 +491,7 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         $options = array(
-            'hydrator_name'         => 'Zend\Stdlib\Hydrator\Reflection',
+            'hydrator_name'         => 'Laminas\Stdlib\Hydrator\Reflection',
             'route_identifier_name' => 'custom_foo_id',
             'route_name'            => 'my/custom/route',
         );
@@ -499,9 +501,9 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateHalConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('zf-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['zf-hal']);
-        $config = $config['zf-hal']['metadata_map'];
+        $this->assertArrayHasKey('api-tools-hal', $config);
+        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        $config = $config['api-tools-hal']['metadata_map'];
 
         $entityName     = $original->entityClass;
         $collectionName = $original->collectionClass;
@@ -532,9 +534,9 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         $options = array(
-            'entity_class'          => 'ZFTest\Apigility\Admin\Model\TestAsset\Entity',
-            'collection_class'      => 'ZFTest\Apigility\Admin\Model\TestAsset\Collection',
-            'hydrator_name'         => 'Zend\Stdlib\Hydrator\Reflection',
+            'entity_class'          => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Entity',
+            'collection_class'      => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Collection',
+            'hydrator_name'         => 'Laminas\Stdlib\Hydrator\Reflection',
             'route_identifier_name' => 'custom_foo_id',
             'route_name'            => 'my/custom/route',
         );
@@ -544,9 +546,9 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateHalConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('zf-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['zf-hal']);
-        $config = $config['zf-hal']['metadata_map'];
+        $this->assertArrayHasKey('api-tools-hal', $config);
+        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        $config = $config['api-tools-hal']['metadata_map'];
 
         $entityName     = $patch->entityClass;
         $collectionName = $patch->collectionClass;
@@ -594,7 +596,7 @@ class RestServiceModelTest extends TestCase
         ), $updates));
 
         $updated = $this->codeRest->updateService($patch);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RestServiceEntity', $updated);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $updated);
 
         $values = $updated->getArrayCopy();
 
@@ -629,7 +631,7 @@ class RestServiceModelTest extends TestCase
 
         $this->assertTrue($this->codeRest->deleteService($service->controllerServiceName));
 
-        $this->setExpectedException('ZF\Apigility\Admin\Exception\RuntimeException', 'find', 404);
+        $this->setExpectedException('Laminas\ApiTools\Admin\Exception\RuntimeException', 'find', 404);
         $this->codeRest->fetch($service->controllerServiceName);
     }
 
@@ -642,7 +644,7 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         $options = array(
-            'hydrator_name'         => 'Zend\Stdlib\Hydrator\Reflection',
+            'hydrator_name'         => 'Laminas\Stdlib\Hydrator\Reflection',
             'route_identifier_name' => 'custom_foo_id',
             'route_name'            => 'my/custom/route',
         );
@@ -652,9 +654,9 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateHalConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('zf-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['zf-hal']);
-        $config = $config['zf-hal']['metadata_map'];
+        $this->assertArrayHasKey('api-tools-hal', $config);
+        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        $config = $config['api-tools-hal']['metadata_map'];
 
         $collectionName = $original->collectionClass;
         $this->assertArrayHasKey($collectionName, $config);
@@ -673,7 +675,7 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         $options = array(
-            'hydrator_name'          => 'Zend\Stdlib\Hydrator\Reflection',
+            'hydrator_name'          => 'Laminas\Stdlib\Hydrator\Reflection',
             'entity_identifier_name' => 'custom_foo_id',
         );
         $patch = new RestServiceEntity();
@@ -682,9 +684,9 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateHalConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('zf-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['zf-hal']);
-        $config = $config['zf-hal']['metadata_map'];
+        $this->assertArrayHasKey('api-tools-hal', $config);
+        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        $config = $config['api-tools-hal']['metadata_map'];
 
         $entityName     = $original->entityClass;
         $collectionName = $original->collectionClass;
@@ -726,9 +728,9 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateRestConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('zf-rest', $config);
-        $this->assertArrayHasKey($original->controllerServiceName, $config['zf-rest']);
-        $test = $config['zf-rest'][$original->controllerServiceName];
+        $this->assertArrayHasKey('api-tools-rest', $config);
+        $this->assertArrayHasKey($original->controllerServiceName, $config['api-tools-rest']);
+        $test = $config['api-tools-rest'][$original->controllerServiceName];
 
         $this->assertEquals(array(), $test['collection_http_methods']);
         $this->assertEquals(array(), $test['entity_http_methods']);

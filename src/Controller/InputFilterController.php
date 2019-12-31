@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Controller;
+namespace Laminas\ApiTools\Admin\Controller;
 
-use Zend\Http\Request;
-use Zend\Mvc\Controller\AbstractActionController;
-use ZF\Apigility\Admin\Model\InputFilterCollection;
-use ZF\Apigility\Admin\Model\InputFilterModel;
-use ZF\ApiProblem\ApiProblem;
-use ZF\ApiProblem\ApiProblemResponse;
-use ZF\ContentNegotiation\ViewModel;
-use ZF\Hal\Collection as HalCollection;
-use ZF\Hal\Link\Link;
-use ZF\Hal\Entity as HalEntity;
+use Laminas\ApiTools\Admin\Model\InputFilterCollection;
+use Laminas\ApiTools\Admin\Model\InputFilterModel;
+use Laminas\ApiTools\ApiProblem\ApiProblem;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
+use Laminas\ApiTools\Hal\Collection as HalCollection;
+use Laminas\ApiTools\Hal\Entity as HalEntity;
+use Laminas\ApiTools\Hal\Link\Link;
+use Laminas\Http\Request;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 class InputFilterController extends AbstractActionController
 {
@@ -118,7 +120,7 @@ class InputFilterController extends AbstractActionController
         }
 
         $e = $this->getEvent();
-        $e->setParam('ZFContentNegotiationFallback', 'HalJson');
+        $e->setParam('LaminasContentNegotiationFallback', 'HalJson');
 
         $viewModel = new ViewModel(array('payload' => $result));
         $viewModel->setTerminal(true);
@@ -158,7 +160,7 @@ class InputFilterController extends AbstractActionController
     {
         $matches = array();
         preg_match('/(?P<type>rpc|rest)/', $route, $matches);
-        return sprintf('zf-apigility/api/module/%s-service/input-filter', $matches['type']);
+        return sprintf('api-tools/api/module/%s-service/input-filter', $matches['type']);
     }
 
     public function injectEntitySelfLink($links, $route, $module, $controller, $inputFilterName)

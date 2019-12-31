@@ -38,12 +38,12 @@ return array (
             )
         ),
     ),
-    'zf-content-validation' => array(
+    'api-tools-content-validation' => array(
         'Version\\V1\\Rest\\Message\\Controller' => array(
             'input_filter' => 'Version\\V1\\Rest\\Message\\Validator',
         ),
     ),
-    'zf-mvc-auth' => array(
+    'api-tools-mvc-auth' => array(
         'authorization' => array(
             'Version\\V1\\Rest\\Message\\Controller::resource' => array(
                 'GET' => false,
@@ -75,7 +75,7 @@ return array (
             ),
         )
     ),
-    'zf-rest' => array (
+    'api-tools-rest' => array (
         'Version\\V1\\Rest\\Message\\Controller' => array (
             'listener' => 'Version\\V1\\Rest\\Message\\MessageResource',
             'route_name' => 'version.rest.message',
@@ -111,7 +111,7 @@ return array (
             'collection_class' => 'Version\\V1\\Rest\\Comment\\CommentCollection',
         ),
     ),
-    'zf-content-negotiation' => array (
+    'api-tools-content-negotiation' => array (
         'controllers' => array (
             'Version\\V1\\Rest\\Message\\Controller' => 'HalJson',
             'Version\\V1\\Rest\\Comment\\Controller' => 'HalJson',
@@ -135,7 +135,7 @@ return array (
             ),
         ),
     ),
-    'zf-hal' => array (
+    'api-tools-hal' => array (
         'metadata_map' => array (
             'Version\\V1\\Rest\\Message\\MessageEntity' => array (
                 'entity_identifier_name' => 'message_id',
@@ -159,10 +159,10 @@ return array (
             ),
         ),
     ),
-    'zf-versioning' => array (
+    'api-tools-versioning' => array (
         'default_version' => 1,
     ),
-    'zf-apigility' => array (
+    'api-tools' => array (
         'db-connected' => array (
             'Version\\V1\\Rest\\Message\\MessageResource' => array (
                 'adapter_name' => 'Db\\Version',
