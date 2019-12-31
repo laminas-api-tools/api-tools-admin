@@ -1,24 +1,26 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Exception;
+use Laminas\ApiTools\Admin\InputFilter\Authentication;
+use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\ApiTools\MvcAuth\Authentication\HttpAdapter;
+use Laminas\ApiTools\MvcAuth\Authentication\OAuth2Adapter;
+use Laminas\ApiTools\OAuth2\Adapter\MongoAdapter;
+use Laminas\ApiTools\OAuth2\Adapter\PdoAdapter;
+use Laminas\ApiTools\Rest\Exception\CreationException;
 use MongoClient;
 use MongoConnectionException;
 use MongoDB\Driver\Exception\InvalidArgumentException as MongoDbInvalidArgumentException;
 use PDO;
 use PDOException;
-use ZF\Apigility\Admin\Exception;
-use ZF\Apigility\Admin\InputFilter\Authentication;
-use ZF\Configuration\ConfigResource;
-use ZF\MvcAuth\Authentication\HttpAdapter;
-use ZF\MvcAuth\Authentication\OAuth2Adapter;
-use ZF\OAuth2\Adapter\MongoAdapter;
-use ZF\OAuth2\Adapter\PdoAdapter;
-use ZF\Rest\Exception\CreationException;
 
 class AuthenticationModel
 {
@@ -57,7 +59,7 @@ class AuthenticationModel
      *
      * @param array $authenticationConfig
      * @return AuthenticationEntity
-     * @throws \ZF\Rest\Exception\CreationException
+     * @throws \Laminas\ApiTools\Rest\Exception\CreationException
      */
     public function create(array $authenticationConfig)
     {
@@ -93,7 +95,7 @@ class AuthenticationModel
     /**
      * Create authentication adapter for version 2
      *
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @param array $adapter
      * @return array
@@ -104,11 +106,11 @@ class AuthenticationModel
 
         $result = $this->checkAuthenticationAdapterData($adapter);
 
-        if (isset($config['zf-mvc-auth']['authentication']['adapters'][$result['name']])) {
+        if (isset($config['api-tools-mvc-auth']['authentication']['adapters'][$result['name']])) {
             throw new CreationException('Authentication already exists', 409);
         } else {
             $config = $this->globalConfig->fetch(true);
-            if (isset($config['zf-mvc-auth']['authentication']['adapters'][$result['name']])) {
+            if (isset($config['api-tools-mvc-auth']['authentication']['adapters'][$result['name']])) {
                 throw new CreationException('Authentication already exists', 409);
             }
         }
@@ -125,7 +127,7 @@ class AuthenticationModel
     /**
      * Update authentication adapter data
      *
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @param string $name
      * @param array $adapter
@@ -138,9 +140,9 @@ class AuthenticationModel
             $adapter['name'] = $name;
         }
 
-        if (! isset($config['zf-mvc-auth']['authentication']['adapters'][$name])) {
+        if (! isset($config['api-tools-mvc-auth']['authentication']['adapters'][$name])) {
             $config = $this->globalConfig->fetch(true);
-            if (! isset($config['zf-mvc-auth']['authentication']['adapters'][$name])) {
+            if (! isset($config['api-tools-mvc-auth']['authentication']['adapters'][$name])) {
                 throw new Exception\RuntimeException(
                     'The authentication adapter specified doesn\'t exist',
                     404
@@ -232,7 +234,7 @@ class AuthenticationModel
     /**
      * Remove the authentication adapter specified
      *
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @param  string $name
      * @return bool
@@ -240,11 +242,11 @@ class AuthenticationModel
     public function removeAuthenticationAdapter($name)
     {
         $config = $this->localConfig->fetch(true);
-        $key    = 'zf-mvc-auth.authentication.adapters.' . $name;
+        $key    = 'api-tools-mvc-auth.authentication.adapters.' . $name;
 
-        if (! isset($config['zf-mvc-auth']['authentication']['adapters'][$name])) {
+        if (! isset($config['api-tools-mvc-auth']['authentication']['adapters'][$name])) {
             $config = $this->globalConfig->fetch(true);
-            if (! isset($config['zf-mvc-auth']['authentication']['adapters'][$name])) {
+            if (! isset($config['api-tools-mvc-auth']['authentication']['adapters'][$name])) {
                 throw new Exception\RuntimeException(
                     'The authentication adapter specified doesn\'t exist',
                     404
@@ -255,7 +257,7 @@ class AuthenticationModel
             $this->localConfig->deleteKey($key);
         }
 
-        $adapter = $config['zf-mvc-auth']['authentication']['adapters'][$name];
+        $adapter = $config['api-tools-mvc-auth']['authentication']['adapters'][$name];
         if (self::ADAPTER_OAUTH2 === $adapter['adapter']) {
             return $this->removeOAuth2Route($adapter['storage']['route']);
         }
@@ -309,10 +311,10 @@ class AuthenticationModel
     public function remove()
     {
         $configKeys = [
-            'zf-mvc-auth.authentication.http',
-            'zf-oauth2.db',
-            'zf-oauth2.mongo',
-            'zf-oauth2.storage',
+            'api-tools-mvc-auth.authentication.http',
+            'api-tools-oauth2.db',
+            'api-tools-oauth2.mongo',
+            'api-tools-oauth2.storage',
             'router.routes.oauth',
         ];
         foreach ($configKeys as $key) {
@@ -330,7 +332,7 @@ class AuthenticationModel
     public function fetch()
     {
         $config = $this->globalConfig->fetch(true);
-        if (isset($config['zf-mvc-auth']['authentication']['http'])) {
+        if (isset($config['api-tools-mvc-auth']['authentication']['http'])) {
             $config = $this->fetchHttpAuthConfiguration($config);
         } else {
             $config = $this->fetchOAuth2Configuration($config);
@@ -346,7 +348,7 @@ class AuthenticationModel
     /**
      * Fetch configuration details for specific auth adapter name
      *
-     * Used since Apigility 1.1
+     * Used since Laminas API Tools 1.1
      *
      * @param  string $name
      * @return array|false
@@ -354,9 +356,9 @@ class AuthenticationModel
     public function fetchAuthenticationAdapter($name)
     {
         $config = $this->localConfig->fetch(true);
-        if (! isset($config['zf-mvc-auth']['authentication']['adapters'][$name])) {
+        if (! isset($config['api-tools-mvc-auth']['authentication']['adapters'][$name])) {
             $config = $this->globalConfig->fetch(true);
-            if (! isset($config['zf-mvc-auth']['authentication']['adapters'][$name])) {
+            if (! isset($config['api-tools-mvc-auth']['authentication']['adapters'][$name])) {
                 return false;
             }
         }
@@ -366,7 +368,7 @@ class AuthenticationModel
     /**
      * Fetch configuration details for auth adapters
      *
-     * Used since Apigility 1.1
+     * Used since Laminas API Tools 1.1
      *
      * @return array
      */
@@ -375,14 +377,14 @@ class AuthenticationModel
         $result = [];
         $config = $this->localConfig->fetch(true);
 
-        if (! isset($config['zf-mvc-auth']['authentication']['adapters'])) {
+        if (! isset($config['api-tools-mvc-auth']['authentication']['adapters'])) {
             $config = $this->globalConfig->fetch(true);
-            if (! isset($config['zf-mvc-auth']['authentication']['adapters'])) {
+            if (! isset($config['api-tools-mvc-auth']['authentication']['adapters'])) {
                 return $result;
             }
         }
 
-        foreach ($config['zf-mvc-auth']['authentication']['adapters'] as $name => $adapter) {
+        foreach ($config['api-tools-mvc-auth']['authentication']['adapters'] as $name => $adapter) {
             $result[] = $this->loadAuthenticationAdapterFromConfig($name, $config);
         }
         return $result;
@@ -391,7 +393,7 @@ class AuthenticationModel
     /**
      * Get the authentication map specified by $module and $version
      *
-     * Used since Apigility 1.1
+     * Used since Laminas API Tools 1.1
      *
      * @param string $module
      * @param int|false $version
@@ -405,20 +407,20 @@ class AuthenticationModel
         }
 
         $config = $this->globalConfig->fetch(true);
-        if (! isset($config['zf-mvc-auth']['authentication']['map'][$name])) {
+        if (! isset($config['api-tools-mvc-auth']['authentication']['map'][$name])) {
             $config = $this->localConfig->fetch(true);
-            if (! isset($config['zf-mvc-auth']['authentication']['map'][$name])) {
+            if (! isset($config['api-tools-mvc-auth']['authentication']['map'][$name])) {
                 return false;
             }
         }
 
-        return $config['zf-mvc-auth']['authentication']['map'][$name];
+        return $config['api-tools-mvc-auth']['authentication']['map'][$name];
     }
 
     /**
      * Save the authentication Map for a specific $module and $version
      *
-     * Used since Apigility 1.1
+     * Used since Laminas API Tools 1.1
      *
      * @param  string $auth
      * @param  string $module
@@ -432,9 +434,9 @@ class AuthenticationModel
         if (null !== $version) {
             $name .= '\V' . (int) $version;
         }
-        $key = 'zf-mvc-auth.authentication.map.' . $name;
+        $key = 'api-tools-mvc-auth.authentication.map.' . $name;
         $config = $this->localConfig->fetch(true);
-        if (! isset($config['zf-mvc-auth']['authentication']['adapters'][$auth])) {
+        if (! isset($config['api-tools-mvc-auth']['authentication']['adapters'][$auth])) {
             throw new Exception\InvalidArgumentException(
                 'The authentication adapter specified doesn\'t exist',
                 422
@@ -448,7 +450,7 @@ class AuthenticationModel
     /**
      * Remove the authentication Map for a specific $module and $version
      *
-     * Used since Apigility 1.1
+     * Used since Laminas API Tools 1.1
      *
      * @param  string $module
      * @param  int $version
@@ -460,7 +462,7 @@ class AuthenticationModel
         if (null !== $version) {
             $name .= '\V' . (int) $version;
         }
-        $key = 'zf-mvc-auth.authentication.map.' . $name;
+        $key = 'api-tools-mvc-auth.authentication.map.' . $name;
         $this->globalConfig->deleteKey($key);
         $this->localConfig->deleteKey($key);
         return true;
@@ -538,19 +540,19 @@ class AuthenticationModel
      */
     protected function fetchHttpAuthConfiguration(array $config)
     {
-        if (! isset($config['zf-mvc-auth']['authentication']['http']['accept_schemes'])
-            || ! is_array($config['zf-mvc-auth']['authentication']['http']['accept_schemes'])
+        if (! isset($config['api-tools-mvc-auth']['authentication']['http']['accept_schemes'])
+            || ! is_array($config['api-tools-mvc-auth']['authentication']['http']['accept_schemes'])
         ) {
             return false;
         }
 
-        $config = $config['zf-mvc-auth']['authentication']['http'];
+        $config = $config['api-tools-mvc-auth']['authentication']['http'];
 
         $localConfig = $this->localConfig->fetch(true);
-        if (isset($localConfig['zf-mvc-auth']['authentication']['http'])
-            && is_array($localConfig['zf-mvc-auth']['authentication']['http'])
+        if (isset($localConfig['api-tools-mvc-auth']['authentication']['http'])
+            && is_array($localConfig['api-tools-mvc-auth']['authentication']['http'])
         ) {
-            $config = array_merge($config, $localConfig['zf-mvc-auth']['authentication']['http']);
+            $config = array_merge($config, $localConfig['api-tools-mvc-auth']['authentication']['http']);
         }
 
         return $config;
@@ -573,16 +575,16 @@ class AuthenticationModel
         }
 
         $localConfig = $this->localConfig->fetch(true);
-        if (isset($localConfig['zf-oauth2']['db'])
-            && is_array($localConfig['zf-oauth2']['db'])
+        if (isset($localConfig['api-tools-oauth2']['db'])
+            && is_array($localConfig['api-tools-oauth2']['db'])
         ) {
-            return array_merge($oauth2Config, $localConfig['zf-oauth2']['db']);
+            return array_merge($oauth2Config, $localConfig['api-tools-oauth2']['db']);
         }
 
-        if (isset($localConfig['zf-oauth2']['mongo'])
-            && is_array($localConfig['zf-oauth2']['mongo'])
+        if (isset($localConfig['api-tools-oauth2']['mongo'])
+            && is_array($localConfig['api-tools-oauth2']['mongo'])
         ) {
-            return array_merge($oauth2Config, $localConfig['zf-oauth2']['mongo']);
+            return array_merge($oauth2Config, $localConfig['api-tools-oauth2']['mongo']);
         }
 
         return false;
@@ -597,7 +599,7 @@ class AuthenticationModel
      */
     protected function patchHttpAuthConfig(AuthenticationEntity $entity, array $global, array $local)
     {
-        $key = 'zf-mvc-auth.authentication.http';
+        $key = 'api-tools-mvc-auth.authentication.http';
         $this->globalConfig->patchKey($key, $global);
         $this->localConfig->patchKey($key, $local);
     }
@@ -632,7 +634,7 @@ class AuthenticationModel
                 break;
         }
 
-        $key = 'zf-oauth2';
+        $key = 'api-tools-oauth2';
         $this->localConfig->patchKey($key, $toSet);
     }
 
@@ -692,7 +694,7 @@ class AuthenticationModel
      */
     protected function saveAuthenticationAdapter(array $adapter)
     {
-        $key = 'zf-mvc-auth.authentication.adapters.' . $adapter['name'];
+        $key = 'api-tools-mvc-auth.authentication.adapters.' . $adapter['name'];
         switch ($adapter['type']) {
             case AuthenticationEntity::TYPE_BASIC:
                 $config = [
@@ -764,7 +766,7 @@ class AuthenticationModel
     /**
      * Return the OAuth2 urls as array from the regex string
      *
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @param  array $config
      * @return array
@@ -781,7 +783,7 @@ class AuthenticationModel
     /**
      * Update the OAuth2 route
      *
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @param  string $url
      * @return void
@@ -810,7 +812,7 @@ class AuthenticationModel
     /**
      * Remove a url from OAuth2 route
      *
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @param  string $url
      * @return bool
@@ -850,7 +852,7 @@ class AuthenticationModel
 
     /**
      * Load authentication data from configuration version 2
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @param  string $name
      * @param  array $config
@@ -859,8 +861,8 @@ class AuthenticationModel
     protected function loadAuthenticationAdapterFromConfig($name, array $config)
     {
         $result = [];
-        if (isset($config['zf-mvc-auth']['authentication']['adapters'][$name])) {
-            $adapter = $config['zf-mvc-auth']['authentication']['adapters'][$name];
+        if (isset($config['api-tools-mvc-auth']['authentication']['adapters'][$name])) {
+            $adapter = $config['api-tools-mvc-auth']['authentication']['adapters'][$name];
             $result['name'] = $name;
             switch ($adapter['adapter']) {
                 case self::ADAPTER_HTTP:
@@ -927,10 +929,10 @@ class AuthenticationModel
     public function removeOldAuthentication()
     {
         $configKeys = [
-            'zf-mvc-auth.authentication.http',
-            'zf-oauth2.db',
-            'zf-oauth2.mongo',
-            'zf-oauth2.storage',
+            'api-tools-mvc-auth.authentication.http',
+            'api-tools-oauth2.db',
+            'api-tools-oauth2.mongo',
+            'api-tools-oauth2.storage',
         ];
         foreach ($configKeys as $key) {
             $this->globalConfig->deleteKey($key);

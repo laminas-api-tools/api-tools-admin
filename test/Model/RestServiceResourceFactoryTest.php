@@ -1,19 +1,21 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Model\DocumentationModel;
+use Laminas\ApiTools\Admin\Model\InputFilterModel;
+use Laminas\ApiTools\Admin\Model\RestServiceModelFactory;
+use Laminas\ApiTools\Admin\Model\RestServiceResource;
+use Laminas\ApiTools\Admin\Model\RestServiceResourceFactory;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use ZF\Apigility\Admin\Model\DocumentationModel;
-use ZF\Apigility\Admin\Model\InputFilterModel;
-use ZF\Apigility\Admin\Model\RestServiceModelFactory;
-use ZF\Apigility\Admin\Model\RestServiceResource;
-use ZF\Apigility\Admin\Model\RestServiceResourceFactory;
 
 class RestServiceResourceFactoryTest extends TestCase
 {
@@ -28,6 +30,8 @@ class RestServiceResourceFactoryTest extends TestCase
 
         $this->container->has(RestServiceModelFactory::class)->willReturn(false);
 
+        $this->container->has(\ZF\Apigility\Admin\Model\RestServiceModelFactory::class)->willReturn(false);
+
         $this->setExpectedException(
             ServiceNotCreatedException::class,
             'missing its ' . RestServiceModelFactory::class. ' dependency'
@@ -41,6 +45,7 @@ class RestServiceResourceFactoryTest extends TestCase
 
         $this->container->has(RestServiceModelFactory::class)->willReturn(true);
         $this->container->has(InputFilterModel::class)->willReturn(false);
+        $this->container->has(\ZF\Apigility\Admin\Model\InputFilterModel::class)->willReturn(false);
 
         $this->setExpectedException(
             ServiceNotCreatedException::class,
