@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\InputFilter\RestService;
+namespace Laminas\ApiTools\Admin\InputFilter\RestService;
 
-use Zend\Validator\Callback as CallbackValidator;
+use Laminas\Validator\Callback as CallbackValidator;
 
 class PatchInputFilter extends PostInputFilter
 {
@@ -62,7 +64,7 @@ class PatchInputFilter extends PostInputFilter
             'required' => false,
             'allow_empty' => true,
             'error_message' => 'The Content Negotiation Selector must be a valid,'
-                . ' defined zf-content-negotiation selector',
+                . ' defined api-tools-content-negotiation selector',
         ]);
 
         $this->add([
@@ -95,7 +97,7 @@ class PatchInputFilter extends PostInputFilter
             'allow_empty' => true,
             'continue_if_empty' => true,
             'validators' => [
-                ['name' => 'ZF\Apigility\Admin\InputFilter\Validator\HttpMethodArrayValidator']
+                ['name' => 'Laminas\ApiTools\Admin\InputFilter\Validator\HttpMethodArrayValidator']
             ],
             'error_message' => 'The Collection HTTP Methods must be an array of valid HTTP methods',
         ]);
@@ -105,7 +107,7 @@ class PatchInputFilter extends PostInputFilter
             'allow_empty' => true,
             'continue_if_empty' => true,
             'validators' => [
-                ['name' => 'ZF\Apigility\Admin\InputFilter\Validator\HttpMethodArrayValidator']
+                ['name' => 'Laminas\ApiTools\Admin\InputFilter\Validator\HttpMethodArrayValidator']
             ],
             'error_message' => 'The Entity HTTP Methods must be an array of valid HTTP methods',
         ]);

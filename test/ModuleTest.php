@@ -1,18 +1,20 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin;
+namespace LaminasTest\ApiTools\Admin;
 
+use Laminas\ApiTools\Admin\Module;
+use Laminas\ApiTools\Hal\Plugin\Hal;
+use Laminas\Mvc\MvcEvent;
+use Laminas\Mvc\Router\RouteMatch;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\View\HelperPluginManager;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\RouteMatch;
-use Zend\ServiceManager\ServiceManager;
-use Zend\View\HelperPluginManager;
-use ZF\Apigility\Admin\Module;
-use ZF\Hal\Plugin\Hal;
 
 class ModuleTest extends TestCase
 {
@@ -63,7 +65,7 @@ class ModuleTest extends TestCase
         $this->hal->setRenderCollections(false);
 
         $matches = new RouteMatch([
-            'controller' => 'ZF\Apigility\Admin\Foo\Controller',
+            'controller' => 'Laminas\ApiTools\Admin\Foo\Controller',
         ]);
         $event = new MvcEvent();
         $event->setRouteMatch($matches);
