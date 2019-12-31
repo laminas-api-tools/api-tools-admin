@@ -7,7 +7,7 @@ if ($this->details) {
 namespace <?php echo $module ?>\V<?php echo $version ?>\Rest\<?php echo $resource ?>;
 <?php if ($hydratorName == 'ArraySerializable') : // Entity class implementing ArraySerializableInterface ?>
 
-use Zend\Stdlib\ArraySerializableInterface;
+use Laminas\Stdlib\ArraySerializableInterface;
 
 class <?php echo $classname ?> implements ArraySerializableInterface
 {

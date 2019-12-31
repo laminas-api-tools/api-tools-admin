@@ -1,10 +1,10 @@
 <?php
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use Zend\Filter\StaticFilter;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\Filter\StaticFilter;
+use Laminas\ServiceManager\ServiceLocatorAwareInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 abstract class AbstractAutodiscoveryModel implements ServiceLocatorAwareInterface
 {
@@ -23,18 +23,18 @@ abstract class AbstractAutodiscoveryModel implements ServiceLocatorAwareInterfac
      */
     protected $validators = [
         'text' => [
-            'name' => 'Zend\Validator\StringLength',
+            'name' => 'Laminas\Validator\StringLength',
             'options' => [
                 'min' => 1,
                 'max' => 1,
             ],
         ],
         'unique' => [
-            'name' => 'ZF\ContentValidation\Validator\DbNoRecordExists',
+            'name' => 'Laminas\ApiTools\ContentValidation\Validator\DbNoRecordExists',
             'options' => [],
         ],
         'foreign_key' => [
-            'name' => 'ZF\ContentValidation\Validator\DbRecordExists',
+            'name' => 'Laminas\ApiTools\ContentValidation\Validator\DbRecordExists',
             'options' => [],
         ],
     ];
@@ -44,12 +44,12 @@ abstract class AbstractAutodiscoveryModel implements ServiceLocatorAwareInterfac
      */
     protected $filters = [
         'text' => [
-            ['name' => 'Zend\Filter\StringTrim'],
-            ['name' => 'Zend\Filter\StripTags'],
+            ['name' => 'Laminas\Filter\StringTrim'],
+            ['name' => 'Laminas\Filter\StripTags'],
         ],
         'integer' => [
-            ['name' => 'Zend\Filter\StripTags'],
-            ['name' => 'Zend\Filter\Digits'],
+            ['name' => 'Laminas\Filter\StripTags'],
+            ['name' => 'Laminas\Filter\Digits'],
         ],
     ];
 
