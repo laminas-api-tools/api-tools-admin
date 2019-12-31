@@ -1,19 +1,21 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Listener;
+namespace Laminas\ApiTools\Admin\Listener;
 
+use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\ListenerAggregateInterface;
+use Laminas\EventManager\ListenerAggregateTrait;
+use Laminas\Filter\Compress\CompressionAlgorithmInterface;
+use Laminas\Filter\Encrypt\EncryptionAlgorithmInterface;
+use Laminas\Mvc\MvcEvent;
 use ReflectionClass;
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateInterface;
-use Zend\EventManager\ListenerAggregateTrait;
-use Zend\Filter\Compress\CompressionAlgorithmInterface;
-use Zend\Filter\Encrypt\EncryptionAlgorithmInterface;
-use Zend\Mvc\MvcEvent;
-use ZF\ContentNegotiation\ParameterDataContainer;
 
 class CryptFilterListener implements ListenerAggregateInterface
 {
@@ -51,12 +53,12 @@ class CryptFilterListener implements ListenerAggregateInterface
         }
 
         $controller = $matches->getParam('controller', false);
-        if ($controller !== \ZF\Apigility\Admin\Controller\InputFilter::class) {
+        if ($controller !== \Laminas\ApiTools\Admin\Controller\InputFilter::class) {
             // Not the InputFilter controller; nothing to do
             return;
         }
 
-        $data = $e->getParam('ZFContentNegotiationParameterData', false);
+        $data = $e->getParam('LaminasContentNegotiationParameterData', false);
         if (! $data) {
             // No data; nothing to do
             return;
@@ -92,7 +94,7 @@ class CryptFilterListener implements ListenerAggregateInterface
         }
 
         // Inject altered data back into event
-        $e->setParam('ZFContentNegotiationParameterData', $data);
+        $e->setParam('LaminasContentNegotiationParameterData', $data);
         return true;
     }
 }

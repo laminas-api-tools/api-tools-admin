@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <phpunit bootstrap="./vendor/autoload.php" colors="true">
     <testsuites>
-        <testsuite name="ZFApigility\Admin Module Tests">
+        <testsuite name="LaminasApiTools\Admin Module Tests">
             <directory>./test</directory>
         </testsuite>
     </testsuites>

@@ -1,18 +1,20 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\Admin\Model\ModuleModelFactory;
+use Laminas\ModuleManager\ModuleManager;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
-use Zend\ModuleManager\ModuleManager;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\Apigility\Admin\Model\ModuleModelFactory;
 
 class ModuleModelFactoryTest extends TestCase
 {
@@ -41,8 +43,8 @@ class ModuleModelFactoryTest extends TestCase
     {
         $factory = new ModuleModelFactory();
         $config  = [
-            'zf-rest' => ['rest configuration' => true],
-            'zf-rpc'  => ['rpc configuration' => true],
+            'api-tools-rest' => ['rest configuration' => true],
+            'api-tools-rpc'  => ['rpc configuration' => true],
         ];
         $moduleManager = $this->prophesize(ModuleManager::class)->reveal();
 
@@ -55,17 +57,17 @@ class ModuleModelFactoryTest extends TestCase
 
         $this->assertInstanceOf(ModuleModel::class, $model);
         $this->assertAttributeSame($moduleManager, 'moduleManager', $model);
-        $this->assertAttributeEquals(array_keys($config['zf-rest']), 'restConfig', $model);
-        $this->assertAttributeEquals(array_keys($config['zf-rpc']), 'rpcConfig', $model);
+        $this->assertAttributeEquals(array_keys($config['api-tools-rest']), 'restConfig', $model);
+        $this->assertAttributeEquals(array_keys($config['api-tools-rpc']), 'rpcConfig', $model);
     }
 
     public function testFactoryCanConfigureShortArrayNotationFlag()
     {
         $factory = new ModuleModelFactory();
         $config  = [
-            'zf-configuration' => ['enable_short_array' => true],
-            'zf-rest' => ['rest configuration' => true],
-            'zf-rpc'  => ['rpc configuration' => true],
+            'api-tools-configuration' => ['enable_short_array' => true],
+            'api-tools-rest' => ['rest configuration' => true],
+            'api-tools-rpc'  => ['rpc configuration' => true],
         ];
         $moduleManager = $this->prophesize(ModuleManager::class)->reveal();
 

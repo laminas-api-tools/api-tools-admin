@@ -1,20 +1,22 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Model\AuthorizationModelFactory;
+use Laminas\ApiTools\Admin\Model\AuthorizationModelFactoryFactory;
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Configuration\ConfigResourceFactory;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use ZF\Apigility\Admin\Model\AuthorizationModelFactory;
-use ZF\Apigility\Admin\Model\AuthorizationModelFactoryFactory;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
-use ZF\Configuration\ConfigResourceFactory;
-use ZF\Configuration\ResourceFactory;
 
 class AuthorizationModelFactoryFactoryTest extends TestCase
 {

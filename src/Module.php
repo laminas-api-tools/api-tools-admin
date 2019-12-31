@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin;
+namespace Laminas\ApiTools\Admin;
 
-use Zend\ModuleManager\ModuleManagerInterface;
-use Zend\Mvc\MvcEvent;
+use Laminas\ModuleManager\ModuleManagerInterface;
+use Laminas\Mvc\MvcEvent;
 
 class Module
 {
@@ -38,8 +40,8 @@ class Module
     public function init(ModuleManagerInterface $modules)
     {
         $loaded = $modules->getLoadedModules(false);
-        if (! isset($loaded['ZF\Apigility\Admin\Ui'])) {
-            $modules->loadModule('ZF\Apigility\Admin\Ui');
+        if (! isset($loaded['Laminas\ApiTools\Admin\Ui'])) {
+            $modules->loadModule('Laminas\ApiTools\Admin\Ui');
         }
 
         $this->disableOpCache();
@@ -126,7 +128,7 @@ class Module
             && preg_match('/^PHP .*? Development Server$/', $_SERVER['SERVER_SOFTWARE'])
         ) {
             // skip the built-in PHP webserver (OPcache reset is not needed +
-            // it crashes the server in PHP 5.4 with ZendOptimizer+)
+            // it crashes the server in PHP 5.4 with LaminasOptimizer+)
             return;
         }
 

@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\ModulePathSpec;
 use PHPUnit\Framework\TestCase;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
 
 class ModulePathSpecTest extends TestCase
 {
@@ -16,7 +18,7 @@ class ModulePathSpecTest extends TestCase
      */
     protected function getModuleUtils()
     {
-        $utils = $this->getMockBuilder('ZF\Configuration\ModuleUtils')
+        $utils = $this->getMockBuilder('Laminas\ApiTools\Configuration\ModuleUtils')
                     ->disableOriginalConstructor()
                     ->getMock();
 
