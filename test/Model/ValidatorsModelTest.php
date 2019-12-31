@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Model\ValidatorMetadataModel;
+use Laminas\ApiTools\Admin\Model\ValidatorsModel;
+use Laminas\Validator\ValidatorPluginManager;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Validator\ValidatorPluginManager;
-use ZF\Apigility\Admin\Model\ValidatorMetadataModel;
-use ZF\Apigility\Admin\Model\ValidatorsModel;
 
 class ValidatorsModelTest extends TestCase
 {

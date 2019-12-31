@@ -1,18 +1,20 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Controller;
+namespace Laminas\ApiTools\Admin\Controller;
 
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\ApiProblem\ApiProblem;
+use Laminas\ApiTools\ApiProblem\View\ApiProblemModel;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
+use Laminas\Http\Request;
+use Laminas\Mvc\Controller\AbstractActionController;
 use ReflectionClass;
-use Zend\Http\Request;
-use Zend\Mvc\Controller\AbstractActionController;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\ApiProblem\ApiProblem;
-use ZF\ApiProblem\View\ApiProblemModel;
-use ZF\ContentNegotiation\ViewModel;
 
 class SourceController extends AbstractActionController
 {

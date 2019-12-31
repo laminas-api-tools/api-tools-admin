@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
-use Zend\EventManager\SharedEventManagerInterface;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use ZF\Apigility\Doctrine\Admin\Model\DoctrineRestServiceModel;
-use ZF\Configuration\ConfigResourceFactory;
+use Laminas\ApiTools\Configuration\ConfigResourceFactory;
+use Laminas\ApiTools\Doctrine\Admin\Model\DoctrineRestServiceModel;
+use Laminas\EventManager\SharedEventManagerInterface;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 
 class RestServiceModelFactoryFactory
 {
@@ -27,7 +29,7 @@ class RestServiceModelFactoryFactory
             || ! $container->has('SharedEventManager')
         ) {
             throw new ServiceNotCreatedException(sprintf(
-                '%s is missing one or more dependencies from ZF\Configuration',
+                '%s is missing one or more dependencies from Laminas\ApiTools\Configuration',
                 RestServiceModelFactory::class
             ));
         }
@@ -60,7 +62,7 @@ class RestServiceModelFactoryFactory
 
         $modules = $container->get('ModuleManager');
         $loaded = $modules->getLoadedModules(false);
-        if (! isset($loaded['ZF\Apigility\Doctrine\Admin'])) {
+        if (! isset($loaded['Laminas\ApiTools\Doctrine\Admin'])) {
             return;
         }
 
