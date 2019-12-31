@@ -1,25 +1,27 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use BarConf;
+use Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity;
+use Laminas\ApiTools\Admin\Model\DbConnectedRestServiceModel;
+use Laminas\ApiTools\Admin\Model\ModuleEntity;
+use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Admin\Model\RestServiceEntity;
+use Laminas\ApiTools\Admin\Model\RestServiceModel;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\Config\Writer\PhpArray;
+use Laminas\EventManager\Event;
+use Laminas\ModuleManager\ModuleManager;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionClass;
-use Zend\Config\Writer\PhpArray;
-use Zend\EventManager\Event;
-use Zend\ModuleManager\ModuleManager;
-use ZF\Apigility\Admin\Model\DbConnectedRestServiceEntity;
-use ZF\Apigility\Admin\Model\DbConnectedRestServiceModel;
-use ZF\Apigility\Admin\Model\ModuleEntity;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
-use ZF\Apigility\Admin\Model\RestServiceEntity;
-use ZF\Apigility\Admin\Model\RestServiceModel;
-use ZF\Configuration\ModuleUtils;
-use ZF\Configuration\ResourceFactory;
 
 class DbConnectedRestServiceModelTest extends TestCase
 {
@@ -137,11 +139,11 @@ class DbConnectedRestServiceModelTest extends TestCase
         $result         = $this->model->createService($originalEntity);
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
-        $this->assertArrayHasKey('zf-apigility', $config);
-        $this->assertArrayHasKey('db-connected', $config['zf-apigility']);
-        $this->assertArrayHasKey($result->resourceClass, $config['zf-apigility']['db-connected']);
+        $this->assertArrayHasKey('api-tools', $config);
+        $this->assertArrayHasKey('db-connected', $config['api-tools']);
+        $this->assertArrayHasKey($result->resourceClass, $config['api-tools']['db-connected']);
 
-        $resourceConfig = $config['zf-apigility']['db-connected'][$result->resourceClass];
+        $resourceConfig = $config['api-tools']['db-connected'][$result->resourceClass];
         $this->assertArrayHasKey('table_name', $resourceConfig);
         $this->assertArrayHasKey('hydrator_name', $resourceConfig);
         $this->assertArrayHasKey('controller_service_name', $resourceConfig);
@@ -157,10 +159,10 @@ class DbConnectedRestServiceModelTest extends TestCase
         $result         = $this->model->createService($originalEntity);
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
-        $this->assertArrayHasKey('zf-rest', $config);
-        $this->assertArrayHasKey($result->controllerServiceName, $config['zf-rest']);
+        $this->assertArrayHasKey('api-tools-rest', $config);
+        $this->assertArrayHasKey($result->controllerServiceName, $config['api-tools-rest']);
 
-        $restConfig = $config['zf-rest'][$result->controllerServiceName];
+        $restConfig = $config['api-tools-rest'][$result->controllerServiceName];
         $this->assertArrayHasKey('entity_class', $restConfig);
         $this->assertArrayHasKey('collection_class', $restConfig);
 
@@ -174,11 +176,11 @@ class DbConnectedRestServiceModelTest extends TestCase
         $result         = $this->model->createService($originalEntity);
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
-        $this->assertArrayHasKey('zf-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['zf-hal']);
-        $this->assertArrayHasKey($result->entityClass, $config['zf-hal']['metadata_map']);
+        $this->assertArrayHasKey('api-tools-hal', $config);
+        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        $this->assertArrayHasKey($result->entityClass, $config['api-tools-hal']['metadata_map']);
 
-        $halConfig = $config['zf-hal']['metadata_map'][$result->entityClass];
+        $halConfig = $config['api-tools-hal']['metadata_map'][$result->entityClass];
         $this->assertArrayHasKey('hydrator', $halConfig);
 
         $this->assertEquals($result->hydratorName, $halConfig['hydrator']);
@@ -204,7 +206,7 @@ class DbConnectedRestServiceModelTest extends TestCase
         ];
         $entity = new RestServiceEntity();
         $entity->exchangeArray($originalData);
-        $config = ['zf-apigility' => ['db-connected' => [
+        $config = ['api-tools' => ['db-connected' => [
             'BarConf\Rest\Barbaz\BarbazResource' => [
                 'adapter_name'  => 'Db\Barbaz',
                 'table_name'    => 'barbaz',
@@ -216,7 +218,7 @@ class DbConnectedRestServiceModelTest extends TestCase
         $event->setParam('entity', $entity);
         $event->setParam('config', $config);
         $result = $this->model->onFetch($event);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\DbConnectedRestServiceEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity', $result);
         $asArray = $result->getArrayCopy();
         foreach ($originalData as $key => $value) {
             $this->assertArrayHasKey($key, $asArray);
@@ -233,7 +235,7 @@ class DbConnectedRestServiceModelTest extends TestCase
                 sprintf("Failed testing key '%s'\nEntity is: %s\n", $key, var_export($asArray, 1))
             );
         }
-        foreach ($config['zf-apigility']['db-connected']['BarConf\Rest\Barbaz\BarbazResource'] as $key => $value) {
+        foreach ($config['api-tools']['db-connected']['BarConf\Rest\Barbaz\BarbazResource'] as $key => $value) {
             $this->assertArrayHasKey($key, $asArray);
             $this->assertEquals($value, $asArray[$key]);
         }
@@ -255,7 +257,7 @@ class DbConnectedRestServiceModelTest extends TestCase
         ];
         $entity = new RestServiceEntity();
         $entity->exchangeArray($originalData);
-        $config = ['zf-apigility' => ['db-connected' => [
+        $config = ['api-tools' => ['db-connected' => [
             'BarConf\Rest\Barbaz\BarbazResource' => [
                 'adapter_name'  => 'Db\Barbaz',
                 'table_name'    => 'barbaz',
@@ -269,7 +271,7 @@ class DbConnectedRestServiceModelTest extends TestCase
         $event->setParam('fetch', false);
         $result = $this->model->onFetch($event);
 
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\DbConnectedRestServiceEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity', $result);
         $this->assertEquals('BarConf\Rest\Barbaz\BarbazResource', $result->resourceClass);
         $asArray = $result->getArrayCopy();
         $this->assertArrayHasKey('resource_class', $asArray);
@@ -289,7 +291,7 @@ class DbConnectedRestServiceModelTest extends TestCase
         $originalEntity->exchangeArray($newProps);
         $result = $this->model->updateService($originalEntity);
 
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\DbConnectedRestServiceEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity', $result);
         $this->assertNotSame($originalEntity, $result);
         $this->assertEquals($newProps['table_service'], $result->tableService);
         $this->assertEquals($newProps['adapter_name'], $result->adapterName);
@@ -309,14 +311,14 @@ class DbConnectedRestServiceModelTest extends TestCase
         $originalEntity->exchangeArray($newProps);
         $result = $this->model->updateService($originalEntity);
 
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\DbConnectedRestServiceEntity', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity', $result);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('zf-apigility', $config);
-        $this->assertArrayHasKey('db-connected', $config['zf-apigility']);
-        $this->assertArrayHasKey('BarConf\V1\Rest\Barbaz\BarbazResource', $config['zf-apigility']['db-connected']);
+        $this->assertArrayHasKey('api-tools', $config);
+        $this->assertArrayHasKey('db-connected', $config['api-tools']);
+        $this->assertArrayHasKey('BarConf\V1\Rest\Barbaz\BarbazResource', $config['api-tools']['db-connected']);
 
-        $resourceConfig = $config['zf-apigility']['db-connected']['BarConf\V1\Rest\Barbaz\BarbazResource'];
+        $resourceConfig = $config['api-tools']['db-connected']['BarConf\V1\Rest\Barbaz\BarbazResource'];
         $this->assertArrayHasKey('adapter_name', $resourceConfig);
         $this->assertArrayHasKey('table_service', $resourceConfig);
         $this->assertArrayHasKey('table_name', $resourceConfig);
@@ -338,17 +340,17 @@ class DbConnectedRestServiceModelTest extends TestCase
 
         $newProps = [
             'entity_identifier_name' => 'id',
-            'hydrator_name'          => 'Zend\\Hydrator\\ClassMethods',
+            'hydrator_name'          => 'Laminas\\Hydrator\\ClassMethods',
         ];
         $originalEntity->exchangeArray($newProps);
         $result = $this->model->updateService($originalEntity);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('zf-apigility', $config);
-        $this->assertArrayHasKey('db-connected', $config['zf-apigility']);
-        $this->assertArrayHasKey('BarConf\V1\Rest\Barbaz\BarbazResource', $config['zf-apigility']['db-connected']);
+        $this->assertArrayHasKey('api-tools', $config);
+        $this->assertArrayHasKey('db-connected', $config['api-tools']);
+        $this->assertArrayHasKey('BarConf\V1\Rest\Barbaz\BarbazResource', $config['api-tools']['db-connected']);
 
-        $resourceConfig = $config['zf-apigility']['db-connected']['BarConf\V1\Rest\Barbaz\BarbazResource'];
+        $resourceConfig = $config['api-tools']['db-connected']['BarConf\V1\Rest\Barbaz\BarbazResource'];
         $this->assertEquals($newProps['entity_identifier_name'], $resourceConfig['entity_identifier_name']);
         $this->assertEquals($newProps['hydrator_name'], $resourceConfig['hydrator_name']);
     }
@@ -363,9 +365,9 @@ class DbConnectedRestServiceModelTest extends TestCase
         $barbazPath = __DIR__ . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Barbaz';
 
         $this->assertTrue(file_exists($barbazPath));
-        $this->assertArrayHasKey('zf-apigility', $config);
-        $this->assertArrayHasKey('db-connected', $config['zf-apigility']);
-        $this->assertArrayNotHasKey($originalEntity->resourceClass, $config['zf-apigility']['db-connected']);
+        $this->assertArrayHasKey('api-tools', $config);
+        $this->assertArrayHasKey('db-connected', $config['api-tools']);
+        $this->assertArrayNotHasKey($originalEntity->resourceClass, $config['api-tools']['db-connected']);
     }
 
     public function testDeleteServiceRecursive()

@@ -1,6 +1,6 @@
 <?php
 return [
-    'zf-mvc-auth' => [
+    'api-tools-mvc-auth' => [
         'authentication' => [
             'map' => [
                 'Status\V1' => 'testbasic',
