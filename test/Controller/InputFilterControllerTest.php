@@ -1,23 +1,25 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Controller;
+namespace LaminasTest\ApiTools\Admin\Controller;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Controller\InputFilterController;
+use Laminas\ApiTools\Admin\Model\InputFilterModel;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
+use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
+use Laminas\Config\Writer\PhpArray;
+use Laminas\Http\Request;
+use Laminas\Mvc\Controller\PluginManager;
+use Laminas\Mvc\MvcEvent;
+use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Config\Writer\PhpArray;
-use Zend\Http\Request;
-use Zend\Mvc\Controller\PluginManager;
-use Zend\Mvc\MvcEvent;
-use ZF\Apigility\Admin\Controller\InputFilterController;
-use ZF\Apigility\Admin\Model\InputFilterModel;
-use ZF\Configuration\ModuleUtils;
-use ZF\Configuration\ResourceFactory as ConfigResourceFactory;
-use ZF\ContentNegotiation\ParameterDataContainer;
-use ZFTest\Apigility\Admin\RouteAssetsTrait;
 
 class InputFilterControllerTest extends TestCase
 {
@@ -30,7 +32,7 @@ class InputFilterControllerTest extends TestCase
             'InputFilter' => new \InputFilter\Module(),
         ];
 
-        $this->moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -69,7 +71,7 @@ class InputFilterControllerTest extends TestCase
             'controller_service_name' => $controller,
         ];
         $routeMatch = $this->createRouteMatch($params);
-        $routeMatch->setMatchedRouteName('zf-apigility-admin/api/module/rest-service/rest_input_filter');
+        $routeMatch->setMatchedRouteName('api-tools-admin/api/module/rest-service/rest_input_filter');
         $event = new MvcEvent();
         $event->setRouteMatch($routeMatch);
 
@@ -77,15 +79,15 @@ class InputFilterControllerTest extends TestCase
         $this->controller->setEvent($event);
 
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $payload = $result->payload;
-        $this->assertInstanceOf('ZF\Hal\Collection', $payload);
+        $this->assertInstanceOf('Laminas\ApiTools\Hal\Collection', $payload);
         $collection = $payload->getCollection();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\InputFilterCollection', $collection);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterCollection', $collection);
         $inputFilter = $collection->dequeue();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\InputFilterEntity', $inputFilter);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $inputFilter);
 
-        $inputFilterKey = $this->config['zf-content-validation'][$controller]['input_filter'];
+        $inputFilterKey = $this->config['api-tools-content-validation'][$controller]['input_filter'];
         $expected = $this->config['input_filter_specs'][$inputFilterKey];
         $expected['input_filter_name'] = $inputFilterKey;
         $this->assertEquals($expected, $inputFilter->getArrayCopy());
@@ -107,7 +109,7 @@ class InputFilterControllerTest extends TestCase
             'input_filter_name' => $validator,
         ];
         $routeMatch = $this->createRouteMatch($params);
-        $routeMatch->setMatchedRouteName('zf-apigility-admin/api/module/rest-service/rest_input_filter');
+        $routeMatch->setMatchedRouteName('api-tools-admin/api/module/rest-service/rest_input_filter');
         $event = new MvcEvent();
         $event->setRouteMatch($routeMatch);
 
@@ -115,11 +117,11 @@ class InputFilterControllerTest extends TestCase
         $this->controller->setEvent($event);
 
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $payload = $result->payload;
-        $this->assertInstanceOf('ZF\Hal\Entity', $payload);
+        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
         $entity = $payload->getEntity();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\InputFilterEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $entity);
 
         $expected = $this->config['input_filter_specs'][$validator];
         $expected['input_filter_name'] = $validator;
@@ -158,30 +160,30 @@ class InputFilterControllerTest extends TestCase
             'controller_service_name' => $controller,
         ];
         $routeMatch = $this->createRouteMatch($params);
-        $routeMatch->setMatchedRouteName('zf-apigility-admin/api/module/rest-service/rest_input_filter');
+        $routeMatch->setMatchedRouteName('api-tools-admin/api/module/rest-service/rest_input_filter');
         $event = new MvcEvent();
         $event->setRouteMatch($routeMatch);
 
         $parameters = new ParameterDataContainer();
         $parameters->setBodyParams($inputFilter);
-        $event->setParam('ZFContentNegotiationParameterData', $parameters);
+        $event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
         $plugins = new PluginManager($this->prophesize(ContainerInterface::class)->reveal());
-        $plugins->setInvokableClass('bodyParams', 'ZF\ContentNegotiation\ControllerPlugin\BodyParams');
+        $plugins->setInvokableClass('bodyParams', 'Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParams');
 
         $this->controller->setRequest($request);
         $this->controller->setEvent($event);
         $this->controller->setPluginManager($plugins);
 
         $result     = $this->controller->indexAction();
-        $this->assertInstanceOf('ZF\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
         $payload = $result->payload;
-        $this->assertInstanceOf('ZF\Hal\Entity', $payload);
+        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
         $entity = $payload->getEntity();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\InputFilterEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $entity);
 
         $config    = include $this->basePath . '/module.config.php';
-        $validator = $config['zf-content-validation'][$controller]['input_filter'];
+        $validator = $config['api-tools-content-validation'][$controller]['input_filter'];
         $expected  = $config['input_filter_specs'][$validator];
         $expected['input_filter_name'] = $validator;
         $this->assertEquals($expected, $entity->getArrayCopy());
@@ -203,7 +205,7 @@ class InputFilterControllerTest extends TestCase
             'input_filter_name' => $validator,
         ];
         $routeMatch = $this->createRouteMatch($params);
-        $routeMatch->setMatchedRouteName('zf-apigility-admin/api/module/rest-service/rest_input_filter');
+        $routeMatch->setMatchedRouteName('api-tools-admin/api/module/rest-service/rest_input_filter');
         $event = new MvcEvent();
         $event->setRouteMatch($routeMatch);
 
@@ -211,7 +213,7 @@ class InputFilterControllerTest extends TestCase
         $this->controller->setEvent($event);
 
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf('Zend\Http\Response', $result);
+        $this->assertInstanceOf('Laminas\Http\Response', $result);
         $this->assertEquals(204, $result->getStatusCode());
     }
 }
