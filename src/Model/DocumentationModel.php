@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use ZF\Configuration\Exception\InvalidArgumentException as InvalidArgumentConfiguration;
-use ZF\Configuration\ModuleUtils;
-use ZF\Configuration\ResourceFactory as ConfigResourceFactory;
+use Laminas\ApiTools\Configuration\Exception\InvalidArgumentException as InvalidArgumentConfiguration;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
 
 class DocumentationModel
 {
@@ -137,14 +139,14 @@ class DocumentationModel
 
         $config = $configModule->fetch(true);
 
-        if (isset($config['zf-rest'])
-            && array_key_exists($controller, $config['zf-rest'])
+        if (isset($config['api-tools-rest'])
+            && array_key_exists($controller, $config['api-tools-rest'])
         ) {
             return true;
         }
 
-        if (isset($config['zf-rpc'])
-            && array_key_exists($controller, $config['zf-rpc'])
+        if (isset($config['api-tools-rpc'])
+            && array_key_exists($controller, $config['api-tools-rpc'])
         ) {
             return true;
         }
@@ -154,7 +156,7 @@ class DocumentationModel
 
     /**
      * @param $module
-     * @return \ZF\Configuration\ConfigResource
+     * @return \Laminas\ApiTools\Configuration\ConfigResource
      */
     protected function getDocumentationConfigResource($module)
     {

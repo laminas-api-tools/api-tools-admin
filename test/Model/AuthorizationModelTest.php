@@ -1,23 +1,25 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use AuthConf;
 use AuthConfDefaults;
 use AuthConfWithConfig;
 use FooConf;
+use Laminas\ApiTools\Admin\Model\AuthorizationEntity;
+use Laminas\ApiTools\Admin\Model\AuthorizationModel;
+use Laminas\ApiTools\Admin\Model\ModuleEntity;
+use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\Config\Writer\PhpArray;
 use PHPUnit\Framework\TestCase;
-use Zend\Config\Writer\PhpArray;
-use ZF\Apigility\Admin\Model\AuthorizationEntity;
-use ZF\Apigility\Admin\Model\AuthorizationModel;
-use ZF\Apigility\Admin\Model\ModuleEntity;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
-use ZF\Configuration\ModuleUtils;
-use ZF\Configuration\ResourceFactory;
 
 class AuthorizationModelTest extends TestCase
 {
@@ -65,7 +67,7 @@ class AuthorizationModelTest extends TestCase
         ];
 
         $this->moduleEntity  = new ModuleEntity($this->module);
-        $this->moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -143,7 +145,7 @@ class AuthorizationModelTest extends TestCase
     {
         $this->setUpModel('FooConf');
         $entity = $this->model->fetch();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
         $this->assertEquals(0, count($entity));
     }
 
@@ -151,7 +153,7 @@ class AuthorizationModelTest extends TestCase
     {
         $this->setUpModel('AuthConf');
         $entity = $this->model->fetch();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
         $this->assertEquals(6, count($entity));
         $expected = [
             'AuthConf\V1\Rest\Foo\Controller::__entity__',
@@ -173,7 +175,7 @@ class AuthorizationModelTest extends TestCase
     {
         $this->setUpModel('AuthConfDefaults');
         $entity = $this->model->fetch();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
         $this->assertEquals(6, count($entity));
         $this->assertTrue($entity->has('AuthConfDefaults\V1\Rpc\Bat\Controller::index'));
     }
@@ -182,7 +184,7 @@ class AuthorizationModelTest extends TestCase
     {
         $this->setUpModel('AuthConf');
         $entity = $this->model->fetch(2); // <- VERSION!
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
         $this->assertEquals(9, count($entity));
         $expected = [
             'AuthConf\V2\Rest\Foo\Controller::__entity__',
@@ -209,11 +211,11 @@ class AuthorizationModelTest extends TestCase
 
         // Get config as it exists to begin
         $config = $this->resource->factory($this->module)->fetch(true);
-        $config = $config['zf-mvc-auth']['authorization'];
+        $config = $config['api-tools-mvc-auth']['authorization'];
 
         // Have the model fetch it
         $entity = $this->model->fetch();
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
         $entity = $this->mapEntityToConfig($entity);
         $this->assertEquals($config, $entity);
     }
@@ -226,7 +228,7 @@ class AuthorizationModelTest extends TestCase
         $config = $this->resource->factory($this->module)->fetch(true);
 
         // Toggle all privileges
-        $newPrivileges = $this->mapConfigToPayload($config['zf-mvc-auth']['authorization']);
+        $newPrivileges = $this->mapConfigToPayload($config['api-tools-mvc-auth']['authorization']);
         foreach ($newPrivileges as $serviceName => $privileges) {
             foreach ($privileges as $method => $flag) {
                 $newPrivileges[$serviceName][$method] = ! $flag;
@@ -234,14 +236,14 @@ class AuthorizationModelTest extends TestCase
         }
 
         $entity = $this->model->update($newPrivileges);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
 
         // Test that the entity matches the new privileges
         $this->assertEquals($newPrivileges, $entity->getArrayCopy());
 
         // Test that the stored configuration has been updated as well
         $config = $this->resource->factory($this->module)->fetch(true);
-        $config = $config['zf-mvc-auth']['authorization'];
+        $config = $config['api-tools-mvc-auth']['authorization'];
 
         $expected = $this->mapEntityToConfig($entity);
 

@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use ZF\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 
 class ModulePathSpecFactory
 {
@@ -19,7 +21,9 @@ class ModulePathSpecFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        if (! $container->has(ModuleUtils::class)) {
+        if (! $container->has(ModuleUtils::class)
+            && ! $container->has(\ZF\Configuration\ModuleUtils::class)
+        ) {
             throw new ServiceNotCreatedException(sprintf(
                 'Cannot create %s service because %s service is not present',
                 ModulePathSpec::class,
@@ -30,14 +34,14 @@ class ModulePathSpecFactory
         $config = $this->getConfig($container);
 
         return new ModulePathSpec(
-            $container->get(ModuleUtils::class),
+            $container->has(ModuleUtils::class) ? $container->get(ModuleUtils::class) : $container->get(\ZF\Configuration\ModuleUtils::class),
             $this->getPathSpecFromConfig($config),
             $this->getPathFromConfig($config)
         );
     }
 
     /**
-     * Retrieve the zf-apigility-admin configuration array, if present.
+     * Retrieve the api-tools-admin configuration array, if present.
      *
      * @param ContainerInterface $container
      * @return array
@@ -50,13 +54,13 @@ class ModulePathSpecFactory
 
         $config = $container->get('config');
 
-        if (! isset($config['zf-apigility-admin'])
-            || ! is_array($config['zf-apigility-admin'])
+        if (! isset($config['api-tools-admin'])
+            || ! is_array($config['api-tools-admin'])
         ) {
             return [];
         }
 
-        return $config['zf-apigility-admin'];
+        return $config['api-tools-admin'];
     }
 
     /**

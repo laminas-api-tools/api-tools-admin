@@ -1,17 +1,19 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
+use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Admin\Model\ModulePathSpecFactory;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
-use ZF\Apigility\Admin\Model\ModulePathSpecFactory;
-use ZF\Configuration\ModuleUtils;
 
 class ModulePathSpecFactoryTest extends TestCase
 {
@@ -25,6 +27,8 @@ class ModulePathSpecFactoryTest extends TestCase
         $factory = new ModulePathSpecFactory();
 
         $this->container->has(ModuleUtils::class)->willReturn(false);
+
+        $this->container->has(\ZF\Configuration\ModuleUtils::class)->willReturn(false);
 
         $this->expectException(ServiceNotCreatedException::class);
         $this->expectExceptionMessage(ModuleUtils::class . ' service is not present');
@@ -40,7 +44,7 @@ class ModulePathSpecFactoryTest extends TestCase
         $this->container->get(ModuleUtils::class)->willReturn($moduleUtils);
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn([
-            'zf-apigility-admin' => [
+            'api-tools-admin' => [
                 'module_path' => __FILE__,
             ],
         ]);
@@ -59,7 +63,7 @@ class ModulePathSpecFactoryTest extends TestCase
         $this->container->get(ModuleUtils::class)->willReturn($moduleUtils);
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn([
-            'zf-apigility-admin' => [
+            'api-tools-admin' => [
                 'module_path' => realpath(__DIR__),
                 'path_spec' => 'psr-4',
             ],
