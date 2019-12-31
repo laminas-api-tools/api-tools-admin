@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use Zend\Filter\StaticFilter;
-use ZF\Apigility\Admin\Utility;
+use Laminas\ApiTools\Admin\Utility;
+use Laminas\Filter\StaticFilter;
 use ReflectionClass;
 
 class DbConnectedRestServiceModel
@@ -28,7 +30,7 @@ class DbConnectedRestServiceModel
     /**
      * Determine if the given entity is DB-connected, and, if so, recast to a DbConnectedRestServiceEntity
      *
-     * @param  \Zend\EventManager\Event $e
+     * @param  \Laminas\EventManager\Event $e
      * @return null|DbConnectedRestServiceEntity
      */
     public static function onFetch($e)
@@ -40,14 +42,14 @@ class DbConnectedRestServiceModel
         }
 
         $config = $e->getParam('config', []);
-        if (!isset($config['zf-apigility'])
-            || !isset($config['zf-apigility']['db-connected'])
-            || !isset($config['zf-apigility']['db-connected'][$entity->resourceClass])
+        if (!isset($config['api-tools'])
+            || !isset($config['api-tools']['db-connected'])
+            || !isset($config['api-tools']['db-connected'][$entity->resourceClass])
         ) {
             // No DB-connected configuration for this service; nothing to do
             return;
         }
-        $config = $config['zf-apigility']['db-connected'][$entity->resourceClass];
+        $config = $config['api-tools']['db-connected'][$entity->resourceClass];
 
         if (!isset($config['table_service'])) {
             $config['table_service'] = sprintf('%s\\Table', $entity->resourceClass);
@@ -142,7 +144,7 @@ class DbConnectedRestServiceModel
 
         // Determine whether or not the resource class should be returned with the entity
         $config = $this->restModel->configResource->fetch(true);
-        $config = $config['zf-apigility']['db-connected'][$entity->resourceClass];
+        $config = $config['api-tools']['db-connected'][$entity->resourceClass];
         if (! isset($config['resource_class'])) {
             $entity->exchangeArray(['resource_class' => null]);
         }
@@ -180,7 +182,7 @@ class DbConnectedRestServiceModel
             'table_service' => sprintf('%s\\Table', $entity->resourceClass),
         ]);
 
-        $config = ['zf-apigility' => ['db-connected' => [
+        $config = ['api-tools' => ['db-connected' => [
             $entity->resourceClass => [
                 'adapter_name'            => $entity->adapterName,
                 'table_name'              => $entity->tableName,
@@ -199,7 +201,7 @@ class DbConnectedRestServiceModel
      */
     public function updateDbConnectedConfig(DbConnectedRestServiceEntity $entity)
     {
-        $properties = ['zf-apigility' => ['db-connected' => [
+        $properties = ['api-tools' => ['db-connected' => [
             $entity->resourceClass => [
                 'adapter_name'           => $entity->adapterName,
                 'table_name'             => $entity->tableName,
@@ -209,7 +211,7 @@ class DbConnectedRestServiceModel
             ],
         ]]];
         $this->restModel->configResource->patch($properties, true);
-        return $properties['zf-apigility']['db-connected'][$entity->resourceClass];
+        return $properties['api-tools']['db-connected'][$entity->resourceClass];
     }
 
     /**
@@ -220,7 +222,7 @@ class DbConnectedRestServiceModel
      */
     public function updateHalConfig(DbConnectedRestServiceEntity $entity)
     {
-        $baseKey     = 'zf-hal.metadata_map';
+        $baseKey     = 'api-tools-hal.metadata_map';
         $entityClass = $entity->entityClass;
         if (isset($entity->hydratorName) && $entity->hydratorName) {
             $key = sprintf('%s.%s.hydrator', $baseKey, $entityClass);
@@ -235,7 +237,7 @@ class DbConnectedRestServiceModel
      */
     public function deleteDbConnectedConfig(DbConnectedRestServiceEntity $entity)
     {
-        $key = ['zf-apigility', 'db-connected', $entity->resourceClass];
+        $key = ['api-tools', 'db-connected', $entity->resourceClass];
         $this->restModel->configResource->deleteKey($key);
     }
 }

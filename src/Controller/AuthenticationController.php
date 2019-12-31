@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Controller;
+namespace Laminas\ApiTools\Admin\Controller;
 
-use ZF\Apigility\Admin\Model\AuthenticationModel;
-use ZF\Apigility\Admin\Model\AuthenticationEntity;
-use ZF\ApiProblem\ApiProblem;
-use ZF\ApiProblem\ApiProblemResponse;
-use ZF\ContentNegotiation\ViewModel;
-use ZF\Hal\Entity;
-use ZF\Hal\Collection;
-use ZF\Hal\Link\Link;
-use Zend\Http\Request;
-use ZF\Apigility\Admin\Exception;
+use Laminas\ApiTools\Admin\Exception;
+use Laminas\ApiTools\Admin\Model\AuthenticationEntity;
+use Laminas\ApiTools\Admin\Model\AuthenticationModel;
+use Laminas\ApiTools\ApiProblem\ApiProblem;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
+use Laminas\ApiTools\Hal\Collection;
+use Laminas\ApiTools\Hal\Entity;
+use Laminas\ApiTools\Hal\Link\Link;
+use Laminas\Http\Request;
 
 class AuthenticationController extends AbstractAuthenticationController
 {
@@ -135,7 +137,7 @@ class AuthenticationController extends AbstractAuthenticationController
 
     /**
      * Mapping action for v2
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      */
     public function mappingAction()
     {
@@ -158,7 +160,7 @@ class AuthenticationController extends AbstractAuthenticationController
 
     /**
      * Map the authentication adapter to a module
-     * Since Apigility 1.1
+     * Since Laminas API Tools 1.1
      *
      * @param  Request $request
      * @return ViewModel
@@ -194,7 +196,7 @@ class AuthenticationController extends AbstractAuthenticationController
      */
     protected function getRouteForEntity(AuthenticationEntity $entity)
     {
-        $baseRoute = 'zf-apigility/api/authentication';
+        $baseRoute = 'api-tools/api/authentication';
 
         if ($entity->isBasic()) {
             return $baseRoute . '/http-basic';
@@ -253,7 +255,7 @@ class AuthenticationController extends AbstractAuthenticationController
      * Create a new authentication adapter
      *
      * @param array $params
-     * @return ApiProblemResponse|\Zend\Http\Response
+     * @return ApiProblemResponse|\Laminas\Http\Response
      */
     private function createAuthenticationAdapter($params)
     {
@@ -270,7 +272,7 @@ class AuthenticationController extends AbstractAuthenticationController
         $response->getHeaders()->addHeaderLine(
             'Location',
             $this->url()->fromRoute(
-                'zf-apigility/api/authentication',
+                'api-tools/api/authentication',
                 [ 'authentication_adapter' => $entity['name'] ]
             )
         );
@@ -298,7 +300,7 @@ class AuthenticationController extends AbstractAuthenticationController
     /**
      * Remove an existing authentication adapter
      *
-     * @return ApiProblemResponse|\Zend\Http\Response
+     * @return ApiProblemResponse|\Laminas\Http\Response
      */
     private function removeAuthenticationAdapter($adapter)
     {
@@ -346,7 +348,7 @@ class AuthenticationController extends AbstractAuthenticationController
      *
      * @param string $module
      * @param string|int $version
-     * @return ApiProblemResponse|\Zend\Http\Response
+     * @return ApiProblemResponse|\Laminas\Http\Response
      */
     private function removeAuthenticationMap($module, $version)
     {
@@ -376,7 +378,7 @@ class AuthenticationController extends AbstractAuthenticationController
             $halEntity->getLinks()->add(Link::factory([
                 'rel' => 'self',
                 'route' => [
-                    'name'   => 'zf-apigility/api/authentication',
+                    'name'   => 'api-tools/api/authentication',
                     'params' => ['authentication_adapter' => $entity['name']]
                 ]
             ]));
@@ -397,7 +399,7 @@ class AuthenticationController extends AbstractAuthenticationController
         $halEntity->getLinks()->add(Link::factory([
             'rel' => 'self',
             'route' => [
-                'name'   => 'zf-apigility/api/authentication',
+                'name'   => 'api-tools/api/authentication',
                 'params' => ['authentication_adapter' => $entity['name']]
             ]
         ]));

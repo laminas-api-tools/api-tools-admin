@@ -1,24 +1,25 @@
 {
-    "name": "zfcampus/zf-apigility-admin",
-    "description": "Apigility Admin module",
-    "type": "library",
+    "name": "laminas-api-tools/api-tools-admin",
+    "description": "Laminas API Tools Admin module",
     "license": "BSD-3-Clause",
     "keywords": [
+        "laminas",
+        "api-tools",
         "api",
-        "apigility",
-        "framework",
-        "zf2"
+        "framework"
     ],
-    "homepage": "http://apigility.org/",
+    "homepage": "https://api-tools.getlaminas.org",
     "support": {
-        "email": "apigility-users@zend.com",
-        "irc": "irc://irc.freenode.net/apigility",
-        "source": "https://github.com/zfcampus/zf-apigility-admin",
-        "issues": "https://github.com/zfcampus/zf-apigility-admin/issues"
+        "docs": "https://api-tools.getlaminas.org/documentation",
+        "issues": "https://github.com/laminas-api-tools/api-tools-admin/issues",
+        "source": "https://github.com/laminas-api-tools/api-tools-admin",
+        "rss": "https://github.com/laminas-api-tools/api-tools-admin/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
     },
-    "repositories": [
-        { "type": "composer", "url": "https://packages.zendframework.com/" }
-    ],
+    "config": {
+        "sort-packages": true
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.3-dev",
@@ -27,41 +28,42 @@
     },
     "require": {
         "php": ">=5.5",
-        "zendframework/zend-code": "~2.3",
-        "zendframework/zend-eventmanager": "~2.3",
-        "zendframework/zend-filter": "~2.3",
-        "zendframework/zend-http": "~2.3",
-        "zendframework/zend-inputfilter": "^2.4.6",
-        "zendframework/zend-modulemanager": "~2.3",
-        "zendframework/zend-mvc": "~2.3",
-        "zendframework/zend-servicemanager": "~2.3",
-        "zendframework/zend-stdlib": ">=2.3.0,<2.7.0",
-        "zendframework/zend-validator": "~2.3",
-        "zendframework/zend-view": ">2.3",
-        "zfcampus/zf-apigility": "~1.0",
-        "zfcampus/zf-apigility-admin-ui": "^1.2.1",
-        "zfcampus/zf-apigility-provider": "~1.0",
-        "zfcampus/zf-api-problem": "~1.0",
-        "zfcampus/zf-configuration": "~1.0",
-        "zfcampus/zf-content-negotiation": "~1.0",
-        "zfcampus/zf-content-validation": "~1.1",
-        "zfcampus/zf-hal": "~1.1",
-        "zfcampus/zf-oauth2": "~1.1",
-        "zfcampus/zf-mvc-auth": "~1.1",
-        "zfcampus/zf-rest": "~1.1",
-        "zfcampus/zf-rpc": "~1.0",
-        "zfcampus/zf-versioning": "~1.0"
+        "laminas-api-tools/api-tools": "~1.0",
+        "laminas-api-tools/api-tools-admin-ui": "^1.2.1",
+        "laminas-api-tools/api-tools-api-problem": "~1.0",
+        "laminas-api-tools/api-tools-configuration": "~1.0",
+        "laminas-api-tools/api-tools-content-negotiation": "~1.0",
+        "laminas-api-tools/api-tools-content-validation": "~1.1",
+        "laminas-api-tools/api-tools-hal": "~1.1",
+        "laminas-api-tools/api-tools-mvc-auth": "~1.1",
+        "laminas-api-tools/api-tools-oauth2": "~1.1",
+        "laminas-api-tools/api-tools-provider": "~1.0",
+        "laminas-api-tools/api-tools-rest": "~1.1",
+        "laminas-api-tools/api-tools-rpc": "~1.0",
+        "laminas-api-tools/api-tools-versioning": "~1.0",
+        "laminas/laminas-code": "~2.3",
+        "laminas/laminas-eventmanager": "~2.3",
+        "laminas/laminas-filter": "~2.3",
+        "laminas/laminas-http": "~2.3",
+        "laminas/laminas-inputfilter": "^2.4.6",
+        "laminas/laminas-modulemanager": "~2.3",
+        "laminas/laminas-mvc": "~2.3",
+        "laminas/laminas-servicemanager": "~2.3",
+        "laminas/laminas-stdlib": ">=2.3.0,<2.7.0",
+        "laminas/laminas-validator": "~2.3",
+        "laminas/laminas-view": ">2.3",
+        "laminas/laminas-zendframework-bridge": "^1.0"
     },
     "require-dev": {
+        "laminas/laminas-config": "~2.3",
+        "laminas/laminas-loader": "~2.3",
         "phpunit/phpunit": "~4.7",
         "squizlabs/php_codesniffer": "^2.3.1",
-        "zendframework/zend-config": "~2.3",
-        "zendframework/zend-loader": "~2.3",
         "zfcampus/zf-deploy": "~1.0"
     },
     "autoload": {
         "psr-4": {
-            "ZF\\Apigility\\Admin\\": "src/"
+            "Laminas\\ApiTools\\Admin\\": "src/"
         },
         "classmap": [
             "Module.php"
@@ -77,11 +79,14 @@
             "AuthConfWithConfig\\": "test/Model/TestAsset/module/AuthConfWithConfig/",
             "BarConf\\": "test/Model/TestAsset/module/BarConf/src/BarConf/",
             "FooConf\\": "test/Model/TestAsset/module/FooConf/src/FooConf/",
-            "BazConf\\": "test/Model/TestAsset/module/BazConf",
+            "BazConf\\": "test/Model/TestAsset/module/BazConf/",
             "InputFilter\\": "test/Model/TestAsset/module/InputFilter/",
             "Version\\": "test/Model/TestAsset/module/Version/src/Version/",
-            "ZFTest\\Apigility\\Admin\\": "test/",
-            "ZFTest\\Configuration\\": "vendor/zfcampus/zf-configuration/test/"
+            "LaminasTest\\ApiTools\\Admin\\": "test/",
+            "LaminasTest\\ApiTools\\Configuration\\": "vendor/laminas-api-tools/api-tools-configuration/test/"
         }
+    },
+    "replace": {
+        "zfcampus/zf-apigility-admin": "self.version"
     }
 }
