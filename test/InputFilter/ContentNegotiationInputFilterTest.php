@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\InputFilter;
+namespace LaminasTest\ApiTools\Admin\InputFilter;
 
+use Laminas\ApiTools\Admin\InputFilter\ContentNegotiationInputFilter;
 use PHPUnit_Framework_TestCase as TestCase;
-use ZF\Apigility\Admin\InputFilter\ContentNegotiationInputFilter;
 
 class ContentNegotiationInputFilterTest extends TestCase
 {
@@ -16,7 +18,7 @@ class ContentNegotiationInputFilterTest extends TestCase
         return array(
             'valid' => array(
                 array(
-                    'Zend\View\Model\ViewModel' => array('text/html', 'application/xhtml+xml'),
+                    'Laminas\View\Model\ViewModel' => array('text/html', 'application/xhtml+xml'),
                 ),
             ),
         );
@@ -27,27 +29,27 @@ class ContentNegotiationInputFilterTest extends TestCase
         return array(
             'class-does-not-exist' => array(
                 array(
-                    'Zend\View\Model\ViewMode' => array('text/html', 'application/xhtml+xml'),
+                    'Laminas\View\Model\ViewMode' => array('text/html', 'application/xhtml+xml'),
                 ),
-                array('Zend\View\Model\ViewMode' => array('Class name (Zend\View\Model\ViewMode) does not exist')),
+                array('Laminas\View\Model\ViewMode' => array('Class name (Laminas\View\Model\ViewMode) does not exist')),
             ),
             'class-is-not-view-model' => array(
                 array(
                     __CLASS__ => array('text/html', 'application/xhtml+xml'),
                 ),
-                array(__CLASS__ => array('Class name (' . __CLASS__ . ') is invalid; must be a valid Zend\View\Model\ModelInterface class')),
+                array(__CLASS__ => array('Class name (' . __CLASS__ . ') is invalid; must be a valid Laminas\View\Model\ModelInterface class')),
             ),
             'media-types-not-array' => array(
                 array(
-                    'Zend\View\Model\ViewModel' => 'foo',
+                    'Laminas\View\Model\ViewModel' => 'foo',
                 ),
-                array('Zend\View\Model\ViewModel' => array('Values for the media-types must be provided as an indexed array')),
+                array('Laminas\View\Model\ViewModel' => array('Values for the media-types must be provided as an indexed array')),
             ),
             'invalid-media-type' => array(
                 array(
-                    'Zend\View\Model\ViewModel' => array('texthtml', 'application/xhtml+xml'),
+                    'Laminas\View\Model\ViewModel' => array('texthtml', 'application/xhtml+xml'),
                 ),
-                array('Zend\View\Model\ViewModel' => array('Invalid media type (texthtml) provided')),
+                array('Laminas\View\Model\ViewModel' => array('Invalid media type (texthtml) provided')),
             ),
         );
     }

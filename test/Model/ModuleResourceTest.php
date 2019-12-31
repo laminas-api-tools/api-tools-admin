@@ -1,22 +1,24 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\Admin\Model\ModuleResource;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionClass;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\Apigility\Admin\Model\ModuleResource;
 
 class ModuleResourceTest extends TestCase
 {
     public function setUp()
     {
         $modules = array();
-        $this->moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -94,7 +96,7 @@ class ModuleResourceTest extends TestCase
         $module = $this->resource->create(array(
             'name' => $moduleName,
         ));
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\ModuleEntity', $module);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ModuleEntity', $module);
         $this->assertEquals(array(1), $module->getVersions());
     }
 
@@ -105,7 +107,7 @@ class ModuleResourceTest extends TestCase
             'name'    => $moduleName,
             'version' => '2'
         ));
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\ModuleEntity', $module);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ModuleEntity', $module);
         $this->assertEquals(array(2), $module->getVersions());
     }
 
@@ -120,7 +122,7 @@ class ModuleResourceTest extends TestCase
         $modules = array(
             $moduleName => new $moduleClass,
         );
-        $moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
             ->disableOriginalConstructor()
             ->getMock();
         $moduleManager->expects($this->any())
@@ -130,7 +132,7 @@ class ModuleResourceTest extends TestCase
         $model    = new ModuleModel($moduleManager, array(), array());
         $resource = new ModuleResource($model);
         $module   = $resource->fetch($moduleName);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\ModuleEntity', $module);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ModuleEntity', $module);
         $this->assertEquals(array(1), $module->getVersions());
     }
 
@@ -150,7 +152,7 @@ class ModuleResourceTest extends TestCase
         $modules = array(
             $moduleName => new $moduleClass,
         );
-        $moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
             ->disableOriginalConstructor()
             ->getMock();
         $moduleManager->expects($this->any())
@@ -160,7 +162,7 @@ class ModuleResourceTest extends TestCase
         $model    = new ModuleModel($moduleManager, array(), array());
         $resource = new ModuleResource($model);
         $module   = $resource->fetch($moduleName);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\ModuleEntity', $module);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ModuleEntity', $module);
         $this->assertEquals(array(1, 2, 3), $module->getVersions());
     }
 }

@@ -1,20 +1,22 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\ApiProblem\ApiProblem;
+use Laminas\ApiTools\Hal\Collection as HalCollection;
+use Laminas\ApiTools\Hal\Entity as HalEntity;
+use Laminas\ApiTools\Hal\Link\Link;
+use Laminas\ApiTools\Rest\AbstractResourceListener;
+use Laminas\ApiTools\Rest\Exception\CreationException;
+use Laminas\ApiTools\Rest\Exception\PatchException;
+use Laminas\Mvc\Controller\ControllerManager;
 use RuntimeException;
-use Zend\Mvc\Controller\ControllerManager;
-use ZF\ApiProblem\ApiProblem;
-use ZF\Hal\Collection as HalCollection;
-use ZF\Hal\Link\Link;
-use ZF\Hal\Entity as HalEntity;
-use ZF\Rest\AbstractResourceListener;
-use ZF\Rest\Exception\CreationException;
-use ZF\Rest\Exception\PatchException;
 
 class RpcServiceResource extends AbstractResourceListener
 {
@@ -294,7 +296,7 @@ class RpcServiceResource extends AbstractResourceListener
             $links->add(Link::factory(array(
                 'rel' => 'self',
                 'route' => array(
-                    'name' => 'zf-apigility/api/module/rpc-service/input-filter',
+                    'name' => 'api-tools/api/module/rpc-service/input-filter',
                     'params' => array(
                         'name' => $this->moduleName,
                         'controller_service_name' => $parentName,
@@ -307,7 +309,7 @@ class RpcServiceResource extends AbstractResourceListener
 
         $collection = new HalCollection($collection);
         $collection->setCollectionName('input_filter');
-        $collection->setCollectionRoute('zf-apigility/module/rpc-service/input-filter');
+        $collection->setCollectionRoute('api-tools/module/rpc-service/input-filter');
         $collection->setCollectionRouteParams(array(
             'name' => $this->moduleName,
             'controller_service_name' => $service->controllerServiceName,
