@@ -1,26 +1,28 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\Apigility\Admin\Model;
+namespace LaminasTest\ApiTools\Admin\Model;
 
 use BarConf;
+use Laminas\ApiTools\Admin\Model\DbConnectedRestServiceModel;
+use Laminas\ApiTools\Admin\Model\ModuleEntity;
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Admin\Model\RestServiceEntity;
+use Laminas\ApiTools\Admin\Model\RestServiceModel;
+use Laminas\ApiTools\Admin\Model\RestServiceModelFactory;
+use Laminas\ApiTools\Admin\Model\RestServiceResource;
+use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\Config\Writer\PhpArray;
+use Laminas\EventManager\SharedEventManager;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionObject;
-use Zend\Config\Writer\PhpArray;
-use Zend\EventManager\SharedEventManager;
-use ZF\Apigility\Admin\Model\DbConnectedRestServiceModel;
-use ZF\Apigility\Admin\Model\ModuleEntity;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
-use ZF\Apigility\Admin\Model\RestServiceEntity;
-use ZF\Apigility\Admin\Model\RestServiceModel;
-use ZF\Apigility\Admin\Model\RestServiceModelFactory;
-use ZF\Apigility\Admin\Model\RestServiceResource;
-use ZF\Configuration\ResourceFactory;
-use ZF\Configuration\ModuleUtils;
 
 class RestServiceResourceTest extends TestCase
 {
@@ -65,7 +67,7 @@ class RestServiceResourceTest extends TestCase
 
         $this->moduleEntity = new ModuleEntity($this->module, [], [], false);
 
-        $this->moduleManager = $this->getMockBuilder('Zend\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -80,7 +82,7 @@ class RestServiceResourceTest extends TestCase
 
         $this->restServiceModel = new RestServiceModel($this->moduleEntity, $this->modules, $config);
 
-        $this->restServiceModelFactory = $this->getMockBuilder('ZF\Apigility\Admin\Model\RestServiceModelFactory')
+        $this->restServiceModelFactory = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\RestServiceModelFactory')
             ->disableOriginalConstructor()
             ->getMock();
         $this->restServiceModelFactory
@@ -90,10 +92,10 @@ class RestServiceResourceTest extends TestCase
             ->will($this->returnValue($this->restServiceModel));
 
 
-        $this->filter        = $this->getMockBuilder('ZF\Apigility\Admin\Model\InputFilterModel')
+        $this->filter        = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\InputFilterModel')
                                     ->disableOriginalConstructor()
                                     ->getMock();
-        $this->docs          = $this->getMockBuilder('ZF\Apigility\Admin\Model\DocumentationModel')
+        $this->docs          = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\DocumentationModel')
                                     ->disableOriginalConstructor()
                                     ->getMock();
 
@@ -116,7 +118,7 @@ class RestServiceResourceTest extends TestCase
     public function testCreateReturnsRestServiceEntityWithControllerServiceNamePopulated()
     {
         $entity = $this->resource->create(['service_name' => 'test']);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\RestServiceEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $entity);
         $controllerServiceName = $entity->controllerServiceName;
         $this->assertNotEmpty($controllerServiceName);
         $this->assertContains('\\Test\\', $controllerServiceName);
@@ -142,9 +144,9 @@ class RestServiceResourceTest extends TestCase
         $resource                = new RestServiceResource($restServiceModelFactory, $this->filter, $this->docs);
 
         $sharedEvents->attach(
-            'ZF\Apigility\Admin\Model\RestServiceModel',
+            'Laminas\ApiTools\Admin\Model\RestServiceModel',
             'fetch',
-            'ZF\Apigility\Admin\Model\DbConnectedRestServiceModel::onFetch'
+            'Laminas\ApiTools\Admin\Model\DbConnectedRestServiceModel::onFetch'
         );
 
         $r = new ReflectionObject($resource);
@@ -156,25 +158,25 @@ class RestServiceResourceTest extends TestCase
             'adapter_name' => 'Db\Test',
             'table_name'   => 'test',
         ]);
-        $this->assertInstanceOf('ZF\Apigility\Admin\Model\DbConnectedRestServiceEntity', $entity);
+        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity', $entity);
 
         $id = $entity->controllerServiceName;
         $updateData = [
             'entity_identifier_name' => 'test_id',
-            'hydrator_name' => 'Zend\Hydrator\ObjectProperty',
+            'hydrator_name' => 'Laminas\Hydrator\ObjectProperty',
         ];
         $resource->patch($id, $updateData);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
         $this->assertInternalType('array', $config);
-        $this->assertArrayHasKey('BarConf\\V1\\Rest\\Test\\TestEntity', $config['zf-hal']['metadata_map']);
-        $this->assertArrayHasKey('BarConf\\V1\\Rest\\Test\\TestResource', $config['zf-apigility']['db-connected']);
-        $halConfig = $config['zf-hal']['metadata_map']['BarConf\\V1\\Rest\\Test\\TestEntity'];
-        $agConfig  = $config['zf-apigility']['db-connected']['BarConf\\V1\\Rest\\Test\\TestResource'];
+        $this->assertArrayHasKey('BarConf\\V1\\Rest\\Test\\TestEntity', $config['api-tools-hal']['metadata_map']);
+        $this->assertArrayHasKey('BarConf\\V1\\Rest\\Test\\TestResource', $config['api-tools']['db-connected']);
+        $halConfig = $config['api-tools-hal']['metadata_map']['BarConf\\V1\\Rest\\Test\\TestEntity'];
+        $agConfig  = $config['api-tools']['db-connected']['BarConf\\V1\\Rest\\Test\\TestResource'];
 
         $this->assertEquals('test_id', $halConfig['entity_identifier_name']);
         $this->assertEquals('test_id', $agConfig['entity_identifier_name']);
-        $this->assertEquals('Zend\\Hydrator\\ObjectProperty', $halConfig['hydrator']);
-        $this->assertEquals('Zend\\Hydrator\\ObjectProperty', $agConfig['hydrator_name']);
+        $this->assertEquals('Laminas\\Hydrator\\ObjectProperty', $halConfig['hydrator']);
+        $this->assertEquals('Laminas\\Hydrator\\ObjectProperty', $agConfig['hydrator_name']);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 return array(
-    'zf-mvc-auth' => array(
+    'api-tools-mvc-auth' => array(
         'authorization' => array(
             'AuthConfWithConfig\V1\Rest\Foo\Controller' => array(
                 'entity' => array(
@@ -58,11 +58,11 @@ return array(
             ),
         ),
     ),
-    'zf-rest' => array(
+    'api-tools-rest' => array(
         'AuthConfWithConfig\V1\Rest\Foo\Controller' => array(),
         'AuthConfWithConfig\V1\Rest\Bar\Controller' => array(),
     ),
-    'zf-rpc' => array(
+    'api-tools-rpc' => array(
         'AuthConfWithConfig\V1\Rpc\Baz\Controller' => array(
             'route_name' => 'auth-conf.rpc.baz',
         ),

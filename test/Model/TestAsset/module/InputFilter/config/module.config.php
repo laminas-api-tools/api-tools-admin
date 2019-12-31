@@ -16,12 +16,12 @@ return [
             ],
         ],
     ],
-    'zf-content-validation' => [
+    'api-tools-content-validation' => [
         'InputFilter\V1\Rest\Foo\Controller' => [
             'input_filter' => 'InputFilter\V1\Rest\Foo\Validator',
         ],
     ],
-    'zf-rest' => [
+    'api-tools-rest' => [
         'InputFilter\V1\Rest\Foo\Controller' => [],
         'InputFilter\V1\Rest\Bar\Controller' => [],
     ],

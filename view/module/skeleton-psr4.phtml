@@ -1,8 +1,8 @@
 namespace <?php echo $module ?>;
 
-use ZF\Apigility\Provider\ApigilityProviderInterface;
+use Laminas\ApiTools\Provider\ApiToolsProviderInterface;
 
-class Module implements ApigilityProviderInterface
+class Module implements ApiToolsProviderInterface
 {
     public function getConfig()
     {
@@ -12,7 +12,7 @@ class Module implements ApigilityProviderInterface
     public function getAutoloaderConfig()
     {
         return array(
-            'ZF\Apigility\Autoloader' => array(
+            'Laminas\ApiTools\Autoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src',
                 ),

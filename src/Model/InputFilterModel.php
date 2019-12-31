@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
+ * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\Apigility\Admin\Model;
+namespace Laminas\ApiTools\Admin\Model;
 
-use ZF\Configuration\ResourceFactory as ConfigResourceFactory;
-use ZF\Configuration\Exception\InvalidArgumentException as InvalidArgumentConfiguration;
+use Laminas\ApiTools\Configuration\Exception\InvalidArgumentException as InvalidArgumentConfiguration;
+use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
 
 class InputFilterModel
 {
@@ -18,7 +20,7 @@ class InputFilterModel
 
     /**
      * $validatorPlugins should typically be an instance of
-     * Zend\Validator\ValidatorPluginManager.
+     * Laminas\Validator\ValidatorPluginManager.
      *
      * @param ServiceManager $validatorPlugins
      */
@@ -81,11 +83,11 @@ class InputFilterModel
         $collectionType = $this->getCollectionType($controller);
         $entityType     = $this->getEntityType($controller);
 
-        if (!isset($config['zf-content-validation'][$controller]['input_filter'])) {
+        if (!isset($config['api-tools-content-validation'][$controller]['input_filter'])) {
             return new $collectionType();
         }
 
-        $validator = $config['zf-content-validation'][$controller]['input_filter'];
+        $validator = $config['api-tools-content-validation'][$controller]['input_filter'];
         if (! isset($config['input_filter_specs'])
             || ! is_array($config['input_filter_specs'])
             || ! array_key_exists($validator, $config['input_filter_specs'])
@@ -130,15 +132,15 @@ class InputFilterModel
         $configModule = $this->configFactory->factory($module);
         $config       = $configModule->fetch(true);
 
-        if (!isset($config['zf-content-validation'][$controller])) {
+        if (!isset($config['api-tools-content-validation'][$controller])) {
             $validatorName = $validatorName ?: $this->generateValidatorName($controller);
             $config = $configModule->patchKey(
-                ['zf-content-validation', $controller, 'input_filter'],
+                ['api-tools-content-validation', $controller, 'input_filter'],
                 $validatorName
             );
         }
 
-        $validator = $config['zf-content-validation'][$controller]['input_filter'];
+        $validator = $config['api-tools-content-validation'][$controller]['input_filter'];
 
         if (!isset($config['input_filter_specs'])) {
             $config['input_filter_specs'] = [];
@@ -177,7 +179,7 @@ class InputFilterModel
 
         $configModule = $this->configFactory->factory($module);
         $config       = $configModule->fetch(true);
-        $validator    = $config['zf-content-validation'][$controller]['input_filter'];
+        $validator    = $config['api-tools-content-validation'][$controller]['input_filter'];
 
         if (!isset($config['input_filter_specs'][$validator])) {
             return false;
@@ -188,18 +190,18 @@ class InputFilterModel
         }
 
         unset($config['input_filter_specs'][$validator]);
-        unset($config['zf-content-validation'][$controller]['input_filter']);
+        unset($config['api-tools-content-validation'][$controller]['input_filter']);
 
         if (empty($config['input_filter_specs'])) {
             unset($config['input_filter_specs']);
         }
 
-        if (empty($config['zf-content-validation'][$controller])) {
-            unset($config['zf-content-validation'][$controller]);
+        if (empty($config['api-tools-content-validation'][$controller])) {
+            unset($config['api-tools-content-validation'][$controller]);
         }
 
-        if (empty($config['zf-content-validation'])) {
-            unset($config['zf-content-validation']);
+        if (empty($config['api-tools-content-validation'])) {
+            unset($config['api-tools-content-validation']);
         }
 
         return ($configModule->patch($config) != false);
@@ -252,14 +254,14 @@ class InputFilterModel
 
         $config = $configModule->fetch(true);
 
-        if (isset($config['zf-rest'])
-            && array_key_exists($controller, $config['zf-rest'])
+        if (isset($config['api-tools-rest'])
+            && array_key_exists($controller, $config['api-tools-rest'])
         ) {
             return true;
         }
 
-        if (isset($config['zf-rpc'])
-            && array_key_exists($controller, $config['zf-rpc'])
+        if (isset($config['api-tools-rpc'])
+            && array_key_exists($controller, $config['api-tools-rpc'])
         ) {
             return true;
         }
