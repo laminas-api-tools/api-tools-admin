@@ -1,7 +1,7 @@
 Laminas API Tools Admin
 ===============
 
-[![Build Status](https://travis-ci.org/laminas-api-tools/api-tools-admin.png)](https://travis-ci.org/laminas-api-tools/api-tools-admin)
+[![Build Status](https://travis-ci.com/laminas-api-tools/api-tools-admin.png)](https://travis-ci.com/laminas-api-tools/api-tools-admin)
 
 Introduction
 ------------
