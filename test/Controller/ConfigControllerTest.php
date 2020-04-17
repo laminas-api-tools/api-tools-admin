@@ -61,7 +61,7 @@ class ConfigControllerTest extends TestCase
         $this->assertEquals(405, $apiProblem->status);
     }
 
-    public function testProcessGetRequestWithLaminasCampusMediaTypeReturnsFullConfiguration()
+    public function testProcessGetRequestWithLaminasApiToolsMediaTypeReturnsFullConfiguration()
     {
         $config = [
             'foo' => 'FOO',
@@ -76,8 +76,8 @@ class ConfigControllerTest extends TestCase
 
         $request = new Request();
         $request->setMethod('get');
-        $request->getHeaders()->addHeaderLine('Content-Type', 'application/vnd.laminascampus.v1.config+json');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.laminascampus.v1.config+json');
+        $request->getHeaders()->addHeaderLine('Content-Type', 'application/vnd.laminas-api-tools.v1.config+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.laminas-api-tools.v1.config+json');
         $controller->setRequest($request);
 
         $result = $controller->processAction();
@@ -114,7 +114,7 @@ class ConfigControllerTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function testProcessPatchRequestWithLaminasCampusMediaTypeReturnsUpdatedConfigurationKeys()
+    public function testProcessPatchRequestWithLaminasApiToolsMediaTypeReturnsUpdatedConfigurationKeys()
     {
         $config = [
             'foo' => 'FOO',
@@ -135,8 +135,8 @@ class ConfigControllerTest extends TestCase
             ],
             'baz' => 'UPDATED',
         ]));
-        $request->getHeaders()->addHeaderLine('Content-Type', 'application/vnd.laminascampus.v1.config+json');
-        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.laminascampus.v1.config+json');
+        $request->getHeaders()->addHeaderLine('Content-Type', 'application/vnd.laminas-api-tools.v1.config+json');
+        $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.laminas-api-tools.v1.config+json');
         $controller->setRequest($request);
 
         $result = $controller->processAction();
