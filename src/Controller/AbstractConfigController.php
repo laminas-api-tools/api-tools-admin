@@ -115,7 +115,9 @@ abstract class AbstractConfigController extends AbstractActionController
         switch ($accept) {
             case 'application/json':
             case 'application/vnd.laminas-api-tools.v1.config+json':
-            case 'application/vnd.zfcampus.v1.config+json': // @todo Remove Legacy Zend Framework accept header
+            // @todo Remove Legacy Zend Framework accept header
+            case 'application/vnd.laminascampus.v1.config+json':
+            case 'application/vnd.zfcampus.v1.config+json':
                 return $accept;
             default:
                 return 'application/json';
