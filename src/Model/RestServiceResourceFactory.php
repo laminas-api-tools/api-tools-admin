@@ -40,8 +40,12 @@ class RestServiceResourceFactory
         }
 
         return new RestServiceResource(
-            $container->has(RestServiceModelFactory::class) ? $container->get(RestServiceModelFactory::class) : $container->get(\ZF\Apigility\Admin\Model\RestServiceModelFactory::class),
-            $container->has(InputFilterModel::class) ? $container->get(InputFilterModel::class) : $container->get(\ZF\Apigility\Admin\Model\InputFilterModel::class),
+            $container->has(RestServiceModelFactory::class)
+                ? $container->get(RestServiceModelFactory::class)
+                : $container->get(\ZF\Apigility\Admin\Model\RestServiceModelFactory::class),
+            $container->has(InputFilterModel::class)
+                ? $container->get(InputFilterModel::class)
+                : $container->get(\ZF\Apigility\Admin\Model\InputFilterModel::class),
             $container->get(DocumentationModel::class)
         );
     }

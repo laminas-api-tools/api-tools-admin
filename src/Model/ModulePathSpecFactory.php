@@ -34,7 +34,9 @@ class ModulePathSpecFactory
         $config = $this->getConfig($container);
 
         return new ModulePathSpec(
-            $container->has(ModuleUtils::class) ? $container->get(ModuleUtils::class) : $container->get(\ZF\Configuration\ModuleUtils::class),
+            $container->has(ModuleUtils::class)
+                ? $container->get(ModuleUtils::class)
+                : $container->get(\ZF\Configuration\ModuleUtils::class),
             $this->getPathSpecFromConfig($config),
             $this->getPathFromConfig($config)
         );

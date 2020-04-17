@@ -45,7 +45,9 @@ class ValidatorsModelFactory implements FactoryInterface
 
         return new ValidatorsModel(
             $container->get('ValidatorManager'),
-            $container->has(ValidatorMetadataModel::class) ? $container->get(ValidatorMetadataModel::class) : $container->get(\ZF\Apigility\Admin\Model\ValidatorMetadataModel::class)
+            $container->has(ValidatorMetadataModel::class)
+                ? $container->get(ValidatorMetadataModel::class)
+                : $container->get(\ZF\Apigility\Admin\Model\ValidatorMetadataModel::class)
         );
     }
 

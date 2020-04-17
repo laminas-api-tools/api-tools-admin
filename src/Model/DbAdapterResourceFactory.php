@@ -29,6 +29,10 @@ class DbAdapterResourceFactory
                 DbAdapterModel::class
             ));
         }
-        return new DbAdapterResource($container->has(DbAdapterModel::class) ? $container->get(DbAdapterModel::class) : $container->get(\ZF\Apigility\Admin\Model\DbAdapterModel::class));
+        return new DbAdapterResource(
+            $container->has(DbAdapterModel::class)
+                ? $container->get(DbAdapterModel::class)
+                : $container->get(\ZF\Apigility\Admin\Model\DbAdapterModel::class)
+        );
     }
 }
