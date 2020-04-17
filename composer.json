@@ -86,6 +86,6 @@
         }
     },
     "replace": {
-        "zfcampus/zf-apigility-admin": "self.version"
+        "zfcampus/zf-apigility-admin": "~1.2.2.0"
     }
 }
