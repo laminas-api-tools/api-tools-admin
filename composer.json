@@ -99,6 +99,6 @@
         "test": "phpunit --colors=always"
     },
     "replace": {
-        "zfcampus/zf-apigility-admin": "self.version"
+        "zfcampus/zf-apigility-admin": "~1.5.0.0"
     }
 }

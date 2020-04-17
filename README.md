@@ -194,19 +194,19 @@ overrides of individual values in it. All overrides are written to a single
 file, `config/autoload/development.php`; you can override that location in your
 configuration via the `api-tools-configuration.config-file` key.
 
-- `Accept`: `application/json`, `application/vnd.laminascampus.v1.config+json`
+- `Accept`: `application/json`, `application/vnd.laminas-api-tools.v1.config+json`
 
   `application/json` will deliver representations as a flat array of key/value pairs,
   with the keys being dot-separated values, just as you would find in INI.
 
-  `application/vnd.laminascampus.v1.config+json` will deliver the configuration as a tree.
+  `application/vnd.laminas-api-tools.v1.config+json` will deliver the configuration as a tree.
 
-- `Content-Type`: `application/json`, `application/vnd.laminascampus.v1.config+json`
+- `Content-Type`: `application/json`, `application/vnd.laminas-api-tools.v1.config+json`
 
   `application/json` indicates you are sending key/value pairs, with keys being dot-separated
   values, as you would find in INI files.
 
-  `application/vnd.laminascampus.v1.config+json` indicates you are sending a nested array/object of
+  `application/vnd.laminas-api-tools.v1.config+json` indicates you are sending a nested array/object of
   configuration.
 
 - Methods: `GET`, `PATCH`
