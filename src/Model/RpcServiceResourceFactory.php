@@ -46,8 +46,12 @@ class RpcServiceResourceFactory
         }
 
         return new RpcServiceResource(
-            $container->has(RpcServiceModelFactory::class) ? $container->get(RpcServiceModelFactory::class) : $container->get(\ZF\Apigility\Admin\Model\RpcServiceModelFactory::class),
-            $container->has(InputFilterModel::class) ? $container->get(InputFilterModel::class) : $container->get(\ZF\Apigility\Admin\Model\InputFilterModel::class),
+            $container->has(RpcServiceModelFactory::class)
+                ? $container->get(RpcServiceModelFactory::class)
+                : $container->get(\ZF\Apigility\Admin\Model\RpcServiceModelFactory::class),
+            $container->has(InputFilterModel::class)
+                ? $container->get(InputFilterModel::class)
+                : $container->get(\ZF\Apigility\Admin\Model\InputFilterModel::class),
             $container->get('ControllerManager'),
             $container->get(DocumentationModel::class)
         );

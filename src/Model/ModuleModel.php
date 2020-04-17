@@ -375,7 +375,10 @@ class ModuleModel
         }
 
         $config = $module->getConfig();
-        return isset($config['api-tools-versioning']['default_version']) ? $config['api-tools-versioning']['default_version'] : 1;
+
+        return isset($config['api-tools-versioning']['default_version'])
+            ? $config['api-tools-versioning']['default_version']
+            : 1;
     }
 
     /**
