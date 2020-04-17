@@ -23,6 +23,7 @@ return [
     'service_manager' => [
         // Legacy Zend Framework aliases
         'aliases' => [
+            // @codingStandardsIgnoreStart
             \ZF\Apigility\Admin\Listener\CryptFilterListener::class => Listener\CryptFilterListener::class,
             \ZF\Apigility\Admin\Listener\DisableHttpCacheListener::class => Listener\DisableHttpCacheListener::class,
             \ZF\Apigility\Admin\Listener\EnableHalRenderCollectionsListener::class => Listener\EnableHalRenderCollectionsListener::class,
@@ -53,6 +54,7 @@ return [
             \ZF\Apigility\Admin\Model\ValidatorMetadataModel::class => Model\ValidatorMetadataModel::class,
             \ZF\Apigility\Admin\Model\ValidatorsModel::class => Model\ValidatorsModel::class,
             \ZF\Apigility\Admin\Model\VersioningModelFactory::class => Model\VersioningModelFactory::class,
+            // @codingStandardsIgnoreEnd
         ],
         'factories' => [
             // @codingStandardsIgnoreStart
@@ -108,6 +110,7 @@ return [
             Controller\Versioning::class               => Controller\VersioningController::class,
 
             // Legacy Zend Framework aliases
+            // @codingStandardsIgnoreStart
             \ZF\Apigility\Admin\Controller\App::class => Controller\App::class,
             \ZF\Apigility\Admin\Controller\Authentication::class => Controller\Authentication::class,
             \ZF\Apigility\Admin\Controller\Authorization::class => Controller\Authorization::class,
@@ -144,6 +147,7 @@ return [
             \ZF\Apigility\Admin\Controller\Strategy::class => Controller\Strategy::class,
             \ZF\Apigility\Admin\Controller\Validators::class => Controller\Validators::class,
             \ZF\Apigility\Admin\Controller\VersioningController::class => Controller\VersioningController::class,
+            // @codingStandardsIgnoreEnd
         ],
         'factories' => [
             Controller\ApiToolsVersionController::class => InvokableFactory::class,
@@ -1570,6 +1574,7 @@ return [
             InputFilter\Version::class                   => InputFilter\VersionInputFilter::class,
 
             // Legacy Zend Framework aliases
+            // @codingStandardsIgnoreStart
             \ZF\Apigility\Admin\InputFilter\Authentication\BasicAuth::class => InputFilter\Authentication\BasicAuth::class,
             \ZF\Apigility\Admin\InputFilter\Authentication\DigestAuth::class => InputFilter\Authentication\DigestAuth::class,
             \ZF\Apigility\Admin\InputFilter\Authentication\OAuth2::class => InputFilter\Authentication\OAuth2::class,
@@ -1599,6 +1604,7 @@ return [
             \ZF\Apigility\Admin\InputFilter\RpcService\PostInputFilter::class => InputFilter\RpcService\PostInputFilter::class,
             \ZF\Apigility\Admin\InputFilter\VersionInputFilter::class => InputFilter\VersionInputFilter::class,
             \ZF\Apigility\Admin\InputFilter\InputFilter::class => InputFilter\InputFilter::class,
+            // @codingStandardsIgnoreEnd
         ],
         'factories' => [
             InputFilter\Authentication\BasicInputFilter::class     => InvokableFactory::class,

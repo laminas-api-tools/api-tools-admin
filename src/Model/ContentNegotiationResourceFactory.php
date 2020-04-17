@@ -31,7 +31,9 @@ class ContentNegotiationResourceFactory
         }
 
         return new ContentNegotiationResource(
-            $container->has(ContentNegotiationModel::class) ? $container->get(ContentNegotiationModel::class) : $container->get(\ZF\Apigility\Admin\Model\ContentNegotiationModel::class)
+            $container->has(ContentNegotiationModel::class)
+                ? $container->get(ContentNegotiationModel::class)
+                : $container->get(\ZF\Apigility\Admin\Model\ContentNegotiationModel::class)
         );
     }
 }

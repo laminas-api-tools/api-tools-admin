@@ -95,12 +95,11 @@ class VersioningModelTest extends TestCase
         // @codingStandardsIgnoreStart
         $this->assertEquals('Version\\V1\\Rest\Message\Controller', $config['router']['routes']['version.rest.message']['options']['defaults']['controller']);
         $this->assertEquals('Version\\V1\\Rest\Comment\Controller', $config['router']['routes']['version.rest.comment']['options']['defaults']['controller']);
-        // @codingStandardsIgnoreEnd
 
         $this->assertArrayHasKey('api-tools-rest', $config);
         $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\Controller', $config['api-tools-rest']);
         $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\Controller', $config['api-tools-rest'], var_export($config, 1));
-        // @codingStandardsIgnoreStart
+
         $this->assertEquals('Version\\V1\\Rest\\Message\\MessageResource', $config['api-tools-rest']['Version\\V1\\Rest\\Message\\Controller']['listener']);
         $this->assertEquals('Version\\V2\\Rest\\Message\\MessageResource', $config['api-tools-rest']['Version\\V2\\Rest\\Message\\Controller']['listener']);
         $this->assertEquals('Version\\V1\\Rest\\Message\\MessageEntity', $config['api-tools-rest']['Version\\V1\\Rest\\Message\\Controller']['entity_class']);
@@ -113,7 +112,6 @@ class VersioningModelTest extends TestCase
         $this->assertEquals('Version\\V2\\Rest\\Comment\\CommentEntity', $config['api-tools-rest']['Version\\V2\\Rest\\Comment\\Controller']['entity_class']);
         $this->assertEquals('Version\\V1\\Rest\\Comment\\CommentCollection', $config['api-tools-rest']['Version\\V1\\Rest\\Comment\\Controller']['collection_class']);
         $this->assertEquals('Version\\V2\\Rest\\Comment\\CommentCollection', $config['api-tools-rest']['Version\\V2\\Rest\\Comment\\Controller']['collection_class']);
-        // @codingStandardsIgnoreEnd
 
         $this->assertArrayHasKey('api-tools-hal', $config);
         $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\MessageEntity', $config['api-tools-hal']['metadata_map']);
@@ -124,6 +122,7 @@ class VersioningModelTest extends TestCase
         $this->assertArrayHasKey('Version\\V2\\Rest\\Comment\\CommentEntity', $config['api-tools-hal']['metadata_map']);
         $this->assertArrayHasKey('Version\\V1\\Rest\\Comment\\CommentCollection', $config['api-tools-hal']['metadata_map']);
         $this->assertArrayHasKey('Version\\V2\\Rest\\Comment\\CommentCollection', $config['api-tools-hal']['metadata_map']);
+        // @codingStandardsIgnoreEnd
 
         $this->assertArrayHasKey('api-tools', $config);
         $this->assertArrayHasKey(

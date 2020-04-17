@@ -36,7 +36,11 @@ class InputFilterModelFactory implements FactoryInterface
                 ConfigResourceFactory::class
             ));
         }
-        return new InputFilterModel($container->has(ConfigResourceFactory::class) ? $container->get(ConfigResourceFactory::class) : $container->get(\ZF\Configuration\ConfigResourceFactory::class));
+        return new InputFilterModel(
+            $container->has(ConfigResourceFactory::class)
+                ? $container->get(ConfigResourceFactory::class)
+                : $container->get(\ZF\Configuration\ConfigResourceFactory::class)
+        );
     }
 
     /**

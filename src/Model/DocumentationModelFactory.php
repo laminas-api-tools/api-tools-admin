@@ -38,7 +38,9 @@ class DocumentationModelFactory implements FactoryInterface
             ));
         }
         return new DocumentationModel(
-            $container->has(ConfigResourceFactory::class) ? $container->get(ConfigResourceFactory::class) : $container->get(\ZF\Configuration\ConfigResourceFactory::class),
+            $container->has(ConfigResourceFactory::class)
+                ? $container->get(ConfigResourceFactory::class)
+                : $container->get(\ZF\Configuration\ConfigResourceFactory::class),
             $container->get(ModuleUtils::class)
         );
     }

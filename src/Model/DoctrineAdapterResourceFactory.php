@@ -30,7 +30,9 @@ class DoctrineAdapterResourceFactory
             ));
         }
 
-        $model = $container->has(DoctrineAdapterModel::class) ? $container->get(DoctrineAdapterModel::class) : $container->get(\ZF\Apigility\Admin\Model\DoctrineAdapterModel::class);
+        $model = $container->has(DoctrineAdapterModel::class)
+            ? $container->get(DoctrineAdapterModel::class)
+            : $container->get(\ZF\Apigility\Admin\Model\DoctrineAdapterModel::class);
 
         $modules = $container->get('ModuleManager');
         $loadedModules = $modules->getLoadedModules(false);
