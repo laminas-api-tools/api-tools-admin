@@ -41,7 +41,7 @@ $modulesToAdd = [
     'Laminas\Validator',
 ];
 $devModulesToRemove = [
-    'LaminasTool',
+    'ZFTool',
 ];
 $devModulesToAdd = [];
 
@@ -137,14 +137,14 @@ function updateComposerJson($path)
     $composer = json_decode($composerJson, true);
 
     // Remove entries
-    if (isset($composer['require']['laminas/laminas'])) {
-        unset($composer['require']['laminas/laminas']);
+    if (isset($composer['require']['zendframework/zendframework'])) {
+        unset($composer['require']['zendframework/zendframework']);
     }
     if (isset($composer['require']['rwoverdijk/assetmanager'])) {
         unset($composer['require']['rwoverdijk/assetmanager']);
     }
-    if (isset($composer['require-dev']['laminas/laminastool'])) {
-        unset($composer['require-dev']['laminas/laminastool']);
+    if (isset($composer['require-dev']['zendframework/zftool'])) {
+        unset($composer['require-dev']['zendframework/zftool']);
     }
 
     // Add entries

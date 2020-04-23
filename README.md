@@ -134,7 +134,7 @@ update your application using the following steps:
 - Update your `config/development.config.php` and
   `config/development.config.php.dist` files:
   - Remove from the modules list:
-    - `LaminasTool`
+    - `ZFTool`
 - Remove `composer.lock`
 - Remove, recursively, the `vendor/` subdirectory
 - Execute `composer install`
