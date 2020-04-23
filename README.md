@@ -104,9 +104,9 @@ update your application using the following steps:
 
 - Update your `composer.json`:
   - Remove:
-    - `require.laminas/laminas`
+    - `require.zendframework/zendframework`
     - `require.rwoverdijk/assetmanager`
-    - `require-dev.laminas/laminastool`
+    - `require-dev.zendframework/zftool`
   - Update:
     - `require.laminas/laminas-development-mode` constraint becomes `^3.0`
     - `require-dev.laminas/laminas-developer-tools` becomes `^1.0`
