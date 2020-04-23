@@ -1,5 +1,7 @@
 !vendor/Test
+/clover.xml
 /composer.lock
+/coveralls-upload.json
 /phpunit.xml
 test/Model/TestAsset/module/AuthConf/config/module.config.php
 test/Model/TestAsset/module/AuthConfDefaults/config/module.config.php

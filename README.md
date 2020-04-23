@@ -1,6 +1,7 @@
 # Laminas API Tools Admin
 
 [![Build Status](https://travis-ci.com/laminas-api-tools/api-tools-admin.png)](https://travis-ci.com/laminas-api-tools/api-tools-admin)
+[![Coverage Status](https://coveralls.io/repos/github/laminas-api-tools/api-tools-admin/badge.svg?branch=master)](https://coveralls.io/github/laminas-api-tools/api-tools-admin?branch=master)
 
 ## Introduction
 
