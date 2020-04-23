@@ -105,9 +105,9 @@ update your application using the following steps:
 
 - Update your `composer.json`:
   - Remove:
-    - `require.laminas/laminas`
+    - `require.zendframework/zendframework`
     - `require.rwoverdijk/assetmanager`
-    - `require-dev.laminas/laminastool`
+    - `require-dev.zendframework/zftool`
   - Update:
     - `require.laminas/laminas-development-mode` constraint becomes `^3.0`
     - `require-dev.laminas/laminas-developer-tools` becomes `^1.0`
@@ -135,7 +135,7 @@ update your application using the following steps:
 - Update your `config/development.config.php` and
   `config/development.config.php.dist` files:
   - Remove from the modules list:
-    - `LaminasTool`
+    - `ZFTool`
 - Remove `composer.lock`
 - Remove, recursively, the `vendor/` subdirectory
 - Execute `composer install`
