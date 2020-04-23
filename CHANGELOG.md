@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.8.1 - TBD
+## 1.8.1 - 2020-04-23
 
 ### Added
 
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#54](https://github.com/laminas-api-tools/api-tools-admin/pull/54) ensures all documented and legacy content types for config API endpoints work.
 
 ## 1.8.0 - 2019-04-04
 
