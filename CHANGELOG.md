@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.8.2 - TBD
+## 1.8.2 - 2020-04-23
 
 ### Added
 
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#55](https://github.com/laminas-api-tools/api-tools-admin/pull/55) fixes the api-tools-upgrade-to-1.5 script to revert changes around ZFTool module usage.
 
 ## 1.8.1 - 2020-04-23
 
