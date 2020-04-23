@@ -1,7 +1,7 @@
 language: php
 
 services:
- - mongodb
+  - mongodb
  
 cache:
   directories:
@@ -10,6 +10,7 @@ cache:
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
+    - COVERAGE_DEPS="php-coveralls/php-coveralls"
 
 matrix:
   fast_finish: true
@@ -21,7 +22,6 @@ matrix:
     - php: 5.6
       env:
         - DEPS=latest
-        - ALTERNATE_DEPS="phpunit/phpunit laminas/laminas-code laminas/laminas-permissions-rbac laminas/laminas-hydrator laminas-api-tools/api-tools-oauth2"
         - ENABLE_EXT_MONGO=true
     - php: 7
       env:
@@ -30,8 +30,8 @@ matrix:
     - php: 7
       env:
         - DEPS=latest
-        - ALTERNATE_DEPS="phpunit/phpunit laminas/laminas-code laminas/laminas-permissions-rbac laminas/laminas-hydrator"
         - CS_CHECK=true
+        - TEST_COVERAGE=true
         - ENABLE_EXT_MONGODB=true
     - php: 7.1
       env:
@@ -40,34 +40,44 @@ matrix:
     - php: 7.1
       env:
         - DEPS=latest
-        - ALTERNATE_DEPS="laminas/laminas-hydrator"
         - ENABLE_EXT_MONGODB=true
     - php: 7.2
       env:
         - DEPS=lowest
         - ENABLE_EXT_MONGODB=true
     - php: 7.2
+      env:
+        - DEPS=latest
+        - ENABLE_EXT_MONGODB=true
+    - php: 7.3
+      env:
+        - DEPS=latest
+        - ENABLE_EXT_MONGODB=true
+    - php: 7.4
       env:
         - DEPS=latest
         - ENABLE_EXT_MONGODB=true
   
-notifications:
-  email: false
-
 before_install:
-  - echo "TRAVIS_PHP_VERSION is '$TRAVIS_PHP_VERSION'"
-  - if [[ $TEST_COVERAGE != 'true' && "$(php --version | grep xdebug -ci)" -ge 1 ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
+  - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
   - if [[ $ENABLE_EXT_MONGO == 'true' ]]; then echo "Enabling mongo extension"; echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini ; fi
   - if [[ $ENABLE_EXT_MONGODB == 'true' ]]; then echo "Enabling mongodb extension"; echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini ; fi
 
 install:
   - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
-  - if [[ $ALTERNATE_DEPS != '' ]]; then travis_retry composer update $COMPOSER_ARGS --with-dependencies $ALTERNATE_DEPS ; fi
+  - if [[ $LEGACY_DEPS != '' ]]; then travis_retry composer update $COMPOSER_ARGS --with-dependencies $LEGACY_DEPS ; fi
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
-  - if [[ $EXT_MONGODB == 'true' ]]; then composer require --dev $COMPOSER_ARGS alcaeus/mongo-php-adapter ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
+  - if [[ $ENABLE_EXT_MONGODB == 'true' ]]; then composer require --dev $COMPOSER_ARGS alcaeus/mongo-php-adapter ; fi
   - stty cols 120 && composer show
 
 script:
-  - composer test
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
+
+after_script:
+  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry php vendor/bin/php-coveralls -v ; fi
+
+notifications:
+  email: false

@@ -96,7 +96,8 @@
         ],
         "cs-check": "phpcs --colors",
         "cs-fix": "phpcbf --colors",
-        "test": "phpunit --colors=always"
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
     "replace": {
         "zfcampus/zf-apigility-admin": "^1.8.0"
