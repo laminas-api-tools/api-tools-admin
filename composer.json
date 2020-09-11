@@ -21,10 +21,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "1.8.x-dev",
-            "dev-develop": "1.9.x-dev"
-        },
         "laminas": {
             "module": "Laminas\\ApiTools\\Admin"
         }
