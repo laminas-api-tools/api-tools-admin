@@ -30,7 +30,7 @@
         "laminas-api-tools/api-tools": "^1.4",
         "laminas-api-tools/api-tools-admin-ui": "^1.3.9",
         "laminas-api-tools/api-tools-api-problem": "^1.3",
-        "laminas-api-tools/api-tools-configuration": "1.3.3",
+        "laminas-api-tools/api-tools-configuration": "^1.3.3",
         "laminas-api-tools/api-tools-content-negotiation": "^1.4",
         "laminas-api-tools/api-tools-content-validation": "^1.4",
         "laminas-api-tools/api-tools-hal": "^1.5",
