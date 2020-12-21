@@ -1740,6 +1740,7 @@ return [
         ],
         IsInt::class                                                    => [
             'locale' => 'string',
+            'strict' => 'bool',
         ],
         PhoneNumber::class                                              => [
             'country'        => 'string',
