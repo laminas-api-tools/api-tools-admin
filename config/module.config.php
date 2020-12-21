@@ -1544,6 +1544,7 @@ return [
         ],
         'Laminas\I18n\Validator\IsInt' => [
             'locale' => 'string',
+            'strict' => 'bool',
         ],
         'Laminas\I18n\Validator\PhoneNumber' => [
             'country' => 'string',
