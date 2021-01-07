@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.9.0 - TBD
+## 1.9.0 - 2021-01-07
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [1.9.0](https://github.com/laminas-api-tools/api-tools-admin/milestone/1)
 
-- Nothing.
 
-### Deprecated
 
-- Nothing.
+### 1.9.0
 
-### Removed
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-- Nothing.
+#### Enhancement
 
-### Fixed
-
-- Nothing.
+ - [63: Allow to install with laminas-code v4](https://github.com/laminas-api-tools/api-tools-admin/pull/63) thanks to @snapshotpl
 
 ## 1.8.2 - 2020-04-23
 
