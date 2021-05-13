@@ -15,7 +15,10 @@ class NewRestServiceEntity extends RestServiceEntity
     /** @var string */
     protected $serviceName;
 
-    /** @return void */
+    /**
+     * @param array<string, string> $data
+     * @return void
+     */
     public function exchangeArray(array $data)
     {
         parent::exchangeArray($data);
@@ -52,7 +55,7 @@ class NewRestServiceEntity extends RestServiceEntity
         }
     }
 
-    /** @return array */
+    /** @return array<string, mixed> */
     public function getArrayCopy()
     {
         $return                 = parent::getArrayCopy();

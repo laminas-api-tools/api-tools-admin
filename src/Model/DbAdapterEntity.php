@@ -11,7 +11,7 @@ class DbAdapterEntity
 {
     /**
      * @param string $name
-     * @param array $config
+     * @param array<string, mixed> $config
      */
     public function __construct($name, $config)
     {
@@ -22,7 +22,7 @@ class DbAdapterEntity
     /**
      * Retrieve array serialization of entity
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getArrayCopy()
     {
@@ -34,7 +34,7 @@ class DbAdapterEntity
     /**
      * Reset state of entity
      *
-     * @param  array $array
+     * @param array<string, mixed> $array
      */
     public function exchangeArray(array $array)
     {

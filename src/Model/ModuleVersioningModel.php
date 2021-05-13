@@ -47,9 +47,6 @@ class ModuleVersioningModel
     /** @var string */
     private $versionsPath;
 
-    /** @var string */
-    private $pathSpecType;
-
     /** @var ConfigResource */
     protected $configResource;
 
@@ -78,10 +75,9 @@ class ModuleVersioningModel
         $this->configResource     = $config;
         $this->docsConfigResource = $docsConfig;
 
-        if (null === $pathSpecType) {
-            $pathSpecType = ModulePathSpec::PSR_0;
+        if (null !== $pathSpecType) {
+            $this->checkPathSpecType($pathSpecType);
         }
-        $this->setPathSpecType($pathSpecType);
         $this->setConfigDirPath($configDirPath);
         $this->setVersionsPath($srcPath);
     }
@@ -430,17 +426,15 @@ class ModuleVersioningModel
      * @param string $pathSpecType
      * @return void
      */
-    private function setPathSpecType($pathSpecType)
+    private function checkPathSpecType($pathSpecType)
     {
         $pathSpecType = (string) $pathSpecType;
         if (! in_array($pathSpecType, [ModulePathSpec::PSR_0, ModulePathSpec::PSR_4])) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(
                 'Invalid $setPathSpecType parameter supplied. Please use the ModulePathSpec::PSR_0 or '
-                . 'ModulePathSpec::PSR_4 constants.',
-                self::class
-            ));
+                . 'ModulePathSpec::PSR_4 constants.'
+            );
         }
-        $this->pathSpecType = $pathSpecType;
     }
 
     /**

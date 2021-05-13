@@ -124,7 +124,7 @@ class AuthenticationEntity
         }
     }
 
-    /** @return array */
+    /** @return array<string, mixed> */
     public function getArrayCopy()
     {
         switch ($this->type) {

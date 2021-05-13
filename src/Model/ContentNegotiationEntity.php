@@ -11,7 +11,7 @@ class ContentNegotiationEntity
 {
     /**
      * @param string $name
-     * @param array $config
+     * @param array<string, mixed> $config
      */
     public function __construct($name, $config)
     {

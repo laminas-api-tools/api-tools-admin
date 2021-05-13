@@ -32,6 +32,7 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
         if (! isset($this->config['db']['adapters'])) {
             throw new ExceptionInvalidArgumentException('DB config is missing "db.adapters" subkey');
         }
+
         $config = $this->config['db']['adapters'];
 
         $adapter = new Adapter($config[$adapterName]);

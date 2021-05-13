@@ -825,14 +825,14 @@ class RestServiceModelTest extends TestCase
         $this->assertInternalType('array', $config['service_manager']);
         $this->assertInternalType('array', $config['api-tools-hal']);
 
-        // @codingStandardsIgnoreStart
+        // phpcs:disable
         $this->assertArrayNotHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-rest'], 'REST entry not deleted');
         $this->assertArrayNotHasKey('bar-conf.rest.foo', $config['router']['routes'], 'Route not deleted');
         $this->assertNotContains('bar-conf.rest.foo', $config['api-tools-versioning']['uri'], 'Versioning not deleted');
         $this->assertArrayNotHasKey('BarConf\\V1\\Rest\\Foo\\Controller', $config['api-tools-content-negotiation']['controllers'], 'Content Negotiation controllers entry not deleted');
         $this->assertArrayNotHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-content-negotiation']['accept_whitelist'], 'Content Negotiation accept whitelist entry not deleted');
         $this->assertArrayNotHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-content-negotiation']['content_type_whitelist'], 'Content Negotiation content-type whitelist entry not deleted');
-        // @codingStandardsIgnoreEnd
+        // phpcs:enable
         foreach ($config['service_manager'] as $serviceType => $services) {
             $this->assertArrayNotHasKey('BarConf\V1\Rest\Foo\FooResource', $services, 'Service entry not deleted');
         }

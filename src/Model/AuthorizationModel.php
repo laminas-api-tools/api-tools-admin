@@ -322,9 +322,12 @@ class AuthorizationModel
     protected function getBaseServiceNamesFromEntity(AuthorizationEntity $entity)
     {
         $services = array_keys($entity->getArrayCopy());
-        array_walk($services, function (&$serviceName) {
-            $serviceName = preg_replace('/::.*?$/', '', $serviceName);
-        });
+        array_walk(
+            $services,
+            function (&$serviceName) {
+                $serviceName = preg_replace('/::.*?$/', '', $serviceName);
+            }
+        );
         return $services;
     }
 }

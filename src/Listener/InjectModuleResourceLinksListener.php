@@ -390,7 +390,7 @@ class InjectModuleResourceLinksListener
     }
 
     /**
-     * @param Model\RestServiceEntity $entity
+     * @param Model\RestServiceEntity|Model\RpcServiceEntity $entity
      * @param LinkCollection $links
      * @return void
      */

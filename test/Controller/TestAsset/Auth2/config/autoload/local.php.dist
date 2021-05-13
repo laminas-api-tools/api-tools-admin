@@ -1,50 +1,54 @@
 <?php
+
+use Laminas\ApiTools\MvcAuth\Authentication\HttpAdapter;
+use Laminas\ApiTools\MvcAuth\Authentication\OAuth2Adapter;
+
 return [
     'api-tools-mvc-auth' => [
         'authentication' => [
             'adapters' => [
-                'testbasic' => [
-                    'adapter' => 'Laminas\\ApiTools\\MvcAuth\\Authentication\\HttpAdapter',
+                'testbasic'       => [
+                    'adapter' => HttpAdapter::class,
                     'options' => [
                         'accept_schemes' => ['basic'],
-                        'realm' => 'api',
-                        'htpasswd' => __DIR__ . '/htpasswd',
+                        'realm'          => 'api',
+                        'htpasswd'       => __DIR__ . '/htpasswd',
                     ],
                 ],
-                'testdigest' => [
-                    'adapter' => 'Laminas\\ApiTools\\MvcAuth\\Authentication\\HttpAdapter',
+                'testdigest'      => [
+                    'adapter' => HttpAdapter::class,
                     'options' => [
                         'accept_schemes' => ['digest'],
-                        'realm' => 'api',
+                        'realm'          => 'api',
                         'digest_domains' => '/',
-                        'nonce_timeout' => '3600',
-                        'htdigest' => __DIR__ . '/htdigest',
+                        'nonce_timeout'  => '3600',
+                        'htdigest'       => __DIR__ . '/htdigest',
                     ],
                 ],
-                'testoauth2pdo' => [
-                    'adapter' => 'Laminas\\ApiTools\\MvcAuth\\Authentication\\OAuth2Adapter',
+                'testoauth2pdo'   => [
+                    'adapter' => OAuth2Adapter::class,
                     'storage' => [
-                        'adapter' => 'pdo',
-                        'route' => '/oauth2pdo',
-                        'dsn' => 'mysql:host=localhost;dbname=oauth2',
+                        'adapter'  => 'pdo',
+                        'route'    => '/oauth2pdo',
+                        'dsn'      => 'mysql:host=localhost;dbname=oauth2',
                         'username' => 'username',
                         'password' => 'password',
-                        'options' => [
+                        'options'  => [
                             1002 => 'SET NAMES utf8',
                         ],
                     ],
                 ],
                 'testoauth2mongo' => [
-                    'adapter' => 'Laminas\\ApiTools\\MvcAuth\\Authentication\\OAuth2Adapter',
+                    'adapter' => OAuth2Adapter::class,
                     'storage' => [
-                        'adapter' => 'mongo',
-                        'route' => '/oauth2mongo',
+                        'adapter'      => 'mongo',
+                        'route'        => '/oauth2mongo',
                         'locator_name' => 'SomeServiceName',
-                        'dsn' => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
-                        'database' => 'oauth2',
-                        'options' => [
-                            'username' => 'username',
-                            'password' => 'password',
+                        'dsn'          => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
+                        'database'     => 'oauth2',
+                        'options'      => [
+                            'username'         => 'username',
+                            'password'         => 'password',
                             'connectTimeoutMS' => 500,
                         ],
                     ],

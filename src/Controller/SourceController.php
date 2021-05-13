@@ -11,6 +11,7 @@ use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\Http\Request;
 use Laminas\Mvc\Controller\AbstractActionController;
 use ReflectionClass;
+use ReflectionException;
 
 use function class_exists;
 use function count;
@@ -34,7 +35,10 @@ class SourceController extends AbstractActionController
         $this->moduleModel = $moduleModel;
     }
 
-    /** @return ApiProblemModel|ViewModel */
+    /**
+     * @return ApiProblemModel|ViewModel
+     * @throws ReflectionException
+     */
     public function sourceAction()
     {
         $request = $this->getRequest();

@@ -14,7 +14,6 @@ use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
 use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParams;
 use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
-use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\ApiTools\Hal\Collection;
 use Laminas\ApiTools\Hal\Entity;
 use Laminas\Config\Writer\PhpArray;
@@ -23,6 +22,7 @@ use Laminas\Http\Response;
 use Laminas\ModuleManager\ModuleManager;
 use Laminas\Mvc\Controller\PluginManager;
 use Laminas\Mvc\MvcEvent;
+use Laminas\View\Model\ViewModel;
 use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
 

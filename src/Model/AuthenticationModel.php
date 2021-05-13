@@ -682,8 +682,8 @@ class AuthenticationModel
 
     /**
      * @param  string $dsn
-     * @param  string $username
-     * @param  string $password
+     * @param  string|null $username
+     * @param  string|null $password
      * @return PDO
      */
     protected function createPdoDSN($dsn, $username, $password)

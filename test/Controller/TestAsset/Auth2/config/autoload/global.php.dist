@@ -1,4 +1,5 @@
 <?php
+
 return [
     'api-tools-mvc-auth' => [
         'authentication' => [
@@ -9,13 +10,13 @@ return [
             ],
         ],
     ],
-    'router' => [
+    'router'             => [
         'routes' => [
             'oauth' => [
-                'type' => 'regex',
+                'type'    => 'regex',
                 'options' => [
                     'regex' => '(?P<oauth>(/oauth2pdo|/oauth2mongo))',
-                    'spec' => '%oauth%',
+                    'spec'  => '%oauth%',
                 ],
             ],
         ],

@@ -171,7 +171,7 @@ class RestServiceResourceTest extends TestCase
         $id         = $entity->controllerServiceName;
         $updateData = [
             'entity_identifier_name' => 'test_id',
-            'hydrator_name'          => 'ObjectProperty',
+            'hydrator_name'          => 'ObjectPropertyHydrator',
         ];
         $resource->patch($id, $updateData);
 
@@ -184,7 +184,7 @@ class RestServiceResourceTest extends TestCase
 
         $this->assertEquals('test_id', $halConfig['entity_identifier_name']);
         $this->assertEquals('test_id', $agConfig['entity_identifier_name']);
-        $this->assertContains('ObjectProperty', $halConfig['hydrator']);
-        $this->assertContains('ObjectProperty', $agConfig['hydrator_name']);
+        $this->assertContains('ObjectPropertyHydrator', $halConfig['hydrator']);
+        $this->assertContains('ObjectPropertyHydrator', $agConfig['hydrator_name']);
     }
 }

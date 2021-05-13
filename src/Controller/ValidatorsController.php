@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Laminas\ApiTools\Admin\Controller;
 
 use Laminas\ApiTools\Admin\Model\ValidatorsModel;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\View\Model\JsonModel;
 
 class ValidatorsController extends AbstractPluginManagerController
 {

@@ -153,13 +153,13 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * @param  string $controllerService
-     * @param  bool $isAFetchOperation If this is for a non-fetch operation,
+     * @param  bool $isFetchOperation If this is for a non-fetch operation,
      *     pass boolean false; allows listeners to include additional data
      *     necessary for clean updates.
      * @return RestServiceEntity|false
      * @throws Exception\RuntimeException
      */
-    public function fetch($controllerService, $isAFetchOperation = true)
+    public function fetch($controllerService, $isFetchOperation = true)
     {
         $config = $this->configResource->fetch(true);
         if (! isset($config['api-tools-rest'][$controllerService])) {
@@ -190,7 +190,7 @@ class RestServiceModel implements EventManagerAwareInterface
         }, new Event(__FUNCTION__, $this, [
             'entity' => $entity,
             'config' => $config,
-            'fetch'  => $isAFetchOperation,
+            'fetch'  => $isFetchOperation,
         ]));
 
         if ($eventResults->stopped()) {
@@ -813,7 +813,6 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     public function updateRestConfig(RestServiceEntity $original, RestServiceEntity $update)
     {
-        // phpcs:disable Generic.PHP.DiscourageGoto.Found
         $patch = [];
         foreach ($this->restScalarUpdateOptions as $property => $configKey) {
             if (! $update->$property) {
@@ -822,24 +821,19 @@ class RestServiceModel implements EventManagerAwareInterface
             $patch[$configKey] = $update->$property;
         }
 
-        if (empty($patch)) {
-            goto updateArrayOptions;
+        if (! empty($patch)) {
+            $config = [
+                'api-tools-rest' => [
+                    $original->controllerServiceName => $patch,
+                ],
+            ];
+            $this->configResource->patch($config, true);
         }
-
-        $config = [
-            'api-tools-rest' => [
-                $original->controllerServiceName => $patch,
-            ],
-        ];
-        $this->configResource->patch($config, true);
-
-        updateArrayOptions:
 
         foreach ($this->restArrayUpdateOptions as $property => $configKey) {
             $key = sprintf('api-tools-rest.%s.%s', $original->controllerServiceName, $configKey);
             $this->configResource->patchKey($key, $update->$property);
         }
-        // phpcs: enable
     }
 
     /**

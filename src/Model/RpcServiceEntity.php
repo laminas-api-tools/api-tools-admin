@@ -31,7 +31,7 @@ class RpcServiceEntity
         'application/json',
     ];
 
-    /** @var string */
+    /** @var class-string */
     protected $controllerClass;
 
     /** @var string */

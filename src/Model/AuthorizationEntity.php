@@ -37,7 +37,7 @@ class AuthorizationEntity implements
         'DELETE' => false,
     ];
 
-    /** @var array<string, bool> */
+    /** @var array<string, array<string, bool>> */
     protected $servicePrivileges = [];
 
     public function __construct(array $services = [])
@@ -59,13 +59,16 @@ class AuthorizationEntity implements
         return new ArrayIterator($this->servicePrivileges);
     }
 
-    /** @return array */
+    /** @return array<string, array<string, bool>> */
     public function getArrayCopy()
     {
         return $this->servicePrivileges;
     }
 
-    /** @return void */
+    /**
+     * @param array<string, array<string, bool>> $services
+     * @return void
+     */
     public function exchangeArray(array $services)
     {
         foreach ($services as $serviceName => $privileges) {
@@ -76,6 +79,7 @@ class AuthorizationEntity implements
     /**
      * @param string $serviceName
      * @param string $entityOrCollection
+     * @param array<string, bool>|null $privileges
      * @return $this
      */
     public function addRestService($serviceName, $entityOrCollection, ?array $privileges = null)
@@ -96,6 +100,7 @@ class AuthorizationEntity implements
     /**
      * @param string $serviceName
      * @param string $action
+     * @param array<string, bool>|null $privileges
      * @return $this
      */
     public function addRpcService($serviceName, $action, ?array $privileges = null)
@@ -120,7 +125,7 @@ class AuthorizationEntity implements
 
     /**
      * @param string $serviceName
-     * @return array
+     * @return array<string, bool>
      * @throws Exception\InvalidArgumentException
      */
     public function get($serviceName)
@@ -134,6 +139,10 @@ class AuthorizationEntity implements
         return $this->servicePrivileges[$serviceName];
     }
 
+    /**
+     * @param array<string, bool> $privileges
+     * @return array<string, bool>
+     */
     protected function filterPrivileges(array $privileges): array
     {
         foreach ($privileges as $httpMethod => $flag) {
@@ -143,7 +152,6 @@ class AuthorizationEntity implements
             }
             if (! is_bool($flag)) {
                 $privileges[$httpMethod] = (bool) $flag;
-                continue;
             }
         }
         return $privileges;

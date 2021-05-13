@@ -101,7 +101,7 @@ class DbConnectedRestServiceModelTest extends TestCase
         $payload->exchangeArray([
             'adapter_name'               => 'DB\Barbaz',
             'table_name'                 => 'barbaz',
-            'hydrator_name'              => 'ObjectProperty',
+            'hydrator_name'              => 'ObjectPropertyHydrator',
             'entity_identifier_name'     => 'barbaz_id',
             'resource_http_methods'      => ['GET', 'PATCH'],
             'collection_http_methods'    => ['GET', 'POST'],
@@ -220,7 +220,7 @@ class DbConnectedRestServiceModelTest extends TestCase
                     'BarConf\Rest\Barbaz\BarbazResource' => [
                         'adapter_name'  => 'Db\Barbaz',
                         'table_name'    => 'barbaz',
-                        'hydrator_name' => 'ObjectProperty',
+                        'hydrator_name' => 'ObjectPropertyHydrator',
                     ],
                 ],
             ],
@@ -275,7 +275,7 @@ class DbConnectedRestServiceModelTest extends TestCase
                     'BarConf\Rest\Barbaz\BarbazResource' => [
                         'adapter_name'  => 'Db\Barbaz',
                         'table_name'    => 'barbaz',
-                        'hydrator_name' => 'ObjectProperty',
+                        'hydrator_name' => 'ObjectPropertyHydrator',
                     ],
                 ],
             ],
