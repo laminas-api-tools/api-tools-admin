@@ -265,7 +265,7 @@ class AuthenticationModelTest extends TestCase
         }
 
         $toCreate = [
-            'dsn'         => 'mongodb://localhost:27017',
+            'dsn'         => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
             'database'    => 'apiToolsTest',
             'dsn_type'    => 'Mongo',
             'route_match' => '/api/oauth',
@@ -291,7 +291,7 @@ class AuthenticationModelTest extends TestCase
             'storage' => 'Laminas\ApiTools\OAuth2\Adapter\MongoAdapter',
             'mongo' => [
                 'dsn_type'    => 'Mongo',
-                'dsn'         => 'mongodb://localhost:27017',
+                'dsn'         => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
                 'username'    => null,
                 'password'    => null,
                 'database'    => 'apiToolsTest',
@@ -336,7 +336,7 @@ class AuthenticationModelTest extends TestCase
 
         $toCreate = [
             'dsn_type'    => 'mongo',
-            'dsn'         => 'mongodb://localhost:27017/api-tools',
+            'dsn'         => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING') . '/api-tools',
             'route_match' => '/api/oauth',
         ];
 
@@ -492,7 +492,7 @@ class AuthenticationModelTest extends TestCase
                                         'adapter' => 'mongo',
                                         'route' => '/oauth_mongo',
                                         'locator_name' => 'SomeServiceName',
-                                        'dsn' => 'mongodb://localhost',
+                                        'dsn' => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
                                         'database' => 'oauth2',
                                         'options' => [
                                             'username' => 'username',
@@ -593,8 +593,8 @@ class AuthenticationModelTest extends TestCase
                 'name'                => 'test13',
                 'type'                => 'oauth2',
                 'oauth2_type'         => 'mongo',
-                'oauth2_dsn'          => 'mongodb://localhost',
-                'oauth2_database'     => 'api-tools-admin-test',
+                'oauth2_dsn'          => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
+                'oauth2_database'     => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_DATABASE'),
                 'oauth2_route'        => '/oauth13',
                 'oauth2_locator_name' => null,
                 'oauth2_options'  => [
@@ -798,8 +798,8 @@ class AuthenticationModelTest extends TestCase
                     'storage' => 'Laminas\\ApiTools\\OAuth2\\Adapter\\MongoAdapter',
                     'mongo' => [
                         'dsn_type'     => 'Mongo',
-                        'dsn'          => 'mongodb://localhost',
-                        'database'     => 'api-tools-admin-test',
+                        'dsn'          => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
+                        'database'     => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_DATABASE'),
                         'locator_name' => 'MongoDB',
                     ],
                 ],

@@ -45,7 +45,7 @@ class DoctrineAdapterModelTest extends TestCase
                         'params' => [],
                     ],
                     'odm_default' => [
-                        'connectionString' => 'mongodb://localhost:27017',
+                        'connectionString' => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
                         'options' => [],
                     ],
                     'odm_dbname' => [

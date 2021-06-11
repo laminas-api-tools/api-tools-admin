@@ -228,8 +228,8 @@ class AuthenticationTypeControllerTest extends TestCase
                         'storage' => 'Laminas\\ApiTools\\OAuth2\\Adapter\\MongoAdapter',
                         'mongo' => [
                             'dsn_type'     => 'Mongo',
-                            'dsn'          => 'mongodb://localhost',
-                            'database'     => 'api-tools-admin-test',
+                            'dsn'          => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
+                            'database'     => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_DATABASE'),
                             'locator_name' => 'MongoDB',
                         ],
                     ],

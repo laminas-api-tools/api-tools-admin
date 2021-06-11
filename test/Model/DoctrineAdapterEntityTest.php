@@ -29,7 +29,7 @@ class DoctrineAdapterEntityTest extends TestCase
     public function testCanRepresentAnOdmEntity()
     {
         $config = [
-            'connectionString' => 'mongodb://localhost:27017',
+            'connectionString' => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
         ];
         $entity = new DoctrineAdapterEntity('test', $config);
         $serialized = $entity->getArrayCopy();

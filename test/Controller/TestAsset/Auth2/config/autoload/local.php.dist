@@ -40,7 +40,7 @@ return [
                         'adapter' => 'mongo',
                         'route' => '/oauth2mongo',
                         'locator_name' => 'SomeServiceName',
-                        'dsn' => 'mongodb://localhost',
+                        'dsn' => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
                         'database' => 'oauth2',
                         'options' => [
                             'username' => 'username',

@@ -23,6 +23,9 @@ jobs:
     name: QA Checks
     needs: [matrix]
     runs-on: ${{ matrix.operatingSystem }}
+    services:
+      mongo:
+        image: mongo:4.4
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
@@ -31,3 +34,5 @@ jobs:
         uses: laminas/laminas-continuous-integration-action@v1
         with:
           job: ${{ matrix.job }}
+        env:
+          TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING: mongodb://mongo/
