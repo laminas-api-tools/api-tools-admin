@@ -29,7 +29,14 @@ class AuthenticationTypeControllerTest extends TestCase
 {
     use RouteAssetsTrait;
 
-    public function setUp()
+    /** @var string */
+    private $globalFile;
+    /** @var string */
+    private $localFile;
+    /** @var AuthenticationTypeController */
+    private $controller;
+
+    public function setUp(): void
     {
         $this->globalFile = __DIR__ . '/TestAsset/Auth2/config/autoload/global.php';
         $this->localFile  = __DIR__ . '/TestAsset/Auth2/config/autoload/local.php';
@@ -38,12 +45,12 @@ class AuthenticationTypeControllerTest extends TestCase
 
         $this->controller = $this->getController($this->localFile, $this->globalFile);
 
-        $this->routeMatch = $this->createRouteMatch([]);
-        $this->routeMatch->setMatchedRouteName('api-tools/api/authentication-type');
-        $this->event = new MvcEvent();
-        $this->event->setRouteMatch($this->routeMatch);
+        $routeMatch = $this->createRouteMatch([]);
+        $routeMatch->setMatchedRouteName('api-tools/api/authentication-type');
+        $event = new MvcEvent();
+        $event->setRouteMatch($routeMatch);
 
-        $this->controller->setEvent($this->event);
+        $this->controller->setEvent($event);
     }
 
     protected function getController(string $localFile, string $globalFile): AuthenticationTypeController
@@ -87,7 +94,7 @@ class AuthenticationTypeControllerTest extends TestCase
         return new AuthenticationTypeController($authListener);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unlink($this->localFile);
         unlink($this->globalFile);
@@ -107,7 +114,7 @@ class AuthenticationTypeControllerTest extends TestCase
     /**
      * @dataProvider invalidRequestMethods
      */
-    public function testProcessWithInvalidRequestMethodReturnsApiProblemModel(string $method)
+    public function testProcessWithInvalidRequestMethodReturnsApiProblemModel(string $method): void
     {
         $request = new Request();
         $request->setMethod($method);
@@ -115,12 +122,12 @@ class AuthenticationTypeControllerTest extends TestCase
         $this->controller->setRequest($request);
 
         $result = $this->controller->authTypeAction();
-        $this->assertInstanceOf(ApiProblemResponse::class, $result);
+        self::assertInstanceOf(ApiProblemResponse::class, $result);
         $apiProblem = $result->getApiProblem();
-        $this->assertEquals(405, $apiProblem->status);
+        self::assertEquals(405, $apiProblem->status);
     }
 
-    public function testGetAuthenticationRequest()
+    public function testGetAuthenticationRequest(): void
     {
         $request = new Request();
         $request->setMethod('get');
@@ -129,7 +136,7 @@ class AuthenticationTypeControllerTest extends TestCase
 
         $result = $this->controller->authTypeAction();
 
-        $this->assertInstanceOf(ViewModel::class, $result);
+        self::assertInstanceOf(ViewModel::class, $result);
         $config   = require $this->localFile;
         $adapters = array_keys($config['api-tools-mvc-auth']['authentication']['adapters']);
 
@@ -147,9 +154,10 @@ class AuthenticationTypeControllerTest extends TestCase
             }
         }
 
-        $this->assertEquals($adapters, $result->getVariable('auth-types'));
+        self::assertEquals($adapters, $result->getVariable('auth-types'));
     }
 
+    /** @return array<string, array<array<string, mixed>|string[]>> */
     public function getOldAuthConfig(): array
     {
         return [
@@ -254,8 +262,11 @@ class AuthenticationTypeControllerTest extends TestCase
 
     /**
      * @dataProvider getOldAuthConfig
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
+     * @param string[] $expected
      */
-    public function testGetAuthenticationWithOldConfiguration(array $global, array $local, array $expected)
+    public function testGetAuthenticationWithOldConfiguration(array $global, array $local, array $expected): void
     {
         file_put_contents($this->globalFile, '<' . '?php return ' . var_export($global, true) . ';');
         file_put_contents($this->localFile, '<' . '?php return ' . var_export($local, true) . ';');
@@ -275,9 +286,9 @@ class AuthenticationTypeControllerTest extends TestCase
 
         $result = $controller->authTypeAction();
 
-        $this->assertInstanceOf(ViewModel::class, $result);
+        self::assertInstanceOf(ViewModel::class, $result);
 
         $types = $result->getVariable('auth-types');
-        $this->assertEquals($expected, $types);
+        self::assertEquals($expected, $types);
     }
 }

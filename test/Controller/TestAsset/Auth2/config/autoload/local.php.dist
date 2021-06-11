@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Laminas\ApiTools\MvcAuth\Authentication\HttpAdapter;
 use Laminas\ApiTools\MvcAuth\Authentication\OAuth2Adapter;
 

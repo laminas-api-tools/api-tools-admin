@@ -149,7 +149,7 @@ class ModuleVersioningModel
     /**
      * Get the versions of a module
      *
-     * @return array|bool
+     * @return int[]
      */
     public function getModuleVersions()
     {
@@ -278,11 +278,11 @@ class ModuleVersioningModel
                         $version
                     );
 
-                    // change version in mediatype
+                    // change version in media type
                     if (in_array($key, ['accept_whitelist', 'content_type_whitelist'])) {
                         foreach ($newValues as $k => $v) {
-                            foreach ($v as $index => $mediatype) {
-                                if (strstr($mediatype, '.v' . $previous . '+')) {
+                            foreach ($v as $index => $mediaType) {
+                                if (strstr($mediaType, '.v' . $previous . '+')) {
                                     $newValues[$k][$index] = 'application/vnd.'
                                         . $this->getModuleNameFilter()->filter($module)
                                         . '.v'

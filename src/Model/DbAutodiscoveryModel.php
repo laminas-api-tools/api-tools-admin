@@ -25,6 +25,7 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
      * @param string|int $version
      * @param string $adapterName
      * @return array
+     * @throws ExceptionInvalidArgumentException|InvalidArgumentException
      */
     public function fetchColumns($module, $version, $adapterName)
     {

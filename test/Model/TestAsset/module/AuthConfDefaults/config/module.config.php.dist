@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'api-tools-rest' => [
         'AuthConfDefaults\V1\Rest\Foo\Controller' => [],

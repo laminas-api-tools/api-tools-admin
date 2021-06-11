@@ -14,6 +14,7 @@ use Laminas\Http\Request;
 use Laminas\Mvc\Controller\PluginManager as ControllerPluginManager;
 use Laminas\Mvc\MvcEvent;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 use function chdir;
 use function file_exists;
@@ -24,14 +25,19 @@ use function sys_get_temp_dir;
 
 class PackageControllerTest extends TestCase
 {
-    public function setUp()
+    use ProphecyTrait;
+
+    /** @var PackageController */
+    private $controller;
+
+    public function setUp(): void
     {
         // Seed with symlink path for zfdeploy.php
         $this->controller = new PackageController('vendor/bin/zfdeploy.php');
-        $this->plugins    = new ControllerPluginManager($this->prophesize(ContainerInterface::class)->reveal());
-        $this->plugins->setService('bodyParam', new BodyParam());
-        $this->plugins->setService('bodyParams', new BodyParams());
-        $this->controller->setPluginManager($this->plugins);
+        $plugins          = new ControllerPluginManager($this->prophesize(ContainerInterface::class)->reveal());
+        $plugins->setService('bodyParam', new BodyParam());
+        $plugins->setService('bodyParams', new BodyParams());
+        $this->controller->setPluginManager($plugins);
     }
 
     /** @psalm-return array<array-key, array{0: string}> */
@@ -47,17 +53,18 @@ class PackageControllerTest extends TestCase
     /**
      * @dataProvider invalidRequestMethods
      */
-    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse(string $method)
+    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse(string $method): void
     {
         $request = new Request();
         $request->setMethod($method);
         $this->controller->setRequest($request);
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf(ApiProblemResponse::class, $result);
+        self::assertInstanceOf(ApiProblemResponse::class, $result);
         $apiProblem = $result->getApiProblem();
-        $this->assertEquals(405, $apiProblem->status);
+        self::assertEquals(405, $apiProblem->status);
     }
 
+    /** @return array<string, mixed> */
     public function testProcessPostRequestReturnsToken(): array
     {
         $request = new Request();
@@ -79,19 +86,20 @@ class PackageControllerTest extends TestCase
         $result = $this->controller->indexAction();
         chdir($cwd);
 
-        $this->assertInternalType('array', $result);
-        $this->assertTrue(isset($result['token']));
-        $this->assertTrue(isset($result['format']));
+        self::assertIsArray($result);
+        self::assertTrue(isset($result['token']));
+        self::assertTrue(isset($result['format']));
         $package = sys_get_temp_dir() . '/api-tools_' . $result['token'] . '.' . $result['format'];
-        $this->assertTrue(file_exists($package));
+        self::assertTrue(file_exists($package));
 
         return $result;
     }
 
     /**
      * @depends testProcessPostRequestReturnsToken
+     * @param array<string, mixed> $data
      */
-    public function testProcessGetRequestReturnsFile(array $data)
+    public function testProcessGetRequestReturnsFile(array $data): void
     {
         $request = new Request();
         $request->setMethod('get');
@@ -105,13 +113,13 @@ class PackageControllerTest extends TestCase
 
         $response = $this->controller->indexAction();
 
-        $this->assertTrue($response->isSuccess());
-        $this->assertEquals($content, $response->getRawBody());
-        $this->assertEquals('application/octet-stream', $response->getHeaders()->get('Content-Type')->getFieldValue());
-        $this->assertEquals(strlen($content), $response->getHeaders()->get('Content-Length')->getFieldValue());
+        self::assertTrue($response->isSuccess());
+        self::assertEquals($content, $response->getRawBody());
+        self::assertEquals('application/octet-stream', $response->getHeaders()->get('Content-Type')->getFieldValue());
+        self::assertEquals(strlen($content), $response->getHeaders()->get('Content-Length')->getFieldValue());
 
         // Removal of file only happens during destruct
         $this->controller->__destruct();
-        $this->assertFalse(file_exists($package));
+        self::assertFalse(file_exists($package));
     }
 }

@@ -32,18 +32,18 @@ class ModuleNameTest extends TestCase
     /**
      * @dataProvider validModuleNames
      */
-    public function testValidModuleName(string $name)
+    public function testValidModuleName(string $name): void
     {
         $validator = new ModuleNameValidator();
-        $this->assertTrue($validator->isValid($name));
+        self::assertTrue($validator->isValid($name));
     }
 
     /**
      * @dataProvider invalidModuleNames
      */
-    public function testInvalidModuleName(string $name)
+    public function testInvalidModuleName(string $name): void
     {
         $validator = new ModuleNameValidator();
-        $this->assertFalse($validator->isValid($name));
+        self::assertFalse($validator->isValid($name));
     }
 }

@@ -33,13 +33,18 @@ use function unlink;
 
 class ModuleResourceTest extends TestCase
 {
-    public function setUp()
+    /** @var string */
+    private $modulePath;
+    /** @var ModuleResource */
+    private $resource;
+
+    public function setUp(): void
     {
-        $modules             = [];
-        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
-                                    ->disableOriginalConstructor()
-                                    ->getMock();
-        $this->moduleManager->expects($this->any())
+        $modules       = [];
+        $moduleManager = $this->getMockBuilder(ModuleManager::class)
+                              ->disableOriginalConstructor()
+                              ->getMock();
+        $moduleManager->expects($this->any())
                             ->method('getLoadedModules')
                             ->will($this->returnValue($modules));
 
@@ -50,16 +55,16 @@ class ModuleResourceTest extends TestCase
         );
         mkdir($this->modulePath . '/config', 0775, true);
 
-        $this->model = new ModuleModel(
-            $this->moduleManager,
+        $model = new ModuleModel(
+            $moduleManager,
             [],
             []
         );
 
         $this->resource = new ModuleResource(
-            $this->model,
+            $model,
             new ModulePathSpec(
-                new ModuleUtils($this->moduleManager),
+                new ModuleUtils($moduleManager),
                 'psr-0',
                 $this->modulePath
             )
@@ -69,20 +74,20 @@ class ModuleResourceTest extends TestCase
         $this->setupModuleAutoloader();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->modulePath && is_dir($this->modulePath)) {
             $this->removeDir($this->modulePath);
         }
     }
 
-    public function seedApplicationConfig()
+    public function seedApplicationConfig(): void
     {
         $contents = '<' . "?php\nreturn array(\n    'modules' => array(),\n);";
         file_put_contents($this->modulePath . '/config/application.config.php', $contents);
     }
 
-    public function setupModuleAutoloader()
+    public function setupModuleAutoloader(): void
     {
         $modulePath = $this->modulePath;
         spl_autoload_register(function ($class) use ($modulePath) {
@@ -102,11 +107,8 @@ class ModuleResourceTest extends TestCase
 
     /**
      * Remove a directory even if not empty (recursive delete)
-     *
-     * @param  string $dir
-     * @return bool
      */
-    public function removeDir($dir)
+    public function removeDir(string $dir): bool
     {
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
@@ -120,28 +122,28 @@ class ModuleResourceTest extends TestCase
         return rmdir($dir);
     }
 
-    public function testCreateReturnsModuleWithVersion1()
+    public function testCreateReturnsModuleWithVersion1(): void
     {
         $moduleName = uniqid('Foo');
         $module     = $this->resource->create([
             'name' => $moduleName,
         ]);
-        $this->assertInstanceOf(ModuleEntity::class, $module);
-        $this->assertEquals([1], $module->getVersions());
+        self::assertInstanceOf(ModuleEntity::class, $module);
+        self::assertEquals([1], $module->getVersions());
     }
 
-    public function testCreateReturnsModuleWithSpecifiedVersion()
+    public function testCreateReturnsModuleWithSpecifiedVersion(): void
     {
         $moduleName = uniqid('Foo');
         $module     = $this->resource->create([
             'name'    => $moduleName,
             'version' => '2',
         ]);
-        $this->assertInstanceOf(ModuleEntity::class, $module);
-        $this->assertEquals([2], $module->getVersions());
+        self::assertInstanceOf(ModuleEntity::class, $module);
+        self::assertEquals([2], $module->getVersions());
     }
 
-    public function testFetchNewlyCreatedModuleInjectsVersion()
+    public function testFetchNewlyCreatedModuleInjectsVersion(): void
     {
         $moduleName  = uniqid('Foo');
         $module      = $this->resource->create([
@@ -166,11 +168,11 @@ class ModuleResourceTest extends TestCase
         );
         $resource = new ModuleResource($model, new ModulePathSpec(new ModuleUtils($moduleManager)));
         $module   = $resource->fetch($moduleName);
-        $this->assertInstanceOf(ModuleEntity::class, $module);
-        $this->assertEquals([1], $module->getVersions());
+        self::assertInstanceOf(ModuleEntity::class, $module);
+        self::assertEquals([1], $module->getVersions());
     }
 
-    public function testFetchModuleInjectsVersions()
+    public function testFetchModuleInjectsVersions(): void
     {
         $moduleName  = uniqid('Foo');
         $module      = $this->resource->create([
@@ -200,7 +202,7 @@ class ModuleResourceTest extends TestCase
         );
         $resource = new ModuleResource($model, new ModulePathSpec(new ModuleUtils($moduleManager)));
         $module   = $resource->fetch($moduleName);
-        $this->assertInstanceOf(ModuleEntity::class, $module);
-        $this->assertEquals([1, 2, 3], $module->getVersions());
+        self::assertInstanceOf(ModuleEntity::class, $module);
+        self::assertEquals([1, 2, 3], $module->getVersions());
     }
 }

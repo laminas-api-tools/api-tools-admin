@@ -99,7 +99,7 @@ abstract class AbstractConfigController extends AbstractActionController
     }
 
     /**
-     * Get the mediatype from a given header
+     * Get the media type from a given header
      *
      * @param Headers $headers
      * @param  string $header

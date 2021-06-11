@@ -13,6 +13,7 @@ use Laminas\Filter\Compress\CompressionAlgorithmInterface;
 use Laminas\Filter\Encrypt\EncryptionAlgorithmInterface;
 use Laminas\Mvc\MvcEvent;
 use ReflectionClass;
+use ReflectionException;
 
 use function method_exists;
 use function strrpos;
@@ -35,6 +36,7 @@ class CryptFilterListener implements ListenerAggregateInterface
      * Adjust the filter options for Crypt filter adapters
      *
      * @return void|true
+     * @throws ReflectionException
      */
     public function onRoute(MvcEvent $e)
     {

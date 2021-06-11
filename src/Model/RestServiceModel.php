@@ -19,6 +19,7 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
 use OutOfRangeException;
 use ReflectionClass;
+use ReflectionException;
 
 use function array_fill;
 use function array_filter;
@@ -259,7 +260,6 @@ class RestServiceModel implements EventManagerAwareInterface
 
             if (preg_match($pattern, $controllerService)) {
                 $services[] = $this->fetch($controllerService);
-                continue;
             }
         }
 
@@ -359,10 +359,11 @@ class RestServiceModel implements EventManagerAwareInterface
      * Delete a named service
      *
      * @todo   Remove content-negotiation and/or HAL configuration?
-     * @param  string $controllerService
-     * @param  bool   $recursive
+     * @param string $controllerService
+     * @param bool $recursive
      * @return true
      * @throws Exception\RuntimeException
+     * @throws ReflectionException
      */
     public function deleteService($controllerService, $recursive = false)
     {
@@ -607,12 +608,12 @@ class RestServiceModel implements EventManagerAwareInterface
     protected function routeAlreadyExist($route, $excludeRouteName = null)
     {
         // Remove optional parameters in the route
-        $route  = preg_replace('/(\[[^\]]+\])/', '', $route);
+        $route  = preg_replace('/(\[[^]]+])/', '', $route);
         $config = $this->configResource->fetch(true);
         if (isset($config['router']['routes'])) {
             foreach ($config['router']['routes'] as $routeName => $routeConfig) {
                 // Remove optional parameters in the route
-                $routeWithoutParam = preg_replace('/(\[[^\]]+\])/', '', $routeConfig['options']['route']);
+                $routeWithoutParam = preg_replace('/(\[[^]]+])/', '', $routeConfig['options']['route']);
                 if ($routeWithoutParam === $route && $excludeRouteName !== $routeName) {
                     return true;
                 }
@@ -1147,7 +1148,7 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     protected function injectResolver(PhpRenderer $renderer, $type)
     {
-        $template = sprintf('code-connected/rest-', $type);
+        $template = sprintf('code-connected/rest-%s', $type);
         $path     = sprintf('%s/../../view/code-connected/rest-%s.phtml', __DIR__, $type);
         $resolver = new Resolver\TemplateMapResolver([
             $template => $path,

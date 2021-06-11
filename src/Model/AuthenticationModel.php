@@ -672,8 +672,9 @@ class AuthenticationModel
     }
 
     /**
-     * @param  string $dsn
+     * @param string $dsn
      * @return MongoClient
+     * @throws MongoConnectionException
      */
     protected function createMongoDSN($dsn)
     {

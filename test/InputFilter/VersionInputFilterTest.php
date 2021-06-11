@@ -80,26 +80,29 @@ class VersionInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderIsValid
+     * @param array<string, mixed> $data
      */
-    public function testIsValid(array $data)
+    public function testIsValid(array $data): void
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertTrue($filter->isValid());
+        self::assertTrue($filter->isValid());
     }
 
     /**
      * @dataProvider dataProviderIsInvalid
+     * @param array<string, mixed> $data
+     * @param string[] $expectedMessageKeys
      */
-    public function testIsInvalid(array $data, array $expectedMessageKeys)
+    public function testIsInvalid(array $data, array $expectedMessageKeys): void
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertFalse($filter->isValid());
+        self::assertFalse($filter->isValid());
         $messages    = $filter->getMessages();
         $messageKeys = array_keys($messages);
         sort($expectedMessageKeys);
         sort($messageKeys);
-        $this->assertEquals($expectedMessageKeys, $messageKeys);
+        self::assertEquals($expectedMessageKeys, $messageKeys);
     }
 }

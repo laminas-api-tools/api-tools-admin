@@ -34,7 +34,7 @@ class InputFilterModel
      * @param  string $module
      * @param  string $controller
      * @param  string $inputFilterName
-     * @return false|array|InputFilterEntity
+     * @return false|InputFilterCollection|InputFilterEntity
      */
     public function fetch($module, $controller, $inputFilterName = null)
     {
@@ -42,12 +42,12 @@ class InputFilterModel
     }
 
     /**
-     * Update a specific controller with a new inputfilter (validator)
+     * Update a specific controller with a new input filter (validator)
      *
      * @param  string $module
      * @param  string $controller
      * @param  array $inputFilter
-     * @return false|InputFilterEntity
+     * @return array|bool
      */
     public function update($module, $controller, $inputFilter)
     {
@@ -59,12 +59,12 @@ class InputFilterModel
      *
      * @param  string $module
      * @param  string $controller
-     * @param  string $inputname
+     * @param  string $inputName
      * @return bool
      */
-    public function remove($module, $controller, $inputname)
+    public function remove($module, $controller, $inputName)
     {
-        return $this->removeInputFilter($module, $controller, $inputname);
+        return $this->removeInputFilter($module, $controller, $inputName);
     }
 
     /**

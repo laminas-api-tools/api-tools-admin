@@ -24,17 +24,18 @@ trait RouteAssetsTrait
     }
 
     /**
-     * @return string Name of route match class currently available.
+     * @return class-string Name of route match class currently available.
      */
-    public function getRouteMatchClass()
+    public function getRouteMatchClass(): string
     {
         return class_exists(V2RouteMatch::class) ? V2RouteMatch::class : RouteMatch::class;
     }
 
     /**
+     * @param array<string, mixed> $config
      * @return V2TreeRouteStack|TreeRouteStack
      */
-    public function createRouter(array $config = [])
+    public function createRouter(array $config = []): object
     {
         $class                                    = class_exists(V2TreeRouteStack::class)
             ? V2TreeRouteStack::class
@@ -46,9 +47,8 @@ trait RouteAssetsTrait
 
     /**
      * @param RouteMatch|V2RouteMatch|null $routeMatch
-     * @return bool
      */
-    public function isRouteMatch($routeMatch)
+    public function isRouteMatch($routeMatch): bool
     {
         return $routeMatch instanceof RouteMatch || $routeMatch instanceof V2RouteMatch;
     }

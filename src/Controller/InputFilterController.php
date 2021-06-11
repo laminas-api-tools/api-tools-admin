@@ -8,6 +8,7 @@ use Laminas\ApiTools\Admin\Model\InputFilterCollection;
 use Laminas\ApiTools\Admin\Model\InputFilterModel;
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\ApiTools\Hal\Collection as HalCollection;
 use Laminas\ApiTools\Hal\Entity as HalEntity;
 use Laminas\ApiTools\Hal\Link\Link;
@@ -16,7 +17,6 @@ use Laminas\Http\PhpEnvironment\Response;
 use Laminas\Http\Request;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Stdlib\ResponseInterface;
-use Laminas\View\Model\ViewModel;
 
 use function preg_match;
 use function sprintf;
@@ -143,7 +143,7 @@ class InputFilterController extends AbstractActionController
     protected function removeKey($inputFilter)
     {
         $result = [];
-        foreach ($inputFilter as $key => $value) {
+        foreach ($inputFilter as $value) {
             $result[] = $value;
         }
         return $result;

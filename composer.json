@@ -1,6 +1,7 @@
 {
     "name": "laminas-api-tools/api-tools-admin",
     "description": "Laminas API Tools Admin module",
+    "license": "BSD-3-Clause",
     "keywords": [
         "laminas",
         "api-tools",
@@ -8,7 +9,22 @@
         "framework"
     ],
     "homepage": "https://api-tools.getlaminas.org",
-    "license": "BSD-3-Clause",
+    "support": {
+        "docs": "https://api-tools.getlaminas.org/documentation",
+        "issues": "https://github.com/laminas-api-tools/api-tools-admin/issues",
+        "source": "https://github.com/laminas-api-tools/api-tools-admin",
+        "rss": "https://github.com/laminas-api-tools/api-tools-admin/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laminas": {
+            "module": "Laminas\\ApiTools\\Admin"
+        }
+    },
     "require": {
         "php": "^7.3",
         "laminas-api-tools/api-tools": "^1.4",
@@ -38,24 +54,14 @@
         "laminas/laminas-view": "^2.10",
         "laminas/laminas-zendframework-bridge": "^1.1"
     },
-    "replace": {
-        "zfcampus/zf-apigility-admin": "^1.8.0"
-    },
     "require-dev": {
         "alcaeus/mongo-php-adapter": "^1.2",
         "laminas/laminas-coding-standard": "~2.3.0",
         "laminas/laminas-config": "^2.6 || ^3.2",
         "laminas/laminas-loader": "^2.6",
-        "phpunit/phpunit": "^7.5.15",
+        "phpspec/prophecy-phpunit": "^2.0.1",
+        "phpunit/phpunit": "^9.5.5",
         "zfcampus/zf-deploy": "^1.3"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "laminas": {
-            "module": "Laminas\\ApiTools\\Admin"
-        }
     },
     "autoload": {
         "psr-4": {
@@ -91,12 +97,7 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
-    "support": {
-        "issues": "https://github.com/laminas-api-tools/api-tools-admin/issues",
-        "forum": "https://discourse.laminas.dev",
-        "chat": "https://laminas.dev/chat",
-        "source": "https://github.com/laminas-api-tools/api-tools-admin",
-        "docs": "https://api-tools.getlaminas.org/documentation",
-        "rss": "https://github.com/laminas-api-tools/api-tools-admin/releases.atom"
+    "replace": {
+        "zfcampus/zf-apigility-admin": "^1.8.0"
     }
 }

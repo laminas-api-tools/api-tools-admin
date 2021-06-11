@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LaminasTest\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Admin\Model\AbstractPluginManagerModel;
-use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\PluginManagerInterface;
 use PHPUnit\Framework\TestCase;
 
 use function count;
@@ -18,10 +18,10 @@ abstract class AbstractPluginManagerModelTest extends TestCase
     /** @var string */
     public $namespace;
 
-    /** @var AbstractPluginManager */
+    /** @var PluginManagerInterface */
     public $plugins;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->markTestIncomplete(
             'Please define the setUp() method in your extending test case,'
@@ -29,12 +29,12 @@ abstract class AbstractPluginManagerModelTest extends TestCase
         );
     }
 
-    public function testFetchAllReturnsListOfAvailablePlugins()
+    public function testFetchAllReturnsListOfAvailablePlugins(): void
     {
         $services = $this->model->fetchAll();
-        $this->assertGreaterThan(0, count($services));
+        self::assertGreaterThan(0, count($services));
         foreach ($services as $service) {
-            $this->assertContains($this->namespace, $service);
+            self::assertStringContainsString($this->namespace, $service);
         }
     }
 }

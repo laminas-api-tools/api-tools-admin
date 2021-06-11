@@ -8,6 +8,7 @@ use Laminas\ApiTools\Admin\Exception;
 use Laminas\ApiTools\Configuration\ConfigResource;
 use Laminas\Filter\FilterChain;
 use ReflectionClass;
+use ReflectionException;
 
 use function class_exists;
 use function dirname;
@@ -58,6 +59,7 @@ class VersioningModel
      * @param null|string $srcPath Do not use this parameter unless you're providing for a transition to the new class
      *                          (see deprecation notice on this class)
      * @return ModuleVersioningModel
+     * @throws ReflectionException
      */
     private function getModuleVersioningModel($name, $srcPath = null)
     {
@@ -91,10 +93,11 @@ class VersioningModel
      *
      * @deprecated
      *
-     * @param  string $module
-     * @param  int $version
-     * @param  bool|string $path
+     * @param string $module
+     * @param int $version
+     * @param bool|string $path
      * @return bool
+     * @throws ReflectionException
      */
     public function createVersion($module, $version, $path = false)
     {
@@ -107,9 +110,10 @@ class VersioningModel
      *
      * @deprecated
      *
-     * @param  string $module
-     * @param  bool|string $path
+     * @param string $module
+     * @param bool|string $path
      * @return array|bool
+     * @throws ReflectionException
      */
     public function getModuleVersions($module, $path = false)
     {
@@ -155,14 +159,14 @@ class VersioningModel
     /**
      * Determine the source path for the module
      *
-     * Usually, this is the "src/{modulename}" subdirectory of the
-     * module.
+     * Usually, this is the "src/{module-name}" subdirectory of the module.
      *
      * @deprecated
      *
      * @param string $module
      * @param bool $appendNamespace If true, it will append the module's namespace to the path - for PSR0 compatibility
      * @return string
+     * @throws ReflectionException
      */
     protected function getModuleSourcePath($module, $appendNamespace = true)
     {

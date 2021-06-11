@@ -93,6 +93,7 @@ class RpcServiceEntity
                         throw new InvalidArgumentException(sprintf(
                             '%s expects an array value for "%s"; received "%s"',
                             self::class,
+                            $key,
                             is_object($value) ? get_class($value) : gettype($value)
                         ));
                     }
@@ -103,6 +104,7 @@ class RpcServiceEntity
                         throw new InvalidArgumentException(sprintf(
                             '%s expects an array value for "%s"; received "%s"',
                             self::class,
+                            $key,
                             is_object($value) ? get_class($value) : gettype($value)
                         ));
                     }
@@ -119,6 +121,7 @@ class RpcServiceEntity
                         throw new InvalidArgumentException(sprintf(
                             '%s expects an array value for "%s"; received "%s"',
                             self::class,
+                            $key,
                             is_object($value) ? get_class($value) : gettype($value)
                         ));
                     }

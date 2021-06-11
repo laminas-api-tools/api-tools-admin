@@ -213,22 +213,25 @@ class DocumentationInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderIsValid
+     * @param array<string, mixed> $data
      */
-    public function testIsValid(array $data)
+    public function testIsValid(array $data): void
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertTrue($filter->isValid());
+        self::assertTrue($filter->isValid());
     }
 
     /**
      * @dataProvider dataProviderIsInvalid
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $messages
      */
-    public function testIsInvalid(array $data, array $messages)
+    public function testIsInvalid(array $data, array $messages): void
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertFalse($filter->isValid());
-        $this->assertEquals($messages, $filter->getMessages());
+        self::assertFalse($filter->isValid());
+        self::assertEquals($messages, $filter->getMessages());
     }
 }

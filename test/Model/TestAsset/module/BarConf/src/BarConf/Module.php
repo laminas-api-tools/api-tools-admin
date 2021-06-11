@@ -9,8 +9,10 @@ use Laminas\Loader\StandardAutoloader;
 
 class Module implements ApiToolsProviderInterface
 {
-    /** @return array */
-    public function getAutoloaderConfig()
+    /**
+     * @return array<string, mixed>
+     */
+    public function getAutoloaderConfig(): array
     {
         return [
             StandardAutoloader::class => [
@@ -21,8 +23,10 @@ class Module implements ApiToolsProviderInterface
         ];
     }
 
-    /** @return array */
-    public function getConfig()
+    /**
+     * @return array<string, mixed>
+     */
+    public function getConfig(): array
     {
         return include __DIR__ . '/../../config/module.config.php';
     }

@@ -14,15 +14,18 @@ use function is_array;
 
 class ValidatorMetadataModelTest extends TestCase
 {
-    /** @var array */
+    /** @var array<string, mixed> */
     protected $config;
+    /** @var ValidatorMetadataModel */
+    private $model;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->getConfig();
         $this->model = new ValidatorMetadataModel($this->config);
     }
 
+    /** @return array<string, mixed> */
     public function getConfig(): array
     {
         if (is_array($this->config)) {
@@ -42,10 +45,11 @@ class ValidatorMetadataModelTest extends TestCase
         return $this->config;
     }
 
+    /** @param array<string, mixed> $metadata */
     public function assertDefaultOptions(array $metadata): void
     {
         foreach (array_keys($this->config['__all__']) as $key) {
-            $this->assertArrayHasKey($key, $metadata);
+            self::assertArrayHasKey($key, $metadata);
         }
     }
 
@@ -53,7 +57,7 @@ class ValidatorMetadataModelTest extends TestCase
     public function allPlugins(): array
     {
         $return = [];
-        foreach ($this->getConfig() as $plugin => $data) {
+        foreach (array_keys($this->getConfig()) as $plugin) {
             if ('__all__' === $plugin) {
                 continue;
             }
@@ -65,41 +69,41 @@ class ValidatorMetadataModelTest extends TestCase
     /**
      * @dataProvider allPlugins
      */
-    public function testAllPluginsContainDefaultOptions(string $plugin)
+    public function testAllPluginsContainDefaultOptions(string $plugin): void
     {
         $metadata = $this->model->fetch($plugin);
-        $this->assertInternalType('array', $metadata);
-        $this->assertDefaultOptions($metadata);
+        self::assertIsArray($metadata);
+        self::assertDefaultOptions($metadata);
     }
 
     /**
      * @dataProvider allPlugins
      */
-    public function testCanFetchAllMetadataAtOnce(string $plugin)
+    public function testCanFetchAllMetadataAtOnce(string $plugin): void
     {
         $metadata = $this->model->fetchAll();
-        $this->assertInternalType('array', $metadata);
-        $this->assertArrayHasKey($plugin, $metadata);
+        self::assertIsArray($metadata);
+        self::assertArrayHasKey($plugin, $metadata);
     }
 
     /**
      * @dataProvider allPlugins
      */
-    public function testEachPluginInAllMetadataContainsDefaultOptions(string $plugin)
+    public function testEachPluginInAllMetadataContainsDefaultOptions(string $plugin): void
     {
         $metadata = $this->model->fetchAll();
-        $this->assertInternalType('array', $metadata);
-        $this->assertArrayHasKey($plugin, $metadata);
+        self::assertIsArray($metadata);
+        self::assertArrayHasKey($plugin, $metadata);
 
         $metadata = $metadata[$plugin];
-        $this->assertInternalType('array', $metadata);
-        $this->assertDefaultOptions($metadata);
+        self::assertIsArray($metadata);
+        self::assertDefaultOptions($metadata);
     }
 
-    public function testFetchingAllMetadataOmitsMagicAllKey()
+    public function testFetchingAllMetadataOmitsMagicAllKey(): void
     {
         $metadata = $this->model->fetchAll();
-        $this->assertInternalType('array', $metadata);
-        $this->assertArrayNotHasKey('__all__', $metadata);
+        self::assertIsArray($metadata);
+        self::assertArrayNotHasKey('__all__', $metadata);
     }
 }

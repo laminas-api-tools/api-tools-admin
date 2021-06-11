@@ -136,22 +136,25 @@ class CreateContentNegotiationInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderIsValid
+     * @param array<string, mixed> $data
      */
-    public function testIsValid(array $data)
+    public function testIsValid(array $data): void
     {
         $filter = new CreateContentNegotiationInputFilter();
         $filter->setData($data);
-        $this->assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
+        self::assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
     }
 
     /**
      * @dataProvider dataProviderIsInvalid
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $messages
      */
-    public function testIsInvalid(array $data, array $messages)
+    public function testIsInvalid(array $data, array $messages): void
     {
         $filter = new CreateContentNegotiationInputFilter();
         $filter->setData($data);
-        $this->assertFalse($filter->isValid());
-        $this->assertEquals($messages, $filter->getMessages());
+        self::assertFalse($filter->isValid());
+        self::assertEquals($messages, $filter->getMessages());
     }
 }

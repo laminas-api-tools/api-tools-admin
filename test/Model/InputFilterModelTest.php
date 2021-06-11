@@ -22,24 +22,31 @@ use function var_export;
 
 class InputFilterModelTest extends TestCase
 {
-    public function setUp()
+    /** @var InputFilterModel */
+    private $model;
+    /** @var string */
+    private $basePath;
+    /** @var mixed */
+    private $config;
+
+    public function setUp(): void
     {
         $modules = [
             'InputFilter' => new Module(),
         ];
 
-        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
-                                    ->disableOriginalConstructor()
-                                    ->getMock();
+        $moduleManager = $this->getMockBuilder(ModuleManager::class)
+                              ->disableOriginalConstructor()
+                              ->getMock();
 
-        $this->moduleManager->expects($this->any())
+        $moduleManager->expects($this->any())
                             ->method('getLoadedModules')
                             ->will($this->returnValue($modules));
 
-        $this->writer        = new PhpArray();
-        $moduleUtils         = new ModuleUtils($this->moduleManager);
-        $this->configFactory = new ConfigResourceFactory($moduleUtils, $this->writer);
-        $this->model         = new InputFilterModel($this->configFactory);
+        $writer        = new PhpArray();
+        $moduleUtils   = new ModuleUtils($moduleManager);
+        $configFactory = new ConfigResourceFactory($moduleUtils, $writer);
+        $this->model   = new InputFilterModel($configFactory);
 
         $this->basePath = __DIR__ . '/TestAsset/module/InputFilter/config';
         $this->config   = include $this->basePath . '/module.config.php';
@@ -47,26 +54,26 @@ class InputFilterModelTest extends TestCase
         copy($this->basePath . '/module.config.php', $this->basePath . '/module.config.php.old');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         copy($this->basePath . '/module.config.php.old', $this->basePath . '/module.config.php');
         unlink($this->basePath . '/module.config.php.old');
     }
 
-    public function testFetch()
+    public function testFetch(): void
     {
         $result = $this->model->fetch('InputFilter', 'InputFilter\V1\Rest\Foo\Controller');
-        $this->assertInstanceOf(InputFilterCollection::class, $result);
-        $this->assertEquals(1, count($result));
+        self::assertInstanceOf(InputFilterCollection::class, $result);
+        self::assertEquals(1, count($result));
         $inputFilter = $result->dequeue();
-        $this->assertInstanceOf(InputFilterEntity::class, $inputFilter);
-        $this->assertEquals(
+        self::assertInstanceOf(InputFilterEntity::class, $inputFilter);
+        self::assertEquals(
             $this->config['input_filter_specs']['InputFilter\V1\Rest\Foo\Validator']['foo'],
             $inputFilter['foo']
         );
     }
 
-    public function testAddInputFilterExistingController()
+    public function testAddInputFilterExistingController(): void
     {
         $inputFilter = [
             'bar' => [
@@ -81,17 +88,17 @@ class InputFilterModelTest extends TestCase
             ],
         ];
         $result      = $this->model->update('InputFilter', 'InputFilter\V1\Rest\Foo\Controller', $inputFilter);
-        $this->assertInstanceOf(InputFilterEntity::class, $result);
-        $this->assertEquals(
+        self::assertInstanceOf(InputFilterEntity::class, $result);
+        self::assertEquals(
             $inputFilter['bar'],
             $result['bar'],
             sprintf("Updates: %s\n\nResult: %s\n", var_export($inputFilter, true), var_export($result, true))
         );
     }
 
-    public function testAddInputFilterNewController()
+    public function testAddInputFilterNewController(): void
     {
-        $inputfilter = [
+        $inputFilter = [
             'bar' => [
                 'name'        => 'bar',
                 'required'    => true,
@@ -106,33 +113,33 @@ class InputFilterModelTest extends TestCase
 
         // new controller
         $controller = 'InputFilter\V1\Rest\Bar\Controller';
-        $result     = $this->model->update('InputFilter', $controller, $inputfilter);
-        $this->assertInstanceOf(InputFilterEntity::class, $result);
-        $this->assertEquals($inputfilter['bar'], $result['bar']);
+        $result     = $this->model->update('InputFilter', $controller, $inputFilter);
+        self::assertInstanceOf(InputFilterEntity::class, $result);
+        self::assertEquals($inputFilter['bar'], $result['bar']);
 
         $config = include $this->basePath . '/module.config.php';
-        $this->assertEquals(
+        self::assertEquals(
             'InputFilter\V1\Rest\Bar\Validator',
             $config['api-tools-content-validation'][$controller]['input_filter']
         );
     }
 
-    public function testRemoveInputFilter()
+    public function testRemoveInputFilter(): void
     {
-        $this->assertTrue($this->model->remove(
+        self::assertTrue($this->model->remove(
             'InputFilter',
             'InputFilter\V1\Rest\Foo\Controller',
             'InputFilter\V1\Rest\Foo\Validator'
         ));
     }
 
-    public function testModuleExists()
+    public function testModuleExists(): void
     {
-        $this->assertTrue($this->model->moduleExists('InputFilter'));
+        self::assertTrue($this->model->moduleExists('InputFilter'));
     }
 
     public function testControllerExists()
     {
-        $this->assertTrue($this->model->controllerExists('InputFilter', 'InputFilter\V1\Rest\Foo\Controller'));
+        self::assertTrue($this->model->controllerExists('InputFilter', 'InputFilter\V1\Rest\Foo\Controller'));
     }
 }

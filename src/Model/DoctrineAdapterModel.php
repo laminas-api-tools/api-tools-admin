@@ -31,7 +31,7 @@ class DoctrineAdapterModel
      */
     public function create($name, array $adapterConfig)
     {
-        $key = "doctrine.connection.{$name}";
+        $key = "doctrine.connection.$name";
         $this->globalConfig->patchKey($key, []);
         $this->localConfig->patchKey($key, $adapterConfig);
 
@@ -58,7 +58,7 @@ class DoctrineAdapterModel
      */
     public function remove($name)
     {
-        $key = "doctrine.connection.{$name}";
+        $key = "doctrine.connection.$name";
         $this->globalConfig->deleteKey($key);
         $this->localConfig->deleteKey($key);
         return true;

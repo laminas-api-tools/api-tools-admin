@@ -198,27 +198,30 @@ class PatchInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderIsValidTrue
+     * @param array<string, mixed> $data
      */
-    public function testIsValidTrue(array $data)
+    public function testIsValidTrue(array $data): void
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
+        self::assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
     }
 
     /**
      * @dataProvider dataProviderIsValidFalse
+     * @param array<string, mixed> $data
+     * @param string[] $expectedInvalidKeys
      */
-    public function testIsValidFalse(array $data, array $expectedInvalidKeys)
+    public function testIsValidFalse(array $data, array $expectedInvalidKeys): void
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertFalse($filter->isValid());
+        self::assertFalse($filter->isValid());
 
         $messages = $filter->getMessages();
         $testKeys = array_keys($messages);
         sort($expectedInvalidKeys);
         sort($testKeys);
-        $this->assertEquals($expectedInvalidKeys, $testKeys);
+        self::assertEquals($expectedInvalidKeys, $testKeys);
     }
 }

@@ -24,7 +24,14 @@ use function unlink;
 
 class FsPermissionsControllerTest extends TestCase
 {
-    public function setUp()
+    /** @var false|string */
+    private $pwd;
+    /** @var string */
+    private $wd;
+    /** @var FsPermissionsController */
+    private $controller;
+
+    public function setUp(): void
     {
         $this->pwd = getcwd();
         $this->wd  = sys_get_temp_dir() . '/ag-admin-' . uniqid();
@@ -34,7 +41,7 @@ class FsPermissionsControllerTest extends TestCase
         $this->controller = new FsPermissionsController();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         chdir($this->pwd);
         $this->removeDir($this->wd);
@@ -56,28 +63,28 @@ class FsPermissionsControllerTest extends TestCase
         rmdir($directory);
     }
 
-    public function testReturnsTrueIfNeitherConfigNorModuleDirectoriesExistButRootIsWritable()
+    public function testReturnsTrueIfNeitherConfigNorModuleDirectoriesExistButRootIsWritable(): void
     {
         $result = $this->controller->fsPermissionsAction();
-        $this->assertInstanceOf(ViewModel::class, $result);
+        self::assertInstanceOf(ViewModel::class, $result);
         $fsPerms = $result->getVariable('fs_perms', null);
-        $this->assertNotNull($fsPerms);
-        $this->assertTrue($fsPerms);
+        self::assertNotNull($fsPerms);
+        self::assertTrue($fsPerms);
     }
 
-    public function testReturnsTrueIfConfigAndModuleDirectoriesExistAndAreWritable()
+    public function testReturnsTrueIfConfigAndModuleDirectoriesExistAndAreWritable(): void
     {
         mkdir($this->wd . '/config/autoload', 0775, true);
         mkdir($this->wd . '/module');
 
         $result = $this->controller->fsPermissionsAction();
-        $this->assertInstanceOf(ViewModel::class, $result);
+        self::assertInstanceOf(ViewModel::class, $result);
         $fsPerms = $result->getVariable('fs_perms', null);
-        $this->assertNotNull($fsPerms);
-        $this->assertTrue($fsPerms);
+        self::assertNotNull($fsPerms);
+        self::assertTrue($fsPerms);
     }
 
-    public function testReturnsFalseIfNeitherConfigNorModuleDirectoriesExistAndRootIsNotWritable()
+    public function testReturnsFalseIfNeitherConfigNorModuleDirectoriesExistAndRootIsNotWritable(): void
     {
         if (! file_exists('/var/log') || ! is_dir('/var/log') || is_writable('/var/log')) {
             $this->markTestSkipped('Cannot test, as either /var/log does not exist or is writable');
@@ -88,13 +95,13 @@ class FsPermissionsControllerTest extends TestCase
         // Instantiating new controller, as constructor caches getcwd()
         $controller = new FsPermissionsController();
         $result     = $controller->fsPermissionsAction();
-        $this->assertInstanceOf(ViewModel::class, $result);
+        self::assertInstanceOf(ViewModel::class, $result);
         $fsPerms = $result->getVariable('fs_perms', null);
-        $this->assertNotNull($fsPerms);
-        $this->assertFalse($fsPerms);
+        self::assertNotNull($fsPerms);
+        self::assertFalse($fsPerms);
     }
 
-    public function testReturnsFalseIfConfigAndModuleDirectoriesExistButAreNotWritable()
+    public function testReturnsFalseIfConfigAndModuleDirectoriesExistButAreNotWritable(): void
     {
         $this->markTestSkipped(
             'Unable to determine how to test this case, as requires having a directory not owned by test runner'

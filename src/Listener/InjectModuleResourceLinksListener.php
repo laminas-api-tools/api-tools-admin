@@ -15,6 +15,7 @@ use Laminas\EventManager\EventInterface;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Mvc\Router\RouteMatch as V2RouteMatch;
 use Laminas\Router\RouteMatch;
+use ReflectionException;
 
 use function array_key_exists;
 use function array_merge;
@@ -79,7 +80,7 @@ class InjectModuleResourceLinksListener
             $halPlugin->getEventManager()->attach($event, [$this, 'onHalRenderEvents']);
         }
 
-        // If content is empty, then send the response with a 204 and an emtpy body
+        // If content is empty, then send the response with a 204 and an empty body
 
         if ($result->isEntity()) {
             $this->injectServiceLinks($result->getPayload(), $result, $e);
@@ -184,7 +185,6 @@ class InjectModuleResourceLinksListener
                 $route = sprintf('api-tools/api/module/%s/input-filter', $type);
                 $hal->injectSelfLink($halEntity, $route, 'input_filter_name');
             }
-            return;
         }
     }
 
@@ -216,7 +216,6 @@ class InjectModuleResourceLinksListener
 
         if ($entity instanceof Model\InputFilterEntity) {
             $this->normalizeInputFilterEntityName($entity, $e);
-            return;
         }
     }
 
@@ -224,6 +223,7 @@ class InjectModuleResourceLinksListener
      * Inject relational links into a Module resource
      *
      * @return void
+     * @throws ReflectionException
      */
     private function injectModuleCollectionRelationalLinks(Model\ModuleEntity $resource, EventInterface $e)
     {
@@ -349,6 +349,7 @@ class InjectModuleResourceLinksListener
      * Inject links for the service services of a module
      *
      * @return void
+     * @throws ReflectionException
      */
     private function injectServiceLinks(Entity $halEntity, HalJsonModel $model, EventInterface $e)
     {
@@ -368,6 +369,7 @@ class InjectModuleResourceLinksListener
     /**
      * @param LinkCollection $links
      * @return void
+     * @throws ReflectionException
      */
     private function injectModuleResourceRelationalLinks(Model\ModuleEntity $module, $links, HalJsonModel $model)
     {

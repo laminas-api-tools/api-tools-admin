@@ -25,6 +25,7 @@ use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ViewModel;
 use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 use function copy;
 use function json_encode;
@@ -32,27 +33,35 @@ use function unlink;
 
 class InputFilterControllerTest extends TestCase
 {
+    use ProphecyTrait;
     use RouteAssetsTrait;
 
-    public function setUp()
+    /** @var InputFilterController */
+    private $controller;
+    /** @var string */
+    private $basePath;
+    /** @var mixed */
+    private $config;
+
+    public function setUp(): void
     {
         require_once __DIR__ . '/../Model/TestAsset/module/InputFilter/Module.php';
         $modules = [
             'InputFilter' => new Module(),
         ];
 
-        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
-                                    ->disableOriginalConstructor()
-                                    ->getMock();
-        $this->moduleManager->expects($this->any())
+        $moduleManager = $this->getMockBuilder(ModuleManager::class)
+                              ->disableOriginalConstructor()
+                              ->getMock();
+        $moduleManager->expects($this->any())
                             ->method('getLoadedModules')
                             ->will($this->returnValue($modules));
 
-        $this->writer        = new PhpArray();
-        $moduleUtils         = new ModuleUtils($this->moduleManager);
-        $this->configFactory = new ConfigResourceFactory($moduleUtils, $this->writer);
-        $this->model         = new InputFilterModel($this->configFactory);
-        $this->controller    = new InputFilterController($this->model);
+        $writer           = new PhpArray();
+        $moduleUtils      = new ModuleUtils($moduleManager);
+        $configFactory    = new ConfigResourceFactory($moduleUtils, $writer);
+        $model            = new InputFilterModel($configFactory);
+        $this->controller = new InputFilterController($model);
 
         $this->basePath = __DIR__ . '/../Model/TestAsset/module/InputFilter/config';
         $this->config   = include $this->basePath . '/module.config.php';
@@ -60,13 +69,13 @@ class InputFilterControllerTest extends TestCase
         copy($this->basePath . '/module.config.php', $this->basePath . '/module.config.php.old');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         copy($this->basePath . '/module.config.php.old', $this->basePath . '/module.config.php');
         unlink($this->basePath . '/module.config.php.old');
     }
 
-    public function testGetInputFilters()
+    public function testGetInputFilters(): void
     {
         $request = new Request();
         $request->setMethod('get');
@@ -88,21 +97,21 @@ class InputFilterControllerTest extends TestCase
         $this->controller->setEvent($event);
 
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf(ViewModel::class, $result);
+        self::assertInstanceOf(ViewModel::class, $result);
         $payload = $result->payload;
-        $this->assertInstanceOf(Collection::class, $payload);
+        self::assertInstanceOf(Collection::class, $payload);
         $collection = $payload->getCollection();
-        $this->assertInstanceOf(InputFilterCollection::class, $collection);
+        self::assertInstanceOf(InputFilterCollection::class, $collection);
         $inputFilter = $collection->dequeue();
-        $this->assertInstanceOf(InputFilterEntity::class, $inputFilter);
+        self::assertInstanceOf(InputFilterEntity::class, $inputFilter);
 
         $inputFilterKey                = $this->config['api-tools-content-validation'][$controller]['input_filter'];
         $expected                      = $this->config['input_filter_specs'][$inputFilterKey];
         $expected['input_filter_name'] = $inputFilterKey;
-        $this->assertEquals($expected, $inputFilter->getArrayCopy());
+        self::assertEquals($expected, $inputFilter->getArrayCopy());
     }
 
-    public function testGetInputFilter()
+    public function testGetInputFilter(): void
     {
         $request = new Request();
         $request->setMethod('get');
@@ -126,18 +135,18 @@ class InputFilterControllerTest extends TestCase
         $this->controller->setEvent($event);
 
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf(ViewModel::class, $result);
+        self::assertInstanceOf(ViewModel::class, $result);
         $payload = $result->payload;
-        $this->assertInstanceOf(Entity::class, $payload);
+        self::assertInstanceOf(Entity::class, $payload);
         $entity = $payload->getEntity();
-        $this->assertInstanceOf(InputFilterEntity::class, $entity);
+        self::assertInstanceOf(InputFilterEntity::class, $entity);
 
         $expected                      = $this->config['input_filter_specs'][$validator];
         $expected['input_filter_name'] = $validator;
-        $this->assertEquals($expected, $entity->getArrayCopy());
+        self::assertEquals($expected, $entity->getArrayCopy());
     }
 
-    public function testAddInputFilter()
+    public function testAddInputFilter(): void
     {
         $inputFilter = [
             [
@@ -185,20 +194,20 @@ class InputFilterControllerTest extends TestCase
         $this->controller->setPluginManager($plugins);
 
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf(ViewModel::class, $result);
+        self::assertInstanceOf(ViewModel::class, $result);
         $payload = $result->payload;
-        $this->assertInstanceOf(Entity::class, $payload);
+        self::assertInstanceOf(Entity::class, $payload);
         $entity = $payload->getEntity();
-        $this->assertInstanceOf(InputFilterEntity::class, $entity);
+        self::assertInstanceOf(InputFilterEntity::class, $entity);
 
         $config                        = include $this->basePath . '/module.config.php';
         $validator                     = $config['api-tools-content-validation'][$controller]['input_filter'];
         $expected                      = $config['input_filter_specs'][$validator];
         $expected['input_filter_name'] = $validator;
-        $this->assertEquals($expected, $entity->getArrayCopy());
+        self::assertEquals($expected, $entity->getArrayCopy());
     }
 
-    public function testRemoveInputFilter()
+    public function testRemoveInputFilter(): void
     {
         $request = new Request();
         $request->setMethod('delete');
@@ -222,7 +231,7 @@ class InputFilterControllerTest extends TestCase
         $this->controller->setEvent($event);
 
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf(Response::class, $result);
-        $this->assertEquals(204, $result->getStatusCode());
+        self::assertInstanceOf(Response::class, $result);
+        self::assertEquals(204, $result->getStatusCode());
     }
 }

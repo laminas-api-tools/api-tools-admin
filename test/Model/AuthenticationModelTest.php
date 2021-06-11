@@ -40,7 +40,16 @@ use function version_compare;
 
 class AuthenticationModelTest extends TestCase
 {
-    public function setUp()
+    /** @var string */
+    private $configPath;
+    /** @var string */
+    private $globalConfigPath;
+    /** @var string */
+    private $localConfigPath;
+    /** @var ConfigWriter */
+    private $configWriter;
+
+    public function setUp(): void
     {
         $this->configPath       = sys_get_temp_dir() . '/api-tools-admin/config';
         $this->globalConfigPath = $this->configPath . '/global.php';
@@ -50,12 +59,12 @@ class AuthenticationModelTest extends TestCase
         $this->configWriter = new ConfigWriter();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->removeConfigMocks();
     }
 
-    public function createConfigMocks()
+    public function createConfigMocks(): void
     {
         if (! is_dir($this->configPath)) {
             mkdir($this->configPath, 0775, true);
@@ -66,7 +75,7 @@ class AuthenticationModelTest extends TestCase
         file_put_contents($this->localConfigPath, $contents);
     }
 
-    public function removeConfigMocks()
+    public function removeConfigMocks(): void
     {
         if (file_exists($this->globalConfigPath)) {
             unlink($this->globalConfigPath);
@@ -82,6 +91,10 @@ class AuthenticationModelTest extends TestCase
         }
     }
 
+    /**
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
+     */
     public function createModelFromConfigArrays(array $global, array $local): AuthenticationModel
     {
         $this->configWriter->toFile($this->globalConfigPath, $global);
@@ -113,31 +126,40 @@ class AuthenticationModelTest extends TestCase
         return new AuthenticationModel($globalConfig, $localConfig, $moduleModel);
     }
 
+    /** @param array<string, mixed> $config */
     public function assertAuthenticationConfigExists(string $key, array $config): void
     {
-        $this->assertArrayHasKey('api-tools-mvc-auth', $config);
-        $this->assertArrayHasKey('authentication', $config['api-tools-mvc-auth']);
-        $this->assertArrayHasKey($key, $config['api-tools-mvc-auth']['authentication']);
+        self::assertArrayHasKey('api-tools-mvc-auth', $config);
+        self::assertArrayHasKey('authentication', $config['api-tools-mvc-auth']);
+        self::assertArrayHasKey($key, $config['api-tools-mvc-auth']['authentication']);
     }
 
+    /**
+     * @param array<string, mixed> $expected
+     * @param array<string, mixed> $config
+     */
     public function assertAuthenticationConfigEquals(string $key, array $expected, array $config): void
     {
-        $this->assertAuthenticationConfigExists($key, $config);
+        self::assertAuthenticationConfigExists($key, $config);
         $config = $config['api-tools-mvc-auth']['authentication'][$key];
-        $this->assertEquals($expected, $config);
+        self::assertEquals($expected, $config);
     }
 
+    /**
+     * @param array<string, mixed> $expected
+     * @param array<string, mixed> $config
+     */
     public function assertAuthenticationConfigContains(string $authKey, array $expected, array $config): void
     {
-        $this->assertAuthenticationConfigExists($authKey, $config);
+        self::assertAuthenticationConfigExists($authKey, $config);
         $config = $config['api-tools-mvc-auth']['authentication'][$authKey];
         foreach ($expected as $key => $value) {
-            $this->assertArrayHasKey($key, $config);
-            $this->assertEquals($value, $config[$key]);
+            self::assertArrayHasKey($key, $config);
+            self::assertEquals($value, $config[$key]);
         }
     }
 
-    public function testCreatesBothGlobalAndLocalConfigWhenNoneExistedPreviously()
+    public function testCreatesBothGlobalAndLocalConfigWhenNoneExistedPreviously(): void
     {
         $toCreate = [
             'accept_schemes' => ['basic'],
@@ -149,18 +171,18 @@ class AuthenticationModelTest extends TestCase
         $model->create($toCreate);
 
         $global = include $this->globalConfigPath;
-        $this->assertAuthenticationConfigEquals('http', [
+        self::assertAuthenticationConfigEquals('http', [
             'accept_schemes' => ['basic'],
             'realm'          => 'laminascon',
         ], $global);
 
         $local = include $this->localConfigPath;
-        $this->assertAuthenticationConfigEquals('http', [
+        self::assertAuthenticationConfigEquals('http', [
             'htpasswd' => __DIR__ . '/htpasswd',
         ], $local);
     }
 
-    public function testCanRetrieveAuthenticationConfig()
+    public function testCanRetrieveAuthenticationConfig(): void
     {
         $globalSeedConfig = [
             'api-tools-mvc-auth' => [
@@ -183,16 +205,16 @@ class AuthenticationModelTest extends TestCase
         ];
         $model            = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
         $entity           = $model->fetch();
-        $this->assertInstanceOf(AuthenticationEntity::class, $entity);
+        self::assertInstanceOf(AuthenticationEntity::class, $entity);
         $expected = array_merge(
             ['type' => 'http_basic'],
             $globalSeedConfig['api-tools-mvc-auth']['authentication']['http'],
             $localSeedConfig['api-tools-mvc-auth']['authentication']['http']
         );
-        $this->assertEquals($expected, $entity->getArrayCopy());
+        self::assertEquals($expected, $entity->getArrayCopy());
     }
 
-    public function testUpdatesGlobalAndLocalConfigWhenUpdating()
+    public function testUpdatesGlobalAndLocalConfigWhenUpdating(): void
     {
         $toCreate = [
             'accept_schemes' => ['basic'],
@@ -209,22 +231,22 @@ class AuthenticationModelTest extends TestCase
         $entity    = $model->update($newConfig);
 
         // Ensure the entity returned from the update is what we expect
-        $this->assertInstanceOf(AuthenticationEntity::class, $entity);
+        self::assertInstanceOf(AuthenticationEntity::class, $entity);
         $expected = array_merge(['type' => 'http_basic'], $toCreate, $newConfig);
-        $this->assertEquals($expected, $entity->getArrayCopy());
+        self::assertEquals($expected, $entity->getArrayCopy());
 
         // Ensure fetching the entity after an update will return what we expect
         $config = include $this->globalConfigPath;
-        $this->assertAuthenticationConfigEquals('http', [
+        self::assertAuthenticationConfigEquals('http', [
             'accept_schemes' => ['basic'],
             'realm'          => 'api',
         ], $config);
 
         $config = include $this->localConfigPath;
-        $this->assertAuthenticationConfigEquals('http', ['htpasswd' => sys_get_temp_dir() . '/htpasswd'], $config);
+        self::assertAuthenticationConfigEquals('http', ['htpasswd' => sys_get_temp_dir() . '/htpasswd'], $config);
     }
 
-    public function testRemoveDeletesConfigurationFromBothLocalAndGlobalConfigFiles()
+    public function testRemoveDeletesConfigurationFromBothLocalAndGlobalConfigFiles(): void
     {
         $toCreate = [
             'accept_schemes' => ['basic'],
@@ -236,12 +258,12 @@ class AuthenticationModelTest extends TestCase
 
         $model->remove();
         $global = include $this->globalConfigPath;
-        $this->assertArrayNotHasKey('http', $global['api-tools-mvc-auth']['authentication']);
+        self::assertArrayNotHasKey('http', $global['api-tools-mvc-auth']['authentication']);
         $local = include $this->localConfigPath;
-        $this->assertArrayNotHasKey('http', $local['api-tools-mvc-auth']['authentication']);
+        self::assertArrayNotHasKey('http', $local['api-tools-mvc-auth']['authentication']);
     }
 
-    public function testCreatingOAuth2ConfigurationWritesToEachConfigFile()
+    public function testCreatingOAuth2ConfigurationWritesToEachConfigFile(): void
     {
         $toCreate = [
             'dsn'         => 'sqlite::memory:',
@@ -254,19 +276,19 @@ class AuthenticationModelTest extends TestCase
         $model->create($toCreate);
 
         $global = include $this->globalConfigPath;
-        $this->assertArrayHasKey('router', $global);
-        $this->assertArrayHasKey('routes', $global['router']);
-        $this->assertArrayHasKey('oauth', $global['router']['routes']);
-        $this->assertArrayHasKey('options', $global['router']['routes']['oauth']);
-        $this->assertArrayHasKey('route', $global['router']['routes']['oauth']['options']);
-        $this->assertEquals(
+        self::assertArrayHasKey('router', $global);
+        self::assertArrayHasKey('routes', $global['router']);
+        self::assertArrayHasKey('oauth', $global['router']['routes']);
+        self::assertArrayHasKey('options', $global['router']['routes']['oauth']);
+        self::assertArrayHasKey('route', $global['router']['routes']['oauth']['options']);
+        self::assertEquals(
             '/api/oauth',
             $global['router']['routes']['oauth']['options']['route'],
             var_export($global, true)
         );
 
         $local = include $this->localConfigPath;
-        $this->assertEquals([
+        self::assertEquals([
             'storage' => PdoAdapter::class,
             'db'      => [
                 'dsn_type' => 'PDO',
@@ -277,7 +299,7 @@ class AuthenticationModelTest extends TestCase
         ], $local['api-tools-oauth2']);
     }
 
-    public function testCreatingOAuth2ConfigurationWritesToEachConfigFileForMongo()
+    public function testCreatingOAuth2ConfigurationWritesToEachConfigFileForMongo(): void
     {
         if (
             ! (extension_loaded('mongo') || extension_loaded('mongodb'))
@@ -298,19 +320,19 @@ class AuthenticationModelTest extends TestCase
         $model->create($toCreate);
 
         $global = include $this->globalConfigPath;
-        $this->assertArrayHasKey('router', $global);
-        $this->assertArrayHasKey('routes', $global['router']);
-        $this->assertArrayHasKey('oauth', $global['router']['routes']);
-        $this->assertArrayHasKey('options', $global['router']['routes']['oauth']);
-        $this->assertArrayHasKey('route', $global['router']['routes']['oauth']['options']);
-        $this->assertEquals(
+        self::assertArrayHasKey('router', $global);
+        self::assertArrayHasKey('routes', $global['router']);
+        self::assertArrayHasKey('oauth', $global['router']['routes']);
+        self::assertArrayHasKey('options', $global['router']['routes']['oauth']);
+        self::assertArrayHasKey('route', $global['router']['routes']['oauth']['options']);
+        self::assertEquals(
             '/api/oauth',
             $global['router']['routes']['oauth']['options']['route'],
             var_export($global, true)
         );
 
         $local = include $this->localConfigPath;
-        $this->assertEquals([
+        self::assertEquals([
             'storage' => MongoAdapter::class,
             'mongo'   => [
                 'dsn_type' => 'Mongo',
@@ -322,7 +344,7 @@ class AuthenticationModelTest extends TestCase
         ], $local['api-tools-oauth2']);
     }
 
-    public function testRemovingOAuth2ConfigurationRemovesConfigurationFromEachFile()
+    public function testRemovingOAuth2ConfigurationRemovesConfigurationFromEachFile(): void
     {
         $toCreate = [
             'dsn'         => 'sqlite::memory:',
@@ -337,18 +359,18 @@ class AuthenticationModelTest extends TestCase
         $model->remove();
 
         $global = include $this->globalConfigPath;
-        $this->assertArrayNotHasKey('oauth', $global['router']['routes']);
-        $this->assertFalse(isset($global['router']['routes']['oauth']));
+        self::assertArrayNotHasKey('oauth', $global['router']['routes']);
+        self::assertFalse(isset($global['router']['routes']['oauth']));
         $local = include $this->localConfigPath;
-        $this->assertFalse(isset($local['router']['routes']['oauth']));
-        $this->assertArrayNotHasKey('db', $local['api-tools-oauth2']);
-        $this->assertArrayNotHasKey('storage', $local['api-tools-oauth2']);
+        self::assertFalse(isset($local['router']['routes']['oauth']));
+        self::assertArrayNotHasKey('db', $local['api-tools-oauth2']);
+        self::assertArrayNotHasKey('storage', $local['api-tools-oauth2']);
     }
 
     /**
      * @group 172
      */
-    public function testRemovingOAuth2MongoConfigurationRemovesConfigurationFromEachFile()
+    public function testRemovingOAuth2MongoConfigurationRemovesConfigurationFromEachFile(): void
     {
         if (
             ! (extension_loaded('mongo') || extension_loaded('mongodb'))
@@ -370,18 +392,18 @@ class AuthenticationModelTest extends TestCase
         $model->remove();
 
         $global = include $this->globalConfigPath;
-        $this->assertArrayNotHasKey('oauth', $global['router']['routes']);
-        $this->assertFalse(isset($global['router']['routes']['oauth']));
+        self::assertArrayNotHasKey('oauth', $global['router']['routes']);
+        self::assertFalse(isset($global['router']['routes']['oauth']));
         $local = include $this->localConfigPath;
-        $this->assertFalse(isset($local['router']['routes']['oauth']));
-        $this->assertArrayNotHasKey('mongo', $local['api-tools-oauth2']);
-        $this->assertArrayNotHasKey('storage', $local['api-tools-oauth2']);
+        self::assertFalse(isset($local['router']['routes']['oauth']));
+        self::assertArrayNotHasKey('mongo', $local['api-tools-oauth2']);
+        self::assertArrayNotHasKey('storage', $local['api-tools-oauth2']);
     }
 
     /**
      * @group api-tools-oauth2-19
      */
-    public function testAttemptingToCreateOAuth2ConfigurationWithInvalidMongoDsnRaisesException()
+    public function testAttemptingToCreateOAuth2ConfigurationWithInvalidMongoDsnRaisesException(): void
     {
         if (
             ! (extension_loaded('mongo') || extension_loaded('mongodb'))
@@ -408,7 +430,7 @@ class AuthenticationModelTest extends TestCase
     /**
      * @group api-tools-oauth2-19
      */
-    public function testAttemptingToCreateOAuth2ConfigurationWithInvalidDsnRaisesException()
+    public function testAttemptingToCreateOAuth2ConfigurationWithInvalidDsnRaisesException(): void
     {
         $toCreate = [
             'dsn'         => 'sqlite:/tmp/' . uniqid() . '/.db',
@@ -427,7 +449,7 @@ class AuthenticationModelTest extends TestCase
     /**
      * @group api-tools-oauth2-19
      */
-    public function testAttemptingToUpdateOAuth2ConfigurationWithInvalidDsnRaisesException()
+    public function testAttemptingToUpdateOAuth2ConfigurationWithInvalidDsnRaisesException(): void
     {
         $toCreate = [
             'dsn'         => 'sqlite::memory:',
@@ -445,9 +467,10 @@ class AuthenticationModelTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('DSN');
         $this->expectExceptionCode(422);
-        $entity = $model->update($newConfig);
+        $model->update($newConfig);
     }
 
+    /** @return array<string, mixed>[][] */
     public function getAuthAdapters(): array
     {
         return [
@@ -539,18 +562,20 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
      */
-    public function testFetchAllAuthenticationAdapter(array $global, array $local)
+    public function testFetchAllAuthenticationAdapter(array $global, array $local): void
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
         $result = $model->fetchAllAuthenticationAdapter();
-        $this->assertTrue(is_array($result));
-        $this->assertEquals(4, count($result));
-        $this->assertEquals('test1', $result[0]['name']);
-        $this->assertEquals('test2', $result[1]['name']);
-        $this->assertEquals('test3', $result[2]['name']);
-        $this->assertEquals('test4', $result[3]['name']);
+        self::assertTrue(is_array($result));
+        self::assertEquals(4, count($result));
+        self::assertEquals('test1', $result[0]['name']);
+        self::assertEquals('test2', $result[1]['name']);
+        self::assertEquals('test3', $result[2]['name']);
+        self::assertEquals('test4', $result[3]['name']);
     }
 
     /**
@@ -558,33 +583,36 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
      */
-    public function testFetchAuthenticationAdapter(array $global, array $local)
+    public function testFetchAuthenticationAdapter(array $global, array $local): void
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
         $result = $model->fetchAuthenticationAdapter('test3');
-        $this->assertTrue(is_array($result));
-        $this->assertEquals('test3', $result['name']);
-        $this->assertEquals('oauth2', $result['type']);
-        $this->assertEquals(
+        self::assertTrue(is_array($result));
+        self::assertEquals('test3', $result['name']);
+        self::assertEquals('oauth2', $result['type']);
+        self::assertEquals(
             $local['api-tools-mvc-auth']['authentication']['adapters']['test3']['storage']['adapter'],
             $result['oauth2_type']
         );
-        $this->assertEquals(
+        self::assertEquals(
             $local['api-tools-mvc-auth']['authentication']['adapters']['test3']['storage']['dsn'],
             $result['oauth2_dsn']
         );
-        $this->assertEquals(
+        self::assertEquals(
             $local['api-tools-mvc-auth']['authentication']['adapters']['test3']['storage']['route'],
             $result['oauth2_route']
         );
-        $this->assertEquals(
+        self::assertEquals(
             $local['api-tools-mvc-auth']['authentication']['adapters']['test3']['storage']['options'],
             $result['oauth2_options']
         );
     }
 
+    /** @return array<string, mixed>[] */
     public function getDataForAuthAdapters(): array
     {
         return [
@@ -634,8 +662,10 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
      */
-    public function testCreateAuthenticationAdapter(array $global, array $local)
+    public function testCreateAuthenticationAdapter(array $global, array $local): void
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
@@ -650,11 +680,11 @@ class AuthenticationModelTest extends TestCase
                 continue;
             }
             $result = $model->createAuthenticationAdapter($adapter);
-            $this->assertTrue(is_array($result));
-            $this->assertEquals($adapter, $result);
+            self::assertTrue(is_array($result));
+            self::assertEquals($adapter, $result);
             if ('oauth2' === $result['type']) {
                 $config = include $this->globalConfigPath;
-                $this->assertTrue(in_array($adapter['oauth2_route'], $model->fromOAuth2RegexToArray($config)));
+                self::assertTrue(in_array($adapter['oauth2_route'], $model->fromOAuth2RegexToArray($config)));
             }
         }
     }
@@ -664,18 +694,20 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
      */
-    public function testUpdateAuthenticationAdapter(array $global, array $local)
+    public function testUpdateAuthenticationAdapter(array $global, array $local): void
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
         $data            = $this->getDataForAuthAdapters();
         $data[2]['name'] = 'test1';
         $result          = $model->updateAuthenticationAdapter('test1', $data[2]);
-        $this->assertTrue(is_array($result));
-        $this->assertEquals($data[2], $result);
+        self::assertTrue(is_array($result));
+        self::assertEquals($data[2], $result);
         $config = include $this->globalConfigPath;
-        $this->assertTrue(in_array($data[2]['oauth2_route'], $model->fromOAuth2RegexToArray($config)));
+        self::assertTrue(in_array($data[2]['oauth2_route'], $model->fromOAuth2RegexToArray($config)));
     }
 
     /**
@@ -683,16 +715,18 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
      */
-    public function testRemoveAuthenticationAdapter(array $global, array $local)
+    public function testRemoveAuthenticationAdapter(array $global, array $local): void
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
-        $this->assertTrue($model->removeAuthenticationAdapter('test4'));
+        self::assertTrue($model->removeAuthenticationAdapter('test4'));
         $config = include $this->localConfigPath;
-        $this->assertTrue(! isset($config['api-tools-mvc-auth']['authentication']['adapters']['test4']));
+        self::assertTrue(! isset($config['api-tools-mvc-auth']['authentication']['adapters']['test4']));
         $config = include $this->globalConfigPath;
-        $this->assertTrue(! in_array(
+        self::assertTrue(! in_array(
             $local['api-tools-mvc-auth']['authentication']['adapters']['test4']['storage']['route'],
             $model->fromOAuth2RegexToArray($config)
         ));
@@ -703,19 +737,20 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
+     * @param array<string, mixed> $global
      */
-    public function testGetAuthenticationMap(array $global)
+    public function testGetAuthenticationMap(array $global): void
     {
         $model = $this->createModelFromConfigArrays($global, []);
 
         $result = $model->getAuthenticationMap('Status', 1);
-        $this->assertEquals($global['api-tools-mvc-auth']['authentication']['map']['Status\V1'], $result);
+        self::assertEquals($global['api-tools-mvc-auth']['authentication']['map']['Status\V1'], $result);
         $result = $model->getAuthenticationMap('Foo');
-        $this->assertEquals($global['api-tools-mvc-auth']['authentication']['map']['Foo'], $result);
+        self::assertEquals($global['api-tools-mvc-auth']['authentication']['map']['Foo'], $result);
         $result = $model->getAuthenticationMap('User', 1);
-        $this->assertFalse($result);
+        self::assertFalse($result);
         $result = $model->getAuthenticationMap('Test');
-        $this->assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -723,13 +758,15 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
      */
-    public function testAddAuthenticationMap(array $global, array $local)
+    public function testAddAuthenticationMap(array $global, array $local): void
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
-        $this->assertTrue($model->saveAuthenticationMap('test1', 'User', 1));
-        $this->assertEquals('test1', $model->getAuthenticationMap('User', 1));
+        self::assertTrue($model->saveAuthenticationMap('test1', 'User', 1));
+        self::assertEquals('test1', $model->getAuthenticationMap('User', 1));
     }
 
     /**
@@ -737,8 +774,10 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
      */
-    public function testAddInvalidAuthenticationMap(array $global, array $local)
+    public function testAddInvalidAuthenticationMap(array $global, array $local): void
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
@@ -751,15 +790,17 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
      */
-    public function testUpdateAuthenticationMap(array $global, array $local)
+    public function testUpdateAuthenticationMap(array $global, array $local): void
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
-        $this->assertTrue($model->saveAuthenticationMap('test4', 'Status', 1));
-        $this->assertEquals('test4', $model->getAuthenticationMap('Status', 1));
-        $this->assertTrue($model->saveAuthenticationMap('test1', 'Foo'));
-        $this->assertEquals('test1', $model->getAuthenticationMap('Foo'));
+        self::assertTrue($model->saveAuthenticationMap('test4', 'Status', 1));
+        self::assertEquals('test4', $model->getAuthenticationMap('Status', 1));
+        self::assertTrue($model->saveAuthenticationMap('test1', 'Foo'));
+        self::assertEquals('test1', $model->getAuthenticationMap('Foo'));
     }
 
     /**
@@ -767,21 +808,24 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
      */
-    public function testRemoveAuthenticationMap(array $global, array $local)
+    public function testRemoveAuthenticationMap(array $global, array $local): void
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
-        $this->assertTrue($model->removeAuthenticationMap('Status', 1));
-        $this->assertFalse($model->getAuthenticationMap('Status', 1));
+        self::assertTrue($model->removeAuthenticationMap('Status', 1));
+        self::assertFalse($model->getAuthenticationMap('Status', 1));
         $config = include $this->globalConfigPath;
-        $this->assertTrue(! isset($config['api-tools-mvc-auth']['authentication']['map']['Status\V1']));
-        $this->assertTrue($model->removeAuthenticationMap('Foo'));
-        $this->assertFalse($model->getAuthenticationMap('Foo'));
+        self::assertTrue(! isset($config['api-tools-mvc-auth']['authentication']['map']['Status\V1']));
+        self::assertTrue($model->removeAuthenticationMap('Foo'));
+        self::assertFalse($model->getAuthenticationMap('Foo'));
         $config = include $this->globalConfigPath;
-        $this->assertTrue(! isset($config['api-tools-mvc-auth']['authentication']['map']['Foo']));
+        self::assertTrue(! isset($config['api-tools-mvc-auth']['authentication']['map']['Foo']));
     }
 
+    /** @return array<string, array<string, array<string, mixed>>> */
     public function getOldAuthenticationConfig(): array
     {
         return [
@@ -838,7 +882,7 @@ class AuthenticationModelTest extends TestCase
      * Test transform old authentication configuration in authentication per APIs
      * Since Laminas API Tools 1.1
      */
-    public function testTransformAuthPerApis()
+    public function testTransformAuthPerApis(): void
     {
         $global = [
             'router' => [
@@ -855,22 +899,22 @@ class AuthenticationModelTest extends TestCase
         foreach ($this->getOldAuthenticationConfig() as $name => $local) {
             $model = $this->createModelFromConfigArrays($global, $local);
 
-            $this->assertEquals($name, $model->transformAuthPerApis());
+            self::assertEquals($name, $model->transformAuthPerApis());
 
             // Old authentication is empty
-            $this->assertFalse($model->fetch());
+            self::assertFalse($model->fetch());
 
             // New authentication adapter exists
             $result = $model->fetchAuthenticationAdapter($name);
-            $this->assertEquals($name, $result['name']);
+            self::assertEquals($name, $result['name']);
 
             // Authentication map exists
-            $this->assertEquals($result['name'], $model->getAuthenticationMap('Foo', 1));
-            $this->assertEquals($result['name'], $model->getAuthenticationMap('Foo', 2));
+            self::assertEquals($result['name'], $model->getAuthenticationMap('Foo', 1));
+            self::assertEquals($result['name'], $model->getAuthenticationMap('Foo', 2));
         }
     }
 
-    public function testCustomAuthAdapters()
+    public function testCustomAuthAdapters(): void
     {
         $local = [
             'api-tools-mvc-auth' => [
@@ -897,8 +941,8 @@ class AuthenticationModelTest extends TestCase
         $model = $this->createModelFromConfigArrays([], $local);
 
         $result = $model->fetchAllAuthenticationAdapter();
-        $this->assertEquals('custom', $result[0]['oauth2_type']);
-        $this->assertEquals('custom', $result[1]['type']);
-        $this->assertEquals('/oauth', $result[1]['route']);
+        self::assertEquals('custom', $result[0]['oauth2_type']);
+        self::assertEquals('custom', $result[1]['type']);
+        self::assertEquals('/oauth', $result[1]['route']);
     }
 }

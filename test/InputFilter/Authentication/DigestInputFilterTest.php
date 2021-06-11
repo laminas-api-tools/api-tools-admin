@@ -19,13 +19,16 @@ use function var_export;
 
 class DigestInputFilterTest extends TestCase
 {
-    public function setUp()
+    /** @var string */
+    private $htdigest;
+
+    public function setUp(): void
     {
         $this->htdigest = sys_get_temp_dir() . '/' . uniqid() . '.htdigest';
         touch($this->htdigest);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unlink($this->htdigest);
     }
@@ -102,19 +105,22 @@ class DigestInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderIsValid
+     * @param array<string, mixed> $data
      */
-    public function testIsValid(array $data)
+    public function testIsValid(array $data): void
     {
         $data['htdigest'] = $this->htdigest;
         $filter           = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
+        self::assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
     }
 
     /**
      * @dataProvider dataProviderIsInvalid
+     * @param array<string, mixed> $data
+     * @param string[] $expectedMessageKeys
      */
-    public function testIsInvalid(array $data, array $expectedMessageKeys)
+    public function testIsInvalid(array $data, array $expectedMessageKeys): void
     {
         if (isset($data['htdigest'])) {
             $data['htdigest'] = str_replace('%HTDIGEST%', $this->htdigest, $data['htdigest']);
@@ -122,12 +128,12 @@ class DigestInputFilterTest extends TestCase
 
         $filter = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertFalse($filter->isValid());
+        self::assertFalse($filter->isValid());
 
         $messages    = $filter->getMessages();
         $messageKeys = array_keys($messages);
         sort($expectedMessageKeys);
         sort($messageKeys);
-        $this->assertEquals($expectedMessageKeys, $messageKeys);
+        self::assertEquals($expectedMessageKeys, $messageKeys);
     }
 }

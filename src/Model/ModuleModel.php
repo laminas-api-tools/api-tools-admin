@@ -85,7 +85,7 @@ class ModuleModel
      *
      * @param  array $config
      * @param  int $indent the initial indentation value
-     * @return string
+     * @return ValueGenerator
      */
     public static function exportConfig($config, $indent = 0)
     {

@@ -93,7 +93,7 @@ class Module
     /**
      * Run diagnostics
      *
-     * @return array|bool
+     * @return array<string, callable>
      */
     public function getDiagnostics()
     {
@@ -138,7 +138,6 @@ class Module
         if (function_exists('wincache_ocache_meminfo')) {
             // WinCache; just disable it
             ini_set('wincache.ocenabled', '0');
-            return;
         }
     }
 }

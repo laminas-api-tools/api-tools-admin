@@ -7,6 +7,7 @@ namespace Laminas\ApiTools\Admin\Model;
 use InvalidArgumentException;
 use Laminas\ApiTools\Hal\Collection;
 use ReflectionClass;
+use ReflectionException;
 
 use function class_exists;
 use function get_class;
@@ -95,6 +96,7 @@ class ModuleEntity
 
     /**
      * @return bool
+     * @throws ReflectionException
      */
     public function isVendor()
     {
@@ -197,6 +199,7 @@ class ModuleEntity
      * Retrieve array representation
      *
      * @return array
+     * @throws ReflectionException
      */
     public function getArrayCopy()
     {
@@ -217,6 +220,7 @@ class ModuleEntity
      * Use ReflectionClass to determine the filename, and then checks if the
      * module lives in a vendor subdirectory.
      *
+     * @throws ReflectionException
      * @todo   Add other criteria, such as "library"?
      */
     protected function determineVendorStatus()

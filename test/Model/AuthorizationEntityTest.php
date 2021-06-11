@@ -48,7 +48,7 @@ class AuthorizationEntityTest extends TestCase
     {
         $values = $this->getSeedValuesForEntity();
         $entity = new AuthorizationEntity($values);
-        $this->assertInstanceOf('Traversable', $entity);
+        self::assertInstanceOf('Traversable', $entity);
     }
 
     public function testIteratingEntityReturnsAKeyForEachOfRestEntityAndCollection()
@@ -60,8 +60,8 @@ class AuthorizationEntityTest extends TestCase
         foreach ($entity as $key => $value) {
             $keys[] = $key;
         }
-        $this->assertContains('Foo\V1\Rest\Session\Controller::__entity__', $keys);
-        $this->assertContains('Foo\V1\Rest\Session\Controller::__collection__', $keys);
+        self::assertContains('Foo\V1\Rest\Session\Controller::__entity__', $keys);
+        self::assertContains('Foo\V1\Rest\Session\Controller::__collection__', $keys);
     }
 
     public function testIteratingEntityReturnsAKeyForEachActionOfRpcController()
@@ -73,8 +73,8 @@ class AuthorizationEntityTest extends TestCase
         foreach ($entity as $key => $value) {
             $keys[] = $key;
         }
-        $this->assertContains('Foo\V1\Rpc\Message\Controller::message', $keys);
-        $this->assertContains('Foo\V1\Rpc\Message\Controller::translate', $keys);
+        self::assertContains('Foo\V1\Rpc\Message\Controller::message', $keys);
+        self::assertContains('Foo\V1\Rpc\Message\Controller::translate', $keys);
     }
 
     public function testCanAddARestServiceAtATime()
@@ -99,8 +99,8 @@ class AuthorizationEntityTest extends TestCase
         foreach ($entity as $key => $value) {
             $keys[] = $key;
         }
-        $this->assertContains('Foo\V1\Rest\Session\Controller::__entity__', $keys);
-        $this->assertContains('Foo\V1\Rest\Session\Controller::__collection__', $keys);
+        self::assertContains('Foo\V1\Rest\Session\Controller::__entity__', $keys);
+        self::assertContains('Foo\V1\Rest\Session\Controller::__collection__', $keys);
     }
 
     public function testCanAddAnRpcServiceAtATime()
@@ -125,8 +125,8 @@ class AuthorizationEntityTest extends TestCase
         foreach ($entity as $key => $value) {
             $keys[] = $key;
         }
-        $this->assertContains('Foo\V1\Rpc\Message\Controller::message', $keys);
-        $this->assertContains('Foo\V1\Rpc\Message\Controller::translate', $keys);
+        self::assertContains('Foo\V1\Rpc\Message\Controller::message', $keys);
+        self::assertContains('Foo\V1\Rpc\Message\Controller::translate', $keys);
     }
 
     public function testCanRetrieveNamedServices()
@@ -139,9 +139,9 @@ class AuthorizationEntityTest extends TestCase
             'PUT'    => false,
             'DELETE' => false,
         ]);
-        $this->assertTrue($entity->has('Foo\V1\Rpc\Message\Controller::message'));
+        self::assertTrue($entity->has('Foo\V1\Rpc\Message\Controller::message'));
         $privileges = $entity->get('Foo\V1\Rpc\Message\Controller::message');
-        $this->assertEquals([
+        self::assertEquals([
             'GET'    => true,
             'POST'   => true,
             'PATCH'  => false,
@@ -154,9 +154,9 @@ class AuthorizationEntityTest extends TestCase
     {
         $entity = new AuthorizationEntity();
         $entity->addRestService('Foo\V1\Rest\Session\Controller', AuthorizationEntity::TYPE_ENTITY);
-        $this->assertTrue($entity->has('Foo\V1\Rest\Session\Controller::__entity__'));
+        self::assertTrue($entity->has('Foo\V1\Rest\Session\Controller::__entity__'));
         $privileges = $entity->get('Foo\V1\Rest\Session\Controller::__entity__');
-        $this->assertEquals([
+        self::assertEquals([
             'GET'    => false,
             'POST'   => false,
             'PATCH'  => false,
@@ -169,9 +169,9 @@ class AuthorizationEntityTest extends TestCase
     {
         $entity = new AuthorizationEntity();
         $entity->addRpcService('Foo\V1\Rpc\Message\Controller', 'message');
-        $this->assertTrue($entity->has('Foo\V1\Rpc\Message\Controller::message'));
+        self::assertTrue($entity->has('Foo\V1\Rpc\Message\Controller::message'));
         $privileges = $entity->get('Foo\V1\Rpc\Message\Controller::message');
-        $this->assertEquals([
+        self::assertEquals([
             'GET'    => false,
             'POST'   => false,
             'PATCH'  => false,

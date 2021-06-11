@@ -8,6 +8,7 @@ use Laminas\Loader\StandardAutoloader;
 
 class Module
 {
+    /** @return array<string, mixed> */
     public function getAutoloaderConfig(): array
     {
         return [
@@ -19,6 +20,7 @@ class Module
         ];
     }
 
+    /** @return array<string, mixed> */
     public function getConfig(): array
     {
         return include __DIR__ . '/config/module.config.php';

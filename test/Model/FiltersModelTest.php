@@ -8,8 +8,10 @@ use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Admin\Model\FiltersModel;
 use Laminas\Filter\FilterPluginManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 use function array_key_exists;
+use function array_keys;
 use function count;
 use function file_exists;
 use function is_array;
@@ -18,16 +20,25 @@ use function var_export;
 
 class FiltersModelTest extends TestCase
 {
-    /** @var array */
+    use ProphecyTrait;
+
+    /** @var array<string, mixed> */
     protected $config;
 
-    public function setUp()
+    /** @var FilterPluginManager */
+    private $plugins;
+
+    /** @var FiltersModel */
+    private $model;
+
+    public function setUp(): void
     {
         $this->config  = $this->getConfig();
         $this->plugins = new FilterPluginManager($this->prophesize(ContainerInterface::class)->reveal());
         $this->model   = new FiltersModel($this->plugins, $this->config);
     }
 
+    /** @return array<string, mixed> */
     public function getConfig(): array
     {
         if (is_array($this->config)) {
@@ -47,22 +58,21 @@ class FiltersModelTest extends TestCase
         return $this->config;
     }
 
-    public function testFetchAllReturnsListOfAvailablePlugins()
+    public function testFetchAllReturnsListOfAvailablePlugins(): void
     {
         $filters = $this->model->fetchAll();
-        $this->assertGreaterThan(0, count($filters));
-        foreach ($filters as $service => $metadata) {
-            $this->assertContains('\\Filter\\', $service);
+        self::assertGreaterThan(0, count($filters));
+        foreach (array_keys($filters) as $service) {
+            self::assertStringContainsString('\\Filter\\', $service);
         }
     }
 
-    public function testEachPluginIsAKeyArrayPair()
+    public function testEachPluginIsAKeyArrayPair(): void
     {
         $filters = $this->model->fetchAll();
         foreach ($filters as $service => $metadata) {
-            $this->assertInternalType('string', $service);
-            $this->assertInternalType(
-                'array',
+            self::assertIsString($service);
+            self::assertIsArray(
                 $metadata,
                 sprintf('Key "%s" does not have array metadata: "%s"', $service, var_export($metadata, true))
             );
