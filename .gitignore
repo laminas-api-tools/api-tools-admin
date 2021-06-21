@@ -1,4 +1,3 @@
-!vendor/Test
 /clover.xml
 /coveralls-upload.json
 /phpunit.xml
@@ -8,3 +7,4 @@ test/Model/TestAsset/module/AuthConfWithConfig/config/module.config.php
 test/Model/TestAsset/module/BarConf/config/module.config.php
 test/Model/TestAsset/module/FooConf/config/module.config.php
 vendor/*
+!vendor/Test/
