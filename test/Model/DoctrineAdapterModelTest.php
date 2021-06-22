@@ -58,20 +58,20 @@ class DoctrineAdapterModelTest extends TestCase
         ], 'php://temp', $this->getMockWriter());
     }
 
-    public function testFetchAllReturnsMixOfOrmAndOdmAdapters()
+    public function testFetchAllReturnsMixOfOrmAndOdmAdapters(): void
     {
         $model    = new DoctrineAdapterModel($this->getGlobalConfig(), $this->getLocalConfig());
         $adapters = $model->fetchAll();
-        $this->assertInternalType('array', $adapters);
+        self::assertIsArray($adapters);
 
         foreach ($adapters as $adapter) {
-            $this->assertInstanceOf(DoctrineAdapterEntity::class, $adapter);
+            self::assertInstanceOf(DoctrineAdapterEntity::class, $adapter);
             $data = $adapter->getArrayCopy();
-            $this->assertArrayHasKey('adapter_name', $data);
+            self::assertArrayHasKey('adapter_name', $data);
             if (strrpos($data['adapter_name'], 'odm_')) {
-                $this->assertContains('documentmanager', $data['adapter_name']);
+                self::assertStringContainsString('documentmanager', $data['adapter_name']);
             } elseif (strrpos($data['adapter_name'], 'orm_default')) {
-                $this->assertContains('entitymanager', $data['adapter_name']);
+                self::assertStringContainsString('entitymanager', $data['adapter_name']);
             }
         }
     }

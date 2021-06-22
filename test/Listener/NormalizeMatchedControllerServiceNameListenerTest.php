@@ -6,28 +6,38 @@ namespace LaminasTest\ApiTools\Admin\Listener;
 
 use Laminas\ApiTools\Admin\Listener\NormalizeMatchedControllerServiceNameListener;
 use Laminas\Mvc\MvcEvent;
+use Laminas\Mvc\Router\RouteMatch as V2RouteMatch;
+use Laminas\Router\RouteMatch;
 use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
 
 class NormalizeMatchedControllerServiceNameListenerTest extends TestCase
 {
+    use ProphecyTrait;
     use RouteAssetsTrait;
 
-    public function setUp()
+    /** @var ObjectProphecy|MvcEvent */
+    private $event;
+    /** @var ObjectProphecy|V2RouteMatch|RouteMatch */
+    private $routeMatch;
+
+    public function setUp(): void
     {
         $this->event      = $this->prophesize(MvcEvent::class);
         $this->routeMatch = $this->prophesize($this->getRouteMatchClass());
     }
 
-    public function testListenerDoesNothingIfEventHasNoRouteMatch()
+    public function testListenerDoesNothingIfEventHasNoRouteMatch(): void
     {
         $listener = new NormalizeMatchedControllerServiceNameListener();
         $this->event->getRouteMatch()->willReturn(null)->shouldBeCalled();
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 
-    public function testListenerDoesNothingIfRouteMatchHasNoControllerServiceName()
+    public function testListenerDoesNothingIfRouteMatchHasNoControllerServiceName(): void
     {
         $listener = new NormalizeMatchedControllerServiceNameListener();
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal'])->shouldBeCalled();
@@ -38,10 +48,10 @@ class NormalizeMatchedControllerServiceNameListenerTest extends TestCase
         $this->routeMatch
             ->setParam('controller_service_name', Argument::type('string'))
             ->shouldNotBeCalled();
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 
-    public function testListenerReplacesDashesWithBackslashesInMatchedControllerServiceName()
+    public function testListenerReplacesDashesWithBackslashesInMatchedControllerServiceName(): void
     {
         $listener = new NormalizeMatchedControllerServiceNameListener();
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal'])->shouldBeCalled();
@@ -52,6 +62,6 @@ class NormalizeMatchedControllerServiceNameListenerTest extends TestCase
         $this->routeMatch
             ->setParam('controller_service_name', 'Foo\\Bar\\BazController')
             ->shouldBeCalled();
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 }

@@ -150,7 +150,7 @@ return  [
             'Version\\V1\\Rest\\Message\\MessageEntity' => [
                 'entity_identifier_name' => 'message_id',
                 'route_name' => 'version.rest.message',
-                'hydrator' => 'ArraySerializable',
+                'hydrator' => 'ArraySerializableHydrator',
             ],
             'Version\\V1\\Rest\\Message\\MessageCollection' => [
                 'entity_identifier_name' => 'message_id',
@@ -160,7 +160,7 @@ return  [
             'Version\\V1\\Rest\\Comment\\CommentEntity' => [
                 'entity_identifier_name' => 'comment_id',
                 'route_name' => 'version.rest.comment',
-                'hydrator' => 'ObjectProperty',
+                'hydrator' => 'ObjectPropertyHydrator',
             ],
             'Version\\V1\\Rest\\Comment\\CommentCollection' => [
                 'entity_identifier_name' => 'comment_id',
@@ -177,7 +177,7 @@ return  [
             'Version\\V1\\Rest\\Message\\MessageResource' => [
                 'adapter_name' => 'Db\\Version',
                 'table_name' => 'message',
-                'hydrator_name' => 'ArraySerializable',
+                'hydrator_name' => 'ArraySerializableHydrator',
                 'controller_service_name' => 'Version\\V1\\Rest\\Message\\Controller',
                 'table_service' => 'Version\\V1\\Rest\\Message\\MessageResource\\Table',
             ],

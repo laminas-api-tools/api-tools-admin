@@ -18,13 +18,16 @@ use function var_export;
 
 class BasicInputFilterTest extends TestCase
 {
-    public function setUp()
+    /** @var string */
+    private $htpasswd;
+
+    public function setUp(): void
     {
         $this->htpasswd = sys_get_temp_dir() . '/' . uniqid() . '.htpasswd';
         touch($this->htpasswd);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unlink($this->htpasswd);
     }
@@ -86,28 +89,31 @@ class BasicInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderIsValid
+     * @param array<string, mixed> $data
      */
-    public function testIsValid(array $data)
+    public function testIsValid(array $data): void
     {
         $data['htpasswd'] = $this->htpasswd;
         $filter           = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
+        self::assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
     }
 
     /**
      * @dataProvider dataProviderIsInvalid
+     * @param array<string, mixed> $data
+     * @param string[] $expectedMessageKeys
      */
-    public function testIsInvalid(array $data, array $expectedMessageKeys)
+    public function testIsInvalid(array $data, array $expectedMessageKeys): void
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertFalse($filter->isValid());
+        self::assertFalse($filter->isValid());
 
         $messages    = $filter->getMessages();
         $messageKeys = array_keys($messages);
         sort($expectedMessageKeys);
         sort($messageKeys);
-        $this->assertEquals($expectedMessageKeys, $messageKeys);
+        self::assertEquals($expectedMessageKeys, $messageKeys);
     }
 }

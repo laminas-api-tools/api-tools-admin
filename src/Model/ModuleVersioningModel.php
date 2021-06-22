@@ -47,9 +47,6 @@ class ModuleVersioningModel
     /** @var string */
     private $versionsPath;
 
-    /** @var string */
-    private $pathSpecType;
-
     /** @var ConfigResource */
     protected $configResource;
 
@@ -78,10 +75,9 @@ class ModuleVersioningModel
         $this->configResource     = $config;
         $this->docsConfigResource = $docsConfig;
 
-        if (null === $pathSpecType) {
-            $pathSpecType = ModulePathSpec::PSR_0;
+        if (null !== $pathSpecType) {
+            $this->checkPathSpecType($pathSpecType);
         }
-        $this->setPathSpecType($pathSpecType);
         $this->setConfigDirPath($configDirPath);
         $this->setVersionsPath($srcPath);
     }
@@ -153,7 +149,7 @@ class ModuleVersioningModel
     /**
      * Get the versions of a module
      *
-     * @return array|bool
+     * @return int[]
      */
     public function getModuleVersions()
     {
@@ -282,11 +278,11 @@ class ModuleVersioningModel
                         $version
                     );
 
-                    // change version in mediatype
+                    // change version in media type
                     if (in_array($key, ['accept_whitelist', 'content_type_whitelist'])) {
                         foreach ($newValues as $k => $v) {
-                            foreach ($v as $index => $mediatype) {
-                                if (strstr($mediatype, '.v' . $previous . '+')) {
+                            foreach ($v as $index => $mediaType) {
+                                if (strstr($mediaType, '.v' . $previous . '+')) {
                                     $newValues[$k][$index] = 'application/vnd.'
                                         . $this->getModuleNameFilter()->filter($module)
                                         . '.v'
@@ -430,17 +426,15 @@ class ModuleVersioningModel
      * @param string $pathSpecType
      * @return void
      */
-    private function setPathSpecType($pathSpecType)
+    private function checkPathSpecType($pathSpecType)
     {
         $pathSpecType = (string) $pathSpecType;
         if (! in_array($pathSpecType, [ModulePathSpec::PSR_0, ModulePathSpec::PSR_4])) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(
                 'Invalid $setPathSpecType parameter supplied. Please use the ModulePathSpec::PSR_0 or '
-                . 'ModulePathSpec::PSR_4 constants.',
-                self::class
-            ));
+                . 'ModulePathSpec::PSR_4 constants.'
+            );
         }
-        $this->pathSpecType = $pathSpecType;
     }
 
     /**

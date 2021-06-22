@@ -14,14 +14,14 @@ class DoctrineAdapterEntity implements ArraySerializableInterface
     /** @var string */
     protected $name;
 
-    /** @var array */
+    /** @var array<string, mixed> */
     protected $config;
 
     /**
      * Constructor
      *
      * @param string $name
-     * @param array $config
+     * @param array<string, mixed> $config
      */
     public function __construct($name, $config)
     {
@@ -32,7 +32,7 @@ class DoctrineAdapterEntity implements ArraySerializableInterface
     /**
      * Exchange internal values from provided array
      *
-     * @param  array $array
+     * @param  array<string, mixed> $array
      * @return void
      */
     public function exchangeArray(array $array)
@@ -53,7 +53,7 @@ class DoctrineAdapterEntity implements ArraySerializableInterface
     /**
      * Return an array representation of the object
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getArrayCopy()
     {

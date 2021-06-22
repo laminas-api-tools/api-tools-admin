@@ -1,80 +1,82 @@
 <?php
+
+declare(strict_types=1);
+
 return [
     'api-tools-mvc-auth' => [
         'authorization' => [
             'AuthConfWithConfig\V1\Rest\Foo\Controller' => [
-                'entity' => [
-                    'GET' => false,
-                    'POST' => false,
-                    'PUT' => true,
-                    'PATCH' => true,
+                'entity'     => [
+                    'GET'    => false,
+                    'POST'   => false,
+                    'PUT'    => true,
+                    'PATCH'  => true,
                     'DELETE' => true,
                 ],
                 'collection' => [
-                    'GET' => false,
-                    'POST' => true,
-                    'PUT' => false,
-                    'PATCH' => false,
+                    'GET'    => false,
+                    'POST'   => true,
+                    'PUT'    => false,
+                    'PATCH'  => false,
                     'DELETE' => false,
                 ],
             ],
             'AuthConfWithConfig\V1\Rest\Bar\Controller' => [
-                'entity' => [
-                    'GET' => false,
-                    'POST' => false,
-                    'PUT' => true,
-                    'PATCH' => true,
+                'entity'     => [
+                    'GET'    => false,
+                    'POST'   => false,
+                    'PUT'    => true,
+                    'PATCH'  => true,
                     'DELETE' => true,
                 ],
                 'collection' => [
-                    'GET' => false,
-                    'POST' => true,
-                    'PUT' => false,
-                    'PATCH' => false,
+                    'GET'    => false,
+                    'POST'   => true,
+                    'PUT'    => false,
+                    'PATCH'  => false,
                     'DELETE' => false,
                 ],
             ],
-            'AuthConfWithConfig\V1\Rpc\Baz\Controller' => [
+            'AuthConfWithConfig\V1\Rpc\Baz\Controller'  => [
                 'actions' => [
                     'baz' => [
-                        'GET' => true,
-                        'POST' => true,
-                        'PUT' => false,
-                        'PATCH' => false,
+                        'GET'    => true,
+                        'POST'   => true,
+                        'PUT'    => false,
+                        'PATCH'  => false,
                         'DELETE' => false,
                     ],
                 ],
             ],
-            'AuthConfWithConfig\V1\Rpc\Bat\Controller' => [
+            'AuthConfWithConfig\V1\Rpc\Bat\Controller'  => [
                 'actions' => [
                     'index' => [
-                        'GET' => true,
-                        'POST' => false,
-                        'PUT' => false,
-                        'PATCH' => true,
+                        'GET'    => true,
+                        'POST'   => false,
+                        'PUT'    => false,
+                        'PATCH'  => true,
                         'DELETE' => true,
                     ],
                 ],
             ],
         ],
     ],
-    'api-tools-rest' => [
+    'api-tools-rest'     => [
         'AuthConfWithConfig\V1\Rest\Foo\Controller' => [],
         'AuthConfWithConfig\V1\Rest\Bar\Controller' => [],
     ],
-    'api-tools-rpc' => [
+    'api-tools-rpc'      => [
         'AuthConfWithConfig\V1\Rpc\Baz\Controller' => [
             'route_name' => 'auth-conf.rpc.baz',
         ],
-        'AuthConfWithConfig\V1\Rpc\Bat\Controller' => [
-        ],
+        'AuthConfWithConfig\V1\Rpc\Bat\Controller' => [],
     ],
-    'router' => [
+    'router'             => [
         'routes' => [
             'auth-conf.rpc.baz' => [
-                'type' => 'Segment',
+                'type'    => 'Segment',
                 'options' => [
-                    'route' => '/api/baz',
+                    'route'    => '/api/baz',
                     'defaults' => [
                         'controller' => 'AuthConfWithConfig\V1\Rpc\Baz\Controller',
                         'action'     => 'baz',

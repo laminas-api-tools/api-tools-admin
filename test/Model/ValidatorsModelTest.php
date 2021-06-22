@@ -9,18 +9,31 @@ use Laminas\ApiTools\Admin\Model\ValidatorMetadataModel;
 use Laminas\ApiTools\Admin\Model\ValidatorsModel;
 use Laminas\Validator\ValidatorPluginManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 use function array_key_exists;
+use function array_keys;
 use function count;
 use function file_exists;
 use function is_array;
 
 class ValidatorsModelTest extends TestCase
 {
-    /** @var array */
+    use ProphecyTrait;
+
+    /** @var array<string, mixed> */
     protected $config;
 
-    public function setUp()
+    /** @var ValidatorMetadataModel */
+    private $metadata;
+
+    /** @var ValidatorPluginManager */
+    private $plugins;
+
+    /** @var ValidatorsModel */
+    private $model;
+
+    public function setUp(): void
     {
         $this->getConfig();
         $this->metadata = new ValidatorMetadataModel($this->config);
@@ -28,6 +41,7 @@ class ValidatorsModelTest extends TestCase
         $this->model    = new ValidatorsModel($this->plugins, $this->metadata);
     }
 
+    /** @return array<string, mixed> */
     public function getConfig(): array
     {
         if (is_array($this->config)) {
@@ -47,21 +61,20 @@ class ValidatorsModelTest extends TestCase
         return $this->config;
     }
 
-    public function testFetchAllReturnsListOfAvailablePlugins()
+    public function testFetchAllReturnsListOfAvailablePlugins(): void
     {
         $validators = $this->model->fetchAll();
-        $this->assertGreaterThan(0, count($validators));
-        foreach ($validators as $service => $metadata) {
-            $this->assertContains('\\Validator\\', $service);
+        self::assertGreaterThan(0, count($validators));
+        foreach (array_keys($validators) as $service) {
+            self::assertStringContainsString('\\Validator\\', $service);
         }
     }
 
-    public function testEachPluginIsAKeyArrayPair()
+    public function testEachPluginIsAKeyArrayPair(): void
     {
-        $validators = $this->model->fetchAll();
         foreach ($this->model->fetchAll() as $service => $metadata) {
-            $this->assertInternalType('string', $service);
-            $this->assertInternalType('array', $metadata);
+            self::assertIsString($service);
+            self::assertIsArray($metadata);
         }
     }
 }

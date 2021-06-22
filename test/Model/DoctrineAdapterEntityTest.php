@@ -11,7 +11,7 @@ use function getenv;
 
 class DoctrineAdapterEntityTest extends TestCase
 {
-    public function testCanRepresentAnOrmEntity()
+    public function testCanRepresentAnOrmEntity(): void
     {
         $config     = [
             'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
@@ -20,11 +20,11 @@ class DoctrineAdapterEntityTest extends TestCase
         $entity     = new DoctrineAdapterEntity('test', $config);
         $serialized = $entity->getArrayCopy();
 
-        $this->assertArrayHasKey('adapter_name', $serialized);
-        $this->assertEquals('doctrine.entitymanager.test', $serialized['adapter_name']);
+        self::assertArrayHasKey('adapter_name', $serialized);
+        self::assertEquals('doctrine.entitymanager.test', $serialized['adapter_name']);
     }
 
-    public function testCanRepresentAnOdmEntity()
+    public function testCanRepresentAnOdmEntity(): void
     {
         $config     = [
             'connectionString' => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
@@ -32,7 +32,7 @@ class DoctrineAdapterEntityTest extends TestCase
         $entity     = new DoctrineAdapterEntity('test', $config);
         $serialized = $entity->getArrayCopy();
 
-        $this->assertArrayHasKey('adapter_name', $serialized);
-        $this->assertEquals('doctrine.documentmanager.test', $serialized['adapter_name']);
+        self::assertArrayHasKey('adapter_name', $serialized);
+        self::assertEquals('doctrine.documentmanager.test', $serialized['adapter_name']);
     }
 }

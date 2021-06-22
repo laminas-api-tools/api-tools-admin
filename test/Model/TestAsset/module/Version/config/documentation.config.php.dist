@@ -1,33 +1,36 @@
 <?php
+
+declare(strict_types=1);
+
 return [
     'Version\\V1\\Rest\\Message\\Controller' => [
         'collection' => [
-            'GET' => [
+            'GET'         => [
                 'description' => 'Description of GET for collection',
-                'response' => '{}',
+                'response'    => '{}',
             ],
             'description' => 'Description of collection',
         ],
-        'entity' => [
-            'GET' => [
+        'entity'     => [
+            'GET'         => [
                 'description' => 'description of GET for entity',
-                'response' => '{}',
+                'response'    => '{}',
             ],
             'description' => 'Description of entity',
         ],
     ],
     'Version\\V1\\Rest\\Comment\\Controller' => [
         'collection' => [
-            'GET' => [
+            'GET'         => [
                 'description' => 'Description of GET for collection',
-                'response' => '{}',
+                'response'    => '{}',
             ],
             'description' => 'Description of collection',
         ],
-        'entity' => [
-            'GET' => [
+        'entity'     => [
+            'GET'         => [
                 'description' => 'description of GET for entity',
-                'response' => '{}',
+                'response'    => '{}',
             ],
             'description' => 'Description of entity',
         ],

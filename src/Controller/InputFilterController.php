@@ -13,9 +13,10 @@ use Laminas\ApiTools\Hal\Collection as HalCollection;
 use Laminas\ApiTools\Hal\Entity as HalEntity;
 use Laminas\ApiTools\Hal\Link\Link;
 use Laminas\ApiTools\Hal\Link\LinkCollection;
+use Laminas\Http\PhpEnvironment\Response;
 use Laminas\Http\Request;
-use Laminas\Http\Response;
 use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\Stdlib\ResponseInterface;
 
 use function preg_match;
 use function sprintf;
@@ -31,7 +32,7 @@ class InputFilterController extends AbstractActionController
         $this->model = $model;
     }
 
-    /** @return ApiProblemResponse|Response|ViewModel */
+    /** @return ApiProblemResponse|Response|ResponseInterface|ViewModel */
     public function indexAction()
     {
         $event           = $this->getEvent();
@@ -142,7 +143,7 @@ class InputFilterController extends AbstractActionController
     protected function removeKey($inputFilter)
     {
         $result = [];
-        foreach ($inputFilter as $key => $value) {
+        foreach ($inputFilter as $value) {
             $result[] = $value;
         }
         return $result;

@@ -24,7 +24,7 @@ class VersioningController extends AbstractActionController
         $this->modelFactory = $modelFactory;
     }
 
-    /** @return array|ApiProblemModel */
+    /** @return array<string, mixed>|ApiProblemModel */
     public function defaultVersionAction()
     {
         $module = $this->bodyParam('module', false);
@@ -63,7 +63,7 @@ class VersioningController extends AbstractActionController
         }
     }
 
-    /** @return array|ApiProblemModel */
+    /** @return array<string, mixed>|ApiProblemModel */
     public function versioningAction()
     {
         $module = $this->bodyParam('module', false);

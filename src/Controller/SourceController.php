@@ -11,6 +11,7 @@ use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\Http\Request;
 use Laminas\Mvc\Controller\AbstractActionController;
 use ReflectionClass;
+use ReflectionException;
 
 use function class_exists;
 use function count;
@@ -19,6 +20,7 @@ use function highlight_file;
 use function sprintf;
 use function str_pad;
 use function strlen;
+use function strval;
 use function substr;
 use function urldecode;
 
@@ -34,7 +36,10 @@ class SourceController extends AbstractActionController
         $this->moduleModel = $moduleModel;
     }
 
-    /** @return ApiProblemModel|ViewModel */
+    /**
+     * @return ApiProblemModel|ViewModel
+     * @throws ReflectionException
+     */
     public function sourceAction()
     {
         $request = $this->getRequest();
@@ -121,8 +126,7 @@ class SourceController extends AbstractActionController
         $padLength = strlen((string) $lineCount);
         $code      = '<code><span style="color: #000000">';
         foreach ($lines as $i => $line) {
-            $lineNumber = $i + 1;
-            $lineNumber = str_pad((string) $lineNumber, $padLength, '0', STR_PAD_LEFT);
+            $lineNumber = str_pad(strval($i + 1), $padLength, '0', STR_PAD_LEFT);
             $code      .= sprintf('<br /><span style="color: #999999">%s  </span>%s', $lineNumber, $line);
         }
         $code .= '</span></code>';

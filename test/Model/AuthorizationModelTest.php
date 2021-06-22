@@ -31,13 +31,17 @@ use function unlink;
 
 class AuthorizationModelTest extends TestCase
 {
+    /** @var string */
+    private $module;
+    /** @var ResourceFactory */
+    private $resource;
+    /** @var AuthorizationModel */
+    private $model;
+
     /**
      * Remove a directory even if not empty (recursive delete)
-     *
-     * @param  string $dir
-     * @return bool
      */
-    protected function removeDir($dir)
+    protected function removeDir(string $dir): bool
     {
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
@@ -51,11 +55,10 @@ class AuthorizationModelTest extends TestCase
         return rmdir($dir);
     }
 
-    protected function cleanUpAssets()
+    protected function cleanUpAssets(): void
     {
         $basePath   = sprintf('%s/TestAsset/module/%s', __DIR__, $this->module);
         $configPath = $basePath . '/config';
-        $srcPath    = $basePath . '/src';
         foreach (glob(sprintf('%s/src/%s/V*', $basePath, $this->module)) as $dir) {
             $this->removeDir($dir);
         }
@@ -74,33 +77,36 @@ class AuthorizationModelTest extends TestCase
             'AuthConfWithConfig' => new AuthConfWithConfig\Module(),
         ];
 
-        $this->moduleEntity  = new ModuleEntity($this->module);
-        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
-                                    ->disableOriginalConstructor()
-                                    ->getMock();
-        $this->moduleManager->expects($this->any())
+        $moduleEntity  = new ModuleEntity($this->module);
+        $moduleManager = $this->getMockBuilder(ModuleManager::class)
+                              ->disableOriginalConstructor()
+                              ->getMock();
+        $moduleManager->expects($this->any())
                             ->method('getLoadedModules')
                             ->will($this->returnValue($modules));
 
-        $this->writer   = new PhpArray();
-        $moduleUtils    = new ModuleUtils($this->moduleManager);
-        $this->modules  = new ModulePathSpec($moduleUtils);
-        $this->resource = new ResourceFactory($moduleUtils, $this->writer);
+        $writer         = new PhpArray();
+        $moduleUtils    = new ModuleUtils($moduleManager);
+        $modules1       = new ModulePathSpec($moduleUtils);
+        $this->resource = new ResourceFactory($moduleUtils, $writer);
         $this->model    = new AuthorizationModel(
-            $this->moduleEntity,
-            $this->modules,
+            $moduleEntity,
+            $modules1,
             $this->resource->factory($this->module)
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->cleanUpAssets();
     }
 
-    public function assertDefaultPrivileges(array $privileges)
+    /**
+     * @param array<string, bool> $privileges
+     */
+    public function assertDefaultPrivileges(array $privileges): void
     {
-        $this->assertEquals([
+        self::assertEquals([
             'GET'    => false,
             'POST'   => false,
             'PUT'    => false,
@@ -109,6 +115,10 @@ class AuthorizationModelTest extends TestCase
         ], $privileges);
     }
 
+    /**
+     * @param array<string, mixed> $config
+     * @return array<string, mixed>
+     */
     protected function mapConfigToPayload(array $config): array
     {
         foreach ($config as $key => $value) {
@@ -132,6 +142,9 @@ class AuthorizationModelTest extends TestCase
         return $config;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function mapEntityToConfig(AuthorizationEntity $entity): array
     {
         $normalized = [];
@@ -149,20 +162,20 @@ class AuthorizationModelTest extends TestCase
         return $normalized;
     }
 
-    public function testFetchReturnsEmptyAuthorizationEntityWhenNoServicesPresent()
+    public function testFetchReturnsEmptyAuthorizationEntityWhenNoServicesPresent(): void
     {
         $this->setUpModel('FooConf');
         $entity = $this->model->fetch();
-        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
-        $this->assertEquals(0, count($entity));
+        self::assertInstanceOf(AuthorizationEntity::class, $entity);
+        self::assertEquals(0, count($entity));
     }
 
-    public function testFetchReturnsPopulatedAuthorizationEntityWhenServicesArePresent()
+    public function testFetchReturnsPopulatedAuthorizationEntityWhenServicesArePresent(): void
     {
         $this->setUpModel('AuthConf');
         $entity = $this->model->fetch();
-        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
-        $this->assertEquals(6, count($entity));
+        self::assertInstanceOf(AuthorizationEntity::class, $entity);
+        self::assertEquals(6, count($entity));
         $expected = [
             'AuthConf\V1\Rest\Foo\Controller::__entity__',
             'AuthConf\V1\Rest\Foo\Controller::__collection__',
@@ -174,26 +187,26 @@ class AuthorizationModelTest extends TestCase
         $actual   = [];
         foreach ($entity as $serviceName => $privileges) {
             $actual[] = $serviceName;
-            $this->assertDefaultPrivileges($privileges);
+            self::assertDefaultPrivileges($privileges);
         }
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
-    public function testUsesIndexAsActionForRpcServicesIfActionCannotBeDetermined()
+    public function testUsesIndexAsActionForRpcServicesIfActionCannotBeDetermined(): void
     {
         $this->setUpModel('AuthConfDefaults');
         $entity = $this->model->fetch();
-        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
-        $this->assertEquals(6, count($entity));
-        $this->assertTrue($entity->has('AuthConfDefaults\V1\Rpc\Bat\Controller::index'));
+        self::assertInstanceOf(AuthorizationEntity::class, $entity);
+        self::assertEquals(6, count($entity));
+        self::assertTrue($entity->has('AuthConfDefaults\V1\Rpc\Bat\Controller::index'));
     }
 
-    public function testFetchAcceptsVersionAndReturnsAuthorizationListByVersion()
+    public function testFetchAcceptsVersionAndReturnsAuthorizationListByVersion(): void
     {
         $this->setUpModel('AuthConf');
         $entity = $this->model->fetch(2); // <- VERSION!
-        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
-        $this->assertEquals(9, count($entity));
+        self::assertInstanceOf(AuthorizationEntity::class, $entity);
+        self::assertEquals(9, count($entity));
         $expected = [
             'AuthConf\V2\Rest\Foo\Controller::__entity__',
             'AuthConf\V2\Rest\Foo\Controller::__collection__',
@@ -208,12 +221,12 @@ class AuthorizationModelTest extends TestCase
         $actual   = [];
         foreach ($entity as $serviceName => $privileges) {
             $actual[] = $serviceName;
-            $this->assertDefaultPrivileges($privileges);
+            self::assertDefaultPrivileges($privileges);
         }
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
-    public function testAccuratelyRepresentsExistingPrivileges()
+    public function testAccuratelyRepresentsExistingPrivileges(): void
     {
         $this->setUpModel('AuthConfWithConfig');
 
@@ -223,12 +236,12 @@ class AuthorizationModelTest extends TestCase
 
         // Have the model fetch it
         $entity = $this->model->fetch();
-        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
+        self::assertInstanceOf(AuthorizationEntity::class, $entity);
         $entity = $this->mapEntityToConfig($entity);
-        $this->assertEquals($config, $entity);
+        self::assertEquals($config, $entity);
     }
 
-    public function testCanUpdatePrivileges()
+    public function testCanUpdatePrivileges(): void
     {
         $this->setUpModel('AuthConfWithConfig');
 
@@ -244,10 +257,10 @@ class AuthorizationModelTest extends TestCase
         }
 
         $entity = $this->model->update($newPrivileges);
-        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
+        self::assertInstanceOf(AuthorizationEntity::class, $entity);
 
         // Test that the entity matches the new privileges
-        $this->assertEquals($newPrivileges, $entity->getArrayCopy());
+        self::assertEquals($newPrivileges, $entity->getArrayCopy());
 
         // Test that the stored configuration has been updated as well
         $config = $this->resource->factory($this->module)->fetch(true);
@@ -255,6 +268,6 @@ class AuthorizationModelTest extends TestCase
 
         $expected = $this->mapEntityToConfig($entity);
 
-        $this->assertEquals($expected, $config);
+        self::assertEquals($expected, $config);
     }
 }

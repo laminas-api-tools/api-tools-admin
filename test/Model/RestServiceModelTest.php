@@ -24,6 +24,7 @@ use Laminas\ModuleManager\ModuleManager;
 use Laminas\Paginator\Paginator;
 use LaminasTest\ApiTools\Admin\Model\TestAsset\Collection;
 use LaminasTest\ApiTools\Admin\Model\TestAsset\Entity;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -44,13 +45,23 @@ use function var_export;
 
 class RestServiceModelTest extends TestCase
 {
+    /** @var string */
+    private $module;
+    /** @var ModuleEntity */
+    private $moduleEntity;
+    /** @var MockObject|ModuleManager */
+    private $moduleManager;
+    /** @var ModulePathSpec */
+    private $modules;
+    /** @var ResourceFactory */
+    private $resource;
+    /** @var RestServiceModel */
+    private $codeRest;
+
     /**
      * Remove a directory even if not empty (recursive delete)
-     *
-     * @param  string $dir
-     * @return bool
      */
-    protected function removeDir($dir)
+    protected function removeDir(string $dir): bool
     {
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
@@ -64,7 +75,7 @@ class RestServiceModelTest extends TestCase
         return rmdir($dir);
     }
 
-    protected function cleanUpAssets()
+    protected function cleanUpAssets(): void
     {
         $pathSpec = empty($this->modules) ? 'psr-0' : $this->modules->getPathSpec();
 
@@ -81,7 +92,7 @@ class RestServiceModelTest extends TestCase
         copy($configPath . '/module.config.php.dist', $configPath . '/module.config.php');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->module = 'BarConf';
         $this->cleanUpAssets();
@@ -99,10 +110,10 @@ class RestServiceModelTest extends TestCase
                             ->method('getLoadedModules')
                             ->will($this->returnValue($modules));
 
-        $this->writer   = new PhpArray();
+        $writer         = new PhpArray();
         $moduleUtils    = new ModuleUtils($this->moduleManager);
         $this->modules  = new ModulePathSpec($moduleUtils);
-        $this->resource = new ResourceFactory($moduleUtils, $this->writer);
+        $this->resource = new ResourceFactory($moduleUtils, $writer);
         $this->codeRest = new RestServiceModel(
             $this->moduleEntity,
             $this->modules,
@@ -110,7 +121,7 @@ class RestServiceModelTest extends TestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->cleanUpAssets();
     }
@@ -137,7 +148,7 @@ class RestServiceModelTest extends TestCase
         return $payload;
     }
 
-    public function testRejectInvalidRestServiceName1()
+    public function testRejectInvalidRestServiceName1(): void
     {
         $this->expectException(CreationException::class);
         $restServiceEntity = new NewRestServiceEntity();
@@ -145,7 +156,7 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->createService($restServiceEntity);
     }
 
-    public function testRejectInvalidRestServiceName2()
+    public function testRejectInvalidRestServiceName2(): void
     {
         $this->expectException(CreationException::class);
         $restServiceEntity = new NewRestServiceEntity();
@@ -153,7 +164,7 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->createService($restServiceEntity);
     }
 
-    public function testRejectInvalidRestServiceName3()
+    public function testRejectInvalidRestServiceName3(): void
     {
         $this->expectException(CreationException::class);
         $restServiceEntity = new NewRestServiceEntity();
@@ -161,45 +172,45 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->createService($restServiceEntity);
     }
 
-    public function testCanCreateControllerServiceNameFromServiceNameSpace()
+    public function testCanCreateControllerServiceNameFromServiceNameSpace(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             'BarConf\V1\Rest\Foo\Bar\Baz\Controller',
             $this->codeRest->createControllerServiceName('Foo\Bar\Baz')
         );
     }
 
-    public function testCanCreateControllerServiceNameFromServiceName()
+    public function testCanCreateControllerServiceNameFromServiceName(): void
     {
-        $this->assertEquals('BarConf\V1\Rest\Foo\Controller', $this->codeRest->createControllerServiceName('Foo'));
+        self::assertEquals('BarConf\V1\Rest\Foo\Controller', $this->codeRest->createControllerServiceName('Foo'));
     }
 
-    public function testCreateResourceClassReturnsClassNameCreated()
+    public function testCreateResourceClassReturnsClassNameCreated(): void
     {
         $resourceClass = $this->codeRest->createResourceClass('Foo');
-        $this->assertEquals('BarConf\V1\Rest\Foo\FooResource', $resourceClass);
+        self::assertEquals('BarConf\V1\Rest\Foo\FooResource', $resourceClass);
     }
 
-    public function testCreateResourceClassCreatesClassFileWithNamedResourceClass()
+    public function testCreateResourceClassCreatesClassFileWithNamedResourceClass(): void
     {
         $resourceClass = $this->codeRest->createResourceClass('Foo');
 
         $className = str_replace($this->module . '\\V1\\Rest\\Foo\\', '', $resourceClass);
         $path      = realpath(__DIR__) . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Foo/' . $className . '.php';
-        $this->assertTrue(file_exists($path));
+        self::assertTrue(file_exists($path));
 
         require_once $path;
 
         $r = new ReflectionClass($resourceClass);
-        $this->assertInstanceOf('ReflectionClass', $r);
+        self::assertInstanceOf('ReflectionClass', $r);
         $parent = $r->getParentClass();
-        $this->assertEquals(AbstractResourceListener::class, $parent->getName());
+        self::assertEquals(AbstractResourceListener::class, $parent->getName());
     }
 
     /**
      * @group feature/psr4
      */
-    public function testCreateResourceClassCreatesClassFileWithNamedResourceClassPSR4()
+    public function testCreateResourceClassCreatesClassFileWithNamedResourceClassPSR4(): void
     {
         $this->module       = 'BazConf';
         $this->moduleEntity = new ModuleEntity($this->module);
@@ -215,95 +226,95 @@ class RestServiceModelTest extends TestCase
 
         $className = str_replace($this->module . '\\V1\\Rest\\Foo\\', '', $resourceClass);
         $path      = realpath(__DIR__) . '/TestAsset/module/BazConf/src/V1/Rest/Foo/' . $className . '.php';
-        $this->assertTrue(file_exists($path));
+        self::assertTrue(file_exists($path));
 
         require_once $path;
 
         $r = new ReflectionClass($resourceClass);
-        $this->assertInstanceOf('ReflectionClass', $r);
+        self::assertInstanceOf('ReflectionClass', $r);
         $parent = $r->getParentClass();
-        $this->assertEquals(AbstractResourceListener::class, $parent->getName());
+        self::assertEquals(AbstractResourceListener::class, $parent->getName());
     }
 
-    public function testCreateResourceClassAddsInvokableToConfiguration()
+    public function testCreateResourceClassAddsInvokableToConfiguration(): void
     {
         $resourceClass = $this->codeRest->createResourceClass('Foo');
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('service_manager', $config);
-        $this->assertArrayHasKey('factories', $config['service_manager']);
-        $this->assertArrayHasKey($resourceClass, $config['service_manager']['factories']);
-        $this->assertEquals($resourceClass . 'Factory', $config['service_manager']['factories'][$resourceClass]);
+        self::assertArrayHasKey('service_manager', $config);
+        self::assertArrayHasKey('factories', $config['service_manager']);
+        self::assertArrayHasKey($resourceClass, $config['service_manager']['factories']);
+        self::assertEquals($resourceClass . 'Factory', $config['service_manager']['factories'][$resourceClass]);
     }
 
-    public function testCreateResourceClassCreateFactory()
+    public function testCreateResourceClassCreateFactory(): void
     {
         $resourceClass = $this->codeRest->createResourceClass('Foo');
 
         $className = str_replace($this->module . '\\V1\\Rest\\Foo\\', '', $resourceClass . 'Factory');
         $path      = realpath(__DIR__) . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Foo/' . $className . '.php';
-        $this->assertTrue(file_exists($path));
+        self::assertTrue(file_exists($path));
     }
 
-    public function testCreateEntityClassReturnsClassNameCreated()
+    public function testCreateEntityClassReturnsClassNameCreated(): void
     {
         $entityClass = $this->codeRest->createEntityClass('Foo');
-        $this->assertEquals('BarConf\V1\Rest\Foo\FooEntity', $entityClass);
+        self::assertEquals('BarConf\V1\Rest\Foo\FooEntity', $entityClass);
     }
 
-    public function testCreateEntityClassCreatesClassFileWithNamedEntityClass()
+    public function testCreateEntityClassCreatesClassFileWithNamedEntityClass(): void
     {
         $entityClass = $this->codeRest->createEntityClass('Foo');
 
         $className = str_replace($this->module . '\\V1\\Rest\\Foo\\', '', $entityClass);
         $path      = realpath(__DIR__) . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Foo/' . $className . '.php';
-        $this->assertTrue(file_exists($path));
+        self::assertTrue(file_exists($path));
 
         require_once $path;
 
         $r = new ReflectionClass($entityClass);
-        $this->assertInstanceOf('ReflectionClass', $r);
-        $this->assertFalse($r->getParentClass());
+        self::assertInstanceOf('ReflectionClass', $r);
+        self::assertFalse($r->getParentClass());
     }
 
-    public function testCreateCollectionClassReturnsClassNameCreated()
+    public function testCreateCollectionClassReturnsClassNameCreated(): void
     {
         $collectionClass = $this->codeRest->createCollectionClass('Foo');
-        $this->assertEquals('BarConf\V1\Rest\Foo\FooCollection', $collectionClass);
+        self::assertEquals('BarConf\V1\Rest\Foo\FooCollection', $collectionClass);
     }
 
-    public function testCreateCollectionClassCreatesClassFileWithNamedCollectionClass()
+    public function testCreateCollectionClassCreatesClassFileWithNamedCollectionClass(): void
     {
         $collectionClass = $this->codeRest->createCollectionClass('Foo');
 
         $className = str_replace($this->module . '\\V1\\Rest\\Foo\\', '', $collectionClass);
         $path      = realpath(__DIR__) . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Foo/' . $className . '.php';
-        $this->assertTrue(file_exists($path));
+        self::assertTrue(file_exists($path));
 
         require_once $path;
 
         $r = new ReflectionClass($collectionClass);
-        $this->assertInstanceOf('ReflectionClass', $r);
+        self::assertInstanceOf('ReflectionClass', $r);
         $parent = $r->getParentClass();
-        $this->assertEquals(Paginator::class, $parent->getName());
+        self::assertEquals(Paginator::class, $parent->getName());
     }
 
-    public function testCreateRouteReturnsNewRouteName()
+    public function testCreateRouteReturnsNewRouteName(): void
     {
         $routeName = $this->codeRest->createRoute('FooBar', '/foo-bar', 'foo_bar_id', 'BarConf\Rest\FooBar\Controller');
-        $this->assertEquals('bar-conf.rest.foo-bar', $routeName);
+        self::assertEquals('bar-conf.rest.foo-bar', $routeName);
     }
 
-    public function testCreateRouteWritesRouteConfiguration()
+    public function testCreateRouteWritesRouteConfiguration(): void
     {
         $routeName = $this->codeRest->createRoute('FooBar', '/foo-bar', 'foo_bar_id', 'BarConf\Rest\FooBar\Controller');
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('router', $config);
-        $this->assertArrayHasKey('routes', $config['router']);
+        self::assertArrayHasKey('router', $config);
+        self::assertArrayHasKey('routes', $config['router']);
         $routes = $config['router']['routes'];
 
-        $this->assertArrayHasKey($routeName, $routes);
+        self::assertArrayHasKey($routeName, $routes);
         $expected = [
             'type'    => 'Segment',
             'options' => [
@@ -313,22 +324,22 @@ class RestServiceModelTest extends TestCase
                 ],
             ],
         ];
-        $this->assertEquals($expected, $routes[$routeName]);
+        self::assertEquals($expected, $routes[$routeName]);
     }
 
-    public function testCreateRouteWritesVersioningConfiguration()
+    public function testCreateRouteWritesVersioningConfiguration(): void
     {
         $routeName = $this->codeRest->createRoute('FooBar', '/foo-bar', 'foo_bar_id', 'BarConf\Rest\FooBar\Controller');
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('router', $config);
-        $this->assertArrayHasKey('routes', $config['router']);
+        self::assertArrayHasKey('router', $config);
+        self::assertArrayHasKey('routes', $config['router']);
         $routes = $config['api-tools-versioning']['uri'];
 
-        $this->assertContains($routeName, $routes);
+        self::assertContains($routeName, $routes);
     }
 
-    public function testCreateRestConfigWritesRestConfiguration()
+    public function testCreateRestConfigWritesRestConfiguration(): void
     {
         $details = $this->getCreationPayload();
         $details->exchangeArray([
@@ -343,8 +354,8 @@ class RestServiceModelTest extends TestCase
         );
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
-        $this->assertArrayHasKey('api-tools-rest', $config);
-        $this->assertArrayHasKey('BarConf\Rest\Foo\Controller', $config['api-tools-rest']);
+        self::assertArrayHasKey('api-tools-rest', $config);
+        self::assertArrayHasKey('BarConf\Rest\Foo\Controller', $config['api-tools-rest']);
         $config = $config['api-tools-rest']['BarConf\Rest\Foo\Controller'];
 
         $expected = [
@@ -361,35 +372,35 @@ class RestServiceModelTest extends TestCase
             'entity_class'               => $details->entityClass,
             'collection_class'           => $details->collectionClass,
         ];
-        $this->assertEquals($expected, $config);
+        self::assertEquals($expected, $config);
     }
 
-    public function testCreateContentNegotiationConfigWritesContentNegotiationConfiguration()
+    public function testCreateContentNegotiationConfigWritesContentNegotiationConfiguration(): void
     {
         $details = $this->getCreationPayload();
         $this->codeRest->createContentNegotiationConfig($details, 'BarConf\Rest\Foo\Controller');
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
-        $this->assertArrayHasKey('api-tools-content-negotiation', $config);
+        self::assertArrayHasKey('api-tools-content-negotiation', $config);
         $config = $config['api-tools-content-negotiation'];
 
-        $this->assertArrayHasKey('controllers', $config);
-        $this->assertEquals([
+        self::assertArrayHasKey('controllers', $config);
+        self::assertEquals([
             'BarConf\Rest\Foo\Controller' => $details->selector,
         ], $config['controllers']);
 
-        $this->assertArrayHasKey('accept_whitelist', $config);
-        $this->assertEquals([
+        self::assertArrayHasKey('accept_whitelist', $config);
+        self::assertEquals([
             'BarConf\Rest\Foo\Controller' => $details->acceptWhitelist,
         ], $config['accept_whitelist'], var_export($config, true));
 
-        $this->assertArrayHasKey('content_type_whitelist', $config);
-        $this->assertEquals([
+        self::assertArrayHasKey('content_type_whitelist', $config);
+        self::assertEquals([
             'BarConf\Rest\Foo\Controller' => $details->contentTypeWhitelist,
         ], $config['content_type_whitelist'], var_export($config, true));
     }
 
-    public function testCreateHalConfigWritesHalConfiguration()
+    public function testCreateHalConfigWritesHalConfiguration(): void
     {
         $details = $this->getCreationPayload();
         $this->codeRest->createHalConfig(
@@ -400,20 +411,20 @@ class RestServiceModelTest extends TestCase
         );
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
-        $this->assertArrayHasKey('api-tools-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        self::assertArrayHasKey('api-tools-hal', $config);
+        self::assertArrayHasKey('metadata_map', $config['api-tools-hal']);
         $config = $config['api-tools-hal']['metadata_map'];
 
-        $this->assertArrayHasKey('BarConf\Rest\Foo\FooEntity', $config);
-        $this->assertEquals([
+        self::assertArrayHasKey('BarConf\Rest\Foo\FooEntity', $config);
+        self::assertEquals([
             'route_identifier_name'  => $details->routeIdentifierName,
             'route_name'             => 'bar-conf.rest.foo',
             'hydrator'               => ObjectPropertyHydrator::class,
             'entity_identifier_name' => 'id',
         ], $config['BarConf\Rest\Foo\FooEntity']);
 
-        $this->assertArrayHasKey('BarConf\Rest\Foo\FooCollection', $config);
-        $this->assertEquals([
+        self::assertArrayHasKey('BarConf\Rest\Foo\FooCollection', $config);
+        self::assertEquals([
             'route_identifier_name'  => $details->routeIdentifierName,
             'route_name'             => 'bar-conf.rest.foo',
             'is_collection'          => true,
@@ -421,83 +432,83 @@ class RestServiceModelTest extends TestCase
         ], $config['BarConf\Rest\Foo\FooCollection']);
     }
 
-    public function testCreateServiceReturnsRestServiceEntityOnSuccess()
+    public function testCreateServiceReturnsRestServiceEntityOnSuccess(): void
     {
         $details = $this->getCreationPayload();
         $result  = $this->codeRest->createService($details);
-        $this->assertInstanceOf(RestServiceEntity::class, $result);
+        self::assertInstanceOf(RestServiceEntity::class, $result);
 
-        $this->assertEquals('BarConf', $result->module);
-        $this->assertEquals('foo', $result->serviceName);
-        $this->assertEquals('BarConf\V1\Rest\Foo\Controller', $result->controllerServiceName);
-        $this->assertEquals('BarConf\V1\Rest\Foo\FooResource', $result->resourceClass);
-        $this->assertEquals('BarConf\V1\Rest\Foo\FooEntity', $result->entityClass);
-        $this->assertEquals('BarConf\V1\Rest\Foo\FooCollection', $result->collectionClass);
-        $this->assertEquals('bar-conf.rest.foo', $result->routeName);
-        $this->assertEquals(
+        self::assertEquals('BarConf', $result->module);
+        self::assertEquals('foo', $result->serviceName);
+        self::assertEquals('BarConf\V1\Rest\Foo\Controller', $result->controllerServiceName);
+        self::assertEquals('BarConf\V1\Rest\Foo\FooResource', $result->resourceClass);
+        self::assertEquals('BarConf\V1\Rest\Foo\FooEntity', $result->entityClass);
+        self::assertEquals('BarConf\V1\Rest\Foo\FooCollection', $result->collectionClass);
+        self::assertEquals('bar-conf.rest.foo', $result->routeName);
+        self::assertEquals(
             ['application/vnd.bar-conf.v1+json', 'application/hal+json', 'application/json'],
             $result->acceptWhitelist
         );
-        $this->assertEquals(
+        self::assertEquals(
             ['application/vnd.bar-conf.v1+json', 'application/json'],
             $result->contentTypeWhitelist
         );
     }
 
-    public function testCreateServiceUsesDefaultContentNegotiation()
+    public function testCreateServiceUsesDefaultContentNegotiation(): void
     {
         $payload = new NewRestServiceEntity();
         $payload->exchangeArray([
             'service_name' => 'foo',
         ]);
         $result = $this->codeRest->createService($payload);
-        $this->assertInstanceOf(RestServiceEntity::class, $result);
-        $this->assertEquals(
+        self::assertInstanceOf(RestServiceEntity::class, $result);
+        self::assertEquals(
             ['application/vnd.bar-conf.v1+json', 'application/hal+json', 'application/json'],
             $result->acceptWhitelist
         );
-        $this->assertEquals(
+        self::assertEquals(
             ['application/vnd.bar-conf.v1+json', 'application/json'],
             $result->contentTypeWhitelist
         );
     }
 
-    public function testCanFetchServiceAfterCreation()
+    public function testCanFetchServiceAfterCreation(): void
     {
         $details = $this->getCreationPayload();
-        $result  = $this->codeRest->createService($details);
+        $this->codeRest->createService($details);
 
         $service = $this->codeRest->fetch('BarConf\V1\Rest\Foo\Controller');
-        $this->assertInstanceOf(RestServiceEntity::class, $service);
+        self::assertInstanceOf(RestServiceEntity::class, $service);
 
-        $this->assertEquals('BarConf', $service->module);
-        $this->assertEquals('foo', $service->serviceName);
-        $this->assertEquals('BarConf\V1\Rest\Foo\Controller', $service->controllerServiceName);
-        $this->assertEquals('BarConf\V1\Rest\Foo\FooResource', $service->resourceClass);
-        $this->assertEquals('BarConf\V1\Rest\Foo\FooEntity', $service->entityClass);
-        $this->assertEquals('BarConf\V1\Rest\Foo\FooCollection', $service->collectionClass);
-        $this->assertEquals('bar-conf.rest.foo', $service->routeName);
-        $this->assertEquals('/api/foo[/:foo_id]', $service->routeMatch);
-        $this->assertEquals(ObjectPropertyHydrator::class, $service->hydratorName);
+        self::assertEquals('BarConf', $service->module);
+        self::assertEquals('foo', $service->serviceName);
+        self::assertEquals('BarConf\V1\Rest\Foo\Controller', $service->controllerServiceName);
+        self::assertEquals('BarConf\V1\Rest\Foo\FooResource', $service->resourceClass);
+        self::assertEquals('BarConf\V1\Rest\Foo\FooEntity', $service->entityClass);
+        self::assertEquals('BarConf\V1\Rest\Foo\FooCollection', $service->collectionClass);
+        self::assertEquals('bar-conf.rest.foo', $service->routeName);
+        self::assertEquals('/api/foo[/:foo_id]', $service->routeMatch);
+        self::assertEquals(ObjectPropertyHydrator::class, $service->hydratorName);
     }
 
-    public function testFetchServiceUsesEntityAndCollectionClassesDiscoveredInRestConfiguration()
+    public function testFetchServiceUsesEntityAndCollectionClassesDiscoveredInRestConfiguration(): void
     {
         $details = $this->getCreationPayload();
         $details->exchangeArray([
             'entity_class'     => Entity::class,
             'collection_class' => Collection::class,
         ]);
-        $result = $this->codeRest->createService($details);
+        $this->codeRest->createService($details);
 
         $service = $this->codeRest->fetch('BarConf\V1\Rest\Foo\Controller');
-        $this->assertInstanceOf(RestServiceEntity::class, $service);
+        self::assertInstanceOf(RestServiceEntity::class, $service);
 
-        $this->assertEquals(Entity::class, $service->entityClass);
-        $this->assertEquals(Collection::class, $service->collectionClass);
+        self::assertEquals(Entity::class, $service->entityClass);
+        self::assertEquals(Collection::class, $service->collectionClass);
     }
 
-    public function testCanUpdateRouteForExistingService()
+    public function testCanUpdateRouteForExistingService(): void
     {
         $details  = $this->getCreationPayload();
         $original = $this->codeRest->createService($details);
@@ -511,16 +522,16 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateRoute($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('router', $config);
-        $this->assertArrayHasKey('routes', $config['router']);
-        $this->assertArrayHasKey($original->routeName, $config['router']['routes']);
+        self::assertArrayHasKey('router', $config);
+        self::assertArrayHasKey('routes', $config['router']);
+        self::assertArrayHasKey($original->routeName, $config['router']['routes']);
         $routeConfig = $config['router']['routes'][$original->routeName];
-        $this->assertArrayHasKey('options', $routeConfig);
-        $this->assertArrayHasKey('route', $routeConfig['options']);
-        $this->assertEquals('/api/bar/foo', $routeConfig['options']['route']);
+        self::assertArrayHasKey('options', $routeConfig);
+        self::assertArrayHasKey('route', $routeConfig['options']);
+        self::assertEquals('/api/bar/foo', $routeConfig['options']['route']);
     }
 
-    public function testCanUpdateRestConfigForExistingService()
+    public function testCanUpdateRestConfigForExistingService(): void
     {
         $details  = $this->getCreationPayload();
         $original = $this->codeRest->createService($details);
@@ -540,16 +551,16 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateRestConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('api-tools-rest', $config);
-        $this->assertArrayHasKey($original->controllerServiceName, $config['api-tools-rest']);
+        self::assertArrayHasKey('api-tools-rest', $config);
+        self::assertArrayHasKey($original->controllerServiceName, $config['api-tools-rest']);
         $test = $config['api-tools-rest'][$original->controllerServiceName];
 
         foreach ($options as $key => $value) {
-            $this->assertEquals($value, $test[$key]);
+            self::assertEquals($value, $test[$key]);
         }
     }
 
-    public function testCanUpdateContentNegotiationConfigForExistingService()
+    public function testCanUpdateContentNegotiationConfigForExistingService(): void
     {
         $details  = $this->getCreationPayload();
         $original = $this->codeRest->createService($details);
@@ -565,29 +576,29 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateContentNegotiationConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('api-tools-content-negotiation', $config);
+        self::assertArrayHasKey('api-tools-content-negotiation', $config);
         $config = $config['api-tools-content-negotiation'];
 
-        $this->assertArrayHasKey('controllers', $config);
-        $this->assertArrayHasKey($original->controllerServiceName, $config['controllers']);
-        $this->assertEquals($options['selector'], $config['controllers'][$original->controllerServiceName]);
+        self::assertArrayHasKey('controllers', $config);
+        self::assertArrayHasKey($original->controllerServiceName, $config['controllers']);
+        self::assertEquals($options['selector'], $config['controllers'][$original->controllerServiceName]);
 
-        $this->assertArrayHasKey('accept_whitelist', $config);
-        $this->assertArrayHasKey($original->controllerServiceName, $config['accept_whitelist']);
-        $this->assertEquals(
+        self::assertArrayHasKey('accept_whitelist', $config);
+        self::assertArrayHasKey($original->controllerServiceName, $config['accept_whitelist']);
+        self::assertEquals(
             $options['accept_whitelist'],
             $config['accept_whitelist'][$original->controllerServiceName]
         );
 
-        $this->assertArrayHasKey('content_type_whitelist', $config);
-        $this->assertArrayHasKey($original->controllerServiceName, $config['content_type_whitelist']);
-        $this->assertEquals(
+        self::assertArrayHasKey('content_type_whitelist', $config);
+        self::assertArrayHasKey($original->controllerServiceName, $config['content_type_whitelist']);
+        self::assertEquals(
             $options['content_type_whitelist'],
             $config['content_type_whitelist'][$original->controllerServiceName]
         );
     }
 
-    public function testCanUpdateHalConfigForExistingService()
+    public function testCanUpdateHalConfigForExistingService(): void
     {
         $details  = $this->getCreationPayload();
         $original = $this->codeRest->createService($details);
@@ -603,34 +614,34 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateHalConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('api-tools-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        self::assertArrayHasKey('api-tools-hal', $config);
+        self::assertArrayHasKey('metadata_map', $config['api-tools-hal']);
         $config = $config['api-tools-hal']['metadata_map'];
 
         $entityName     = $original->entityClass;
         $collectionName = $original->collectionClass;
-        $this->assertArrayHasKey($entityName, $config);
-        $this->assertArrayHasKey($collectionName, $config);
+        self::assertArrayHasKey($entityName, $config);
+        self::assertArrayHasKey($collectionName, $config);
 
         $entityConfig     = $config[$entityName];
         $collectionConfig = $config[$collectionName];
 
-        $this->assertArrayHasKey('route_identifier_name', $entityConfig);
-        $this->assertEquals($options['route_identifier_name'], $entityConfig['route_identifier_name']);
-        $this->assertArrayHasKey('route_identifier_name', $collectionConfig);
-        $this->assertEquals($options['route_identifier_name'], $collectionConfig['route_identifier_name']);
+        self::assertArrayHasKey('route_identifier_name', $entityConfig);
+        self::assertEquals($options['route_identifier_name'], $entityConfig['route_identifier_name']);
+        self::assertArrayHasKey('route_identifier_name', $collectionConfig);
+        self::assertEquals($options['route_identifier_name'], $collectionConfig['route_identifier_name']);
 
-        $this->assertArrayHasKey('route_name', $entityConfig);
-        $this->assertEquals($options['route_name'], $entityConfig['route_name']);
-        $this->assertArrayHasKey('route_name', $collectionConfig);
-        $this->assertEquals($options['route_name'], $collectionConfig['route_name']);
+        self::assertArrayHasKey('route_name', $entityConfig);
+        self::assertEquals($options['route_name'], $entityConfig['route_name']);
+        self::assertArrayHasKey('route_name', $collectionConfig);
+        self::assertEquals($options['route_name'], $collectionConfig['route_name']);
 
-        $this->assertArrayHasKey('hydrator', $entityConfig);
-        $this->assertEquals($options['hydrator_name'], $entityConfig['hydrator']);
-        $this->assertArrayNotHasKey('hydrator', $collectionConfig);
+        self::assertArrayHasKey('hydrator', $entityConfig);
+        self::assertEquals($options['hydrator_name'], $entityConfig['hydrator']);
+        self::assertArrayNotHasKey('hydrator', $collectionConfig);
     }
 
-    public function testCanUpdateHalConfigForExistingServiceAndProvideNewEntityAndCollectionClasses()
+    public function testCanUpdateHalConfigForExistingServiceAndProvideNewEntityAndCollectionClasses(): void
     {
         $details  = $this->getCreationPayload();
         $original = $this->codeRest->createService($details);
@@ -648,38 +659,38 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateHalConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('api-tools-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        self::assertArrayHasKey('api-tools-hal', $config);
+        self::assertArrayHasKey('metadata_map', $config['api-tools-hal']);
         $config = $config['api-tools-hal']['metadata_map'];
 
         $entityName     = $patch->entityClass;
         $collectionName = $patch->collectionClass;
 
-        $this->assertArrayHasKey($entityName, $config);
-        $this->assertArrayHasKey($collectionName, $config);
+        self::assertArrayHasKey($entityName, $config);
+        self::assertArrayHasKey($collectionName, $config);
 
         $entityConfig     = $config[$entityName];
         $collectionConfig = $config[$collectionName];
 
-        $this->assertArrayHasKey('route_identifier_name', $entityConfig);
-        $this->assertEquals($options['route_identifier_name'], $entityConfig['route_identifier_name']);
-        $this->assertArrayHasKey('route_identifier_name', $collectionConfig);
-        $this->assertEquals($options['route_identifier_name'], $collectionConfig['route_identifier_name']);
+        self::assertArrayHasKey('route_identifier_name', $entityConfig);
+        self::assertEquals($options['route_identifier_name'], $entityConfig['route_identifier_name']);
+        self::assertArrayHasKey('route_identifier_name', $collectionConfig);
+        self::assertEquals($options['route_identifier_name'], $collectionConfig['route_identifier_name']);
 
-        $this->assertArrayHasKey('route_name', $entityConfig);
-        $this->assertEquals($options['route_name'], $entityConfig['route_name']);
-        $this->assertArrayHasKey('route_name', $collectionConfig);
-        $this->assertEquals($options['route_name'], $collectionConfig['route_name']);
+        self::assertArrayHasKey('route_name', $entityConfig);
+        self::assertEquals($options['route_name'], $entityConfig['route_name']);
+        self::assertArrayHasKey('route_name', $collectionConfig);
+        self::assertEquals($options['route_name'], $collectionConfig['route_name']);
 
-        $this->assertArrayHasKey('hydrator', $entityConfig);
-        $this->assertEquals($options['hydrator_name'], $entityConfig['hydrator']);
-        $this->assertArrayNotHasKey('hydrator', $collectionConfig);
+        self::assertArrayHasKey('hydrator', $entityConfig);
+        self::assertEquals($options['hydrator_name'], $entityConfig['hydrator']);
+        self::assertArrayNotHasKey('hydrator', $collectionConfig);
     }
 
-    public function testUpdateServiceReturnsUpdatedRepresentation()
+    public function testUpdateServiceReturnsUpdatedRepresentation(): void
     {
-        $details  = $this->getCreationPayload();
-        $original = $this->codeRest->createService($details);
+        $details = $this->getCreationPayload();
+        $this->codeRest->createService($details);
 
         $updates = [
             'route_match'                => '/api/bar/foo',
@@ -698,21 +709,21 @@ class RestServiceModelTest extends TestCase
         ], $updates));
 
         $updated = $this->codeRest->updateService($patch);
-        $this->assertInstanceOf(RestServiceEntity::class, $updated);
+        self::assertInstanceOf(RestServiceEntity::class, $updated);
 
         $values = $updated->getArrayCopy();
 
         foreach ($updates as $key => $value) {
-            $this->assertArrayHasKey($key, $values);
+            self::assertArrayHasKey($key, $values);
             if ($key === 'route_match') {
-                $this->assertEquals(0, strpos($value, $values[$key]));
+                self::assertEquals(0, strpos($value, $values[$key]));
                 continue;
             }
-            $this->assertEquals($value, $values[$key]);
+            self::assertEquals($value, $values[$key]);
         }
     }
 
-    public function testFetchListenersCanReturnAlternateEntities()
+    public function testFetchListenersCanReturnAlternateEntities(): void
     {
         $details = $this->getCreationPayload();
         $this->codeRest->createService($details);
@@ -723,18 +734,18 @@ class RestServiceModelTest extends TestCase
         });
 
         $result = $this->codeRest->fetch('BarConf\V1\Rest\Foo\Controller');
-        $this->assertSame($alternateEntity, $result);
+        self::assertSame($alternateEntity, $result);
     }
 
-    public function testCanDeleteAService()
+    public function testCanDeleteAService(): void
     {
         $details = $this->getCreationPayload();
         $service = $this->codeRest->createService($details);
 
-        $this->assertTrue($this->codeRest->deleteService($service->controllerServiceName));
+        self::assertTrue($this->codeRest->deleteService($service->controllerServiceName));
 
         $fooPath = __DIR__ . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Foo';
-        $this->assertTrue(file_exists($fooPath));
+        self::assertTrue(file_exists($fooPath));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('find');
@@ -745,7 +756,7 @@ class RestServiceModelTest extends TestCase
     /**
      * @group feature/psr4
      */
-    public function testCanDeleteAServicePSR4()
+    public function testCanDeleteAServicePSR4(): void
     {
         $this->module       = 'BazConf';
         $this->moduleEntity = new ModuleEntity($this->module);
@@ -760,10 +771,10 @@ class RestServiceModelTest extends TestCase
         $details = $this->getCreationPayload();
         $service = $this->codeRest->createService($details);
 
-        $this->assertTrue($this->codeRest->deleteService($service->controllerServiceName));
+        self::assertTrue($this->codeRest->deleteService($service->controllerServiceName));
 
         $fooPath = __DIR__ . '/TestAsset/module/BazConf/src/V1/Rest/Foo';
-        $this->assertTrue(file_exists($fooPath));
+        self::assertTrue(file_exists($fooPath));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('find');
@@ -771,21 +782,21 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->fetch($service->controllerServiceName);
     }
 
-    public function testCanDeleteAServiceRecursive()
+    public function testCanDeleteAServiceRecursive(): void
     {
         $details = $this->getCreationPayload();
         $service = $this->codeRest->createService($details);
 
-        $this->assertTrue($this->codeRest->deleteService($service->controllerServiceName, true));
+        self::assertTrue($this->codeRest->deleteService($service->controllerServiceName, true));
 
         $fooPath = __DIR__ . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Foo';
-        $this->assertFalse(file_exists($fooPath));
+        self::assertFalse(file_exists($fooPath));
     }
 
     /**
      * @group feature/psr4
      */
-    public function testCanDeleteAServiceRecursivePSR4()
+    public function testCanDeleteAServiceRecursivePSR4(): void
     {
         $this->module       = 'BazConf';
         $this->moduleEntity = new ModuleEntity($this->module);
@@ -800,48 +811,48 @@ class RestServiceModelTest extends TestCase
         $details = $this->getCreationPayload();
         $service = $this->codeRest->createService($details);
 
-        $this->assertTrue($this->codeRest->deleteService($service->controllerServiceName, true));
+        self::assertTrue($this->codeRest->deleteService($service->controllerServiceName, true));
 
         $fooPath = __DIR__ . '/TestAsset/module/BazConf/src/V1/Rest/Foo';
-        $this->assertFalse(file_exists($fooPath));
+        self::assertFalse(file_exists($fooPath));
     }
 
     /**
      * @depends testCanDeleteAService
      */
-    public function testDeletingAServiceRemovesAllRelatedConfigKeys()
+    public function testDeletingAServiceRemovesAllRelatedConfigKeys(): void
     {
         $details = $this->getCreationPayload();
         $service = $this->codeRest->createService($details);
 
-        $this->assertTrue($this->codeRest->deleteService($service->controllerServiceName));
+        self::assertTrue($this->codeRest->deleteService($service->controllerServiceName));
         $path   = __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
         $config = include $path;
-        $this->assertInternalType('array', $config);
-        $this->assertInternalType('array', $config['api-tools-rest']);
-        $this->assertInternalType('array', $config['api-tools-versioning']);
-        $this->assertInternalType('array', $config['router']['routes']);
-        $this->assertInternalType('array', $config['api-tools-content-negotiation']);
-        $this->assertInternalType('array', $config['service_manager']);
-        $this->assertInternalType('array', $config['api-tools-hal']);
+        self::assertIsArray($config);
+        self::assertIsArray($config['api-tools-rest']);
+        self::assertIsArray($config['api-tools-versioning']);
+        self::assertIsArray($config['router']['routes']);
+        self::assertIsArray($config['api-tools-content-negotiation']);
+        self::assertIsArray($config['service_manager']);
+        self::assertIsArray($config['api-tools-hal']);
 
-        // @codingStandardsIgnoreStart
-        $this->assertArrayNotHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-rest'], 'REST entry not deleted');
-        $this->assertArrayNotHasKey('bar-conf.rest.foo', $config['router']['routes'], 'Route not deleted');
-        $this->assertNotContains('bar-conf.rest.foo', $config['api-tools-versioning']['uri'], 'Versioning not deleted');
-        $this->assertArrayNotHasKey('BarConf\\V1\\Rest\\Foo\\Controller', $config['api-tools-content-negotiation']['controllers'], 'Content Negotiation controllers entry not deleted');
-        $this->assertArrayNotHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-content-negotiation']['accept_whitelist'], 'Content Negotiation accept whitelist entry not deleted');
-        $this->assertArrayNotHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-content-negotiation']['content_type_whitelist'], 'Content Negotiation content-type whitelist entry not deleted');
-        // @codingStandardsIgnoreEnd
-        foreach ($config['service_manager'] as $serviceType => $services) {
-            $this->assertArrayNotHasKey('BarConf\V1\Rest\Foo\FooResource', $services, 'Service entry not deleted');
+        // phpcs:disable
+        self::assertArrayNotHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-rest'], 'REST entry not deleted');
+        self::assertArrayNotHasKey('bar-conf.rest.foo', $config['router']['routes'], 'Route not deleted');
+        self::assertNotContains('bar-conf.rest.foo', $config['api-tools-versioning']['uri'], 'Versioning not deleted');
+        self::assertArrayNotHasKey('BarConf\\V1\\Rest\\Foo\\Controller', $config['api-tools-content-negotiation']['controllers'], 'Content Negotiation controllers entry not deleted');
+        self::assertArrayNotHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-content-negotiation']['accept_whitelist'], 'Content Negotiation accept whitelist entry not deleted');
+        self::assertArrayNotHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-content-negotiation']['content_type_whitelist'], 'Content Negotiation content-type whitelist entry not deleted');
+        // phpcs:enable
+        foreach ($config['service_manager'] as $services) {
+            self::assertArrayNotHasKey('BarConf\V1\Rest\Foo\FooResource', $services, 'Service entry not deleted');
         }
-        $this->assertArrayNotHasKey(
+        self::assertArrayNotHasKey(
             'BarConf\V1\Rest\Foo\FooEntity',
             $config['api-tools-hal']['metadata_map'],
             'HAL entity not deleted'
         );
-        $this->assertArrayNotHasKey(
+        self::assertArrayNotHasKey(
             'BarConf\V1\Rest\Foo\FooCollection',
             $config['api-tools-hal']['metadata_map'],
             'HAL collection not deleted'
@@ -851,34 +862,34 @@ class RestServiceModelTest extends TestCase
     /**
      * @depends testDeletingAServiceRemovesAllRelatedConfigKeys
      */
-    public function testDeletingNewerVersionOfServiceDoesNotRemoveRouteOrVersioningConfiguration()
+    public function testDeletingNewerVersionOfServiceDoesNotRemoveRouteOrVersioningConfiguration(): void
     {
         $details = $this->getCreationPayload();
         $service = $this->codeRest->createService($details);
 
         $path            = __DIR__ . '/TestAsset/module/BarConf';
         $versioningModel = new VersioningModel($this->resource->factory('BarConf'));
-        $this->assertTrue($versioningModel->createVersion('BarConf', 2));
+        self::assertTrue($versioningModel->createVersion('BarConf', 2));
 
         $serviceName = str_replace('1', '2', $service->controllerServiceName);
-        $service     = $this->codeRest->fetch($serviceName);
-        $this->assertTrue($this->codeRest->deleteService($serviceName));
+        $this->codeRest->fetch($serviceName);
+        self::assertTrue($this->codeRest->deleteService($serviceName));
 
         $config = include $path . '/config/module.config.php';
-        $this->assertInternalType('array', $config);
-        $this->assertInternalType('array', $config['api-tools-versioning']);
-        $this->assertInternalType('array', $config['router']['routes']);
+        self::assertIsArray($config);
+        self::assertIsArray($config['api-tools-versioning']);
+        self::assertIsArray($config['router']['routes']);
 
-        $this->assertArrayHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-rest']);
-        $this->assertArrayNotHasKey('BarConf\V2\Rest\Foo\Controller', $config['api-tools-rest']);
-        $this->assertArrayHasKey('bar-conf.rest.foo', $config['router']['routes'], 'Route DELETED');
-        $this->assertContains('bar-conf.rest.foo', $config['api-tools-versioning']['uri'], 'Versioning DELETED');
+        self::assertArrayHasKey('BarConf\V1\Rest\Foo\Controller', $config['api-tools-rest']);
+        self::assertArrayNotHasKey('BarConf\V2\Rest\Foo\Controller', $config['api-tools-rest']);
+        self::assertArrayHasKey('bar-conf.rest.foo', $config['router']['routes'], 'Route DELETED');
+        self::assertContains('bar-conf.rest.foo', $config['api-tools-versioning']['uri'], 'Versioning DELETED');
     }
 
     /**
      * @group skeleton-37
      */
-    public function testUpdateHalConfigShouldNotRemoveIsCollectionKey()
+    public function testUpdateHalConfigShouldNotRemoveIsCollectionKey(): void
     {
         $details  = $this->getCreationPayload();
         $original = $this->codeRest->createService($details);
@@ -894,22 +905,22 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateHalConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('api-tools-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        self::assertArrayHasKey('api-tools-hal', $config);
+        self::assertArrayHasKey('metadata_map', $config['api-tools-hal']);
         $config = $config['api-tools-hal']['metadata_map'];
 
         $collectionName = $original->collectionClass;
-        $this->assertArrayHasKey($collectionName, $config);
+        self::assertArrayHasKey($collectionName, $config);
 
         $collectionConfig = $config[$collectionName];
-        $this->assertArrayHasKey('is_collection', $collectionConfig);
-        $this->assertTrue($collectionConfig['is_collection']);
+        self::assertArrayHasKey('is_collection', $collectionConfig);
+        self::assertTrue($collectionConfig['is_collection']);
     }
 
     /**
      * @group 76
      */
-    public function testUpdateHalConfigShouldKeepExistingKeysIntact()
+    public function testUpdateHalConfigShouldKeepExistingKeysIntact(): void
     {
         $details  = $this->getCreationPayload();
         $original = $this->codeRest->createService($details);
@@ -924,36 +935,35 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateHalConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('api-tools-hal', $config);
-        $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
+        self::assertArrayHasKey('api-tools-hal', $config);
+        self::assertArrayHasKey('metadata_map', $config['api-tools-hal']);
         $config = $config['api-tools-hal']['metadata_map'];
 
         $entityName     = $original->entityClass;
         $collectionName = $original->collectionClass;
-        $this->assertArrayHasKey($entityName, $config);
-        $this->assertArrayHasKey($collectionName, $config);
+        self::assertArrayHasKey($entityName, $config);
+        self::assertArrayHasKey($collectionName, $config);
 
         $entityConfig = $config[$entityName];
-        $this->assertArrayHasKey('entity_identifier_name', $entityConfig);
-        $this->assertArrayHasKey('route_identifier_name', $entityConfig);
-        $this->assertArrayHasKey('route_name', $entityConfig);
-        $this->assertEquals($options['entity_identifier_name'], $entityConfig['entity_identifier_name']);
-        $this->assertEquals($original->routeIdentifierName, $entityConfig['route_identifier_name']);
-        $this->assertEquals($original->routeName, $entityConfig['route_name']);
+        self::assertArrayHasKey('entity_identifier_name', $entityConfig);
+        self::assertArrayHasKey('route_identifier_name', $entityConfig);
+        self::assertArrayHasKey('route_name', $entityConfig);
+        self::assertEquals($options['entity_identifier_name'], $entityConfig['entity_identifier_name']);
+        self::assertEquals($original->routeIdentifierName, $entityConfig['route_identifier_name']);
+        self::assertEquals($original->routeName, $entityConfig['route_name']);
 
-        $collectionConfig = $config[$collectionName];
-        $this->assertArrayHasKey('entity_identifier_name', $entityConfig);
-        $this->assertArrayHasKey('route_identifier_name', $entityConfig);
-        $this->assertArrayHasKey('route_name', $entityConfig);
-        $this->assertEquals($options['entity_identifier_name'], $entityConfig['entity_identifier_name']);
-        $this->assertEquals($original->routeIdentifierName, $entityConfig['route_identifier_name']);
-        $this->assertEquals($original->routeName, $entityConfig['route_name']);
+        self::assertArrayHasKey('entity_identifier_name', $entityConfig);
+        self::assertArrayHasKey('route_identifier_name', $entityConfig);
+        self::assertArrayHasKey('route_name', $entityConfig);
+        self::assertEquals($options['entity_identifier_name'], $entityConfig['entity_identifier_name']);
+        self::assertEquals($original->routeIdentifierName, $entityConfig['route_identifier_name']);
+        self::assertEquals($original->routeName, $entityConfig['route_name']);
     }
 
     /**
      * @group 72
      */
-    public function testCanRemoveAllHttpVerbsWhenUpdating()
+    public function testCanRemoveAllHttpVerbsWhenUpdating(): void
     {
         $details  = $this->getCreationPayload();
         $original = $this->codeRest->createService($details);
@@ -968,18 +978,18 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateRestConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('api-tools-rest', $config);
-        $this->assertArrayHasKey($original->controllerServiceName, $config['api-tools-rest']);
+        self::assertArrayHasKey('api-tools-rest', $config);
+        self::assertArrayHasKey($original->controllerServiceName, $config['api-tools-rest']);
         $test = $config['api-tools-rest'][$original->controllerServiceName];
 
-        $this->assertEquals([], $test['collection_http_methods']);
-        $this->assertEquals([], $test['entity_http_methods']);
+        self::assertEquals([], $test['collection_http_methods']);
+        self::assertEquals([], $test['entity_http_methods']);
     }
 
     /**
      * @group 170
      */
-    public function testUpdateRestWillUpdateCollectionName()
+    public function testUpdateRestWillUpdateCollectionName(): void
     {
         $details  = $this->getCreationPayload();
         $original = $this->codeRest->createService($details);
@@ -993,43 +1003,43 @@ class RestServiceModelTest extends TestCase
         $this->codeRest->updateRestConfig($original, $patch);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
-        $this->assertArrayHasKey('api-tools-rest', $config);
-        $this->assertArrayHasKey($original->controllerServiceName, $config['api-tools-rest']);
+        self::assertArrayHasKey('api-tools-rest', $config);
+        self::assertArrayHasKey($original->controllerServiceName, $config['api-tools-rest']);
         $test = $config['api-tools-rest'][$original->controllerServiceName];
 
         foreach ($options as $key => $value) {
-            $this->assertEquals($value, $test[$key]);
+            self::assertEquals($value, $test[$key]);
         }
     }
 
     /**
      * @see https://github.com/zfcampus/zf-apigility-admin-ui/issues/23
      */
-    public function testServiceExistsThrowExceptionAndLeaveConfigAsIs()
+    public function testServiceExistsThrowExceptionAndLeaveConfigAsIs(): void
     {
         $details = $this->getCreationPayload();
         $result  = $this->codeRest->createService($details);
-        $this->assertInstanceOf(RestServiceEntity::class, $result);
+        self::assertInstanceOf(RestServiceEntity::class, $result);
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
         // create a second service with the same name and data
         try {
             $result = $this->codeRest->createService($details);
-            $this->fail('Should not have created service due to duplicate existing already');
+            self::fail('Should not have created service due to duplicate existing already');
         } catch (RuntimeException $e) {
             $config2 = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
             // check the configuration is unchanged
-            $this->assertEquals($config, $config2);
+            self::assertEquals($config, $config2);
         }
     }
 
     /**
      * @see https://github.com/zfcampus/zf-apigility-admin/issues/49
      */
-    public function testCreateServiceWithUrlAlreadyExist()
+    public function testCreateServiceWithUrlAlreadyExist(): void
     {
-        $details  = $this->getCreationPayload();
-        $original = $this->codeRest->createService($details);
+        $details = $this->getCreationPayload();
+        $this->codeRest->createService($details);
 
         // Create a new REST entity with same URL match
         $payload                 = $details->getArrayCopy();
@@ -1044,10 +1054,10 @@ class RestServiceModelTest extends TestCase
     /**
      * @see https://github.com/zfcampus/zf-apigility-admin/issues/49
      */
-    public function testUpdateServiceWithUrlAlreadyExist()
+    public function testUpdateServiceWithUrlAlreadyExist(): void
     {
-        $details  = $this->getCreationPayload();
-        $original = $this->codeRest->createService($details);
+        $details = $this->getCreationPayload();
+        $this->codeRest->createService($details);
 
         // Create a new REST entity
         $payload                          = $details->getArrayCopy();

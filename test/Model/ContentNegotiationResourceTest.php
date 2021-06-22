@@ -25,7 +25,16 @@ use function unlink;
 
 class ContentNegotiationResourceTest extends TestCase
 {
-    public function setUp()
+    /** @var string */
+    private $configPath;
+
+    /** @var string */
+    private $globalConfigPath;
+
+    /** @var ConfigWriter */
+    private $configWriter;
+
+    public function setUp(): void
     {
         $this->configPath       = sys_get_temp_dir() . '/api-tools-admin/config';
         $this->globalConfigPath = $this->configPath . '/global.php';
@@ -57,6 +66,9 @@ class ContentNegotiationResourceTest extends TestCase
         }
     }
 
+    /**
+     * @param array<string, mixed> $global
+     */
     public function createModelFromConfigArray(array $global): ContentNegotiationModel
     {
         $this->configWriter->toFile($this->globalConfigPath, $global);
@@ -64,12 +76,15 @@ class ContentNegotiationResourceTest extends TestCase
         return new ContentNegotiationModel($globalConfig);
     }
 
+    /**
+     * @param array<string, mixed> $global
+     */
     public function createResourceFromConfigArray(array $global): ContentNegotiationResource
     {
         return new ContentNegotiationResource($this->createModelFromConfigArray($global));
     }
 
-    public function testCreateShouldAcceptContentNameAndReturnNewEntity()
+    public function testCreateShouldAcceptContentNameAndReturnNewEntity(): void
     {
         $data         = ['content_name' => 'Test'];
         $resource     = $this->createResourceFromConfigArray([]);
@@ -79,11 +94,11 @@ class ContentNegotiationResourceTest extends TestCase
 
         $entity = $resource->create([]);
 
-        $this->assertInstanceOf(ContentNegotiationEntity::class, $entity);
-        $this->assertEquals('Test', $entity->name);
+        self::assertInstanceOf(ContentNegotiationEntity::class, $entity);
+        self::assertEquals('Test', $entity->name);
     }
 
-    public function testUpdateShouldAcceptContentNameAndSelectorsAndReturnUpdatedEntity()
+    public function testUpdateShouldAcceptContentNameAndSelectorsAndReturnUpdatedEntity(): void
     {
         $data         = ['content_name' => 'Test'];
         $resource     = $this->createResourceFromConfigArray([]);
@@ -91,7 +106,7 @@ class ContentNegotiationResourceTest extends TestCase
         $createFilter->setData($data);
         $resource->setInputFilter($createFilter);
 
-        $entity = $resource->create([]);
+        $resource->create([]);
 
         $data         = [
             'selectors' => [
@@ -106,8 +121,8 @@ class ContentNegotiationResourceTest extends TestCase
         $resource->setInputFilter($updateFilter);
 
         $entity = $resource->patch('Test', []);
-        $this->assertInstanceOf(ContentNegotiationEntity::class, $entity);
-        $this->assertEquals('Test', $entity->name);
-        $this->assertEquals($data['selectors'], $entity->config);
+        self::assertInstanceOf(ContentNegotiationEntity::class, $entity);
+        self::assertEquals('Test', $entity->name);
+        self::assertEquals($data['selectors'], $entity->config);
     }
 }

@@ -14,15 +14,18 @@ use PHPUnit\Framework\TestCase;
 
 class SourceControllerTest extends TestCase
 {
-    public function setUp()
+    /** @var SourceController */
+    private $controller;
+
+    public function setUp(): void
     {
-        $this->moduleManager  = new ModuleManager([]);
-        $this->moduleResource = new ModuleModel(
-            $this->moduleManager,
+        $moduleManager    = new ModuleManager([]);
+        $moduleResource   = new ModuleModel(
+            $moduleManager,
             [],
             []
         );
-        $this->controller     = new SourceController($this->moduleResource);
+        $this->controller = new SourceController($moduleResource);
     }
 
     /** @psalm-return array<array-key, array{0: string}> */
@@ -39,18 +42,18 @@ class SourceControllerTest extends TestCase
     /**
      * @dataProvider invalidRequestMethods
      */
-    public function testProcessWithInvalidRequestMethodReturnsApiProblemModel(string $method)
+    public function testProcessWithInvalidRequestMethodReturnsApiProblemModel(string $method): void
     {
         $request = new Request();
         $request->setMethod($method);
         $this->controller->setRequest($request);
         $result = $this->controller->sourceAction();
-        $this->assertInstanceOf(ApiProblemModel::class, $result);
+        self::assertInstanceOf(ApiProblemModel::class, $result);
         $apiProblem = $result->getApiProblem();
-        $this->assertEquals(405, $apiProblem->status);
+        self::assertEquals(405, $apiProblem->status);
     }
 
-    public function testProcessGetRequest()
+    public function testProcessGetRequest(): void
     {
         $moduleManager = $this->getMockBuilder(ModuleManager::class)
                                ->disableOriginalConstructor()
@@ -70,9 +73,9 @@ class SourceControllerTest extends TestCase
         $controller->setRequest($request);
         $result = $controller->sourceAction();
 
-        $this->assertTrue($result->getVariable('source') !== '');
-        $this->assertTrue($result->getVariable('file') !== '');
-        $this->assertEquals($result->getVariable('module'), $request->getQuery()->module);
-        $this->assertEquals($result->getVariable('class'), $request->getQuery()->class);
+        self::assertTrue($result->getVariable('source') !== '');
+        self::assertTrue($result->getVariable('file') !== '');
+        self::assertEquals($result->getVariable('module'), $request->getQuery()->module);
+        self::assertEquals($result->getVariable('class'), $request->getQuery()->class);
     }
 }

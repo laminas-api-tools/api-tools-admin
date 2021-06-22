@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 return [
     'api-tools-rest' => [
         'AuthConf\V1\Rest\Foo\Controller' => [],
@@ -7,7 +10,7 @@ return [
         'AuthConf\V2\Rest\Bar\Controller' => [],
         'AuthConf\V2\Rest\New\Controller' => [],
     ],
-    'api-tools-rpc' => [
+    'api-tools-rpc'  => [
         'AuthConf\V1\Rpc\Baz\Controller' => [
             'route_name' => 'auth-conf.rpc.baz',
         ],
@@ -24,12 +27,12 @@ return [
             'route_name' => 'auth-conf.rpc.new',
         ],
     ],
-    'router' => [
+    'router'         => [
         'routes' => [
             'auth-conf.rpc.baz' => [
-                'type' => 'Segment',
+                'type'    => 'Segment',
                 'options' => [
-                    'route' => '/api/baz',
+                    'route'    => '/api/baz',
                     'defaults' => [
                         'controller' => 'AuthConf\V1\Rpc\Baz\Controller',
                         'action'     => 'baz',
@@ -37,9 +40,9 @@ return [
                 ],
             ],
             'auth-conf.rpc.bat' => [
-                'type' => 'Segment',
+                'type'    => 'Segment',
                 'options' => [
-                    'route' => '/api/bat',
+                    'route'    => '/api/bat',
                     'defaults' => [
                         'controller' => 'AuthConf\V1\Rpc\Bat\Controller',
                         'action'     => 'bat',
@@ -47,9 +50,9 @@ return [
                 ],
             ],
             'auth-conf.rpc.new' => [
-                'type' => 'Segment',
+                'type'    => 'Segment',
                 'options' => [
-                    'route' => '/api/new',
+                    'route'    => '/api/new',
                     'defaults' => [
                         'controller' => 'AuthConf\V2\Rpc\New\Controller',
                         'action'     => 'new',

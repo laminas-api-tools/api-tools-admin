@@ -81,7 +81,7 @@ class ModulePathSpec
     }
 
     /**
-     * Returns the current path spec being utitlized. IE> psr-0 or psr-4
+     * Returns the current path spec being utilized. IE> psr-0 or psr-4
      *
      * @return string
      */

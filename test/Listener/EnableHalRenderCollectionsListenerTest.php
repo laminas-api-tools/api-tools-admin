@@ -10,28 +10,38 @@ use Laminas\ApiTools\Admin\Model\RestServiceModel;
 use Laminas\ApiTools\Hal\Plugin\Hal;
 use Laminas\Mvc\ApplicationInterface;
 use Laminas\Mvc\MvcEvent;
+use Laminas\Mvc\Router\RouteMatch as V2RouteMatch;
+use Laminas\Router\RouteMatch;
 use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
 
 class EnableHalRenderCollectionsListenerTest extends TestCase
 {
+    use ProphecyTrait;
     use RouteAssetsTrait;
 
-    public function setUp()
+    /** @var ObjectProphecy|MvcEvent */
+    private $event;
+    /** @var ObjectProphecy|V2RouteMatch|RouteMatch */
+    private $routeMatch;
+
+    public function setUp(): void
     {
         $this->event      = $this->prophesize(MvcEvent::class);
         $this->routeMatch = $this->prophesize($this->getRouteMatchClass());
     }
 
-    public function testListenerDoesNothingIfEventHasNoRouteMatch()
+    public function testListenerDoesNothingIfEventHasNoRouteMatch(): void
     {
         $listener = new EnableHalRenderCollectionsListener();
         $this->event->getRouteMatch()->willReturn(null)->shouldBeCalled();
         $this->event->getTarget()->shouldNotBeCalled();
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 
-    public function testListenerDoesNothingIfRouteMatchHasNoControllerParam()
+    public function testListenerDoesNothingIfRouteMatchHasNoControllerParam(): void
     {
         $listener = new EnableHalRenderCollectionsListener();
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal'])->shouldBeCalled();
@@ -41,10 +51,10 @@ class EnableHalRenderCollectionsListenerTest extends TestCase
             ->shouldBeCalled();
 
         $this->event->getTarget()->shouldNotBeCalled();
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 
-    public function testListenerDoesNothingIfRouteMatchControllerParamDoesNotMatchAdminNamespace()
+    public function testListenerDoesNothingIfRouteMatchControllerParamDoesNotMatchAdminNamespace(): void
     {
         $listener = new EnableHalRenderCollectionsListener();
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal'])->shouldBeCalled();
@@ -54,10 +64,10 @@ class EnableHalRenderCollectionsListenerTest extends TestCase
             ->shouldBeCalled();
 
         $this->event->getTarget()->shouldNotBeCalled();
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 
-    public function testListenerEnablesCollectionRenderingOnHalPluginWhenControllerMatchesAdminNamespace()
+    public function testListenerEnablesCollectionRenderingOnHalPluginWhenControllerMatchesAdminNamespace(): void
     {
         $listener = new EnableHalRenderCollectionsListener();
 
@@ -80,6 +90,6 @@ class EnableHalRenderCollectionsListenerTest extends TestCase
             ->shouldBeCalled();
 
         $this->event->getTarget()->will([$app, 'reveal'])->shouldBeCalled();
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 }

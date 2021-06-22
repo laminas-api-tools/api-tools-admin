@@ -7,24 +7,27 @@ namespace LaminasTest\ApiTools\Admin\Model;
 use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Admin\Model\HydratorsModel;
 use Laminas\Hydrator\HydratorPluginManager;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 use function count;
 
 class HydratorsModelTest extends AbstractPluginManagerModelTest
 {
-    public function setUp()
+    use ProphecyTrait;
+
+    public function setUp(): void
     {
         $this->namespace = '\\Hydrator\\';
         $this->plugins   = new HydratorPluginManager($this->prophesize(ContainerInterface::class)->reveal());
         $this->model     = new HydratorsModel($this->plugins);
     }
 
-    public function testFetchAllReturnsListOfAvailablePlugins()
+    public function testFetchAllReturnsListOfAvailablePlugins(): void
     {
         $services = $this->model->fetchAll();
-        $this->assertGreaterThan(-1, count($services));
+        self::assertGreaterThan(-1, count($services));
         foreach ($services as $service) {
-            $this->assertContains($this->namespace, $service);
+            self::assertStringContainsString($this->namespace, $service);
         }
     }
 }

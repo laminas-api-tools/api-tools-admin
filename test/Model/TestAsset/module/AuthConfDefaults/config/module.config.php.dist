@@ -1,22 +1,24 @@
 <?php
+
+declare(strict_types=1);
+
 return [
     'api-tools-rest' => [
         'AuthConfDefaults\V1\Rest\Foo\Controller' => [],
         'AuthConfDefaults\V1\Rest\Bar\Controller' => [],
     ],
-    'api-tools-rpc' => [
+    'api-tools-rpc'  => [
         'AuthConfDefaults\V1\Rpc\Baz\Controller' => [
             'route_name' => 'auth-conf.rpc.baz',
         ],
-        'AuthConfDefaults\V1\Rpc\Bat\Controller' => [
-        ],
+        'AuthConfDefaults\V1\Rpc\Bat\Controller' => [],
     ],
-    'router' => [
+    'router'         => [
         'routes' => [
             'auth-conf.rpc.baz' => [
-                'type' => 'Segment',
+                'type'    => 'Segment',
                 'options' => [
-                    'route' => '/api/baz',
+                    'route'    => '/api/baz',
                     'defaults' => [
                         'controller' => 'AuthConfDefaults\V1\Rpc\Baz\Controller',
                         'action'     => 'baz',

@@ -14,6 +14,7 @@ use Laminas\View\Model\ViewModel;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
 use ReflectionClass;
+use ReflectionException;
 
 use function array_fill;
 use function array_filter;
@@ -165,7 +166,6 @@ class RpcServiceModel
 
             if (preg_match($pattern, $controllerService)) {
                 $services[] = $this->fetch($controllerService);
-                continue;
             }
         }
 
@@ -205,9 +205,10 @@ class RpcServiceModel
     /**
      * Delete a service
      *
-     * @param  bool $recursive
+     * @param bool $recursive
      * @return true
      * @throws Exception\RuntimeException
+     * @throws ReflectionException
      */
     public function deleteService(RpcServiceEntity $entity, $recursive = false)
     {
@@ -371,12 +372,12 @@ class RpcServiceModel
     protected function routeAlreadyExist($route, $excludeRouteName = null)
     {
         // Remove optional parameter in the route
-        $route  = preg_replace('/(\[[^\]]+\])/', '', $route);
+        $route  = preg_replace('/(\[[^]]+])/', '', $route);
         $config = $this->configResource->fetch(true);
         if (isset($config['router']['routes'])) {
             foreach ($config['router']['routes'] as $routeName => $routeConfig) {
                 // Remove optional parameters in the route
-                $routeWithoutParam = preg_replace('/(\[[^\]]+\])/', '', $routeConfig['options']['route']);
+                $routeWithoutParam = preg_replace('/(\[[^]]+])/', '', $routeConfig['options']['route']);
                 if ($routeWithoutParam === $route && $excludeRouteName !== $routeName) {
                     return true;
                 }
@@ -511,7 +512,7 @@ class RpcServiceModel
      *
      * @param  string $controllerService
      * @param  string $routeMatch
-     * @return true
+     * @return bool
      * @throws Exception\RuntimeException
      */
     public function updateRoute($controllerService, $routeMatch)
@@ -604,7 +605,7 @@ class RpcServiceModel
     }
 
     /**
-     * Delete any versionin configuration for a service
+     * Delete any versioning configuration for a service
      *
      * Only for version 1; later versions will do nothing
      *
@@ -762,7 +763,7 @@ class RpcServiceModel
     }
 
     /**
-     * Create the mediatype for this
+     * Create the media type for this
      *
      * Based on the module and the latest module version.
      *

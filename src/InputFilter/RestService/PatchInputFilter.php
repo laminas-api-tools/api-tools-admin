@@ -8,6 +8,7 @@ use Laminas\ApiTools\Admin\InputFilter\Validator\HttpMethodArrayValidator;
 use Laminas\Validator\Callback as CallbackValidator;
 
 use function intval;
+use function is_numeric;
 
 class PatchInputFilter extends PostInputFilter
 {
@@ -50,14 +51,14 @@ class PatchInputFilter extends PostInputFilter
             'required'          => true,
             'allow_empty'       => true,
             'continue_if_empty' => true,
-            'error_message'     => 'The Accept Whitelist must be an array of valid mediatype expressions',
+            'error_message'     => 'The Accept Whitelist must be an array of valid media type expressions',
         ]);
         $this->add([
             'name'              => 'content_type_whitelist',
             'required'          => true,
             'allow_empty'       => true,
             'continue_if_empty' => true,
-            'error_message'     => 'The Content-Type Whitelist must be an array of valid mediatype expressions',
+            'error_message'     => 'The Content-Type Whitelist must be an array of valid media type expressions',
         ]);
         $this->add([
             'name'          => 'selector',
@@ -74,7 +75,7 @@ class PatchInputFilter extends PostInputFilter
             'continue_if_empty' => true,
             'validators'        => [
                 new CallbackValidator(function ($value) {
-                    if (intval($value) !== $value) {
+                    if (is_numeric($value) && intval($value) !== $value) {
                         return false;
                     }
 

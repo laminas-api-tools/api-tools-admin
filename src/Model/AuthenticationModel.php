@@ -672,8 +672,9 @@ class AuthenticationModel
     }
 
     /**
-     * @param  string $dsn
+     * @param string $dsn
      * @return MongoClient
+     * @throws MongoConnectionException
      */
     protected function createMongoDSN($dsn)
     {
@@ -682,8 +683,8 @@ class AuthenticationModel
 
     /**
      * @param  string $dsn
-     * @param  string $username
-     * @param  string $password
+     * @param  string|null $username
+     * @param  string|null $password
      * @return PDO
      */
     protected function createPdoDSN($dsn, $username, $password)

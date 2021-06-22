@@ -19,7 +19,7 @@ class ModuleConfigController extends AbstractConfigController
         $this->configFactory = $factory;
     }
 
-    /** @return ConfigResource */
+    /** @return ApiProblemResponse|ConfigResource */
     public function getConfig()
     {
         $module = $this->params()->fromQuery('module', false);

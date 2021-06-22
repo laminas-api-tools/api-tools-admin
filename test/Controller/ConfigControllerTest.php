@@ -13,6 +13,7 @@ use Laminas\Http\Request;
 use Laminas\Mvc\Controller\PluginManager as ControllerPluginManager;
 use Laminas\Stdlib\Parameters;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 use function file_put_contents;
 use function json_encode;
@@ -22,21 +23,32 @@ use function unlink;
 
 class ConfigControllerTest extends TestCase
 {
-    public function setUp()
+    use ProphecyTrait;
+
+    /** @var false|string */
+    private $file;
+    /** @var TestAsset\ConfigWriter */
+    private $writer;
+    /** @var ConfigController */
+    private $controller;
+    /** @var ControllerPluginManager */
+    private $plugins;
+
+    public function setUp(): void
     {
         $this->file = tempnam(sys_get_temp_dir(), 'laminasconfig');
         file_put_contents($this->file, '<' . "?php\nreturn array();");
 
-        $this->writer         = new TestAsset\ConfigWriter();
-        $this->configResource = new ConfigResource([], $this->file, $this->writer);
-        $this->controller     = new ConfigController($this->configResource);
+        $this->writer     = new TestAsset\ConfigWriter();
+        $configResource   = new ConfigResource([], $this->file, $this->writer);
+        $this->controller = new ConfigController($configResource);
 
         $this->plugins = new ControllerPluginManager($this->prophesize(ContainerInterface::class)->reveal());
         $this->plugins->setService('bodyParams', new BodyParams());
         $this->controller->setPluginManager($this->plugins);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unlink($this->file);
     }
@@ -54,18 +66,18 @@ class ConfigControllerTest extends TestCase
     /**
      * @dataProvider invalidRequestMethods
      */
-    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse(string $method)
+    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse(string $method): void
     {
         $request = new Request();
         $request->setMethod($method);
         $this->controller->setRequest($request);
         $result = $this->controller->processAction();
-        $this->assertInstanceOf(ApiProblemResponse::class, $result);
+        self::assertInstanceOf(ApiProblemResponse::class, $result);
         $apiProblem = $result->getApiProblem();
-        $this->assertEquals(405, $apiProblem->status);
+        self::assertEquals(405, $apiProblem->status);
     }
 
-    public function testProcessGetRequestWithLaminasApiToolsMediaTypeReturnsFullConfiguration()
+    public function testProcessGetRequestWithLaminasApiToolsMediaTypeReturnsFullConfiguration(): void
     {
         $config         = [
             'foo' => 'FOO',
@@ -85,11 +97,11 @@ class ConfigControllerTest extends TestCase
         $controller->setRequest($request);
 
         $result = $controller->processAction();
-        $this->assertInternalType('array', $result);
-        $this->assertEquals($config, $result);
+        self::assertIsArray($result);
+        self::assertEquals($config, $result);
     }
 
-    public function testProcessGetRequestWithGenericJsonMediaTypeReturnsFlattenedConfiguration()
+    public function testProcessGetRequestWithGenericJsonMediaTypeReturnsFlattenedConfiguration(): void
     {
         $config         = [
             'foo' => 'FOO',
@@ -108,17 +120,17 @@ class ConfigControllerTest extends TestCase
         $controller->setRequest($request);
 
         $result = $controller->processAction();
-        $this->assertInternalType('array', $result);
+        self::assertIsArray($result);
 
         $expected = [
             'foo'     => 'FOO',
             'bar.baz' => 'bat',
             'baz'     => 'BAZ',
         ];
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 
-    public function testProcessPatchRequestWithLaminasApiToolsMediaTypeReturnsUpdatedConfigurationKeys()
+    public function testProcessPatchRequestWithLaminasApiToolsMediaTypeReturnsUpdatedConfigurationKeys(): void
     {
         $config         = [
             'foo' => 'FOO',
@@ -144,7 +156,7 @@ class ConfigControllerTest extends TestCase
         $controller->setRequest($request);
 
         $result = $controller->processAction();
-        $this->assertInternalType('array', $result);
+        self::assertIsArray($result);
 
         $expected = [
             'bar' => [
@@ -152,10 +164,10 @@ class ConfigControllerTest extends TestCase
             ],
             'baz' => 'UPDATED',
         ];
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 
-    public function testProcessPatchRequestWithGenericJsonMediaTypeReturnsUpdatedConfigurationKeys()
+    public function testProcessPatchRequestWithGenericJsonMediaTypeReturnsUpdatedConfigurationKeys(): void
     {
         $config         = [
             'foo' => 'FOO',
@@ -178,12 +190,12 @@ class ConfigControllerTest extends TestCase
         $controller->setRequest($request);
 
         $result = $controller->processAction();
-        $this->assertInternalType('array', $result);
+        self::assertIsArray($result);
 
         $expected = [
             'bar.baz' => 'UPDATED',
             'baz'     => 'UPDATED',
         ];
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 }

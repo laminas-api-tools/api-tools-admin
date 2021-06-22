@@ -8,7 +8,6 @@ use Laminas\ApiTools\Admin\Model\AuthenticationEntity;
 use Laminas\ApiTools\Admin\Model\AuthenticationModel;
 use Laminas\ApiTools\Admin\Model\ContentNegotiationModel;
 use Laminas\ApiTools\Admin\Model\DbAdapterModel;
-use Laminas\ApiTools\Admin\Model\DoctrineAdapterModel;
 use Laminas\ApiTools\Admin\Model\ModuleModel;
 use Laminas\ApiTools\Admin\Model\RestServiceModelFactory;
 use Laminas\ApiTools\Admin\Model\RpcServiceModelFactory;
@@ -31,9 +30,6 @@ class DashboardController extends AbstractActionController
 
     /** @var DbAdapterModel */
     protected $dbAdapters;
-
-    /** @var null|DoctrineAdapterModel */
-    protected $doctrineAdapters;
 
     /** @var ModuleModel */
     protected $modules;

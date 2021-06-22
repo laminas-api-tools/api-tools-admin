@@ -8,6 +8,7 @@ use Laminas\ApiTools\Admin\Utility;
 use Laminas\EventManager\Event;
 use Laminas\Filter\StaticFilter;
 use ReflectionClass;
+use ReflectionException;
 
 use function array_merge;
 use function dirname;
@@ -120,6 +121,7 @@ class DbConnectedRestServiceModel
      */
     public function updateService(DbConnectedRestServiceEntity $entity)
     {
+        /** @var DbConnectedRestServiceEntity $updatedEntity */
         $updatedEntity = $this->restModel->updateService($entity);
 
         // We need the resource class in order to update db-connected config!
@@ -146,8 +148,9 @@ class DbConnectedRestServiceModel
     /**
      * Delete a DB-Connected service
      *
-     * @param  bool $recursive
+     * @param bool $recursive
      * @return true
+     * @throws ReflectionException
      */
     public function deleteService(DbConnectedRestServiceEntity $entity, $recursive = false)
     {

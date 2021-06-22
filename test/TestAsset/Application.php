@@ -12,7 +12,7 @@ class Application
     protected $services;
 
     /** @param ServiceManager $services */
-    public function setServiceManager($services): void
+    public function setServiceManager(object $services): void
     {
         $this->services = $services;
     }

@@ -23,7 +23,19 @@ use function unlink;
 
 class DbAdapterModelTest extends TestCase
 {
-    public function setUp()
+    /** @var string */
+    private $configPath;
+
+    /** @var string */
+    private $globalConfigPath;
+
+    /** @var string */
+    private $localConfigPath;
+
+    /** @var ConfigWriter */
+    private $configWriter;
+
+    public function setUp(): void
     {
         $this->configPath       = sys_get_temp_dir() . '/api-tools-admin/config';
         $this->globalConfigPath = $this->configPath . '/global.php';
@@ -33,12 +45,12 @@ class DbAdapterModelTest extends TestCase
         $this->configWriter = new ConfigWriter();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->removeConfigMocks();
     }
 
-    public function createConfigMocks()
+    public function createConfigMocks(): void
     {
         if (! is_dir($this->configPath)) {
             mkdir($this->configPath, 0775, true);
@@ -49,7 +61,7 @@ class DbAdapterModelTest extends TestCase
         file_put_contents($this->localConfigPath, $contents);
     }
 
-    public function removeConfigMocks()
+    public function removeConfigMocks(): void
     {
         if (file_exists($this->globalConfigPath)) {
             unlink($this->globalConfigPath);
@@ -65,6 +77,10 @@ class DbAdapterModelTest extends TestCase
         }
     }
 
+    /**
+     * @param array<string, mixed> $global
+     * @param array<string, mixed> $local
+     */
     public function createModelFromConfigArrays(array $global, array $local): DbAdapterModel
     {
         $this->configWriter->toFile($this->globalConfigPath, $global);
@@ -75,35 +91,44 @@ class DbAdapterModelTest extends TestCase
         return new DbAdapterModel($globalConfig, $localConfig);
     }
 
+    /** @param array<string, mixed> $config */
     public function assertDbConfigExists(string $adapterName, array $config): void
     {
-        $this->assertArrayHasKey('db', $config);
-        $this->assertArrayHasKey('adapters', $config['db']);
-        $this->assertArrayHasKey($adapterName, $config['db']['adapters']);
-        $this->assertInternalType('array', $config['db']['adapters'][$adapterName]);
+        self::assertArrayHasKey('db', $config);
+        self::assertArrayHasKey('adapters', $config['db']);
+        self::assertArrayHasKey($adapterName, $config['db']['adapters']);
+        self::assertIsArray($config['db']['adapters'][$adapterName]);
     }
 
+    /**
+     * @param array<string, mixed> $expected
+     * @param array<string, mixed> $config
+     */
     public function assertDbConfigEquals(array $expected, string $adapterName, array $config): void
     {
-        $this->assertDbConfigExists($adapterName, $config);
+        self::assertDbConfigExists($adapterName, $config);
         $config = $config['db']['adapters'][$adapterName];
-        $this->assertEquals($expected, $config);
+        self::assertEquals($expected, $config);
     }
 
+    /**
+     * @param array<string, mixed> $expected
+     * @param array<string, mixed> $config
+     */
     public function assertDbConfigContains(array $expected, string $adapterName, array $config): void
     {
-        $this->assertDbConfigExists($adapterName, $config);
+        self::assertDbConfigExists($adapterName, $config);
         $config = $config['db']['adapters'][$adapterName];
         foreach ($expected as $key => $value) {
-            $this->assertArrayHasKey($key, $config);
-            $this->assertEquals($value, $config[$key]);
+            self::assertArrayHasKey($key, $config);
+            self::assertEquals($value, $config[$key]);
         }
     }
 
     /**
      * @group 279
      */
-    public function testCreatesBothGlobalAndLocalDbConfigWhenNoneExistedPreviously()
+    public function testCreatesBothGlobalAndLocalDbConfigWhenNoneExistedPreviously(): void
     {
         $toCreate = [
             'driver'   => 'Pdo_Sqlite',
@@ -115,29 +140,29 @@ class DbAdapterModelTest extends TestCase
         $model->create('Db\New', $toCreate);
 
         $global = include $this->globalConfigPath;
-        $this->assertDbConfigEquals([], 'Db\New', $global);
+        self::assertDbConfigEquals([], 'Db\New', $global);
 
         $local = include $this->localConfigPath;
-        $this->assertDbConfigEquals([
+        self::assertDbConfigEquals([
             'driver'   => 'Pdo_Sqlite',
             'database' => __FILE__,
         ], 'Db\New', $local);
     }
 
-    public function testCreateDoesNotCreateEmptyDsnEntry()
+    public function testCreateDoesNotCreateEmptyDsnEntry(): void
     {
         $toCreate = ['driver' => 'Pdo_Sqlite', 'database' => __FILE__];
         $model    = $this->createModelFromConfigArrays([], []);
         $model->create('Db\New', $toCreate);
 
         $global = include $this->globalConfigPath;
-        $this->assertDbConfigEquals([], 'Db\New', $global);
+        self::assertDbConfigEquals([], 'Db\New', $global);
 
         $local = include $this->localConfigPath;
-        $this->assertDbConfigEquals($toCreate, 'Db\New', $local);
+        self::assertDbConfigEquals($toCreate, 'Db\New', $local);
     }
 
-    public function testCreatesNewEntriesInBothGlobalAndLocalDbConfigWhenConfigExistedPreviously()
+    public function testCreatesNewEntriesInBothGlobalAndLocalDbConfigWhenConfigExistedPreviously(): void
     {
         $globalSeedConfig = [
             'db' => [
@@ -160,15 +185,15 @@ class DbAdapterModelTest extends TestCase
         $model->create('Db\New', ['driver' => 'Pdo_Sqlite', 'database' => __FILE__]);
 
         $global = include $this->globalConfigPath;
-        $this->assertDbConfigEquals([], 'Db\Old', $global);
-        $this->assertDbConfigEquals([], 'Db\New', $global);
+        self::assertDbConfigEquals([], 'Db\Old', $global);
+        self::assertDbConfigEquals([], 'Db\New', $global);
 
         $local = include $this->localConfigPath;
-        $this->assertDbConfigEquals($localSeedConfig['db']['adapters']['Db\Old'], 'Db\Old', $local);
-        $this->assertDbConfigEquals($localSeedConfig['db']['adapters']['Db\Old'], 'Db\New', $local);
+        self::assertDbConfigEquals($localSeedConfig['db']['adapters']['Db\Old'], 'Db\Old', $local);
+        self::assertDbConfigEquals($localSeedConfig['db']['adapters']['Db\Old'], 'Db\New', $local);
     }
 
-    public function testCanRetrieveListOfAllConfiguredAdapters()
+    public function testCanRetrieveListOfAllConfiguredAdapters(): void
     {
         $globalSeedConfig = [
             'db' => [
@@ -201,18 +226,18 @@ class DbAdapterModelTest extends TestCase
         $adapters         = $model->fetchAll();
         $adapterNames     = [];
         foreach ($adapters as $adapter) {
-            $this->assertInstanceOf(DbAdapterEntity::class, $adapter);
+            self::assertInstanceOf(DbAdapterEntity::class, $adapter);
             $adapter        = $adapter->getArrayCopy();
             $adapterNames[] = $adapter['adapter_name'];
         }
-        $this->assertEquals([
+        self::assertEquals([
             'Db\Old',
             'Db\New',
             'Db\Newer',
         ], $adapterNames);
     }
 
-    public function testCanRetrieveIndividualAdapterDetails()
+    public function testCanRetrieveIndividualAdapterDetails(): void
     {
         $globalSeedConfig = [
             'db' => [
@@ -243,14 +268,14 @@ class DbAdapterModelTest extends TestCase
         ];
         $model            = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
         $adapter          = $model->fetch('Db\New');
-        $this->assertInstanceOf(DbAdapterEntity::class, $adapter);
+        self::assertInstanceOf(DbAdapterEntity::class, $adapter);
         $adapter = $adapter->getArrayCopy();
-        $this->assertEquals('Db\New', $adapter['adapter_name']);
+        self::assertEquals('Db\New', $adapter['adapter_name']);
         unset($adapter['adapter_name']);
-        $this->assertEquals($localSeedConfig['db']['adapters']['Db\New'], $adapter);
+        self::assertEquals($localSeedConfig['db']['adapters']['Db\New'], $adapter);
     }
 
-    public function testUpdatesLocalDbConfigWhenUpdating()
+    public function testUpdatesLocalDbConfigWhenUpdating(): void
     {
         $toCreate = ['driver' => 'Pdo_Sqlite', 'database' => __FILE__];
         $model    = $this->createModelFromConfigArrays([], []);
@@ -265,17 +290,17 @@ class DbAdapterModelTest extends TestCase
         $entity    = $model->update('Db\New', $newConfig);
 
         // Ensure the entity returned from the update is what we expect
-        $this->assertInstanceOf(DbAdapterEntity::class, $entity);
+        self::assertInstanceOf(DbAdapterEntity::class, $entity);
         $entity   = $entity->getArrayCopy();
         $expected = array_merge(['adapter_name' => 'Db\New'], $newConfig);
-        $this->assertEquals($expected, $entity);
+        self::assertEquals($expected, $entity);
 
         // Ensure fetching the entity after an update will return what we expect
         $config = include $this->localConfigPath;
-        $this->assertDbConfigEquals($newConfig, 'Db\New', $config);
+        self::assertDbConfigEquals($newConfig, 'Db\New', $config);
     }
 
-    public function testRemoveDeletesConfigurationFromBothLocalAndGlobalConfigFiles()
+    public function testRemoveDeletesConfigurationFromBothLocalAndGlobalConfigFiles(): void
     {
         $toCreate = ['driver' => 'Pdo_Sqlite', 'database' => __FILE__];
         $model    = $this->createModelFromConfigArrays([], []);
@@ -283,9 +308,9 @@ class DbAdapterModelTest extends TestCase
 
         $model->remove('Db\New');
         $global = include $this->globalConfigPath;
-        $this->assertArrayNotHasKey('Db\New', $global['db']['adapters']);
+        self::assertArrayNotHasKey('Db\New', $global['db']['adapters']);
         $local = include $this->localConfigPath;
-        $this->assertArrayNotHasKey('Db\New', $local['db']['adapters']);
+        self::assertArrayNotHasKey('Db\New', $local['db']['adapters']);
     }
 
     /** @psalm-return array<string, array{0: string}> */
@@ -301,7 +326,7 @@ class DbAdapterModelTest extends TestCase
      * @group 184
      * @dataProvider postgresDbTypes
      */
-    public function testCreatingPostgresConfigDoesNotIncludeCharset(string $driver)
+    public function testCreatingPostgresConfigDoesNotIncludeCharset(string $driver): void
     {
         $toCreate = [
             'driver'   => $driver,
@@ -318,14 +343,14 @@ class DbAdapterModelTest extends TestCase
         $expected = $toCreate;
         unset($expected['charset']);
 
-        $this->assertDbConfigEquals($expected, 'Db\New', $local);
+        self::assertDbConfigEquals($expected, 'Db\New', $local);
     }
 
     /**
      * @group 184
      * @dataProvider postgresDbTypes
      */
-    public function testUpdatingPostgresConfigDoesNotAllowCharset(string $driver)
+    public function testUpdatingPostgresConfigDoesNotAllowCharset(string $driver): void
     {
         $toCreate = [
             'driver'   => $driver,
@@ -347,16 +372,16 @@ class DbAdapterModelTest extends TestCase
         $entity    = $model->update('Db\New', $newConfig);
 
         // Ensure the entity returned from the update is what we expect
-        $this->assertInstanceOf(DbAdapterEntity::class, $entity);
+        self::assertInstanceOf(DbAdapterEntity::class, $entity);
         $entity   = $entity->getArrayCopy();
         $expected = array_merge(['adapter_name' => 'Db\New'], $newConfig);
         unset($expected['charset']);
 
-        $this->assertEquals($expected, $entity);
+        self::assertEquals($expected, $entity);
 
         // Ensure fetching the entity after an update will return what we expect
         $config = include $this->localConfigPath;
         unset($expected['adapter_name']);
-        $this->assertDbConfigEquals($expected, 'Db\New', $config);
+        self::assertDbConfigEquals($expected, 'Db\New', $config);
     }
 }

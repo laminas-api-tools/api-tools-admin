@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
+use Exception;
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\ApiTools\Rest\Exception\CreationException;
@@ -49,9 +50,10 @@ class ModuleResource extends AbstractResourceListener
     /**
      * Create a new API-First enabled module
      *
-     * @param  array|object $data
+     * @param array|object $data
      * @return ModuleEntity
      * @throws CreationException
+     * @throws Exception
      */
     public function create($data)
     {

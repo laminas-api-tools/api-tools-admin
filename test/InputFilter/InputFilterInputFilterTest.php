@@ -11,7 +11,10 @@ use PHPUnit\Framework\TestCase;
 
 class InputFilterInputFilterTest extends TestCase
 {
-    public function setup()
+    /** @var InputFilterInputFilter */
+    private $inputFilterInputFilter;
+
+    public function setup(): void
     {
         $this->inputFilterInputFilter = new InputFilterInputFilter(new Factory());
     }
@@ -81,22 +84,25 @@ class InputFilterInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderIsValid
+     * @param array<string, mixed>[] $data
      */
-    public function testIsValid(array $data)
+    public function testIsValid(array $data): void
     {
         $this->inputFilterInputFilter->setData($data);
-        $this->assertTrue($this->inputFilterInputFilter->isValid());
+        self::assertTrue($this->inputFilterInputFilter->isValid());
     }
 
     /**
      * @dataProvider dataProviderIsInvalid
+     * @param array<string, mixed>|array<string, mixed>[] $data
+     * @param array<string, mixed> $messages
      */
-    public function testIsInvalid(array $data, array $messages)
+    public function testIsInvalid(array $data, array $messages): void
     {
         $this->inputFilterInputFilter->setData($data);
-        $this->assertFalse($this->inputFilterInputFilter->isValid());
+        self::assertFalse($this->inputFilterInputFilter->isValid());
         $validationMessages = $this->inputFilterInputFilter->getMessages();
-        $this->assertArrayHasKey('inputFilter', $validationMessages);
-        $this->assertContains($messages['inputFilter'], $validationMessages['inputFilter']);
+        self::assertArrayHasKey('inputFilter', $validationMessages);
+        self::assertStringContainsString($messages['inputFilter'], $validationMessages['inputFilter']);
     }
 }

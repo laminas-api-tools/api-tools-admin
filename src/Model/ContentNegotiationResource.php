@@ -49,7 +49,7 @@ class ContentNegotiationResource extends AbstractResourceListener
 
     /**
      * @param array $params
-     * @return array
+     * @return ContentNegotiationEntity[]
      */
     public function fetchAll($params = [])
     {

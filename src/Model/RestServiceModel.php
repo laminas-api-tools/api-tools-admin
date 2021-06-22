@@ -19,6 +19,7 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
 use OutOfRangeException;
 use ReflectionClass;
+use ReflectionException;
 
 use function array_fill;
 use function array_filter;
@@ -153,13 +154,13 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * @param  string $controllerService
-     * @param  bool $isAFetchOperation If this is for a non-fetch operation,
+     * @param  bool $isFetchOperation If this is for a non-fetch operation,
      *     pass boolean false; allows listeners to include additional data
      *     necessary for clean updates.
      * @return RestServiceEntity|false
      * @throws Exception\RuntimeException
      */
-    public function fetch($controllerService, $isAFetchOperation = true)
+    public function fetch($controllerService, $isFetchOperation = true)
     {
         $config = $this->configResource->fetch(true);
         if (! isset($config['api-tools-rest'][$controllerService])) {
@@ -190,7 +191,7 @@ class RestServiceModel implements EventManagerAwareInterface
         }, new Event(__FUNCTION__, $this, [
             'entity' => $entity,
             'config' => $config,
-            'fetch'  => $isAFetchOperation,
+            'fetch'  => $isFetchOperation,
         ]));
 
         if ($eventResults->stopped()) {
@@ -259,7 +260,6 @@ class RestServiceModel implements EventManagerAwareInterface
 
             if (preg_match($pattern, $controllerService)) {
                 $services[] = $this->fetch($controllerService);
-                continue;
             }
         }
 
@@ -359,10 +359,11 @@ class RestServiceModel implements EventManagerAwareInterface
      * Delete a named service
      *
      * @todo   Remove content-negotiation and/or HAL configuration?
-     * @param  string $controllerService
-     * @param  bool   $recursive
+     * @param string $controllerService
+     * @param bool $recursive
      * @return true
      * @throws Exception\RuntimeException
+     * @throws ReflectionException
      */
     public function deleteService($controllerService, $recursive = false)
     {
@@ -607,12 +608,12 @@ class RestServiceModel implements EventManagerAwareInterface
     protected function routeAlreadyExist($route, $excludeRouteName = null)
     {
         // Remove optional parameters in the route
-        $route  = preg_replace('/(\[[^\]]+\])/', '', $route);
+        $route  = preg_replace('/(\[[^]]+])/', '', $route);
         $config = $this->configResource->fetch(true);
         if (isset($config['router']['routes'])) {
             foreach ($config['router']['routes'] as $routeName => $routeConfig) {
                 // Remove optional parameters in the route
-                $routeWithoutParam = preg_replace('/(\[[^\]]+\])/', '', $routeConfig['options']['route']);
+                $routeWithoutParam = preg_replace('/(\[[^]]+])/', '', $routeConfig['options']['route']);
                 if ($routeWithoutParam === $route && $excludeRouteName !== $routeName) {
                     return true;
                 }
@@ -813,7 +814,6 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     public function updateRestConfig(RestServiceEntity $original, RestServiceEntity $update)
     {
-        // phpcs:disable Generic.PHP.DiscourageGoto.Found
         $patch = [];
         foreach ($this->restScalarUpdateOptions as $property => $configKey) {
             if (! $update->$property) {
@@ -822,24 +822,19 @@ class RestServiceModel implements EventManagerAwareInterface
             $patch[$configKey] = $update->$property;
         }
 
-        if (empty($patch)) {
-            goto updateArrayOptions;
+        if (! empty($patch)) {
+            $config = [
+                'api-tools-rest' => [
+                    $original->controllerServiceName => $patch,
+                ],
+            ];
+            $this->configResource->patch($config, true);
         }
-
-        $config = [
-            'api-tools-rest' => [
-                $original->controllerServiceName => $patch,
-            ],
-        ];
-        $this->configResource->patch($config, true);
-
-        updateArrayOptions:
 
         foreach ($this->restArrayUpdateOptions as $property => $configKey) {
             $key = sprintf('api-tools-rest.%s.%s', $original->controllerServiceName, $configKey);
             $this->configResource->patchKey($key, $update->$property);
         }
-        // phpcs: enable
     }
 
     /**
@@ -1153,7 +1148,7 @@ class RestServiceModel implements EventManagerAwareInterface
      */
     protected function injectResolver(PhpRenderer $renderer, $type)
     {
-        $template = sprintf('code-connected/rest-', $type);
+        $template = sprintf('code-connected/rest-%s', $type);
         $path     = sprintf('%s/../../view/code-connected/rest-%s.phtml', __DIR__, $type);
         $resolver = new Resolver\TemplateMapResolver([
             $template => $path,

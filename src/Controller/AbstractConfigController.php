@@ -29,7 +29,7 @@ abstract class AbstractConfigController extends AbstractActionController
         $headers     = $request->getHeaders();
         $accept      = $this->getHeaderType($headers, 'accept');
         $contentType = $this->getHeaderType($headers, 'content-type');
-        $returnTrees = 'application/json' === $accept ? false : true;
+        $returnTrees = 'application/json' !== $accept;
 
         $config = $this->getConfig();
         if (! $config instanceof ConfigResource) {
@@ -40,7 +40,7 @@ abstract class AbstractConfigController extends AbstractActionController
             case $request::METHOD_GET:
                 return $config->fetch($returnTrees);
             case $request::METHOD_PATCH:
-                $submitTrees = 'application/json' === $contentType ? false : true;
+                $submitTrees = 'application/json' !== $contentType;
                 $params      = $this->getBodyParams($submitTrees);
                 $result      = $config->patch($params, $submitTrees);
 
@@ -99,7 +99,7 @@ abstract class AbstractConfigController extends AbstractActionController
     }
 
     /**
-     * Get the mediatype from a given header
+     * Get the media type from a given header
      *
      * @param Headers $headers
      * @param  string $header

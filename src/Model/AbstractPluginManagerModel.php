@@ -85,17 +85,21 @@ class AbstractPluginManagerModel
         $rProp = $r->getProperty($type);
         $rProp->setAccessible(true);
 
+        $filterFn = function ($v) {
+            return $this->filterPluginName($v);
+        };
+
         switch ($type) {
             case 'resolvedAliases':
                 // fall-through
             case 'aliases':
-                return array_filter(array_values($rProp->getValue($pluginManager)), [$this, 'filterPluginName']);
+                return array_filter(array_values($rProp->getValue($pluginManager)), $filterFn);
             case 'invokableClasses':
                 // fall-through
             case 'factories':
                 // fall-through
             default:
-                return array_filter(array_keys($rProp->getValue($pluginManager)), [$this, 'filterPluginName']);
+                return array_filter(array_keys($rProp->getValue($pluginManager)), $filterFn);
         }
     }
 

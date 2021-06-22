@@ -66,7 +66,7 @@ class DbAdapterResource extends AbstractResourceListener
     /**
      * @param int|string $id
      * @param array|object $data
-     * @return DbAdapterEntity
+     * @return DbAdapterEntity|ApiProblem
      */
     public function patch($id, $data)
     {

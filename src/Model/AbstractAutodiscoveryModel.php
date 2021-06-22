@@ -102,6 +102,7 @@ abstract class AbstractAutodiscoveryModel
      * @param string|int $version
      * @param string $tableName
      * @return bool
+     * @throws Exception
      */
     protected function moduleHasService($module, $version, $tableName)
     {

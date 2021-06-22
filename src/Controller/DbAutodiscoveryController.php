@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
+use Exception;
 use Laminas\ApiTools\Admin\Model\DbAutodiscoveryModel;
 use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\Mvc\Controller\AbstractActionController;
@@ -23,7 +24,10 @@ class DbAutodiscoveryController extends AbstractActionController
         $this->model = $model;
     }
 
-    /** @return ViewModel */
+    /**
+     * @return ViewModel
+     * @throws Exception
+     */
     public function discoverAction()
     {
         $module      = $this->params()->fromRoute('name', false);

@@ -8,6 +8,7 @@ use Laminas\ApiTools\Admin\Model\ModuleModel;
 use Laminas\ApiTools\Admin\Model\ModulePathSpec;
 use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ModuleManager\ModuleManager;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Test;
 
@@ -36,8 +37,12 @@ class ModuleModelTest extends TestCase
 {
     /** @var string */
     public $modulePath;
+    /** @var MockObject|ModuleManager */
+    private $moduleManager;
+    /** @var ModuleModel */
+    private $model;
 
-    public function setUp()
+    public function setUp(): void
     {
         if ($this->modulePath && file_exists($this->modulePath)) {
             $this->removeDir($this->modulePath);
@@ -83,7 +88,7 @@ class ModuleModelTest extends TestCase
         $this->model->setUseShortArrayNotation(false);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->modulePath && file_exists($this->modulePath)) {
             $this->removeDir($this->modulePath);
@@ -91,7 +96,7 @@ class ModuleModelTest extends TestCase
         }
     }
 
-    public function testEnabledModulesOnlyReturnsThoseThatImplementApiToolsProviderInterface()
+    public function testEnabledModulesOnlyReturnsThoseThatImplementApiToolsProviderInterface(): void
     {
         $expected = [
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar',
@@ -102,18 +107,18 @@ class ModuleModelTest extends TestCase
         $modules = $this->model->getModules();
 
         // make sure we have the same number of modules
-        $this->assertEquals(count($expected), count($modules));
+        self::assertEquals(count($expected), count($modules));
 
         // Test that each module name exists in the expected list
         $moduleNames = [];
         foreach ($modules as $module) {
-            $this->assertContains($module->getNamespace(), $expected);
+            self::assertContains($module->getNamespace(), $expected);
             $moduleNames[] = $module->getNamespace();
         }
 
         // Test that we have all unique module names
         $test = array_unique($moduleNames);
-        $this->assertEquals($moduleNames, $test);
+        self::assertEquals($moduleNames, $test);
     }
 
     /** @psalm-return array<array-key, array{0: string}> */
@@ -128,19 +133,19 @@ class ModuleModelTest extends TestCase
     /**
      * @dataProvider invalidModules
      */
-    public function testNullIsReturnedWhenGettingServicesForNonApiToolsModules(string $module)
+    public function testNullIsReturnedWhenGettingServicesForNonApiToolsModules(string $module): void
     {
-        $this->assertNull($this->model->getModule($module));
+        self::assertNull($this->model->getModule($module));
     }
 
-    public function testEmptyArraysAreReturnedWhenGettingServicesForApiToolsModulesWithNoServices()
+    public function testEmptyArraysAreReturnedWhenGettingServicesForApiToolsModulesWithNoServices(): void
     {
         $module = $this->model->getModule('LaminasTest\ApiTools\Admin\Model\TestAsset\Baz');
-        $this->assertEquals([], $module->getRestServices());
-        $this->assertEquals([], $module->getRpcServices());
+        self::assertEquals([], $module->getRestServices());
+        self::assertEquals([], $module->getRpcServices());
     }
 
-    public function testRestAndRpcControllersAreDiscoveredWhenGettingServicesForApiToolsModules()
+    public function testRestAndRpcControllersAreDiscoveredWhenGettingServicesForApiToolsModules(): void
     {
         $expected = [
             'rest' => [
@@ -153,14 +158,14 @@ class ModuleModelTest extends TestCase
             ],
         ];
         $module   = $this->model->getModule('LaminasTest\ApiTools\Admin\Model\TestAsset\Bar');
-        $this->assertEquals($expected['rest'], $module->getRestServices());
-        $this->assertEquals($expected['rpc'], $module->getRpcServices());
+        self::assertEquals($expected['rest'], $module->getRestServices());
+        self::assertEquals($expected['rpc'], $module->getRpcServices());
     }
 
     /**
      * @group listofservices
      */
-    public function testCanRetrieveListOfAllApiToolsModulesAndTheirServices()
+    public function testCanRetrieveListOfAllApiToolsModulesAndTheirServices(): void
     {
         /* If this is running from a vendor directory, markTestSkipped() */
         if (preg_match('#[/\\\\]vendor[/\\\\]#', __FILE__)) {
@@ -198,18 +203,18 @@ class ModuleModelTest extends TestCase
         $unique = [];
         foreach ($modules as $module) {
             $name = $module->getNamespace();
-            $this->assertArrayHasKey(
+            self::assertArrayHasKey(
                 $name,
                 $expected,
                 sprintf('Failed asserting module "%s" is in list', $name)
             );
-            $this->assertNotContains(
+            self::assertNotContains(
                 $name,
                 $unique,
                 sprintf('Failed asserting module "%s" was not previously declared', $name)
             );
             $expectedMetadata = $expected[$name];
-            $this->assertSame(
+            self::assertSame(
                 $expectedMetadata['vendor'],
                 $module->isVendor(),
                 sprintf(
@@ -219,7 +224,7 @@ class ModuleModelTest extends TestCase
                     var_export($module->isVendor(), true)
                 )
             );
-            $this->assertSame(
+            self::assertSame(
                 $expectedMetadata['rest'],
                 $module->getRestServices(),
                 sprintf(
@@ -229,7 +234,7 @@ class ModuleModelTest extends TestCase
                     var_export($module->getRestServices(), true)
                 )
             );
-            $this->assertSame(
+            self::assertSame(
                 $expectedMetadata['rpc'],
                 $module->getRpcServices(),
                 sprintf(
@@ -246,7 +251,7 @@ class ModuleModelTest extends TestCase
     /**
      * @dataProvider getModuleVersionDataProvider
      */
-    public function testCreateModule(string $version)
+    public function testCreateModule(int $version): void
     {
         $module     = 'Foo';
         $modulePath = sys_get_temp_dir() . "/" . uniqid(str_replace('\\', '_', __NAMESPACE__) . '_');
@@ -257,14 +262,14 @@ class ModuleModelTest extends TestCase
 
         $pathSpec = $this->getPathSpec($modulePath);
 
-        $this->assertTrue($this->model->createModule($module, $pathSpec, $version));
-        $this->assertTrue(file_exists("$modulePath/module/$module"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/src/$module/V$version/Rpc"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/src/$module/V$version/Rest"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/view"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/Module.php"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/src/$module/Module.php"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/config/module.config.php"));
+        self::assertTrue($this->model->createModule($module, $pathSpec, $version));
+        self::assertTrue(file_exists("$modulePath/module/$module"));
+        self::assertTrue(file_exists("$modulePath/module/$module/src/$module/V$version/Rpc"));
+        self::assertTrue(file_exists("$modulePath/module/$module/src/$module/V$version/Rest"));
+        self::assertTrue(file_exists("$modulePath/module/$module/view"));
+        self::assertTrue(file_exists("$modulePath/module/$module/Module.php"));
+        self::assertTrue(file_exists("$modulePath/module/$module/src/$module/Module.php"));
+        self::assertTrue(file_exists("$modulePath/module/$module/config/module.config.php"));
 
         $this->removeDir($modulePath);
     }
@@ -273,7 +278,7 @@ class ModuleModelTest extends TestCase
      * @dataProvider getModuleVersionDataProvider
      * @group feature/psr4
      */
-    public function testCreateModulePSR4(string $version)
+    public function testCreateModulePSR4(int $version): void
     {
         $module     = 'Foo';
         $modulePath = sys_get_temp_dir() . "/" . uniqid(str_replace('\\', '_', __NAMESPACE__) . '_');
@@ -284,21 +289,21 @@ class ModuleModelTest extends TestCase
 
         $pathSpec = $this->getPathSpec($modulePath, 'psr-4');
 
-        $this->assertTrue($this->model->createModule($module, $pathSpec, $version));
-        $this->assertTrue(file_exists("$modulePath/module/$module"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/src/V$version/Rpc"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/src/V$version/Rest"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/view"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/Module.php"));
-        $this->assertTrue(file_exists("$modulePath/module/$module/config/module.config.php"));
+        self::assertTrue($this->model->createModule($module, $pathSpec, $version));
+        self::assertTrue(file_exists("$modulePath/module/$module"));
+        self::assertTrue(file_exists("$modulePath/module/$module/src/V$version/Rpc"));
+        self::assertTrue(file_exists("$modulePath/module/$module/src/V$version/Rest"));
+        self::assertTrue(file_exists("$modulePath/module/$module/view"));
+        self::assertTrue(file_exists("$modulePath/module/$module/Module.php"));
+        self::assertTrue(file_exists("$modulePath/module/$module/config/module.config.php"));
 
         $this->removeDir($modulePath);
     }
 
     /**
-     * @return array
+     * @return int[][]
      */
-    public function getModuleVersionDataProvider()
+    public function getModuleVersionDataProvider(): array
     {
         return array_map(function ($item) {
             return [$item];
@@ -317,7 +322,7 @@ class ModuleModelTest extends TestCase
     /**
      * @depends testCreateModule
      */
-    public function testDeleteModule()
+    public function testDeleteModule(): void
     {
         $module     = 'Foo';
         $modulePath = sys_get_temp_dir() . "/" . uniqid(str_replace('\\', '_', __NAMESPACE__) . '_');
@@ -331,17 +336,17 @@ class ModuleModelTest extends TestCase
 
         $pathSpec = $this->getPathSpec($modulePath);
 
-        $this->assertTrue($this->model->createModule($module, $pathSpec));
+        self::assertTrue($this->model->createModule($module, $pathSpec));
         $config = include $modulePath . '/config/application.config.php';
-        $this->assertArrayHasKey('modules', $config, var_export($config, true));
+        self::assertArrayHasKey('modules', $config, var_export($config, true));
 
         // Now try and delete
-        $this->assertTrue($this->model->deleteModule($module, $modulePath, false));
+        self::assertTrue($this->model->deleteModule($module, $modulePath, false));
 
         $config = include $modulePath . '/config/application.config.php';
-        $this->assertArrayHasKey('modules', $config, var_export($config, true));
-        $this->assertNotContains($module, $config['modules']);
-        $this->assertTrue(file_exists(sprintf('%s/module/%s', $modulePath, $module)));
+        self::assertArrayHasKey('modules', $config, var_export($config, true));
+        self::assertNotContains($module, $config['modules']);
+        self::assertTrue(file_exists(sprintf('%s/module/%s', $modulePath, $module)));
 
         $this->removeDir($modulePath);
     }
@@ -349,7 +354,7 @@ class ModuleModelTest extends TestCase
     /**
      * @depends testCreateModule
      */
-    public function testDeleteModuleRecursively()
+    public function testDeleteModuleRecursively(): void
     {
         $module     = 'Foo';
         $modulePath = sys_get_temp_dir() . "/" . uniqid(str_replace('\\', '_', __NAMESPACE__) . '_');
@@ -362,11 +367,11 @@ class ModuleModelTest extends TestCase
         );
         $pathSpec = $this->getPathSpec($modulePath);
 
-        $this->assertTrue($this->model->createModule($module, $pathSpec));
+        self::assertTrue($this->model->createModule($module, $pathSpec));
 
         // Now try and delete
-        $this->assertTrue($this->model->deleteModule($module, $modulePath, true));
-        $this->assertFalse(
+        self::assertTrue($this->model->deleteModule($module, $modulePath, true));
+        self::assertFalse(
             file_exists(sprintf('%s/module/%s', $modulePath, $module)),
             'Module class found in tree when it not have been'
         );
@@ -375,7 +380,7 @@ class ModuleModelTest extends TestCase
     /**
      * @group 22
      */
-    public function testReturnFalseWhenTryingToCreateAModuleThatAlreadyExistsInConfiguration()
+    public function testReturnFalseWhenTryingToCreateAModuleThatAlreadyExistsInConfiguration(): void
     {
         $module     = 'Foo';
         $modulePath = sys_get_temp_dir() . "/" . uniqid(str_replace('\\', '_', __NAMESPACE__) . '_');
@@ -388,19 +393,19 @@ class ModuleModelTest extends TestCase
         );
         $pathSpec = $this->getPathSpec($modulePath);
 
-        $this->assertFalse($this->model->createModule($module, $pathSpec));
+        self::assertFalse($this->model->createModule($module, $pathSpec));
     }
 
-    public function testUpdateExistingApiModule()
+    public function testUpdateExistingApiModule(): void
     {
         $module = 'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar';
-        $this->assertFalse($this->model->updateModule($module));
+        self::assertFalse($this->model->updateModule($module));
     }
 
-    public function testUpdateModule()
+    public function testUpdateModule(): void
     {
         $module = 'LaminasTest\ApiTools\Admin\Model\TestAsset\Foo';
-        $this->assertTrue($this->model->updateModule($module));
+        self::assertTrue($this->model->updateModule($module));
 
         unlink(__DIR__ . '/TestAsset/Foo/Module.php');
         rename(
@@ -409,10 +414,10 @@ class ModuleModelTest extends TestCase
         );
     }
 
-    public function testUpdateModuleWithOtherInterfaces()
+    public function testUpdateModuleWithOtherInterfaces(): void
     {
         $module = 'LaminasTest\ApiTools\Admin\Model\TestAsset\Foa';
-        $this->assertTrue($this->model->updateModule($module));
+        self::assertTrue($this->model->updateModule($module));
 
         unlink(__DIR__ . '/TestAsset/Foa/Module.php');
         rename(
@@ -423,11 +428,8 @@ class ModuleModelTest extends TestCase
 
     /**
      * Remove a directory even if not empty (recursive delete)
-     *
-     * @param  string $dir
-     * @return bool
      */
-    protected function removeDir($dir)
+    protected function removeDir(string $dir): bool
     {
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
@@ -441,7 +443,7 @@ class ModuleModelTest extends TestCase
         return rmdir($dir);
     }
 
-    public function testVendorModulesAreMarkedAccordingly()
+    public function testVendorModulesAreMarkedAccordingly(): void
     {
         $modules       = [
             'Test\Foo' => new Test\Foo\Module(),
@@ -462,11 +464,11 @@ class ModuleModelTest extends TestCase
 
         $modules = $model->getModules();
         foreach ($modules as $module) {
-            $this->assertTrue($module->isVendor());
+            self::assertTrue($module->isVendor());
         }
     }
 
-    public function testDefaultApiVersionIsSetProperly()
+    public function testDefaultApiVersionIsSetProperly(): void
     {
         $modules       = [
             'Test\Bar' => new Test\Bar\Module(),
@@ -487,12 +489,12 @@ class ModuleModelTest extends TestCase
 
         $modules = $model->getModules();
 
-        $this->assertSame(
+        self::assertSame(
             1,
             $modules[0]->getDefaultVersion(),
             'Did not default to version 1 as the default version for unconfigured default version of Test\Bar!'
         );
-        $this->assertSame(
+        self::assertSame(
             123,
             $modules[1]->getDefaultVersion(),
             'Did not read configured default version 123 for Test\Foo!'
@@ -502,7 +504,7 @@ class ModuleModelTest extends TestCase
     /**
      * @group 59
      */
-    public function testAttemptingToCreateModuleThatAlreadyExistsRaises409Exception()
+    public function testAttemptingToCreateModuleThatAlreadyExistsRaises409Exception(): void
     {
         $module           = 'Foo';
         $this->modulePath = $modulePath = sys_get_temp_dir()
@@ -515,7 +517,7 @@ class ModuleModelTest extends TestCase
 
         $pathSpec = $this->getPathSpec($modulePath);
 
-        $this->assertTrue($this->model->createModule($module, $pathSpec));
+        self::assertTrue($this->model->createModule($module, $pathSpec));
 
         $this->expectException('Exception');
         $this->expectExceptionMessage('exists');
@@ -527,7 +529,7 @@ class ModuleModelTest extends TestCase
     /**
      * @group 289
      */
-    public function testWritesToModuleConfigFileOnModuleCreationWhenModuleConfigFileExists()
+    public function testWritesToModuleConfigFileOnModuleCreationWhenModuleConfigFileExists(): void
     {
         $module     = 'Foo';
         $modulePath = sys_get_temp_dir() . "/" . uniqid(str_replace('\\', '_', __NAMESPACE__) . '_');
@@ -542,15 +544,15 @@ class ModuleModelTest extends TestCase
 
         $pathSpec = $this->getPathSpec($modulePath);
 
-        $this->assertTrue($this->model->createModule($module, $pathSpec));
+        self::assertTrue($this->model->createModule($module, $pathSpec));
         $modules = include "$modulePath/config/modules.config.php";
-        $this->assertInternalType('array', $modules);
-        $this->assertContains('Foo', $modules);
+        self::assertIsArray($modules);
+        self::assertContains('Foo', $modules);
 
         $this->removeDir($modulePath);
     }
 
-    public function testWritesShortArrayNotationToApplicationModulesConfigurationWhenRequested()
+    public function testWritesShortArrayNotationToApplicationModulesConfigurationWhenRequested(): void
     {
         $this->model->setUseShortArrayNotation(true);
 
@@ -567,14 +569,14 @@ class ModuleModelTest extends TestCase
 
         $pathSpec = $this->getPathSpec($modulePath);
 
-        $this->assertTrue($this->model->createModule($module, $pathSpec));
+        self::assertTrue($this->model->createModule($module, $pathSpec));
 
         $contents = file_get_contents("$modulePath/config/modules.config.php");
-        $this->assertNotContains('array(', $contents);
-        $this->assertContains('return [', $contents);
+        self::assertStringNotContainsString('array(', $contents);
+        self::assertStringContainsString('return [', $contents);
     }
 
-    public function testWritesShortArrayNotationToNewModuleConfigurationWhenRequested()
+    public function testWritesShortArrayNotationToNewModuleConfigurationWhenRequested(): void
     {
         $this->model->setUseShortArrayNotation(true);
 
@@ -591,10 +593,10 @@ class ModuleModelTest extends TestCase
 
         $pathSpec = $this->getPathSpec($modulePath);
 
-        $this->assertTrue($this->model->createModule($module, $pathSpec));
+        self::assertTrue($this->model->createModule($module, $pathSpec));
 
         $contents = file_get_contents("$modulePath/module/Foo/config/module.config.php");
-        $this->assertNotContains('array(', $contents);
-        $this->assertContains('return [', $contents);
+        self::assertStringNotContainsString('array(', $contents);
+        self::assertStringContainsString('return [', $contents);
     }
 }

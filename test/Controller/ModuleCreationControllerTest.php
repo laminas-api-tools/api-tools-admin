@@ -19,6 +19,7 @@ use Laminas\ModuleManager\ModuleManager;
 use Laminas\Mvc\Controller\PluginManager;
 use Laminas\Mvc\MvcEvent;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 use function array_diff;
 use function chdir;
@@ -34,15 +35,20 @@ use function unlink;
 
 class ModuleCreationControllerTest extends TestCase
 {
-    public function setUp()
+    use ProphecyTrait;
+
+    /** @var ModuleCreationController */
+    private $controller;
+
+    public function setUp(): void
     {
-        $this->moduleManager  = new ModuleManager([]);
-        $this->moduleResource = new ModuleModel(
-            $this->moduleManager,
+        $moduleManager    = new ModuleManager([]);
+        $moduleResource   = new ModuleModel(
+            $moduleManager,
             [],
             []
         );
-        $this->controller     = new ModuleCreationController($this->moduleResource);
+        $this->controller = new ModuleCreationController($moduleResource);
     }
 
     /** @psalm-return array<array-key, array{0: string}> */
@@ -59,18 +65,18 @@ class ModuleCreationControllerTest extends TestCase
     /**
      * @dataProvider invalidRequestMethods
      */
-    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse(string $method)
+    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse(string $method): void
     {
         $request = new Request();
         $request->setMethod($method);
         $this->controller->setRequest($request);
         $result = $this->controller->apiEnableAction();
-        $this->assertInstanceOf(ApiProblemResponse::class, $result);
+        self::assertInstanceOf(ApiProblemResponse::class, $result);
         $apiProblem = $result->getApiProblem();
-        $this->assertEquals(405, $apiProblem->status);
+        self::assertEquals(405, $apiProblem->status);
     }
 
-    public function testProcessPutRequest()
+    public function testProcessPutRequest(): void
     {
         $currentDir = getcwd();
         $tmpDir     = sys_get_temp_dir() . "/" . uniqid(__NAMESPACE__ . '_');
@@ -120,13 +126,13 @@ class ModuleCreationControllerTest extends TestCase
 
         $result = $controller->apiEnableAction();
 
-        $this->assertInstanceOf(ViewModel::class, $result);
+        self::assertInstanceOf(ViewModel::class, $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf(Entity::class, $payload);
-        $this->assertInstanceOf(ModuleEntity::class, $payload->getEntity());
+        self::assertInstanceOf(Entity::class, $payload);
+        self::assertInstanceOf(ModuleEntity::class, $payload->getEntity());
 
         $metadata = $payload->getEntity();
-        $this->assertEquals('Foo', $metadata->getName());
+        self::assertEquals('Foo', $metadata->getName());
 
         $this->removeDir($tmpDir);
         chdir($currentDir);

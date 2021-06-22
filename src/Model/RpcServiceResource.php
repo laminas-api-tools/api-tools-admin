@@ -13,6 +13,7 @@ use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\ApiTools\Rest\Exception\CreationException;
 use Laminas\ApiTools\Rest\Exception\PatchException;
 use Laminas\Mvc\Controller\ControllerManager;
+use ReflectionException;
 use RuntimeException;
 
 use function count;
@@ -258,8 +259,9 @@ class RpcServiceResource extends AbstractResourceListener
     /**
      * Delete an RPC service
      *
-     * @param  string $id
-     * @return true
+     * @param string $id
+     * @return true|ApiProblem
+     * @throws ReflectionException
      */
     public function delete($id)
     {

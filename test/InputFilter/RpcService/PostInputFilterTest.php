@@ -59,27 +59,30 @@ class PostInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderIsValid
+     * @param array<string, mixed> $data
      */
-    public function testIsValid(array $data)
+    public function testIsValid(array $data): void
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertTrue($filter->isValid());
+        self::assertTrue($filter->isValid());
     }
 
     /**
      * @dataProvider dataProviderIsInvalid
+     * @param array<string, mixed> $data
+     * @param string[] $expectedMessageKeys
      */
-    public function testIsInvalid(array $data, array $expectedMessageKeys)
+    public function testIsInvalid(array $data, array $expectedMessageKeys): void
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertFalse($filter->isValid());
+        self::assertFalse($filter->isValid());
 
         $messages = $filter->getMessages();
         $messages = array_keys($messages);
         sort($expectedMessageKeys);
         sort($messages);
-        $this->assertEquals($expectedMessageKeys, $messages);
+        self::assertEquals($expectedMessageKeys, $messages);
     }
 }

@@ -11,15 +11,31 @@ use Laminas\Http\Headers;
 use Laminas\Http\Request;
 use Laminas\Http\Response;
 use Laminas\Mvc\MvcEvent;
+use Laminas\Mvc\Router\RouteMatch as V2RouteMatch;
+use Laminas\Router\RouteMatch;
 use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
 
 class DisableHttpCacheListenerTest extends TestCase
 {
+    use ProphecyTrait;
     use RouteAssetsTrait;
 
-    public function setUp()
+    /** @var ObjectProphecy|MvcEvent */
+    private $event;
+    /** @var ObjectProphecy|V2RouteMatch|RouteMatch */
+    private $routeMatch;
+    /** @var ObjectProphecy|Request */
+    private $request;
+    /** @var ObjectProphecy|Response */
+    private $response;
+    /** @var ObjectProphecy|Headers */
+    private $headers;
+
+    public function setUp(): void
     {
         $this->event      = $this->prophesize(MvcEvent::class);
         $this->routeMatch = $this->prophesize($this->getRouteMatchClass());
@@ -28,7 +44,7 @@ class DisableHttpCacheListenerTest extends TestCase
         $this->headers    = $this->prophesize(Headers::class);
     }
 
-    public function testListenerDoesNothingIfNoRouteMatchPresent()
+    public function testListenerDoesNothingIfNoRouteMatchPresent(): void
     {
         $listener = new DisableHttpCacheListener();
 
@@ -37,10 +53,10 @@ class DisableHttpCacheListenerTest extends TestCase
         $this->routeMatch->getParam(Argument::any())->shouldNotBeCalled();
         $this->event->getRequest()->shouldNotBeCalled();
 
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 
-    public function testListenerDoesNothingIfRouteMatchNotForAdminApi()
+    public function testListenerDoesNothingIfRouteMatchNotForAdminApi(): void
     {
         $listener = new DisableHttpCacheListener();
 
@@ -49,10 +65,10 @@ class DisableHttpCacheListenerTest extends TestCase
         $this->routeMatch->getParam('is_api-tools_admin_api', false)->willReturn(false);
         $this->event->getRequest()->shouldNotBeCalled();
 
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 
-    public function testListenerDoesNothingIfRequestIsNotAGetOrHeadRequest()
+    public function testListenerDoesNothingIfRequestIsNotAGetOrHeadRequest(): void
     {
         $listener = new DisableHttpCacheListener();
 
@@ -64,10 +80,10 @@ class DisableHttpCacheListenerTest extends TestCase
         $this->request->isHead()->willReturn(false);
         $this->event->getResponse()->shouldNotBeCalled();
 
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 
-    public function testListenerInjectsCacheBustHeadersForGetRequests()
+    public function testListenerInjectsCacheBustHeadersForGetRequests(): void
     {
         $listener = new DisableHttpCacheListener();
 
@@ -79,7 +95,7 @@ class DisableHttpCacheListenerTest extends TestCase
         $this->request->isHead()->willReturn(false);
         $this->event->getResponse()->will([$this->response, 'reveal']);
         $this->response->getHeaders()->will([$this->headers, 'reveal']);
-        $this->headers->addHeader(Argument::that(function ($header) {
+        $this->headers->addHeader(Argument::that(function ($header): bool {
             if (! $header instanceof GenericHeader) {
                 return false;
             }
@@ -91,7 +107,7 @@ class DisableHttpCacheListenerTest extends TestCase
             }
             return true;
         }))->shouldBeCalled();
-        $this->headers->addHeader(Argument::that(function ($header) {
+        $this->headers->addHeader(Argument::that(function ($header): bool {
             if (! $header instanceof GenericMultiHeader) {
                 return false;
             }
@@ -103,7 +119,7 @@ class DisableHttpCacheListenerTest extends TestCase
             }
             return true;
         }))->shouldBeCalled();
-        $this->headers->addHeader(Argument::that(function ($header) {
+        $this->headers->addHeader(Argument::that(function ($header): bool {
             if (! $header instanceof GenericMultiHeader) {
                 return false;
             }
@@ -117,10 +133,10 @@ class DisableHttpCacheListenerTest extends TestCase
         }))->shouldBeCalled();
         $this->headers->addHeaderLine('Pragma', 'no-cache')->shouldBeCalled();
 
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 
-    public function testListenerInjectsCacheBustHeadersForHeadRequests()
+    public function testListenerInjectsCacheBustHeadersForHeadRequests(): void
     {
         $listener = new DisableHttpCacheListener();
 
@@ -132,7 +148,7 @@ class DisableHttpCacheListenerTest extends TestCase
         $this->request->isHead()->willReturn(true);
         $this->event->getResponse()->will([$this->response, 'reveal']);
         $this->response->getHeaders()->will([$this->headers, 'reveal']);
-        $this->headers->addHeader(Argument::that(function ($header) {
+        $this->headers->addHeader(Argument::that(function ($header): bool {
             if (! $header instanceof GenericHeader) {
                 return false;
             }
@@ -144,7 +160,7 @@ class DisableHttpCacheListenerTest extends TestCase
             }
             return true;
         }))->shouldBeCalled();
-        $this->headers->addHeader(Argument::that(function ($header) {
+        $this->headers->addHeader(Argument::that(function ($header): bool {
             if (! $header instanceof GenericMultiHeader) {
                 return false;
             }
@@ -156,7 +172,7 @@ class DisableHttpCacheListenerTest extends TestCase
             }
             return true;
         }))->shouldBeCalled();
-        $this->headers->addHeader(Argument::that(function ($header) {
+        $this->headers->addHeader(Argument::that(function ($header): bool {
             if (! $header instanceof GenericMultiHeader) {
                 return false;
             }
@@ -170,6 +186,6 @@ class DisableHttpCacheListenerTest extends TestCase
         }))->shouldBeCalled();
         $this->headers->addHeaderLine('Pragma', 'no-cache')->shouldBeCalled();
 
-        $this->assertNull($listener($this->event->reveal()));
+        self::assertNull($listener($this->event->reveal()));
     }
 }

@@ -22,7 +22,7 @@ class RestServiceEntity
         'application/*+json',
     ];
 
-    /** @var string */
+    /** @var class-string */
     protected $collectionClass;
 
     /** @var string[] */
@@ -45,7 +45,7 @@ class RestServiceEntity
     /** @var string|array<string, string> */
     protected $documentation;
 
-    /** @var string */
+    /** @var class-string */
     protected $entityClass;
 
     /** @var string[] */
@@ -57,7 +57,7 @@ class RestServiceEntity
     /** @var array<string, FilterChain> */
     protected $filters = [];
 
-    /** @var string */
+    /** @var class-string */
     protected $hydratorName = ArraySerializableHydrator::class;
 
     /** @var InputFilterCollection|HalCollection */
@@ -72,7 +72,7 @@ class RestServiceEntity
     /** @var string */
     protected $pageSizeParam;
 
-    /** @var string */
+    /** @var class-string */
     protected $resourceClass;
 
     /** @var string */
@@ -142,6 +142,9 @@ class RestServiceEntity
         return property_exists($this, $name);
     }
 
+    /**
+     * @param array $data
+     */
     public function exchangeArray(array $data)
     {
         $legacyIdentifierName = false;
@@ -238,7 +241,7 @@ class RestServiceEntity
         }
     }
 
-    /** @return array */
+    /** @return array<string, mixed> */
     public function getArrayCopy()
     {
         $array = [

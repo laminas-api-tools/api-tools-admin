@@ -9,12 +9,12 @@ use PHPUnit\Framework\TestCase;
 
 class ModuleEntityTest extends TestCase
 {
-    public function testCanSetAndRetrieveModuleDefaultVersion()
+    public function testCanSetAndRetrieveModuleDefaultVersion(): void
     {
         $moduleEntity = new ModuleEntity('Test\Foo');
-        $this->assertSame(1, $moduleEntity->getDefaultVersion()); // initial state
+        self::assertSame(1, $moduleEntity->getDefaultVersion()); // initial state
 
         $moduleEntity->exchangeArray(['default_version' => 123]);
-        $this->assertSame(123, $moduleEntity->getDefaultVersion());
+        self::assertSame(123, $moduleEntity->getDefaultVersion());
     }
 }

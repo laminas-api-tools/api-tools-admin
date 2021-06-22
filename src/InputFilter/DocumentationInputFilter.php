@@ -92,7 +92,6 @@ class DocumentationInputFilter extends InputFilter
                         $this->messages[$key][] = 'Key must be description or an HTTP indexed list;'
                             . ' please verify documentation for "' . $subKey . '"';
                         $isValid                = false;
-                        continue;
                     }
                 }
 

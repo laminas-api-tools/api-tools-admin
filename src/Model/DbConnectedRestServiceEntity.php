@@ -16,7 +16,7 @@ class DbConnectedRestServiceEntity extends RestServiceEntity
     /** @var string */
     protected $adapterName;
 
-    /** @var string */
+    /** @var class-string */
     protected $hydratorName = ArraySerializableHydrator::class;
 
     /** @var string */
@@ -25,6 +25,9 @@ class DbConnectedRestServiceEntity extends RestServiceEntity
     /** @var string */
     protected $tableService;
 
+    /**
+     * @param array $data
+     */
     public function exchangeArray(array $data)
     {
         parent::exchangeArray($data);
@@ -82,7 +85,7 @@ class DbConnectedRestServiceEntity extends RestServiceEntity
         }
     }
 
-    /** @return array */
+    /** @return array<string, mixed> */
     public function getArrayCopy()
     {
         $data                  = parent::getArrayCopy();

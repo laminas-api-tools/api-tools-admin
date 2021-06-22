@@ -22,7 +22,14 @@ use function unlink;
 
 class ContentNegotiationTest extends TestCase
 {
-    public function setUp()
+    /** @var string */
+    private $configPath;
+    /** @var string */
+    private $globalConfigPath;
+    /** @var ConfigWriter */
+    private $configWriter;
+
+    public function setUp(): void
     {
         $this->configPath       = sys_get_temp_dir() . '/api-tools-admin/config';
         $this->globalConfigPath = $this->configPath . '/global.php';
@@ -31,12 +38,7 @@ class ContentNegotiationTest extends TestCase
         $this->configWriter = new ConfigWriter();
     }
 
-    public function tearDown()
-    {
-        //$this->removeConfigMocks();
-    }
-
-    public function createConfigMocks()
+    public function createConfigMocks(): void
     {
         if (! is_dir($this->configPath)) {
             mkdir($this->configPath, 0775, true);
@@ -46,7 +48,7 @@ class ContentNegotiationTest extends TestCase
         file_put_contents($this->globalConfigPath, $contents);
     }
 
-    public function removeConfigMocks()
+    public function removeConfigMocks(): void
     {
         if (file_exists($this->globalConfigPath)) {
             unlink($this->globalConfigPath);
@@ -59,6 +61,9 @@ class ContentNegotiationTest extends TestCase
         }
     }
 
+    /**
+     * @param array<string, mixed> $global
+     */
     public function createModelFromConfigArray(array $global): ContentNegotiationModel
     {
         $this->configWriter->toFile($this->globalConfigPath, $global);
@@ -66,32 +71,41 @@ class ContentNegotiationTest extends TestCase
         return new ContentNegotiationModel($globalConfig);
     }
 
+    /** @param array<string, mixed> $config */
     public function assertContentConfigExists(string $contentName, array $config): void
     {
-        $this->assertArrayHasKey('api-tools-content-negotiation', $config);
-        $this->assertArrayHasKey('selectors', $config['api-tools-content-negotiation']);
-        $this->assertArrayHasKey($contentName, $config['api-tools-content-negotiation']['selectors']);
-        $this->assertInternalType('array', $config['api-tools-content-negotiation']['selectors'][$contentName]);
+        self::assertArrayHasKey('api-tools-content-negotiation', $config);
+        self::assertArrayHasKey('selectors', $config['api-tools-content-negotiation']);
+        self::assertArrayHasKey($contentName, $config['api-tools-content-negotiation']['selectors']);
+        self::assertIsArray($config['api-tools-content-negotiation']['selectors'][$contentName]);
     }
 
+    /**
+     * @param array<string, mixed> $expected
+     * @param array<string, mixed> $config
+     */
     public function assertContentConfigEquals(array $expected, string $contentName, array $config): void
     {
-        $this->assertContentConfigExists($contentName, $config);
+        self::assertContentConfigExists($contentName, $config);
         $config = $config['api-tools-content-negotiation']['selectors'][$contentName];
-        $this->assertEquals($expected, $config);
+        self::assertEquals($expected, $config);
     }
 
+    /**
+     * @param array<string, mixed> $expected
+     * @param array<string, mixed> $config
+     */
     public function assertContentConfigContains(array $expected, string $contentName, array $config): void
     {
-        $this->assertContentConfigExists($contentName, $config);
+        self::assertContentConfigExists($contentName, $config);
         $config = $config['api-tools-content-negotiation']['selectors'][$contentName];
         foreach ($expected as $key => $value) {
-            $this->assertArrayHasKey($key, $config);
-            $this->assertEquals($value, $config[$key]);
+            self::assertArrayHasKey($key, $config);
+            self::assertEquals($value, $config[$key]);
         }
     }
 
-    public function testCreateContentNegotiation()
+    public function testCreateContentNegotiation(): void
     {
         $toCreate = [
             JsonModel::class => [
@@ -103,10 +117,10 @@ class ContentNegotiationTest extends TestCase
         $model->create('Json', $toCreate);
 
         $global = include $this->globalConfigPath;
-        $this->assertContentConfigEquals($toCreate, 'Json', $global);
+        self::assertContentConfigEquals($toCreate, 'Json', $global);
     }
 
-    public function testUpdateContentNegotiation()
+    public function testUpdateContentNegotiation(): void
     {
         $toCreate = [
             JsonModel::class => [
@@ -124,10 +138,10 @@ class ContentNegotiationTest extends TestCase
         ];
         $model->update('Json', $toUpdate);
         $global = include $this->globalConfigPath;
-        $this->assertContentConfigEquals($toUpdate, 'Json', $global);
+        self::assertContentConfigEquals($toUpdate, 'Json', $global);
     }
 
-    public function testRemoveContentNegotiation()
+    public function testRemoveContentNegotiation(): void
     {
         $toCreate = [
             JsonModel::class => [
@@ -140,10 +154,10 @@ class ContentNegotiationTest extends TestCase
 
         $model->remove('Json');
         $global = include $this->globalConfigPath;
-        $this->assertArrayNotHasKey('Json', $global['api-tools-content-negotiation']['selectors']);
+        self::assertArrayNotHasKey('Json', $global['api-tools-content-negotiation']['selectors']);
     }
 
-    public function testFetchAllContentNegotiation()
+    public function testFetchAllContentNegotiation(): void
     {
         $toCreate = [
             JsonModel::class => [
@@ -162,17 +176,17 @@ class ContentNegotiationTest extends TestCase
         $model->create('Foo', $toCreate2);
 
         $global = include $this->globalConfigPath;
-        $this->assertContentConfigContains($toCreate, 'Json', $global);
-        $this->assertContentConfigContains($toCreate2, 'Foo', $global);
+        self::assertContentConfigContains($toCreate, 'Json', $global);
+        self::assertContentConfigContains($toCreate2, 'Foo', $global);
 
         $result = $model->fetchAll();
-        $this->assertIsArray($result);
+        self::assertIsArray($result);
         foreach ($result as $value) {
-            $this->assertInstanceOf(ContentNegotiationEntity::class, $value);
+            self::assertInstanceOf(ContentNegotiationEntity::class, $value);
         }
     }
 
-    public function testFetchContentNegotiation()
+    public function testFetchContentNegotiation(): void
     {
         $toCreate = [
             JsonModel::class => [
@@ -184,11 +198,11 @@ class ContentNegotiationTest extends TestCase
         $model->create('Json', $toCreate);
 
         $content = $model->fetch('Json');
-        $this->assertInstanceOf(ContentNegotiationEntity::class, $content);
+        self::assertInstanceOf(ContentNegotiationEntity::class, $content);
         $arrayCopy = $content->getArrayCopy();
-        $this->assertArrayHasKey('content_name', $arrayCopy);
-        $this->assertEquals('Json', $arrayCopy['content_name']);
-        $this->assertArrayHasKey('selectors', $arrayCopy);
-        $this->assertEquals($toCreate, $arrayCopy['selectors']);
+        self::assertArrayHasKey('content_name', $arrayCopy);
+        self::assertEquals('Json', $arrayCopy['content_name']);
+        self::assertArrayHasKey('selectors', $arrayCopy);
+        self::assertEquals($toCreate, $arrayCopy['selectors']);
     }
 }

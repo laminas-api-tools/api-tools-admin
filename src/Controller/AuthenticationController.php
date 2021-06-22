@@ -14,7 +14,6 @@ use Laminas\ApiTools\Hal\Collection;
 use Laminas\ApiTools\Hal\Entity;
 use Laminas\ApiTools\Hal\Link\Link;
 use Laminas\Http\Request;
-use Laminas\Http\Response;
 use Laminas\Stdlib\ResponseInterface;
 
 use function strtolower;
@@ -255,7 +254,7 @@ class AuthenticationController extends AbstractAuthenticationController
      * Create a new authentication adapter
      *
      * @param array $params
-     * @return ApiProblemResponse|Response
+     * @return ViewModel|ApiProblemResponse|Response
      */
     private function createAuthenticationAdapter($params)
     {

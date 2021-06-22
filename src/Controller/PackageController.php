@@ -243,7 +243,7 @@ class PackageController extends AbstractActionController
             return '';
         }
 
-        return (bool) $composer ? ' --composer=on' : ' --composer=off';
+        return $composer ? ' --composer=on' : ' --composer=off';
     }
 
     /**

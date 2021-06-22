@@ -28,7 +28,7 @@ class StrategyController extends AbstractActionController
         return $this->serviceLocator;
     }
 
-    /** @return ApiProblemModel|array */
+    /** @return ApiProblemModel|array<string, bool> */
     public function existsAction()
     {
         $container    = $this->getServiceLocator();
