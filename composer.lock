@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5b853c0a4f247946a27c9e390957f795",
+    "content-hash": "8033175fae417395fe080e032b341739",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -908,16 +908,16 @@
         },
         {
             "name": "laminas-api-tools/api-tools-rest",
-            "version": "1.6.0",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas-api-tools/api-tools-rest.git",
-                "reference": "fdbffb96d244bee5404b7e9dc59d00919bb99b33"
+                "reference": "36583a72bdb9cb66247f491e2194d7dad9836606"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas-api-tools/api-tools-rest/zipball/fdbffb96d244bee5404b7e9dc59d00919bb99b33",
-                "reference": "fdbffb96d244bee5404b7e9dc59d00919bb99b33",
+                "url": "https://api.github.com/repos/laminas-api-tools/api-tools-rest/zipball/36583a72bdb9cb66247f491e2194d7dad9836606",
+                "reference": "36583a72bdb9cb66247f491e2194d7dad9836606",
                 "shasum": ""
             },
             "require": {
@@ -985,7 +985,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-06-21T16:39:22+00:00"
+            "time": "2021-06-21T21:57:21+00:00"
         },
         {
             "name": "laminas-api-tools/api-tools-rpc",
@@ -5649,7 +5649,6 @@
                     "type": "github"
                 }
             ],
-            "abandoned": true,
             "time": "2020-11-30T07:30:19+00:00"
         },
         {

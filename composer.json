@@ -49,7 +49,7 @@
         "laminas/laminas-modulemanager": "^2.8.2",
         "laminas/laminas-mvc": "^2.7.15 || ^3.1.1",
         "laminas/laminas-servicemanager": "^2.7.10 || ^3.3.2",
-        "laminas/laminas-stdlib": "^2.7.8 || ^3.2",
+        "laminas/laminas-stdlib": "^2.7.8 || ^3.2.1",
         "laminas/laminas-validator": "^2.10.2",
         "laminas/laminas-view": "^2.10",
         "laminas/laminas-zendframework-bridge": "^1.1"
