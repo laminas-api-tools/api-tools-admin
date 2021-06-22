@@ -35,4 +35,4 @@ jobs:
         with:
           job: ${{ matrix.job }}
         env:
-          TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING: mongodb://mongo/
+          TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING: mongodb://mongo
