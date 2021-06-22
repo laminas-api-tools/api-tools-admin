@@ -1,16 +1,20 @@
 <?xml version="1.0"?>
-<phpunit bootstrap="./vendor/autoload.php" colors="true">
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    bootstrap="./vendor/autoload.php"
+    colors="true"
+    xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd">
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </coverage>
+
     <testsuites>
         <testsuite name="LaminasApiTools\Admin Module Tests">
             <directory>./test</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
 
     <php>
         <env name="TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING" value="mongodb://mongo"/>
