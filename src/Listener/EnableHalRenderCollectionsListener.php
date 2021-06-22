@@ -21,7 +21,7 @@ class EnableHalRenderCollectionsListener
         $matches = $e->getRouteMatch();
         if (
             ! $matches
-            || 0 !== strpos($matches->getParam('controller'), 'Laminas\ApiTools\Admin\\')
+            || 0 !== strpos($matches->getParam('controller') ?? '', 'Laminas\ApiTools\Admin\\')
         ) {
             return;
         }
