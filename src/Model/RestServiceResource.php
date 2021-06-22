@@ -1,13 +1,10 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
+use Exception;
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Hal\Collection as HalCollection;
 use Laminas\ApiTools\Hal\Entity as HalEntity;
@@ -17,51 +14,42 @@ use Laminas\ApiTools\Rest\Exception\CreationException;
 use Laminas\ApiTools\Rest\Exception\PatchException;
 use RuntimeException;
 
+use function count;
+use function is_array;
+use function is_object;
+use function sprintf;
+use function str_replace;
+
 class RestServiceResource extends AbstractResourceListener
 {
-    /**
-     * @var InputFilterModel
-     */
+    /** @var InputFilterModel */
     protected $inputFilterModel;
 
-    /**
-     * @var DocumentationModel
-     */
+    /** @var DocumentationModel */
     protected $documentationModel;
 
-    /**
-     * @var RestServiceModel
-     */
+    /** @var RestServiceModel */
     protected $model;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $moduleName;
 
-    /**
-     * @var RestServiceModelFactory
-     */
+    /** @var RestServiceModelFactory */
     protected $restFactory;
 
-    /**
-     * @param  RestServiceModelFactory $restFactory
-     * @param  InputFilterModel $inputFilterModel
-     * @param  DocumentationModel $documentationModel
-     */
     public function __construct(
         RestServiceModelFactory $restFactory,
         InputFilterModel $inputFilterModel,
         DocumentationModel $documentationModel
     ) {
-        $this->restFactory = $restFactory;
-        $this->inputFilterModel = $inputFilterModel;
+        $this->restFactory        = $restFactory;
+        $this->inputFilterModel   = $inputFilterModel;
         $this->documentationModel = $documentationModel;
     }
 
     /**
      * @return string
-     * @throws RuntimeException if module name is not present in route matches
+     * @throws RuntimeException If module name is not present in route matches.
      */
     public function getModuleName()
     {
@@ -73,7 +61,7 @@ class RestServiceResource extends AbstractResourceListener
         if (! $moduleName) {
             throw new RuntimeException(sprintf(
                 '%s cannot operate correctly without a "name" segment in the route matches',
-                __CLASS__
+                self::class
             ));
         }
         $this->moduleName = $moduleName;
@@ -90,7 +78,7 @@ class RestServiceResource extends AbstractResourceListener
         if ($this->model instanceof RestServiceModel) {
             return $this->model;
         }
-        $moduleName = $this->getModuleName();
+        $moduleName  = $this->getModuleName();
         $this->model = $this->restFactory->factory($moduleName, $type);
         return $this->model;
     }
@@ -111,7 +99,7 @@ class RestServiceResource extends AbstractResourceListener
         $type = RestServiceModelFactory::TYPE_DEFAULT;
         if (isset($data['table_name'])) {
             $creationData = new DbConnectedRestServiceEntity();
-            $type = RestServiceModelFactory::TYPE_DB_CONNECTED;
+            $type         = RestServiceModelFactory::TYPE_DB_CONNECTED;
         } else {
             $creationData = new NewRestServiceEntity();
         }
@@ -121,7 +109,7 @@ class RestServiceResource extends AbstractResourceListener
 
         try {
             $service = $model->createService($creationData);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return new ApiProblem(
                 409,
                 sprintf("Unable to create REST service: %s", $e->getMessage())
@@ -174,7 +162,7 @@ class RestServiceResource extends AbstractResourceListener
      * @param  string $id
      * @param  object|array $data
      * @return ApiProblem|RestServiceEntity
-     * @throws PatchException if unable to update configuration
+     * @throws PatchException If unable to update configuration.
      */
     public function patch($id, $data)
     {
@@ -198,18 +186,18 @@ class RestServiceResource extends AbstractResourceListener
 
         try {
             switch (true) {
-                case ($entity instanceof DbConnectedRestServiceEntity):
+                case $entity instanceof DbConnectedRestServiceEntity:
                     $model   = $this->restFactory->factory(
                         $this->getModuleName(),
                         RestServiceModelFactory::TYPE_DB_CONNECTED
                     );
                     $updated = $model->updateService($entity);
                     break;
-                case ($entity instanceof RestServiceEntity):
+                case $entity instanceof RestServiceEntity:
                 default:
                     $updated = $model->updateService($entity);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($e->getCode() !== 500) {
                 return new ApiProblem($e->getCode(), $e->getMessage());
             }
@@ -224,7 +212,7 @@ class RestServiceResource extends AbstractResourceListener
      *
      * @param mixed $id
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function delete($id)
     {
@@ -237,19 +225,19 @@ class RestServiceResource extends AbstractResourceListener
 
         try {
             switch (true) {
-                case ($entity instanceof DbConnectedRestServiceEntity):
+                case $entity instanceof DbConnectedRestServiceEntity:
                     $model = $this->restFactory->factory(
                         $this->getModuleName(),
                         RestServiceModelFactory::TYPE_DB_CONNECTED
                     );
                     $model->deleteService($entity, $recursive);
                     break;
-                case ($entity instanceof RestServiceEntity):
+                case $entity instanceof RestServiceEntity:
                 default:
                     $model->deleteService($entity->controllerServiceName, $recursive);
             }
-        } catch (\Exception $e) {
-            throw new \Exception('Error deleting REST service', 500, $e);
+        } catch (Exception $e) {
+            throw new Exception('Error deleting REST service', 500, $e);
         }
 
         return true;
@@ -257,13 +245,12 @@ class RestServiceResource extends AbstractResourceListener
 
     /**
      * Inject the input filters collection, if any, as an embedded collection
-     *
-     * @param RestServiceEntity $service
      */
     protected function injectInputFilters(RestServiceEntity $service)
     {
         $inputFilters = $this->inputFilterModel->fetch($this->moduleName, $service->controllerServiceName);
-        if (! $inputFilters instanceof InputFilterCollection
+        if (
+            ! $inputFilters instanceof InputFilterCollection
             || ! count($inputFilters)
         ) {
             return;
@@ -273,16 +260,16 @@ class RestServiceResource extends AbstractResourceListener
         $parentName = str_replace('\\', '-', $service->controllerServiceName);
         foreach ($inputFilters as $inputFilter) {
             $inputFilter['input_filter_name'] = str_replace('\\', '-', $inputFilter['input_filter_name']);
-            $entity = new HalEntity($inputFilter, $inputFilter['input_filter_name']);
-            $links  = $entity->getLinks();
+            $entity                           = new HalEntity($inputFilter, $inputFilter['input_filter_name']);
+            $links                            = $entity->getLinks();
             $links->add(Link::factory([
-                'rel' => 'self',
+                'rel'   => 'self',
                 'route' => [
-                    'name' => 'api-tools/api/module/rest-service/input-filter',
+                    'name'   => 'api-tools/api/module/rest-service/input-filter',
                     'params' => [
-                        'name' => $this->moduleName,
+                        'name'                    => $this->moduleName,
                         'controller_service_name' => $parentName,
-                        'input_filter_name' => $inputFilter['input_filter_name'],
+                        'input_filter_name'       => $inputFilter['input_filter_name'],
                     ],
                 ],
             ]));
@@ -293,7 +280,7 @@ class RestServiceResource extends AbstractResourceListener
         $collection->setCollectionName('input_filter');
         $collection->setCollectionRoute('api-tools/module/rest-service/input-filter');
         $collection->setCollectionRouteParams([
-            'name' => $service->module,
+            'name'                    => $service->module,
             'controller_service_name' => $service->controllerServiceName,
         ]);
 
@@ -302,9 +289,6 @@ class RestServiceResource extends AbstractResourceListener
         ]);
     }
 
-    /**
-     * @param RestServiceEntity $service
-     */
     protected function injectDocumentation(RestServiceEntity $service)
     {
         $documentation = $this->documentationModel->fetchDocumentation(

@@ -1,17 +1,18 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\InputFilter;
 
 use Laminas\InputFilter\InputFilter;
 
+use function in_array;
+use function is_array;
+use function strpos;
+
 class AuthorizationInputFilter extends InputFilter
 {
+    /** @var array<string, string[]> */
     protected $messages = [];
 
     /**
@@ -23,26 +24,26 @@ class AuthorizationInputFilter extends InputFilter
     public function isValid($context = null)
     {
         $this->messages = [];
-        $isValid = true;
+        $isValid        = true;
         foreach ($this->data as $className => $httpMethods) {
             // validate the structure of the controller service name / method
             if (strpos($className, '::') === false) {
                 $this->messages[$className][] = 'Class service name is invalid, must be serviceName::method,'
                     . ' serviceName::__collection__, or serviceName::__entity__';
-                $isValid = false;
+                $isValid                      = false;
             }
 
             if (! is_array($httpMethods)) {
                 $this->messages[$className][] = 'Values for each controller must be an http method'
                     . ' keyed array of true/false values';
-                $isValid = false;
+                $isValid                      = false;
                 continue;
             }
 
             foreach ($httpMethods as $httpMethod => $isRequired) {
                 if (! in_array($httpMethod, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
                     $this->messages[$className][] = 'Invalid HTTP method (' . $httpMethod . ') provided.';
-                    $isValid = false;
+                    $isValid                      = false;
                 }
             }
         }

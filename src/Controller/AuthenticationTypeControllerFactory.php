@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -17,12 +13,11 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 class AuthenticationTypeControllerFactory implements FactoryInterface
 {
     /**
-     * @param ContainerInterface $container
      * @param string $requestedName
      * @param null|array $options
      * @return AuthenticationTypeController
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         return new AuthenticationTypeController(
             $container->get(DefaultAuthenticationListener::class)
@@ -30,7 +25,6 @@ class AuthenticationTypeControllerFactory implements FactoryInterface
     }
 
     /**
-     * @param ServiceLocatorInterface $container
      * @return AuthenticationTypeController
      */
     public function createService(ServiceLocatorInterface $container)

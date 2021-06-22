@@ -1,14 +1,11 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Admin\Exception;
+use Laminas\ApiTools\Admin\Exception\InvalidArgumentException;
 use Laminas\ApiTools\Admin\Utility;
 use Laminas\ApiTools\ApiToolsModuleInterface;
 use Laminas\ApiTools\Provider\ApiToolsProviderInterface;
@@ -20,46 +17,58 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
 use ReflectionObject;
 
+use function array_filter;
+use function array_key_exists;
+use function array_keys;
+use function array_values;
+use function copy;
+use function dirname;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function in_array;
+use function is_array;
+use function method_exists;
+use function mkdir;
+use function preg_match;
+use function preg_quote;
+use function preg_replace;
+use function sort;
+use function sprintf;
+use function strpos;
+use function trigger_error;
+
+use const DIRECTORY_SEPARATOR;
+use const E_USER_DEPRECATED;
+
 class ModuleModel
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected static $useShortArrayNotation = false;
 
-    /**
-     * @var ValueGenerator
-     */
+    /** @var ValueGenerator */
     protected static $valueGenerator;
 
     /**
      * Services for each module
+     *
      * @var array
      */
     protected $services = [];
 
-    /**
-     * @var ModuleManager
-     */
+    /** @var ModuleManager */
     protected $moduleManager;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $modules;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $restConfig;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $rpcConfig;
 
     /**
-     * @param  ModuleManager $moduleManager
      * @param  array $restConfig
      * @param  array $rpcConfig
      */
@@ -67,8 +76,8 @@ class ModuleModel
     {
         $this->moduleManager = $moduleManager;
 
-        $this->restConfig    = array_keys($restConfig);
-        $this->rpcConfig     = array_keys($rpcConfig);
+        $this->restConfig = array_keys($restConfig);
+        $this->rpcConfig  = array_keys($rpcConfig);
     }
 
     /**
@@ -98,7 +107,7 @@ class ModuleModel
      * Set the flag indicating whether or not generated config files should use
      * short array notation.
      *
-     * @var bool $flag
+     * @param bool $flag
      * @return void
      */
     public function setUseShortArrayNotation($flag = true)
@@ -135,16 +144,16 @@ class ModuleModel
      * Create a module
      *
      * @param  string $module
-     * @param  ModulePathSpec $pathSpec
      * @param  int $version
      * @return bool
      * @throws \Exception
      */
     public function createModule($module, ModulePathSpec $pathSpec, $version = 1)
     {
-        $path = $pathSpec->getApplicationPath();
+        $path        = $pathSpec->getApplicationPath();
         $application = require sprintf('%s/config/application.config.php', $path);
-        if (is_array($application)
+        if (
+            is_array($application)
             && isset($application['modules'])
             && in_array($module, $application['modules'], true)
         ) {
@@ -193,16 +202,20 @@ class ModuleModel
             $view->setTemplate('module/skeleton');
             $moduleRelClassPath = sprintf('%s/Module.php', $moduleSourceRelativePath);
 
-            if (! file_put_contents(
-                sprintf('%s/Module.php', $modulePath),
-                "<" . "?php\nrequire __DIR__ . '$moduleRelClassPath';"
-            )) {
+            if (
+                ! file_put_contents(
+                    sprintf('%s/Module.php', $modulePath),
+                    "<" . "?php\nrequire __DIR__ . '$moduleRelClassPath';"
+                )
+            ) {
                 return false;
             }
-            if (! file_put_contents(
-                sprintf('%s/Module.php', $moduleSourcePath),
-                "<" . "?php\n" . $renderer->render($view)
-            )) {
+            if (
+                ! file_put_contents(
+                    sprintf('%s/Module.php', $moduleSourcePath),
+                    "<" . "?php\n" . $renderer->render($view)
+                )
+            ) {
                 return false;
             }
         } else {
@@ -213,7 +226,8 @@ class ModuleModel
         }
 
         // Add the module in application.config.php
-        if (is_array($application)
+        if (
+            is_array($application)
             && isset($application['modules'])
             && ! in_array($module, $application['modules'], true)
         ) {
@@ -285,7 +299,8 @@ class ModuleModel
     public function deleteModule($module, $path = '.', $recursive = false)
     {
         $application = require sprintf('%s/config/application.config.php', $path);
-        if (! is_array($application)
+        if (
+            ! is_array($application)
             || ! isset($application['modules'])
             || ! in_array($module, $application['modules'], true)
         ) {
@@ -293,8 +308,8 @@ class ModuleModel
             return true;
         }
 
-        $modules = array_filter($application['modules'], function ($value) use ($module) {
-            return ($module !== $value);
+        $modules                = array_filter($application['modules'], function ($value) use ($module) {
+            return $module !== $value;
         });
         $application['modules'] = $modules;
         if (! $this->writeApplicationConfig($application, $path)) {
@@ -360,7 +375,7 @@ class ModuleModel
      * Retrieves the configured default version for the specified module.
      *
      * @param  ApiToolsModuleInterface|ApiToolsProviderInterface $module
-     * @throws \Laminas\ApiTools\Admin\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return int
      */
     protected function getModuleDefaultVersion($module)
@@ -376,9 +391,7 @@ class ModuleModel
 
         $config = $module->getConfig();
 
-        return isset($config['api-tools-versioning']['default_version'])
-            ? $config['api-tools-versioning']['default_version']
-            : 1;
+        return $config['api-tools-versioning']['default_version'] ?? 1;
     }
 
     /**
@@ -394,11 +407,10 @@ class ModuleModel
      */
     protected function getServicesByModule($module)
     {
-        $services = [
+        return [
             'rest' => $this->discoverServicesByModule($module, $this->restConfig),
             'rpc'  => $this->discoverServicesByModule($module, $this->rpcConfig),
         ];
-        return $services;
     }
 
     /**
@@ -415,7 +427,8 @@ class ModuleModel
      */
     protected function getVersionsByModule($moduleName, $module)
     {
-        if (! $module instanceof ApiToolsProviderInterface
+        if (
+            ! $module instanceof ApiToolsProviderInterface
             && ! $module instanceof ApiToolsModuleInterface
         ) {
             throw new Exception\InvalidArgumentException(
@@ -504,7 +517,7 @@ class ModuleModel
 
 EOD;
 
-        $content .= 'return '. self::exportConfig($config) . ";\n";
+        $content .= 'return ' . self::exportConfig($config) . ";\n";
         if (! file_put_contents($configFile, $content)) {
             return false;
         }

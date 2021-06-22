@@ -1,87 +1,101 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Configuration\ConfigResource;
 use Laminas\ApiTools\Configuration\Exception\InvalidArgumentException as InvalidArgumentConfiguration;
 use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
 
+use function array_intersect_key;
+use function array_key_exists;
+use function dirname;
+use function file_exists;
+
 class DocumentationModel
 {
-    const TYPE_REST = 'rest';
-    const TYPE_RPC = 'rpc';
+    public const TYPE_REST = 'rest';
+    public const TYPE_RPC  = 'rpc';
 
-    /**
-     * @var ConfigResourceFactory
-     */
+    /** @var ConfigResourceFactory */
     protected $configFactory;
 
-    /**
-     * @var ModuleUtils
-     */
+    /** @var ModuleUtils */
     protected $moduleUtils;
 
     public function __construct(ConfigResourceFactory $configFactory, ModuleUtils $moduleUtils)
     {
         $this->configFactory = $configFactory;
-        $this->moduleUtils = $moduleUtils;
+        $this->moduleUtils   = $moduleUtils;
     }
 
+    /**
+     * @param string $type
+     * @psalm-param self::TYPE_* $type
+     * @return array<string, null|string|array<string, null|string>>
+     */
     public function getSchemaTemplate($type = self::TYPE_REST)
     {
-        // phpcs:disable
-        // @codingStandardsIgnoreStart
+        // phpcs:disable Generic.Files.LineLength.TooLong
         switch ($type) {
             case self::TYPE_REST:
                 return [
-                    'collection' => [
+                    'collection'  => [
                         'description' => null,
-                        'GET'    => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                        'POST'   => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                        'PUT'    => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                        'PATCH'  => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                        'DELETE' => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                        'GET'         => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                        'POST'        => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                        'PUT'         => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                        'PATCH'       => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                        'DELETE'      => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
                     ],
-                    'entity' => [
+                    'entity'      => [
                         'description' => null,
-                        'GET'    => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                        'POST'   => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                        'PUT'    => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                        'PATCH'  => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                        'DELETE' => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                        'GET'         => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                        'POST'        => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                        'PUT'         => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                        'PATCH'       => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                        'DELETE'      => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
                     ],
                     'description' => null,
                 ];
             case self::TYPE_RPC:
                 return [
                     'description' => null,
-                    'GET'    => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                    'POST'   => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                    'PUT'    => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                    'PATCH'  => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
-                    'DELETE' => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                    'GET'         => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                    'POST'        => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                    'PUT'         => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                    'PATCH'       => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
+                    'DELETE'      => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
                 ];
         }
-        // @codingStandardsIgnoreEnd
         // phpcs:enable
     }
 
+    /**
+     * @param string $module
+     * @param string $controllerServiceName
+     * @return array
+     */
     public function fetchDocumentation($module, $controllerServiceName)
     {
         $configResource = $this->getDocumentationConfigResource($module);
-        $value = $configResource->fetch(true);
+        $value          = $configResource->fetch(true);
         if (isset($value[$controllerServiceName])) {
             return $value[$controllerServiceName];
         }
         return [];
     }
 
+    /**
+     * @param string $module
+     * @param string $controllerType
+     * @param string $controllerServiceName
+     * @param array|string $documentation
+     * @param bool $replace
+     * @return string|array<string|string>
+     */
     public function storeDocumentation(
         $module,
         $controllerType,
@@ -89,9 +103,9 @@ class DocumentationModel
         $documentation,
         $replace = false
     ) {
-        $configResource = $this->getDocumentationConfigResource($module);
-        $template = [$controllerServiceName => $this->getSchemaTemplate($controllerType)];
-        $templateFlat = $configResource->traverseArray($template);
+        $configResource    = $this->getDocumentationConfigResource($module);
+        $template          = [$controllerServiceName => $this->getSchemaTemplate($controllerType)];
+        $templateFlat      = $configResource->traverseArray($template);
         $documentationFlat = $configResource->traverseArray([$controllerServiceName => $documentation]);
 
         $validDocumentationFlat = array_intersect_key($documentationFlat, $templateFlat);
@@ -121,7 +135,6 @@ class DocumentationModel
         return true;
     }
 
-
     /**
      * Check if a module and controller exists
      *
@@ -139,13 +152,15 @@ class DocumentationModel
 
         $config = $configModule->fetch(true);
 
-        if (isset($config['api-tools-rest'])
+        if (
+            isset($config['api-tools-rest'])
             && array_key_exists($controller, $config['api-tools-rest'])
         ) {
             return true;
         }
 
-        if (isset($config['api-tools-rpc'])
+        if (
+            isset($config['api-tools-rpc'])
             && array_key_exists($controller, $config['api-tools-rpc'])
         ) {
             return true;
@@ -154,15 +169,11 @@ class DocumentationModel
         return false;
     }
 
-    /**
-     * @param $module
-     * @return \Laminas\ApiTools\Configuration\ConfigResource
-     */
-    protected function getDocumentationConfigResource($module)
+    protected function getDocumentationConfigResource(string $module): ConfigResource
     {
         $moduleConfigPath = $this->moduleUtils->getModuleConfigPath($module);
-        $docConfigPath = dirname($moduleConfigPath) . '/documentation.config.php';
-        $docArray = file_exists($docConfigPath) ? include $docConfigPath : [];
+        $docConfigPath    = dirname($moduleConfigPath) . '/documentation.config.php';
+        $docArray         = file_exists($docConfigPath) ? include $docConfigPath : [];
         return $this->configFactory->createConfigResource($docArray, $docConfigPath);
     }
 }

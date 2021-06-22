@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
@@ -15,6 +11,8 @@ use Laminas\ModuleManager\ModuleManager;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+
+use function array_keys;
 
 class ModuleModelFactoryTest extends TestCase
 {
@@ -41,8 +39,8 @@ class ModuleModelFactoryTest extends TestCase
 
     public function testFactoryReturnsConfiguredModuleModel()
     {
-        $factory = new ModuleModelFactory();
-        $config  = [
+        $factory       = new ModuleModelFactory();
+        $config        = [
             'api-tools-rest' => ['rest configuration' => true],
             'api-tools-rpc'  => ['rpc configuration' => true],
         ];
@@ -63,11 +61,11 @@ class ModuleModelFactoryTest extends TestCase
 
     public function testFactoryCanConfigureShortArrayNotationFlag()
     {
-        $factory = new ModuleModelFactory();
-        $config  = [
+        $factory       = new ModuleModelFactory();
+        $config        = [
             'api-tools-configuration' => ['enable_short_array' => true],
-            'api-tools-rest' => ['rest configuration' => true],
-            'api-tools-rpc'  => ['rpc configuration' => true],
+            'api-tools-rest'          => ['rest configuration' => true],
+            'api-tools-rpc'           => ['rpc configuration' => true],
         ];
         $moduleManager = $this->prophesize(ModuleManager::class)->reveal();
 

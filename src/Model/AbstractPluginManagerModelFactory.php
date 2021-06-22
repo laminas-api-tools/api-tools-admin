@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -13,43 +9,42 @@ use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\FactoryInterface;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 
+use function class_exists;
+use function sprintf;
+
 abstract class AbstractPluginManagerModelFactory implements FactoryInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $pluginManagerService;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $pluginManagerModel;
 
     /**
      * Return one of the plugin manager-backed model instance.
      *
-     * @param ContainerInterface $container
      * @param string $requestedName
      * @param null|array $options
      * @return mixed A model instance that composes a plugin manager.
      * @throws ServiceNotCreatedException
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        if (null === $this->pluginManagerService
+        if (
+            null === $this->pluginManagerService
             || null === $this->pluginManagerModel
             || ! class_exists($this->pluginManagerModel)
         ) {
             throw new ServiceNotCreatedException(sprintf(
                 '%s is an invalid factory; please check the $pluginManagerService and/or $pluginManagerModel values',
-                get_class($this)
+                static::class
             ));
         }
 
         if (! $container->has($this->pluginManagerService)) {
             throw new ServiceNotCreatedException(sprintf(
                 '%s requires that the %s service be present; service not found',
-                get_class($this),
+                static::class,
                 $this->pluginManagerService
             ));
         }
@@ -63,7 +58,6 @@ abstract class AbstractPluginManagerModelFactory implements FactoryInterface
      *
      * Provided for backwards compatibility; proxies to __invoke().
      *
-     * @param ServiceLocatorInterface $container
      * @return mixed A model instance that composes a plugin manager.
      */
     public function createService(ServiceLocatorInterface $container)

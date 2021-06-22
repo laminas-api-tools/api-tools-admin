@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
@@ -14,8 +10,14 @@ use Laminas\ApiTools\Admin\Model\ValidatorsModel;
 use Laminas\Validator\ValidatorPluginManager;
 use PHPUnit\Framework\TestCase;
 
+use function array_key_exists;
+use function count;
+use function file_exists;
+use function is_array;
+
 class ValidatorsModelTest extends TestCase
 {
+    /** @var array */
     protected $config;
 
     public function setUp()
@@ -26,7 +28,7 @@ class ValidatorsModelTest extends TestCase
         $this->model    = new ValidatorsModel($this->plugins, $this->metadata);
     }
 
-    public function getConfig()
+    public function getConfig(): array
     {
         if (is_array($this->config)) {
             return $this->config;
@@ -47,7 +49,7 @@ class ValidatorsModelTest extends TestCase
 
     public function testFetchAllReturnsListOfAvailablePlugins()
     {
-        $validators  = $this->model->fetchAll();
+        $validators = $this->model->fetchAll();
         $this->assertGreaterThan(0, count($validators));
         foreach ($validators as $service => $metadata) {
             $this->assertContains('\\Validator\\', $service);
@@ -56,7 +58,7 @@ class ValidatorsModelTest extends TestCase
 
     public function testEachPluginIsAKeyArrayPair()
     {
-        $validators  = $this->model->fetchAll();
+        $validators = $this->model->fetchAll();
         foreach ($this->model->fetchAll() as $service => $metadata) {
             $this->assertInternalType('string', $service);
             $this->assertInternalType('array', $metadata);

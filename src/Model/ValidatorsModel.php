@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -12,26 +8,28 @@ use Laminas\ApiTools\Admin\Exception;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Validator\ValidatorPluginManager;
 
+use function array_flip;
+use function array_merge;
+use function array_walk;
+use function get_class;
+use function is_array;
+use function sprintf;
+
 class ValidatorsModel extends AbstractPluginManagerModel
 {
-    /**
-     * @var ValidatorMetadataModel
-     */
+    /** @var ValidatorMetadataModel */
     protected $metadata;
 
     /**
      * $pluginManager should be an instance of
      * Laminas\Validator\ValidatorPluginManager.
-     *
-     * @param ServiceManager $pluginManager
-     * @param ValidatorMetadataModel $metadata
      */
-    public function __construct(ServiceManager $pluginManager, ValidatorMetadataModel $metadata = null)
+    public function __construct(ServiceManager $pluginManager, ?ValidatorMetadataModel $metadata = null)
     {
         if (! $pluginManager instanceof ValidatorPluginManager) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an instance of Laminas\Validator\ValidatorPluginManager; received "%s"',
-                __CLASS__,
+                self::class,
                 get_class($pluginManager)
             ));
         }
@@ -40,7 +38,7 @@ class ValidatorsModel extends AbstractPluginManagerModel
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an instance of Laminas\Validator\ValidatorMetadataModel'
                 . ' as the second argument to the constructor',
-                __CLASS__
+                self::class
             ));
         }
 
@@ -64,7 +62,7 @@ class ValidatorsModel extends AbstractPluginManagerModel
         $plugins = parent::getPlugins();
         $plugins = array_flip($plugins);
         $plugins = array_merge($plugins, $this->metadata->fetchAll());
-        array_walk($plugins, function (& $value) {
+        array_walk($plugins, function (&$value) {
             if (is_array($value)) {
                 return;
             }

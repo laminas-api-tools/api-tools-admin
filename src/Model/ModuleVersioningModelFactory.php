@@ -1,19 +1,15 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Configuration\ConfigResource;
 use Laminas\ApiTools\Configuration\ResourceFactory;
 
-/**
- * Class ModuleVersioningModelFactory
- * @author Gabriel Somoza <gabriel@somoza.me>
- */
+use function dirname;
+use function file_exists;
+
 class ModuleVersioningModelFactory implements ModuleVersioningModelFactoryInterface
 {
     /** @var ResourceFactory */
@@ -25,10 +21,6 @@ class ModuleVersioningModelFactory implements ModuleVersioningModelFactoryInterf
     /** @var ModuleVersioningModel[] */
     private $models = [];
 
-    /**
-     * @param ResourceFactory $configFactory
-     * @param ModulePathSpec $moduleUtils
-     */
     public function __construct(ResourceFactory $configFactory, ModulePathSpec $moduleUtils)
     {
         $this->configFactory = $configFactory;
@@ -39,7 +31,6 @@ class ModuleVersioningModelFactory implements ModuleVersioningModelFactoryInterf
      * Create service
      *
      * @param string $module
-     *
      * @return ModuleVersioningModel
      */
     public function factory($module)
@@ -62,9 +53,8 @@ class ModuleVersioningModelFactory implements ModuleVersioningModelFactoryInterf
     }
 
     /**
-     * getDocsConfig
-     * @param $module
-     * @return null|\Laminas\ApiTools\Configuration\ConfigResource
+     * @param string $module
+     * @return null|ConfigResource
      */
     protected function getDocsConfig($module)
     {

@@ -1,24 +1,22 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Configuration\ModuleUtils;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 class ModulePathSpecTest extends TestCase
 {
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return PHPUnit_Framework_MockObject_MockObject
      */
     protected function getModuleUtils()
     {
-        $utils = $this->getMockBuilder('Laminas\ApiTools\Configuration\ModuleUtils')
+        $utils = $this->getMockBuilder(ModuleUtils::class)
                     ->disableOriginalConstructor()
                     ->getMock();
 

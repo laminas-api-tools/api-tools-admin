@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -12,41 +8,38 @@ use InvalidArgumentException;
 use Laminas\ApiTools\Hal\Collection;
 use ReflectionClass;
 
+use function class_exists;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_bool;
+use function is_object;
+use function max;
+use function preg_match;
+use function sprintf;
+use function strtolower;
+
 class ModuleEntity
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $defaultVersion = 1;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $namespace;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $isVendor;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $restServices;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $rpcServices;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $versions = [];
 
     /**
@@ -54,7 +47,7 @@ class ModuleEntity
      * @param  array $restServices
      * @param  array $rpcServices
      * @param  bool $isVendor
-     * @throws InvalidArgumentException for modules that do not exist
+     * @throws InvalidArgumentException For modules that do not exist.
      */
     public function __construct(
         $namespace,
@@ -228,7 +221,7 @@ class ModuleEntity
      */
     protected function determineVendorStatus()
     {
-        $r = new ReflectionClass($this->namespace . '\\Module');
+        $r        = new ReflectionClass($this->namespace . '\\Module');
         $filename = $r->getFileName();
         if (preg_match('#[/\\\\]vendor[/\\\\]#', $filename)) {
             $this->isVendor = true;

@@ -1,15 +1,12 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Listener;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Admin\Listener\EnableHalRenderCollectionsListener;
+use Laminas\ApiTools\Admin\Model\RestServiceModel;
 use Laminas\ApiTools\Hal\Plugin\Hal;
 use Laminas\Mvc\ApplicationInterface;
 use Laminas\Mvc\MvcEvent;
@@ -22,7 +19,7 @@ class EnableHalRenderCollectionsListenerTest extends TestCase
 
     public function setUp()
     {
-        $this->event = $this->prophesize(MvcEvent::class);
+        $this->event      = $this->prophesize(MvcEvent::class);
         $this->routeMatch = $this->prophesize($this->getRouteMatchClass());
     }
 
@@ -79,7 +76,7 @@ class EnableHalRenderCollectionsListenerTest extends TestCase
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal'])->shouldBeCalled();
         $this->routeMatch
             ->getParam('controller')
-            ->willReturn('Laminas\ApiTools\Admin\Model\RestServiceModel')
+            ->willReturn(RestServiceModel::class)
             ->shouldBeCalled();
 
         $this->event->getTarget()->will([$app, 'reveal'])->shouldBeCalled();

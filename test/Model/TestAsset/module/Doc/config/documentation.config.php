@@ -1,27 +1,30 @@
 <?php
+
+declare(strict_types=1);
+
 return [
     'Doc\\V1\\Rest\\FooBar\\Controller' => [
         'description' => 'per rest controller description',
-        'entity' => [
+        'entity'      => [
             'GET' => [
                 'description' => 'General description for GET',
-                'request' => 'Request for GET doc updated',
+                'request'     => 'Request for GET doc updated',
             ],
         ],
-        'collection' => [
+        'collection'  => [
             'description' => 'General in rest collection',
-            'POST' => [
-                'request' => 'Request for POST doc in collection',
+            'POST'        => [
+                'request'     => 'Request for POST doc in collection',
                 'description' => 'General POST doc in collection',
             ],
         ],
     ],
-    'Doc\\V1\\Rpc\\BazBam\\Controller' => [
+    'Doc\\V1\\Rpc\\BazBam\\Controller'  => [
         'description' => 'General RPC docs',
-        'GET' => [
+        'GET'         => [
             'description' => 'General GET docs',
-            'request' => 'General GET docs for request',
-            'response' => 'updated description for GET response',
+            'request'     => 'General GET docs for request',
+            'response'    => 'updated description for GET response',
         ],
     ],
 ];

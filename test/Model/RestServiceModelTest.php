@@ -1,15 +1,12 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
 use BarConf;
 use BazConf;
+use Laminas\ApiTools\Admin\Exception\RuntimeException;
 use Laminas\ApiTools\Admin\Model\ModuleEntity;
 use Laminas\ApiTools\Admin\Model\ModulePathSpec;
 use Laminas\ApiTools\Admin\Model\NewRestServiceEntity;
@@ -18,9 +15,32 @@ use Laminas\ApiTools\Admin\Model\RestServiceModel;
 use Laminas\ApiTools\Admin\Model\VersioningModel;
 use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\ApiTools\Rest\AbstractResourceListener;
+use Laminas\ApiTools\Rest\Exception\CreationException;
 use Laminas\Config\Writer\PhpArray;
+use Laminas\Hydrator\ObjectPropertyHydrator;
+use Laminas\Hydrator\ReflectionHydrator;
+use Laminas\ModuleManager\ModuleManager;
+use Laminas\Paginator\Paginator;
+use LaminasTest\ApiTools\Admin\Model\TestAsset\Collection;
+use LaminasTest\ApiTools\Admin\Model\TestAsset\Entity;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+
+use function array_diff;
+use function array_merge;
+use function copy;
+use function file_exists;
+use function glob;
+use function is_dir;
+use function realpath;
+use function rmdir;
+use function scandir;
+use function sprintf;
+use function str_replace;
+use function strpos;
+use function unlink;
+use function var_export;
 
 class RestServiceModelTest extends TestCase
 {
@@ -43,6 +63,7 @@ class RestServiceModelTest extends TestCase
         }
         return rmdir($dir);
     }
+
     protected function cleanUpAssets()
     {
         $pathSpec = empty($this->modules) ? 'psr-0' : $this->modules->getPathSpec();
@@ -60,16 +81,6 @@ class RestServiceModelTest extends TestCase
         copy($configPath . '/module.config.php.dist', $configPath . '/module.config.php');
     }
 
-//    protected function cleanUpAssets()
-//    {
-//        $basePath   = sprintf('%s/TestAsset/module/%s', __DIR__, $this->module);
-//        $configPath = $basePath . '/config';
-//        foreach (glob(sprintf('%s/src/%s/V*', $basePath, $this->module)) as $dir) {
-//            $this->removeDir($dir);
-//        }
-//        copy($configPath . '/module.config.php.dist', $configPath . '/module.config.php');
-//    }
-
     public function setUp()
     {
         $this->module = 'BarConf';
@@ -81,7 +92,7 @@ class RestServiceModelTest extends TestCase
         ];
 
         $this->moduleEntity  = new ModuleEntity($this->module, [], [], false);
-        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -104,7 +115,7 @@ class RestServiceModelTest extends TestCase
         $this->cleanUpAssets();
     }
 
-    public function getCreationPayload()
+    public function getCreationPayload(): NewRestServiceEntity
     {
         $payload = new NewRestServiceEntity();
         $payload->exchangeArray([
@@ -120,7 +131,7 @@ class RestServiceModelTest extends TestCase
             'selector'                   => 'HalJson',
             'accept_whitelist'           => ['application/json', 'application/*+json'],
             'content_type_whitelist'     => ['application/json'],
-            'hydrator_name'              => 'Laminas\Hydrator\ObjectProperty',
+            'hydrator_name'              => ObjectPropertyHydrator::class,
         ]);
 
         return $payload;
@@ -128,7 +139,7 @@ class RestServiceModelTest extends TestCase
 
     public function testRejectInvalidRestServiceName1()
     {
-        $this->expectException('Laminas\ApiTools\Rest\Exception\CreationException');
+        $this->expectException(CreationException::class);
         $restServiceEntity = new NewRestServiceEntity();
         $restServiceEntity->exchangeArray(['servicename' => 'Foo Bar']);
         $this->codeRest->createService($restServiceEntity);
@@ -136,7 +147,7 @@ class RestServiceModelTest extends TestCase
 
     public function testRejectInvalidRestServiceName2()
     {
-        $this->expectException('Laminas\ApiTools\Rest\Exception\CreationException');
+        $this->expectException(CreationException::class);
         $restServiceEntity = new NewRestServiceEntity();
         $restServiceEntity->exchangeArray(['serivcename' => 'Foo:Bar']);
         $this->codeRest->createService($restServiceEntity);
@@ -144,7 +155,7 @@ class RestServiceModelTest extends TestCase
 
     public function testRejectInvalidRestServiceName3()
     {
-        $this->expectException('Laminas\ApiTools\Rest\Exception\CreationException');
+        $this->expectException(CreationException::class);
         $restServiceEntity = new NewRestServiceEntity();
         $restServiceEntity->exchangeArray(['servicename' => 'Foo/Bar']);
         $this->codeRest->createService($restServiceEntity);
@@ -182,7 +193,7 @@ class RestServiceModelTest extends TestCase
         $r = new ReflectionClass($resourceClass);
         $this->assertInstanceOf('ReflectionClass', $r);
         $parent = $r->getParentClass();
-        $this->assertEquals('Laminas\ApiTools\Rest\AbstractResourceListener', $parent->getName());
+        $this->assertEquals(AbstractResourceListener::class, $parent->getName());
     }
 
     /**
@@ -190,11 +201,11 @@ class RestServiceModelTest extends TestCase
      */
     public function testCreateResourceClassCreatesClassFileWithNamedResourceClassPSR4()
     {
-        $this->module = 'BazConf';
-        $this->moduleEntity  = new ModuleEntity($this->module);
-        $moduleUtils    = new ModuleUtils($this->moduleManager);
-        $this->modules  = new ModulePathSpec($moduleUtils, 'psr-4', __DIR__ . '/TestAsset');
-        $this->codeRest = new RestServiceModel(
+        $this->module       = 'BazConf';
+        $this->moduleEntity = new ModuleEntity($this->module);
+        $moduleUtils        = new ModuleUtils($this->moduleManager);
+        $this->modules      = new ModulePathSpec($moduleUtils, 'psr-4', __DIR__ . '/TestAsset');
+        $this->codeRest     = new RestServiceModel(
             $this->moduleEntity,
             $this->modules,
             $this->resource->factory('BazConf')
@@ -211,7 +222,7 @@ class RestServiceModelTest extends TestCase
         $r = new ReflectionClass($resourceClass);
         $this->assertInstanceOf('ReflectionClass', $r);
         $parent = $r->getParentClass();
-        $this->assertEquals('Laminas\ApiTools\Rest\AbstractResourceListener', $parent->getName());
+        $this->assertEquals(AbstractResourceListener::class, $parent->getName());
     }
 
     public function testCreateResourceClassAddsInvokableToConfiguration()
@@ -274,7 +285,7 @@ class RestServiceModelTest extends TestCase
         $r = new ReflectionClass($collectionClass);
         $this->assertInstanceOf('ReflectionClass', $r);
         $parent = $r->getParentClass();
-        $this->assertEquals('Laminas\Paginator\Paginator', $parent->getName());
+        $this->assertEquals(Paginator::class, $parent->getName());
     }
 
     public function testCreateRouteReturnsNewRouteName()
@@ -294,9 +305,9 @@ class RestServiceModelTest extends TestCase
 
         $this->assertArrayHasKey($routeName, $routes);
         $expected = [
-            'type' => 'Segment',
+            'type'    => 'Segment',
             'options' => [
-                'route' => '/foo-bar[/:foo_bar_id]',
+                'route'    => '/foo-bar[/:foo_bar_id]',
                 'defaults' => [
                     'controller' => 'BarConf\Rest\FooBar\Controller',
                 ],
@@ -370,12 +381,12 @@ class RestServiceModelTest extends TestCase
         $this->assertArrayHasKey('accept_whitelist', $config);
         $this->assertEquals([
             'BarConf\Rest\Foo\Controller' => $details->acceptWhitelist,
-        ], $config['accept_whitelist'], var_export($config, 1));
+        ], $config['accept_whitelist'], var_export($config, true));
 
         $this->assertArrayHasKey('content_type_whitelist', $config);
         $this->assertEquals([
             'BarConf\Rest\Foo\Controller' => $details->contentTypeWhitelist,
-        ], $config['content_type_whitelist'], var_export($config, 1));
+        ], $config['content_type_whitelist'], var_export($config, true));
     }
 
     public function testCreateHalConfigWritesHalConfiguration()
@@ -397,7 +408,7 @@ class RestServiceModelTest extends TestCase
         $this->assertEquals([
             'route_identifier_name'  => $details->routeIdentifierName,
             'route_name'             => 'bar-conf.rest.foo',
-            'hydrator'               => 'Laminas\Hydrator\ObjectProperty',
+            'hydrator'               => ObjectPropertyHydrator::class,
             'entity_identifier_name' => 'id',
         ], $config['BarConf\Rest\Foo\FooEntity']);
 
@@ -414,7 +425,7 @@ class RestServiceModelTest extends TestCase
     {
         $details = $this->getCreationPayload();
         $result  = $this->codeRest->createService($details);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $result);
+        $this->assertInstanceOf(RestServiceEntity::class, $result);
 
         $this->assertEquals('BarConf', $result->module);
         $this->assertEquals('foo', $result->serviceName);
@@ -439,8 +450,8 @@ class RestServiceModelTest extends TestCase
         $payload->exchangeArray([
             'service_name' => 'foo',
         ]);
-        $result  = $this->codeRest->createService($payload);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $result);
+        $result = $this->codeRest->createService($payload);
+        $this->assertInstanceOf(RestServiceEntity::class, $result);
         $this->assertEquals(
             ['application/vnd.bar-conf.v1+json', 'application/hal+json', 'application/json'],
             $result->acceptWhitelist
@@ -457,7 +468,7 @@ class RestServiceModelTest extends TestCase
         $result  = $this->codeRest->createService($details);
 
         $service = $this->codeRest->fetch('BarConf\V1\Rest\Foo\Controller');
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $service);
+        $this->assertInstanceOf(RestServiceEntity::class, $service);
 
         $this->assertEquals('BarConf', $service->module);
         $this->assertEquals('foo', $service->serviceName);
@@ -467,23 +478,23 @@ class RestServiceModelTest extends TestCase
         $this->assertEquals('BarConf\V1\Rest\Foo\FooCollection', $service->collectionClass);
         $this->assertEquals('bar-conf.rest.foo', $service->routeName);
         $this->assertEquals('/api/foo[/:foo_id]', $service->routeMatch);
-        $this->assertEquals('Laminas\Hydrator\ObjectProperty', $service->hydratorName);
+        $this->assertEquals(ObjectPropertyHydrator::class, $service->hydratorName);
     }
 
     public function testFetchServiceUsesEntityAndCollectionClassesDiscoveredInRestConfiguration()
     {
         $details = $this->getCreationPayload();
         $details->exchangeArray([
-            'entity_class'     => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Entity',
-            'collection_class' => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Collection',
+            'entity_class'     => Entity::class,
+            'collection_class' => Collection::class,
         ]);
-        $result  = $this->codeRest->createService($details);
+        $result = $this->codeRest->createService($details);
 
         $service = $this->codeRest->fetch('BarConf\V1\Rest\Foo\Controller');
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $service);
+        $this->assertInstanceOf(RestServiceEntity::class, $service);
 
-        $this->assertEquals('LaminasTest\ApiTools\Admin\Model\TestAsset\Entity', $service->entityClass);
-        $this->assertEquals('LaminasTest\ApiTools\Admin\Model\TestAsset\Collection', $service->collectionClass);
+        $this->assertEquals(Entity::class, $service->entityClass);
+        $this->assertEquals(Collection::class, $service->collectionClass);
     }
 
     public function testCanUpdateRouteForExistingService()
@@ -520,10 +531,10 @@ class RestServiceModelTest extends TestCase
             'collection_query_whitelist' => ['f', 's'],
             'collection_http_methods'    => ['GET'],
             'entity_http_methods'        => ['GET'],
-            'entity_class'               => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Entity',
-            'collection_class'           => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Collection',
+            'entity_class'               => Entity::class,
+            'collection_class'           => Collection::class,
         ];
-        $patch = new RestServiceEntity();
+        $patch   = new RestServiceEntity();
         $patch->exchangeArray($options);
 
         $this->codeRest->updateRestConfig($original, $patch);
@@ -548,7 +559,7 @@ class RestServiceModelTest extends TestCase
             'accept_whitelist'       => ['application/json'],
             'content_type_whitelist' => ['application/json'],
         ];
-        $patch = new RestServiceEntity();
+        $patch   = new RestServiceEntity();
         $patch->exchangeArray($options);
 
         $this->codeRest->updateContentNegotiationConfig($original, $patch);
@@ -582,11 +593,11 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         $options = [
-            'hydrator_name'         => 'Laminas\Hydrator\Reflection',
+            'hydrator_name'         => ReflectionHydrator::class,
             'route_identifier_name' => 'custom_foo_id',
             'route_name'            => 'my/custom/route',
         ];
-        $patch = new RestServiceEntity();
+        $patch   = new RestServiceEntity();
         $patch->exchangeArray($options);
 
         $this->codeRest->updateHalConfig($original, $patch);
@@ -625,13 +636,13 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         $options = [
-            'entity_class'          => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Entity',
-            'collection_class'      => 'LaminasTest\ApiTools\Admin\Model\TestAsset\Collection',
-            'hydrator_name'         => 'Laminas\Hydrator\Reflection',
+            'entity_class'          => Entity::class,
+            'collection_class'      => Collection::class,
+            'hydrator_name'         => ReflectionHydrator::class,
             'route_identifier_name' => 'custom_foo_id',
             'route_name'            => 'my/custom/route',
         ];
-        $patch = new RestServiceEntity();
+        $patch   = new RestServiceEntity();
         $patch->exchangeArray($options);
 
         $this->codeRest->updateHalConfig($original, $patch);
@@ -681,13 +692,13 @@ class RestServiceModelTest extends TestCase
             'accept_whitelist'           => ['application/json'],
             'content_type_whitelist'     => ['application/json'],
         ];
-        $patch = new RestServiceEntity();
+        $patch   = new RestServiceEntity();
         $patch->exchangeArray(array_merge([
-            'controller_service_name'    => 'BarConf\V1\Rest\Foo\Controller',
+            'controller_service_name' => 'BarConf\V1\Rest\Foo\Controller',
         ], $updates));
 
         $updated = $this->codeRest->updateService($patch);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $updated);
+        $this->assertInstanceOf(RestServiceEntity::class, $updated);
 
         $values = $updated->getArrayCopy();
 
@@ -725,7 +736,7 @@ class RestServiceModelTest extends TestCase
         $fooPath = __DIR__ . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Foo';
         $this->assertTrue(file_exists($fooPath));
 
-        $this->expectException('Laminas\ApiTools\Admin\Exception\RuntimeException');
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('find');
         $this->expectExceptionCode(404);
         $this->codeRest->fetch($service->controllerServiceName);
@@ -736,11 +747,11 @@ class RestServiceModelTest extends TestCase
      */
     public function testCanDeleteAServicePSR4()
     {
-        $this->module = 'BazConf';
-        $this->moduleEntity  = new ModuleEntity($this->module);
-        $moduleUtils    = new ModuleUtils($this->moduleManager);
-        $this->modules  = new ModulePathSpec($moduleUtils, 'psr-4', __DIR__ . '/TestAsset');
-        $this->codeRest = new RestServiceModel(
+        $this->module       = 'BazConf';
+        $this->moduleEntity = new ModuleEntity($this->module);
+        $moduleUtils        = new ModuleUtils($this->moduleManager);
+        $this->modules      = new ModulePathSpec($moduleUtils, 'psr-4', __DIR__ . '/TestAsset');
+        $this->codeRest     = new RestServiceModel(
             $this->moduleEntity,
             $this->modules,
             $this->resource->factory('BazConf')
@@ -754,7 +765,7 @@ class RestServiceModelTest extends TestCase
         $fooPath = __DIR__ . '/TestAsset/module/BazConf/src/V1/Rest/Foo';
         $this->assertTrue(file_exists($fooPath));
 
-        $this->expectException('Laminas\ApiTools\Admin\Exception\RuntimeException');
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('find');
         $this->expectExceptionCode(404);
         $this->codeRest->fetch($service->controllerServiceName);
@@ -776,11 +787,11 @@ class RestServiceModelTest extends TestCase
      */
     public function testCanDeleteAServiceRecursivePSR4()
     {
-        $this->module = 'BazConf';
-        $this->moduleEntity  = new ModuleEntity($this->module);
-        $moduleUtils    = new ModuleUtils($this->moduleManager);
-        $this->modules  = new ModulePathSpec($moduleUtils, 'psr-4', __DIR__ . '/TestAsset');
-        $this->codeRest = new RestServiceModel(
+        $this->module       = 'BazConf';
+        $this->moduleEntity = new ModuleEntity($this->module);
+        $moduleUtils        = new ModuleUtils($this->moduleManager);
+        $this->modules      = new ModulePathSpec($moduleUtils, 'psr-4', __DIR__ . '/TestAsset');
+        $this->codeRest     = new RestServiceModel(
             $this->moduleEntity,
             $this->modules,
             $this->resource->factory('BazConf')
@@ -804,7 +815,7 @@ class RestServiceModelTest extends TestCase
         $service = $this->codeRest->createService($details);
 
         $this->assertTrue($this->codeRest->deleteService($service->controllerServiceName));
-        $path = __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
+        $path   = __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
         $config = include $path;
         $this->assertInternalType('array', $config);
         $this->assertInternalType('array', $config['api-tools-rest']);
@@ -845,12 +856,12 @@ class RestServiceModelTest extends TestCase
         $details = $this->getCreationPayload();
         $service = $this->codeRest->createService($details);
 
-        $path = __DIR__ . '/TestAsset/module/BarConf';
+        $path            = __DIR__ . '/TestAsset/module/BarConf';
         $versioningModel = new VersioningModel($this->resource->factory('BarConf'));
         $this->assertTrue($versioningModel->createVersion('BarConf', 2));
 
         $serviceName = str_replace('1', '2', $service->controllerServiceName);
-        $service = $this->codeRest->fetch($serviceName);
+        $service     = $this->codeRest->fetch($serviceName);
         $this->assertTrue($this->codeRest->deleteService($serviceName));
 
         $config = include $path . '/config/module.config.php';
@@ -873,11 +884,11 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         $options = [
-            'hydrator_name'         => 'Laminas\Hydrator\Reflection',
+            'hydrator_name'         => ReflectionHydrator::class,
             'route_identifier_name' => 'custom_foo_id',
             'route_name'            => 'my/custom/route',
         ];
-        $patch = new RestServiceEntity();
+        $patch   = new RestServiceEntity();
         $patch->exchangeArray($options);
 
         $this->codeRest->updateHalConfig($original, $patch);
@@ -904,10 +915,10 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         $options = [
-            'hydrator_name'          => 'Laminas\Hydrator\Reflection',
+            'hydrator_name'          => ReflectionHydrator::class,
             'entity_identifier_name' => 'custom_foo_id',
         ];
-        $patch = new RestServiceEntity();
+        $patch   = new RestServiceEntity();
         $patch->exchangeArray($options);
 
         $this->codeRest->updateHalConfig($original, $patch);
@@ -948,10 +959,10 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         $options = [
-            'collection_http_methods'    => [],
-            'entity_http_methods'        => [],
+            'collection_http_methods' => [],
+            'entity_http_methods'     => [],
         ];
-        $patch = new RestServiceEntity();
+        $patch   = new RestServiceEntity();
         $patch->exchangeArray($options);
 
         $this->codeRest->updateRestConfig($original, $patch);
@@ -976,7 +987,7 @@ class RestServiceModelTest extends TestCase
         $options = [
             'collection_name' => 'foo_bars',
         ];
-        $patch = new RestServiceEntity();
+        $patch   = new RestServiceEntity();
         $patch->exchangeArray($options);
 
         $this->codeRest->updateRestConfig($original, $patch);
@@ -993,29 +1004,27 @@ class RestServiceModelTest extends TestCase
 
     /**
      * @see https://github.com/zfcampus/zf-apigility-admin-ui/issues/23
-     * @expectedException Laminas\ApiTools\Admin\Exception\RuntimeException
      */
     public function testServiceExistsThrowExceptionAndLeaveConfigAsIs()
     {
         $details = $this->getCreationPayload();
         $result  = $this->codeRest->createService($details);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $result);
+        $this->assertInstanceOf(RestServiceEntity::class, $result);
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
         // create a second service with the same name and data
         try {
             $result = $this->codeRest->createService($details);
-        } catch (\Laminas\ApiTools\Admin\Exception\RuntimeException $e) {
+            $this->fail('Should not have created service due to duplicate existing already');
+        } catch (RuntimeException $e) {
             $config2 = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
             // check the configuration is unchanged
             $this->assertEquals($config, $config2);
-            throw new \Laminas\ApiTools\Admin\Exception\RuntimeException();
         }
     }
 
     /**
      * @see https://github.com/zfcampus/zf-apigility-admin/issues/49
-     * @expectedException Laminas\ApiTools\Admin\Exception\RuntimeException
      */
     public function testCreateServiceWithUrlAlreadyExist()
     {
@@ -1023,17 +1032,17 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         // Create a new REST entity with same URL match
-        $payload = $details->getArrayCopy();
+        $payload                 = $details->getArrayCopy();
         $payload['service_name'] = 'bar';
-        $restService = new NewRestServiceEntity();
+        $restService             = new NewRestServiceEntity();
         $restService->exchangeArray($payload);
 
+        $this->expectException(RuntimeException::class);
         $this->codeRest->createService($restService);
     }
 
     /**
      * @see https://github.com/zfcampus/zf-apigility-admin/issues/49
-     * @expectedException Laminas\ApiTools\Admin\Exception\RuntimeException
      */
     public function testUpdateServiceWithUrlAlreadyExist()
     {
@@ -1041,12 +1050,12 @@ class RestServiceModelTest extends TestCase
         $original = $this->codeRest->createService($details);
 
         // Create a new REST entity
-        $payload = $details->getArrayCopy();
-        $payload['service_name'] = 'bar';
-        $payload['route_match'] = '/api/bar';
+        $payload                          = $details->getArrayCopy();
+        $payload['service_name']          = 'bar';
+        $payload['route_match']           = '/api/bar';
         $payload['route_identifier_name'] = 'bar_id';
-        $payload['collection_name'] = 'bar';
-        $restService = new NewRestServiceEntity();
+        $payload['collection_name']       = 'bar';
+        $restService                      = new NewRestServiceEntity();
         $restService->exchangeArray($payload);
 
         $second = $this->codeRest->createService($restService);
@@ -1054,9 +1063,10 @@ class RestServiceModelTest extends TestCase
         $payload = $second->getArrayCopy();
         // Update the second REST service with same URL of the first one
         $payload['route_match'] = '/api/foo';
-        $patch = new NewRestServiceEntity();
+        $patch                  = new NewRestServiceEntity();
         $patch->exchangeArray($payload);
 
+        $this->expectException(RuntimeException::class);
         $this->codeRest->updateService($patch);
     }
 }

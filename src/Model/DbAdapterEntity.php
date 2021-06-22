@@ -1,18 +1,21 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
+use function array_merge;
+use function strtolower;
+
 class DbAdapterEntity
 {
+    /**
+     * @param string $name
+     * @param array $config
+     */
     public function __construct($name, $config)
     {
-        $this->name = $name;
+        $this->name   = $name;
         $this->config = $config;
     }
 

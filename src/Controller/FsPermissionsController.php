@@ -1,15 +1,16 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
 use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\Mvc\Controller\AbstractActionController;
+
+use function file_exists;
+use function getcwd;
+use function getenv;
+use function is_writable;
 
 /**
  * Detect if filesystem permissions will work for the admin api
@@ -23,9 +24,7 @@ class FsPermissionsController extends AbstractActionController
      */
     protected $root;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $rootIsWritable;
 
     public function __construct()
@@ -39,11 +38,10 @@ class FsPermissionsController extends AbstractActionController
     public function fsPermissionsAction()
     {
         $isWritable = $this->configIsWritable() && $this->moduleIsWritable();
-        $viewModel = new ViewModel([
+        return new ViewModel([
             'fs_perms' => $isWritable,
             'www_user' => getenv('USER') ?: '',
         ]);
-        return $viewModel;
     }
 
     /**

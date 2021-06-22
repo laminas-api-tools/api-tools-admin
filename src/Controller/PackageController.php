@@ -1,18 +1,38 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
 use Laminas\Http\Request;
+use Laminas\Http\Response;
 use Laminas\Http\Response\Stream;
 use Laminas\Mvc\Controller\AbstractActionController;
+
+use function array_key_exists;
+use function array_map;
+use function basename;
+use function date;
+use function escapeshellarg;
+use function file_exists;
+use function filesize;
+use function fopen;
+use function glob;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_string;
+use function realpath;
+use function shell_exec;
+use function sprintf;
+use function strtolower;
+use function sys_get_temp_dir;
+use function uniqid;
+use function unlink;
+
+use const GLOB_ONLYDIR;
 
 class PackageController extends AbstractActionController
 {
@@ -23,9 +43,7 @@ class PackageController extends AbstractActionController
      */
     private $sentPackage;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $zfdeployPath = 'vendor/zfcampus/zf-deploy/bin/zfdeploy.php';
 
     /**
@@ -41,7 +59,7 @@ class PackageController extends AbstractActionController
     /**
      * Handle incoming requests
      *
-     * @return array|\Laminas\Http\Response|ApiProblemResponse
+     * @return array|Response|ApiProblemResponse
      */
     public function indexAction()
     {
@@ -73,8 +91,8 @@ class PackageController extends AbstractActionController
      *
      * @param string $fileId
      * @param string $format
-     * @param \Laminas\Http\Response $response
-     * @return \Laminas\Http\Response
+     * @param Response $response
+     * @return Response
      */
     private function fetch($fileId, $format, $response)
     {
@@ -83,7 +101,7 @@ class PackageController extends AbstractActionController
             return $response;
         }
 
-        $package  = $this->getPackageFile($fileId, $format);
+        $package = $this->getPackageFile($fileId, $format);
 
         if (! file_exists($package)) {
             $response->setStatusCode(404);
@@ -123,7 +141,8 @@ class PackageController extends AbstractActionController
      */
     private function create($format, array $params)
     {
-        if (! $format
+        if (
+            ! $format
             || ! is_string($format)
             || ! in_array(strtolower($format), ['zip', 'tar', 'tgz', 'zpk'])
         ) {
@@ -146,10 +165,10 @@ class PackageController extends AbstractActionController
         $cmd .= $this->createModulesOption($apis);
 
         $composer = array_key_exists('composer', $params) ? $params['composer'] : null;
-        $cmd .= $this->createComposerOption($composer);
+        $cmd     .= $this->createComposerOption($composer);
 
         $config = array_key_exists('config', $params) ? $params['config'] : null;
-        $cmd .= $this->createConfigOption($config);
+        $cmd   .= $this->createConfigOption($config);
 
         if ($format === 'zpk') {
             $cmd .= $this->createZpkOptions($params);
@@ -252,16 +271,14 @@ class PackageController extends AbstractActionController
     {
         $options = '';
 
-        $xml = array_key_exists('zpk_xml', $params) ? $params['zpk_xml'] : null;
+        $xml      = array_key_exists('zpk_xml', $params) ? $params['zpk_xml'] : null;
         $options .= $this->createZpkXmlOption($xml);
 
-        $assets = array_key_exists('zpk_assets', $params) ? $params['zpk_assets'] : null;
+        $assets   = array_key_exists('zpk_assets', $params) ? $params['zpk_assets'] : null;
         $options .= $this->createZpkAssetsOption($assets);
 
         $version = array_key_exists('zpk_version', $params) ? $params['zpk_version'] : null;
-        $options .= $this->createZpkVersionOption($version);
-
-        return $options;
+        return $options . $this->createZpkVersionOption($version);
     }
 
     /**
@@ -314,7 +331,6 @@ class PackageController extends AbstractActionController
      *
      * Provided for testing.
      *
-     * @param  Request $request
      * @return $this
      */
     public function setRequest(Request $request)

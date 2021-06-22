@@ -1,25 +1,18 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Configuration\ConfigResource;
 
+use function is_array;
+
 class ContentNegotiationModel
 {
-    /**
-     * @var ConfigResource
-     */
+    /** @var ConfigResource */
     protected $globalConfig;
 
-    /**
-     * @param ConfigResource $globalConfig
-     */
     public function __construct(ConfigResource $globalConfig)
     {
         $this->globalConfig = $globalConfig;
@@ -71,9 +64,10 @@ class ContentNegotiationModel
      */
     public function fetchAll()
     {
-        $config = [];
+        $config         = [];
         $fromConfigFile = $this->globalConfig->fetch(true);
-        if (isset($fromConfigFile['api-tools-content-negotiation']['selectors'])
+        if (
+            isset($fromConfigFile['api-tools-content-negotiation']['selectors'])
             && is_array($fromConfigFile['api-tools-content-negotiation']['selectors'])
         ) {
             $config = $fromConfigFile['api-tools-content-negotiation']['selectors'];
@@ -96,7 +90,8 @@ class ContentNegotiationModel
     public function fetch($name)
     {
         $config = $this->globalConfig->fetch(true);
-        if (! isset($config['api-tools-content-negotiation']['selectors'][$name])
+        if (
+            ! isset($config['api-tools-content-negotiation']['selectors'][$name])
             || ! is_array($config['api-tools-content-negotiation']['selectors'][$name])
         ) {
             return false;

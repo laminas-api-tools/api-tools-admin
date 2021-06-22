@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -13,16 +9,34 @@ use Laminas\ApiTools\Configuration\ConfigResource;
 use Laminas\Filter\FilterChain;
 use Laminas\Stdlib\Glob;
 
+use function closedir;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function in_array;
+use function is_array;
+use function is_dir;
+use function is_readable;
+use function is_writable;
+use function mkdir;
+use function opendir;
+use function preg_match;
+use function preg_quote;
+use function preg_replace;
+use function readdir;
+use function sprintf;
+use function str_replace;
+use function strstr;
+
+use const DIRECTORY_SEPARATOR;
+
 /**
  * Allows management of module versions
- *
- *
- * @author Gabriel Somoza <gabriel@somoza.me>
  */
 class ModuleVersioningModel
 {
     /** Regex to extract module versions from a module's source path */
-    const REGEX_VERSION_DIR = '#V(?P<version>\d+)$#';
+    public const REGEX_VERSION_DIR = '#V(?P<version>\d+)$#';
 
     /** @var string */
     private $moduleName;
@@ -49,8 +63,6 @@ class ModuleVersioningModel
      * @param string $moduleName Name of the module. MUST be normalized.
      * @param string $configDirPath Path the the configuration folder, with one or more *.config.php files.
      * @param string $srcPath Path to the module's source folder for versions, resources & collections.
-     * @param ConfigResource $config
-     * @param null|ConfigResource $docsConfig
      * @param null|string $pathSpecType Whether the module uses a PSR-0 directory structure or not.
      *                                  Defaults to ModulePathSpec::PSR_0.
      */
@@ -59,11 +71,11 @@ class ModuleVersioningModel
         $configDirPath,
         $srcPath,
         ConfigResource $config,
-        ConfigResource $docsConfig = null,
+        ?ConfigResource $docsConfig = null,
         $pathSpecType = null
     ) {
-        $this->moduleName = (string) $moduleName;
-        $this->configResource = $config;
+        $this->moduleName         = (string) $moduleName;
+        $this->configResource     = $config;
         $this->docsConfigResource = $docsConfig;
 
         if (null === $pathSpecType) {
@@ -78,17 +90,13 @@ class ModuleVersioningModel
      * createWithPathSpec
      *
      * @param string $moduleName
-     * @param ModulePathSpec $pathSpec
-     * @param ConfigResource $config
-     * @param ConfigResource|null $docsConfig
-     *
      * @return static
      */
     public static function createWithPathSpec(
         $moduleName,
         ModulePathSpec $pathSpec,
         ConfigResource $config,
-        ConfigResource $docsConfig = null
+        ?ConfigResource $docsConfig = null
     ) {
         $moduleName = $pathSpec->normalizeModuleName((string) $moduleName);
         return new static(
@@ -129,7 +137,7 @@ class ModuleVersioningModel
         }
 
         $this->recursiveCopy(
-            $this->versionsPath . DIRECTORY_SEPARATOR . 'V'. $previous,
+            $this->versionsPath . DIRECTORY_SEPARATOR . 'V' . $previous,
             $this->versionsPath . DIRECTORY_SEPARATOR . 'V' . $version,
             $previous,
             $version
@@ -149,7 +157,7 @@ class ModuleVersioningModel
      */
     public function getModuleVersions()
     {
-        $versions  = [];
+        $versions = [];
         foreach (Glob::glob($this->versionsPath . DIRECTORY_SEPARATOR . 'V*') as $dir) {
             if (preg_match(self::REGEX_VERSION_DIR, $dir, $matches)) {
                 $versions[] = (int) $matches['version'];
@@ -201,7 +209,7 @@ class ModuleVersioningModel
             $nsSep
         );
         while (false !== ($file = readdir($dir))) {
-            if (($file == '.') || ($file == '..')) {
+            if (($file === '.') || ($file === '..')) {
                 continue;
             }
 
@@ -219,7 +227,6 @@ class ModuleVersioningModel
         }
         closedir($dir);
     }
-
 
     /**
      * Update a PHP configuration file from $previous to $version version
@@ -414,7 +421,7 @@ class ModuleVersioningModel
         }
 
         $originalDocs = $this->docsConfigResource->fetch(true);
-        $newDocs = $this->changeVersionArray($originalDocs, $previous, $version);
+        $newDocs      = $this->changeVersionArray($originalDocs, $previous, $version);
         $this->docsConfigResource->patch($newDocs, true);
         return true;
     }
@@ -428,9 +435,9 @@ class ModuleVersioningModel
         $pathSpecType = (string) $pathSpecType;
         if (! in_array($pathSpecType, [ModulePathSpec::PSR_0, ModulePathSpec::PSR_4])) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Invalid $setPathSpecType parameter supplied. Please use the ModulePathSpec::PSR_0 or ' .
-                'ModulePathSpec::PSR_4 constants.',
-                __CLASS__
+                'Invalid $setPathSpecType parameter supplied. Please use the ModulePathSpec::PSR_0 or '
+                . 'ModulePathSpec::PSR_4 constants.',
+                self::class
             ));
         }
         $this->pathSpecType = $pathSpecType;
@@ -463,7 +470,7 @@ class ModuleVersioningModel
      */
     private function setConfigDirPath($configDirPath)
     {
-        $configDirPath = (string)$configDirPath;
+        $configDirPath = (string) $configDirPath;
         if (! is_readable($configDirPath) || ! is_dir($configDirPath)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Could not find config directory at path "%s". Make sure the directory exists.',

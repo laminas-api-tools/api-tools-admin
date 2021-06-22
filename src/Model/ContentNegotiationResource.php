@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -13,11 +9,11 @@ use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\ApiTools\Rest\Exception\CreationException;
 use Laminas\InputFilter\InputFilterInterface;
 
+use function array_key_exists;
+
 class ContentNegotiationResource extends AbstractResourceListener
 {
-    /**
-     * @var ContentNegotiationModel
-     */
+    /** @var ContentNegotiationModel */
     protected $model;
 
     public function __construct(ContentNegotiationModel $model)
@@ -31,13 +27,17 @@ class ContentNegotiationResource extends AbstractResourceListener
      * Primarily present for testing; input filters will be injected via event
      * normally.
      *
-     * @param InputFilterInterface $inputFilter
+     * @return void
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         $this->inputFilter = $inputFilter;
     }
 
+    /**
+     * @param string|int $id
+     * @return ApiProblem|ContentNegotiationEntity
+     */
     public function fetch($id)
     {
         $entity = $this->model->fetch($id);
@@ -47,11 +47,19 @@ class ContentNegotiationResource extends AbstractResourceListener
         return $entity;
     }
 
+    /**
+     * @param array $params
+     * @return array
+     */
     public function fetchAll($params = [])
     {
         return $this->model->fetchAll();
     }
 
+    /**
+     * @param array|object $data
+     * @return ContentNegotiationEntity
+     */
     public function create($data)
     {
         $data = $this->getInputFilter()->getValues();
@@ -71,6 +79,11 @@ class ContentNegotiationResource extends AbstractResourceListener
         return $this->model->create($name, $selectors);
     }
 
+    /**
+     * @param string|int $id
+     * @param array|object $data
+     * @return ApiProblem|ContentNegotiationEntity
+     */
     public function patch($id, $data)
     {
         $data = $this->getInputFilter()->getValues();
@@ -86,6 +99,10 @@ class ContentNegotiationResource extends AbstractResourceListener
         return $this->model->update($id, (array) $data['selectors']);
     }
 
+    /**
+     * @param string|int $id
+     * @return bool
+     */
     public function delete($id)
     {
         $this->model->remove($id);

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
@@ -13,8 +9,16 @@ use Laminas\ApiTools\Admin\Model\FiltersModel;
 use Laminas\Filter\FilterPluginManager;
 use PHPUnit\Framework\TestCase;
 
+use function array_key_exists;
+use function count;
+use function file_exists;
+use function is_array;
+use function sprintf;
+use function var_export;
+
 class FiltersModelTest extends TestCase
 {
+    /** @var array */
     protected $config;
 
     public function setUp()
@@ -24,7 +28,7 @@ class FiltersModelTest extends TestCase
         $this->model   = new FiltersModel($this->plugins, $this->config);
     }
 
-    public function getConfig()
+    public function getConfig(): array
     {
         if (is_array($this->config)) {
             return $this->config;
@@ -60,7 +64,7 @@ class FiltersModelTest extends TestCase
             $this->assertInternalType(
                 'array',
                 $metadata,
-                sprintf('Key "%s" does not have array metadata: "%s"', $service, var_export($metadata, 1))
+                sprintf('Key "%s" does not have array metadata: "%s"', $service, var_export($metadata, true))
             );
         }
     }

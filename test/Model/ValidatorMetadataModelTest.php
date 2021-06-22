@@ -1,18 +1,20 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Admin\Model\ValidatorMetadataModel;
 use PHPUnit\Framework\TestCase;
 
+use function array_key_exists;
+use function array_keys;
+use function file_exists;
+use function is_array;
+
 class ValidatorMetadataModelTest extends TestCase
 {
+    /** @var array */
     protected $config;
 
     public function setUp()
@@ -21,7 +23,7 @@ class ValidatorMetadataModelTest extends TestCase
         $this->model = new ValidatorMetadataModel($this->config);
     }
 
-    public function getConfig()
+    public function getConfig(): array
     {
         if (is_array($this->config)) {
             return $this->config;
@@ -40,18 +42,19 @@ class ValidatorMetadataModelTest extends TestCase
         return $this->config;
     }
 
-    public function assertDefaultOptions(array $metadata)
+    public function assertDefaultOptions(array $metadata): void
     {
         foreach (array_keys($this->config['__all__']) as $key) {
             $this->assertArrayHasKey($key, $metadata);
         }
     }
 
-    public function allPlugins()
+    /** @psalm-return array<string, array{0: string}> */
+    public function allPlugins(): array
     {
         $return = [];
         foreach ($this->getConfig() as $plugin => $data) {
-            if ('__all__' == $plugin) {
+            if ('__all__' === $plugin) {
                 continue;
             }
             $return[$plugin] = [$plugin];
@@ -62,7 +65,7 @@ class ValidatorMetadataModelTest extends TestCase
     /**
      * @dataProvider allPlugins
      */
-    public function testAllPluginsContainDefaultOptions($plugin)
+    public function testAllPluginsContainDefaultOptions(string $plugin)
     {
         $metadata = $this->model->fetch($plugin);
         $this->assertInternalType('array', $metadata);
@@ -72,7 +75,7 @@ class ValidatorMetadataModelTest extends TestCase
     /**
      * @dataProvider allPlugins
      */
-    public function testCanFetchAllMetadataAtOnce($plugin)
+    public function testCanFetchAllMetadataAtOnce(string $plugin)
     {
         $metadata = $this->model->fetchAll();
         $this->assertInternalType('array', $metadata);
@@ -82,7 +85,7 @@ class ValidatorMetadataModelTest extends TestCase
     /**
      * @dataProvider allPlugins
      */
-    public function testEachPluginInAllMetadataContainsDefaultOptions($plugin)
+    public function testEachPluginInAllMetadataContainsDefaultOptions(string $plugin)
     {
         $metadata = $this->model->fetchAll();
         $this->assertInternalType('array', $metadata);

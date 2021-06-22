@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\ApiTools\Admin\InputFilter;
 
 use Laminas\ApiTools\Admin\InputFilter\InputFilterInputFilter;
+use Laminas\Filter\Boolean;
 use Laminas\InputFilter\Factory;
 use PHPUnit\Framework\TestCase;
 
@@ -13,22 +16,23 @@ class InputFilterInputFilterTest extends TestCase
         $this->inputFilterInputFilter = new InputFilterInputFilter(new Factory());
     }
 
-    public function dataProviderIsValid()
+    /** @psalm-return array<array-key, array> */
+    public function dataProviderIsValid(): array
     {
         return [
             [
                 [
                     [
-                        'name' => 'myfilter',
-                        'required' => true,
-                        'filters' => [
+                        'name'              => 'myfilter',
+                        'required'          => true,
+                        'filters'           => [
                             [
-                                'name' => 'Laminas\Filter\Boolean',
+                                'name'    => Boolean::class,
                                 'options' => ['casting' => false],
                             ],
                         ],
-                        'validators' => [],
-                        'allow_empty' => true,
+                        'validators'        => [],
+                        'allow_empty'       => true,
                         'continue_if_empty' => false,
                     ],
                 ],
@@ -36,7 +40,13 @@ class InputFilterInputFilterTest extends TestCase
         ];
     }
 
-    public function dataProviderIsInvalid()
+    /**
+     * @psalm-return array<array-key, array{
+     *     0: array,
+     *     1: array<string, string>
+     * }>
+     */
+    public function dataProviderIsInvalid(): array
     {
         return [
             [
@@ -49,16 +59,16 @@ class InputFilterInputFilterTest extends TestCase
             [
                 [
                     [
-                        'name' => 'myfilter',
-                        'required' => true,
-                        'filters' => [
+                        'name'              => 'myfilter',
+                        'required'          => true,
+                        'filters'           => [
                             [
-                                'name' => 'Laminas\Filter\Bool',
+                                'name'    => 'Laminas\Filter\Bool',
                                 'options' => ['casting' => false],
                             ],
                         ],
-                        'validators' => [],
-                        'allow_empty' => true,
+                        'validators'        => [],
+                        'allow_empty'       => true,
                         'continue_if_empty' => false,
                     ],
                 ],
@@ -72,7 +82,7 @@ class InputFilterInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($data)
+    public function testIsValid(array $data)
     {
         $this->inputFilterInputFilter->setData($data);
         $this->assertTrue($this->inputFilterInputFilter->isValid());
@@ -81,7 +91,7 @@ class InputFilterInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsInvalid
      */
-    public function testIsInvalid($data, $messages)
+    public function testIsInvalid(array $data, array $messages)
     {
         $this->inputFilterInputFilter->setData($data);
         $this->assertFalse($this->inputFilterInputFilter->isValid());

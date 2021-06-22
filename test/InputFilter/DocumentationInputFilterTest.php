@@ -1,50 +1,58 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\ApiTools\Admin\InputFilter;
 
+use Laminas\ApiTools\Admin\InputFilter\DocumentationInputFilter;
 use Laminas\InputFilter\Factory;
 use PHPUnit\Framework\TestCase;
 
 class DocumentationInputFilterTest extends TestCase
 {
-    public function getInputFilter()
+    public function getInputFilter(): DocumentationInputFilter
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'Laminas\ApiTools\Admin\InputFilter\DocumentationInputFilter',
+            'type' => DocumentationInputFilter::class,
         ]);
     }
 
-    public function dataProviderIsValid()
+    /**
+     * @psalm-return array<string, array{
+     *     0: array<string, string|array<string, string>>
+     * }>
+     */
+    public function dataProviderIsValid(): array
     {
         return [
             'full-rpc' => [
                 [
                     'description' => 'Foobar',
-                    'GET' => [
+                    'GET'         => [
                         'description' => 'another one',
-                        'request' => 'request doc',
-                        'response' => 'response doc',
+                        'request'     => 'request doc',
+                        'response'    => 'response doc',
                     ],
-                    'POST' => [
+                    'POST'        => [
                         'description' => 'another one',
-                        'request' => 'request doc',
-                        'response' => 'response doc',
+                        'request'     => 'request doc',
+                        'response'    => 'response doc',
                     ],
-                    'PUT' => [
+                    'PUT'         => [
                         'description' => 'another one',
-                        'request' => 'request doc',
-                        'response' => 'response doc',
+                        'request'     => 'request doc',
+                        'response'    => 'response doc',
                     ],
-                    'PATCH' => [
+                    'PATCH'       => [
                         'description' => 'another one',
-                        'request' => 'request doc',
-                        'response' => 'response doc',
+                        'request'     => 'request doc',
+                        'response'    => 'response doc',
                     ],
-                    'DELETE' => [
+                    'DELETE'      => [
                         'description' => 'another one',
-                        'request' => 'request doc',
-                        'response' => 'response doc',
+                        'request'     => 'request doc',
+                        'response'    => 'response doc',
                     ],
                 ],
             ],
@@ -52,72 +60,78 @@ class DocumentationInputFilterTest extends TestCase
             'full-rest' => [
                 [
                     'description' => 'Foobar',
-                    'collection' => [
-                        'GET' => [
+                    'collection'  => [
+                        'GET'    => [
                             'description' => 'another one',
-                            'request' => 'request doc',
-                            'response' => 'response doc',
+                            'request'     => 'request doc',
+                            'response'    => 'response doc',
                         ],
-                        'POST' => [
+                        'POST'   => [
                             'description' => 'another one',
-                            'request' => 'request doc',
-                            'response' => 'response doc',
+                            'request'     => 'request doc',
+                            'response'    => 'response doc',
                         ],
-                        'PUT' => [
+                        'PUT'    => [
                             'description' => 'another one',
-                            'request' => 'request doc',
-                            'response' => 'response doc',
+                            'request'     => 'request doc',
+                            'response'    => 'response doc',
                         ],
-                        'PATCH' => [
+                        'PATCH'  => [
                             'description' => 'another one',
-                            'request' => 'request doc',
-                            'response' => 'response doc',
+                            'request'     => 'request doc',
+                            'response'    => 'response doc',
                         ],
                         'DELETE' => [
                             'description' => 'another one',
-                            'request' => 'request doc',
-                            'response' => 'response doc',
+                            'request'     => 'request doc',
+                            'response'    => 'response doc',
                         ],
                     ],
-                    'entity' => [
-                        'GET' => [
+                    'entity'      => [
+                        'GET'    => [
                             'description' => 'another one',
-                            'request' => 'request doc',
-                            'response' => 'response doc',
+                            'request'     => 'request doc',
+                            'response'    => 'response doc',
                         ],
-                        'POST' => [
+                        'POST'   => [
                             'description' => 'another one',
-                            'request' => 'request doc',
-                            'response' => 'response doc',
+                            'request'     => 'request doc',
+                            'response'    => 'response doc',
                         ],
-                        'PUT' => [
+                        'PUT'    => [
                             'description' => 'another one',
-                            'request' => 'request doc',
-                            'response' => 'response doc',
+                            'request'     => 'request doc',
+                            'response'    => 'response doc',
                         ],
-                        'PATCH' => [
+                        'PATCH'  => [
                             'description' => 'another one',
-                            'request' => 'request doc',
-                            'response' => 'response doc',
+                            'request'     => 'request doc',
+                            'response'    => 'response doc',
                         ],
                         'DELETE' => [
                             'description' => 'another one',
-                            'request' => 'request doc',
-                            'response' => 'response doc',
+                            'request'     => 'request doc',
+                            'response'    => 'response doc',
                         ],
                     ],
                 ],
             ],
-            'empty' => [
+            'empty'     => [
                 [],
             ],
         ];
     }
 
-    public function dataProviderIsInvalid()
+    /**
+     * @psalm-return array<string, array{
+     *     0: array<string, mixed>,
+     *     1: array<string, string[]>
+     * }>
+     */
+    public function dataProviderIsInvalid(): array
     {
         return [
-            'invalid-top-level-keys' => [
+            'invalid-top-level-keys'                              => [
                 ['description' => 'foobar', 'Foobar' => 'baz'],
                 [
                     'Foobar' => [
@@ -126,7 +140,7 @@ class DocumentationInputFilterTest extends TestCase
                     ],
                 ],
             ],
-            'collection-or-entity-with-top-level-http-methods' => [
+            'collection-or-entity-with-top-level-http-methods'    => [
                 ['description' => 'foobar', 'GET' => ['description' => 'foobar'], 'entity' => []],
                 [
                     'GET' => [
@@ -135,7 +149,7 @@ class DocumentationInputFilterTest extends TestCase
                     ],
                 ],
             ],
-            'http-method-with-bad-format' => [
+            'http-method-with-bad-format'                         => [
                 ['description' => 'foobar', 'GET' => ['description' => 'foobar', 'Foo' => 'bar']],
                 [
                     'Foo' => [
@@ -144,16 +158,16 @@ class DocumentationInputFilterTest extends TestCase
                     ],
                 ],
             ],
-            'http-method-not-strings' => [
+            'http-method-not-strings'                             => [
                 ['description' => 'foobar', 'GET' => ['description' => 'foobar', 'request' => 500]],
                 [
                     'request' => ['Documentable elements must be strings; please verify "request"'],
                 ],
             ],
-            'http-method-not-strings-in-entity' => [
+            'http-method-not-strings-in-entity'                   => [
                 [
                     'description' => 'foobar',
-                    'entity' => [
+                    'entity'      => [
                         'GET' => ['description' => 'foobar', 'response' => 500],
                     ],
                 ],
@@ -161,7 +175,7 @@ class DocumentationInputFilterTest extends TestCase
                     'response' => ['Documentable elements must be strings; please verify "response"'],
                 ],
             ],
-            'description-is-not-a-string' => [
+            'description-is-not-a-string'                         => [
                 ['description' => 5],
                 [
                     'description' => [
@@ -177,7 +191,7 @@ class DocumentationInputFilterTest extends TestCase
                     ],
                 ],
             ],
-            'collection-or-entity-not-an-array' => [
+            'collection-or-entity-not-an-array'                   => [
                 ['collection' => 5],
                 [
                     'collection' => [
@@ -186,7 +200,7 @@ class DocumentationInputFilterTest extends TestCase
                     ],
                 ],
             ],
-            'collection-or-entity-using-wrong-key' => [
+            'collection-or-entity-using-wrong-key'                => [
                 ['collection' => ['Foo' => 'bar']],
                 [
                     'collection' => [
@@ -200,7 +214,7 @@ class DocumentationInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($data)
+    public function testIsValid(array $data)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
@@ -210,7 +224,7 @@ class DocumentationInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsInvalid
      */
-    public function testIsInvalid($data, $messages)
+    public function testIsInvalid(array $data, array $messages)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);

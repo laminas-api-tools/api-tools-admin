@@ -1,26 +1,24 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 
+use function sprintf;
+
 class RpcServiceResourceFactory
 {
     /**
-     * @param ContainerInterface $container
      * @return RpcServiceResource
      * @throws ServiceNotCreatedException
      */
     public function __invoke(ContainerInterface $container)
     {
-        if (! $container->has(RpcServiceModelFactory::class)
+        if (
+            ! $container->has(RpcServiceModelFactory::class)
             && ! $container->has(\ZF\Apigility\Admin\Model\RpcServiceModelFactory::class)
         ) {
             throw new ServiceNotCreatedException(sprintf(
@@ -29,7 +27,8 @@ class RpcServiceResourceFactory
                 RpcServiceModelFactory::class
             ));
         }
-        if (! $container->has(InputFilterModel::class)
+        if (
+            ! $container->has(InputFilterModel::class)
             && ! $container->has(\ZF\Apigility\Admin\Model\InputFilterModel::class)
         ) {
             throw new ServiceNotCreatedException(sprintf(

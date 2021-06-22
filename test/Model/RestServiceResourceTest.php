@@ -1,18 +1,18 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
 use BarConf;
+use Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity;
 use Laminas\ApiTools\Admin\Model\DbConnectedRestServiceModel;
+use Laminas\ApiTools\Admin\Model\DocumentationModel;
+use Laminas\ApiTools\Admin\Model\InputFilterModel;
 use Laminas\ApiTools\Admin\Model\ModuleEntity;
 use Laminas\ApiTools\Admin\Model\ModuleModel;
 use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Admin\Model\RestServiceEntity;
 use Laminas\ApiTools\Admin\Model\RestServiceModel;
 use Laminas\ApiTools\Admin\Model\RestServiceModelFactory;
 use Laminas\ApiTools\Admin\Model\RestServiceResource;
@@ -20,8 +20,18 @@ use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ApiTools\Configuration\ResourceFactory;
 use Laminas\Config\Writer\PhpArray;
 use Laminas\EventManager\SharedEventManager;
+use Laminas\ModuleManager\ModuleManager;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
+
+use function array_diff;
+use function copy;
+use function glob;
+use function is_dir;
+use function rmdir;
+use function scandir;
+use function sprintf;
+use function unlink;
 
 class RestServiceResourceTest extends TestCase
 {
@@ -66,7 +76,7 @@ class RestServiceResourceTest extends TestCase
 
         $this->moduleEntity = new ModuleEntity($this->module, [], [], false);
 
-        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -77,11 +87,11 @@ class RestServiceResourceTest extends TestCase
         $moduleUtils         = new ModuleUtils($this->moduleManager);
         $this->modules       = new ModulePathSpec($moduleUtils);
         $this->configFactory = new ResourceFactory($moduleUtils, $this->writer);
-        $config = $this->configFactory->factory('BarConf');
+        $config              = $this->configFactory->factory('BarConf');
 
         $this->restServiceModel = new RestServiceModel($this->moduleEntity, $this->modules, $config);
 
-        $this->restServiceModelFactory = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\RestServiceModelFactory')
+        $this->restServiceModelFactory = $this->getMockBuilder(RestServiceModelFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->restServiceModelFactory
@@ -90,17 +100,16 @@ class RestServiceResourceTest extends TestCase
             ->with($this->equalTo('BarConf'), $this->equalTo(RestServiceModelFactory::TYPE_DEFAULT))
             ->will($this->returnValue($this->restServiceModel));
 
-
-        $this->filter        = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\InputFilterModel')
+        $this->filter = $this->getMockBuilder(InputFilterModel::class)
                                     ->disableOriginalConstructor()
                                     ->getMock();
-        $this->docs          = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\DocumentationModel')
+        $this->docs   = $this->getMockBuilder(DocumentationModel::class)
                                     ->disableOriginalConstructor()
                                     ->getMock();
 
-        $this->resource      = new RestServiceResource($this->restServiceModelFactory, $this->filter, $this->docs);
+        $this->resource = new RestServiceResource($this->restServiceModelFactory, $this->filter, $this->docs);
 
-        $r = new ReflectionObject($this->resource);
+        $r    = new ReflectionObject($this->resource);
         $prop = $r->getProperty('moduleName');
         $prop->setAccessible(true);
         $prop->setValue($this->resource, 'BarConf');
@@ -117,7 +126,7 @@ class RestServiceResourceTest extends TestCase
     public function testCreateReturnsRestServiceEntityWithControllerServiceNamePopulated()
     {
         $entity = $this->resource->create(['service_name' => 'test']);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RestServiceEntity', $entity);
+        $this->assertInstanceOf(RestServiceEntity::class, $entity);
         $controllerServiceName = $entity->controllerServiceName;
         $this->assertNotEmpty($controllerServiceName);
         $this->assertContains('\\Test\\', $controllerServiceName);
@@ -148,7 +157,7 @@ class RestServiceResourceTest extends TestCase
             [DbConnectedRestServiceModel::class, 'onFetch']
         );
 
-        $r = new ReflectionObject($resource);
+        $r    = new ReflectionObject($resource);
         $prop = $r->getProperty('moduleName');
         $prop->setAccessible(true);
         $prop->setValue($resource, 'BarConf');
@@ -157,12 +166,12 @@ class RestServiceResourceTest extends TestCase
             'adapter_name' => 'Db\Test',
             'table_name'   => 'test',
         ]);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity', $entity);
+        $this->assertInstanceOf(DbConnectedRestServiceEntity::class, $entity);
 
-        $id = $entity->controllerServiceName;
+        $id         = $entity->controllerServiceName;
         $updateData = [
             'entity_identifier_name' => 'test_id',
-            'hydrator_name' => 'ObjectProperty',
+            'hydrator_name'          => 'ObjectProperty',
         ];
         $resource->patch($id, $updateData);
 

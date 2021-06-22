@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -12,16 +8,18 @@ use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Configuration\ConfigResourceFactory;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 
+use function sprintf;
+
 class RpcServiceModelFactoryFactory
 {
     /**
-     * @param ContainerInterface $container
      * @return RpcServiceModelFactory
      * @throws ServiceNotCreatedException
      */
     public function __invoke(ContainerInterface $container)
     {
-        if (! $container->has(ModulePathSpec::class)
+        if (
+            ! $container->has(ModulePathSpec::class)
             || ! $container->has(ConfigResourceFactory::class)
             || ! $container->has(ModuleModel::class)
             || ! $container->has('SharedEventManager')

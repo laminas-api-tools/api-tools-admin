@@ -1,19 +1,21 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\InputFilter\Validator;
 
 use Laminas\Validator\AbstractValidator as LaminasAbstractValidator;
 
+use function get_class;
+use function gettype;
+use function is_object;
+use function is_string;
+
 class IsStringValidator extends LaminasAbstractValidator
 {
-    const INVALID_TYPE = 'invalidType';
+    public const INVALID_TYPE = 'invalidType';
 
+    /** @var array<string, string> */
     protected $messageTemplates = [
         self::INVALID_TYPE => 'Value must be a string; received %value%',
     ];
@@ -27,7 +29,7 @@ class IsStringValidator extends LaminasAbstractValidator
     public function isValid($value)
     {
         if (! is_string($value)) {
-            $this->error(self::INVALID_TYPE, (is_object($value) ? get_class($value) : gettype($value)));
+            $this->error(self::INVALID_TYPE, is_object($value) ? get_class($value) : gettype($value));
             return false;
         }
 

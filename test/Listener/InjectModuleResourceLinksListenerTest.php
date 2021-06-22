@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Listener;
 
@@ -33,6 +29,9 @@ use Prophecy\Argument;
 use ReflectionProperty;
 use stdClass;
 
+use function is_array;
+use function sprintf;
+
 class InjectModuleResourceLinksListenerTest extends TestCase
 {
     use RouteAssetsTrait;
@@ -47,11 +46,11 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         $this->urlHelper       = $this->prophesize(MockClosure::class);
         $this->serverUrlHelper = $this->prophesize(MockClosure::class);
 
-        $this->helpers         = $this->prophesize(ContainerInterface::class);
-        $this->listener        = new InjectModuleResourceLinksListener($this->helpers->reveal());
+        $this->helpers  = $this->prophesize(ContainerInterface::class);
+        $this->listener = new InjectModuleResourceLinksListener($this->helpers->reveal());
     }
 
-    public function initRequiredConditions($listener)
+    public function initRequiredConditions(InjectModuleResourceLinksListener $listener): void
     {
         $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal'])->shouldBeCalled();
         $this->event->getResult()->will([$this->result, 'reveal']);
@@ -215,7 +214,8 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         $this->assertNull($listener($this->event->reveal()));
     }
 
-    public function serviceEntities()
+    /** @psalm-return array<string, array{0: string}> */
+    public function serviceEntities(): array
     {
         return [
             RestServiceEntity::class => [RestServiceEntity::class],
@@ -226,17 +226,18 @@ class InjectModuleResourceLinksListenerTest extends TestCase
     /**
      * @dataProvider serviceEntities
      */
-    public function testUpdatesServiceEntityWithNormalizedControllerNameAndAttachesRenderEntityListener($entityType)
-    {
+    public function testUpdatesServiceEntityWithNormalizedControllerNameAndAttachesRenderEntityListener(
+        string $entityType
+    ) {
         $listener = $this->listener;
         $links    = $this->prophesize(LinkCollection::class);
 
         $serviceEntity = new $entityType();
         $serviceEntity->exchangeArray([
-            'controller_service_name'  => 'Version\V1\Rest\Foo',
+            'controller_service_name' => 'Version\V1\Rest\Foo',
         ]);
 
-        $payload  = new Entity($serviceEntity, 'Version\V1\Rest\Foo');
+        $payload = new Entity($serviceEntity, 'Version\V1\Rest\Foo');
         $payload->setLinks($links->reveal());
         $this->initRequiredConditions($listener);
 
@@ -249,7 +250,7 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         $links->remove('self')->shouldBeCalled();
 
         $this->result
-            ->setPayload(Argument::that(function ($entity) use ($entityType, $serviceEntity, $links) {
+            ->setPayload(Argument::that(function ($entity) use ($entityType, $links) {
                 if (! $entity instanceof Entity) {
                     return false;
                 }
@@ -295,10 +296,10 @@ class InjectModuleResourceLinksListenerTest extends TestCase
 
         $serviceEntity = new InputFilterEntity();
         $serviceEntity->exchangeArray([
-            'input_filter_name'  => 'Version\V1\Rest\Foo\InputFilter',
+            'input_filter_name' => 'Version\V1\Rest\Foo\InputFilter',
         ]);
 
-        $payload  = new Entity($serviceEntity, 'Version\V1\Rest\Foo\InputFilter');
+        $payload = new Entity($serviceEntity, 'Version\V1\Rest\Foo\InputFilter');
         $payload->setLinks($links->reveal());
         $this->initRequiredConditions($listener);
 
@@ -311,7 +312,7 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         $links->remove('self')->shouldBeCalled();
 
         $this->result
-            ->setPayload(Argument::that(function ($entity) use ($serviceEntity, $links) {
+            ->setPayload(Argument::that(function ($entity) use ($links) {
                 if (! $entity instanceof Entity) {
                     return false;
                 }
@@ -410,7 +411,14 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         $this->assertNull($this->listener->onHalRenderEvents($event));
     }
 
-    public function serviceEntitiesForOnRenderEntity()
+    /**
+     * @psalm-return iterable<string, array{
+     *     0: array|RestInputFilterEntity|RpcInputFilterEntity,
+     *     1: string,
+     *     2: string
+     * }>
+     */
+    public function serviceEntitiesForOnRenderEntity(): iterable
     {
         $id   = 'Version\V1\Foo';
         $data = ['controller_service_name' => $id];
@@ -427,10 +435,14 @@ class InjectModuleResourceLinksListenerTest extends TestCase
 
     /**
      * @dataProvider serviceEntitiesForOnRenderEntity
+     * @param array|RestServiceEntity|RpcServiceEntity $entity
      */
-    public function testOnRenderEntityInjectsLinksBasedOnServiceName($entity, $id, $serviceType)
-    {
-        $inputFilterLink = $this->prophesize(Link::class);
+    public function testOnRenderEntityInjectsLinksBasedOnServiceName(
+        $entity,
+        string $id,
+        string $serviceType
+    ) {
+        $inputFilterLink   = $this->prophesize(Link::class);
         $documentationLink = $this->prophesize(Link::class);
 
         $links = $this->prophesize(LinkCollection::class);
@@ -448,7 +460,7 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         $inputFilterLink->getRouteParams()->willReturn(['foo' => 'bar']);
         $inputFilterLink
             ->setRouteParams([
-                'foo' => 'bar',
+                'foo'                     => 'bar',
                 'controller_service_name' => $id,
             ])
             ->shouldBeCalled();
@@ -459,7 +471,7 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         $documentationLink->getRouteParams()->willReturn(['foo' => 'bar']);
         $documentationLink
             ->setRouteParams([
-                'foo' => 'bar',
+                'foo'                     => 'bar',
                 'controller_service_name' => $id,
             ])
             ->shouldBeCalled();
@@ -477,7 +489,14 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         $this->assertNull($this->listener->onRenderEntity($event->reveal()));
     }
 
-    public function inputFilterEntitiesForOnRenderEntity()
+    /**
+     * @psalm-return iterable<string, array{
+     *     0: array|RestInputFilterEntity|RpcInputFilterEntity,
+     *     1: string,
+     *     2: string
+     * }>
+     */
+    public function inputFilterEntitiesForOnRenderEntity(): iterable
     {
         $id   = 'Version\V1\Foo\InputFilter';
         $data = ['input_filter_name' => $id];
@@ -494,10 +513,14 @@ class InjectModuleResourceLinksListenerTest extends TestCase
 
     /**
      * @dataProvider inputFilterEntitiesForOnRenderEntity
+     * @param array|RestInputFilterEntity|RpcInputFilterEntity $entity
      */
-    public function testOnRenderEntityInjectsLinksBasedOnInputFilterName($entity, $id, $serviceType)
-    {
-        $inputFilterLink = $this->prophesize(Link::class);
+    public function testOnRenderEntityInjectsLinksBasedOnInputFilterName(
+        $entity,
+        string $id,
+        string $serviceType
+    ) {
+        $inputFilterLink   = $this->prophesize(Link::class);
         $documentationLink = $this->prophesize(Link::class);
 
         $links = $this->prophesize(LinkCollection::class);
@@ -569,7 +592,8 @@ class InjectModuleResourceLinksListenerTest extends TestCase
                         return false;
                     }
 
-                    if (! isset($data['default_version'])
+                    if (
+                        ! isset($data['default_version'])
                         || ! isset($data['name'])
                         || isset($data['rest'])
                         || isset($data['rpc'])
@@ -578,7 +602,8 @@ class InjectModuleResourceLinksListenerTest extends TestCase
                     }
 
                     $links = $halEntity->getLinks();
-                    if (! $links->has('self')
+                    if (
+                        ! $links->has('self')
                         || ! $links->has('authorization')
                         || ! $links->has('rest')
                         || ! $links->has('rpc')
@@ -630,7 +655,7 @@ class InjectModuleResourceLinksListenerTest extends TestCase
     /**
      * @dataProvider serviceEntities
      */
-    public function testOnRenderCollectionEntityInjectsServiceRelationalLinks($entityType)
+    public function testOnRenderCollectionEntityInjectsServiceRelationalLinks(string $entityType)
     {
         $serviceEntity = new $entityType();
         $serviceName   = sprintf(
@@ -663,7 +688,8 @@ class InjectModuleResourceLinksListenerTest extends TestCase
             }
 
             $links = $halEntity->getLinks();
-            if (! $links->has('self')
+            if (
+                ! $links->has('self')
                 || ! $links->has('input_filter')
                 || ! $links->has('documentation')
             ) {

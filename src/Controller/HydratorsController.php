@@ -1,17 +1,15 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
 use Laminas\ApiTools\Admin\Model\HydratorsModel;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
 
 class HydratorsController extends AbstractPluginManagerController
 {
+    /** @var string */
     protected $property = 'hydrators';
 
     public function __construct(HydratorsModel $model)
@@ -19,6 +17,7 @@ class HydratorsController extends AbstractPluginManagerController
         $this->model = $model;
     }
 
+    /** @return JsonModel|ApiProblemResponse */
     public function hydratorsAction()
     {
         return $this->handleRequest();

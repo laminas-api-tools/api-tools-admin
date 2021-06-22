@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -13,47 +9,59 @@ use Laminas\ApiTools\Configuration\ConfigResource;
 use Laminas\Filter\FilterChain;
 use ReflectionClass;
 
+use function class_exists;
+use function dirname;
+use function file_exists;
+use function implode;
+use function is_dir;
+use function sprintf;
+use function str_replace;
+use function strlen;
+use function substr;
+
+use const DIRECTORY_SEPARATOR;
+
 /**
- * Class VersioningModel
- *
  * @deprecated use \Laminas\ApiTools\Admin\Model\ModuleVersioningModel instead
  */
 class VersioningModel
 {
+    /** @var ConfigResource */
     protected $configResource;
 
+    /** @var null|ConfigResource */
     protected $docsConfigResource;
 
+    /** @var null|FilterChain */
     protected $moduleNameFilter;
 
+    /** @var null|ModulePathSpec */
     private $pathSpec;
 
     /**
-     * @param  ConfigResource $config
-     * @param  null|ConfigResource $docsConfig
-     * @param  ModulePathSpec $pathSpec
      * @deprecated
      */
     public function __construct(
         ConfigResource $config,
-        ConfigResource $docsConfig = null,
-        ModulePathSpec $pathSpec = null
+        ?ConfigResource $docsConfig = null,
+        ?ModulePathSpec $pathSpec = null
     ) {
-        $this->configResource = $config;
+        $this->configResource     = $config;
         $this->docsConfigResource = $docsConfig;
-        $this->pathSpec = $pathSpec;
+        $this->pathSpec           = $pathSpec;
     }
 
     /**
      * getModuleVersioningModel
-     * @param $name
+     *
+     * @param string      $name
      * @param null|string $srcPath Do not use this parameter unless you're providing for a transition to the new class
      *                          (see deprecation notice on this class)
      * @return ModuleVersioningModel
      */
     private function getModuleVersioningModel($name, $srcPath = null)
     {
-        $name = $this->normalizeModule($name);
+        $name        = $this->normalizeModule($name);
         $hasPathSpec = null !== $this->pathSpec;
 
         if ($hasPathSpec) {
@@ -63,8 +71,8 @@ class VersioningModel
             }
             $configDirPath = $this->pathSpec->getModuleConfigPath($name);
         } else {
-            $pathSpecType = ModulePathSpec::PSR_0;
-            $srcPath = $this->getModuleSourcePath($name);
+            $pathSpecType  = ModulePathSpec::PSR_0;
+            $srcPath       = $this->getModuleSourcePath($name);
             $configDirPath = $this->locateConfigPath($srcPath);
         }
 
@@ -81,11 +89,12 @@ class VersioningModel
     /**
      * Create a new version for a module
      *
+     * @deprecated
+     *
      * @param  string $module
      * @param  int $version
      * @param  bool|string $path
      * @return bool
-     * @deprecated
      */
     public function createVersion($module, $version, $path = false)
     {
@@ -96,10 +105,11 @@ class VersioningModel
     /**
      * Get the versions of a module
      *
+     * @deprecated
+     *
      * @param  string $module
      * @param  bool|string $path
      * @return array|bool
-     * @deprecated
      */
     public function getModuleVersions($module, $path = false)
     {
@@ -111,9 +121,10 @@ class VersioningModel
      * Updates the default version of a module that will be used if no version is
      * specified by the API consumer.
      *
+     * @deprecated
+     *
      * @param  int $defaultVersion
      * @return bool
-     * @deprecated
      */
     public function setDefaultVersion($defaultVersion)
     {
@@ -127,9 +138,10 @@ class VersioningModel
      *
      * Module names come over the wire dot-separated; make them namespaced.
      *
+     * @deprecated
+     *
      * @param  string $module
      * @return string
-     * @deprecated
      */
     protected function normalizeModule($module)
     {
@@ -146,10 +158,11 @@ class VersioningModel
      * Usually, this is the "src/{modulename}" subdirectory of the
      * module.
      *
+     * @deprecated
+     *
      * @param string $module
      * @param bool $appendNamespace If true, it will append the module's namespace to the path - for PSR0 compatibility
      * @return string
-     * @deprecated
      */
     protected function getModuleSourcePath($module, $appendNamespace = true)
     {
@@ -181,7 +194,7 @@ class VersioningModel
             }
             $srcPath = implode(DIRECTORY_SEPARATOR, $parts);
         } else {
-            if (! $appendNamespace && substr($srcPath, - strlen($module)) == $module) {
+            if (! $appendNamespace && substr($srcPath, - strlen($module)) === $module) {
                 $srcPath = substr($srcPath, 0, strlen($srcPath) - strlen($module) - 1);
             }
         }
@@ -199,9 +212,10 @@ class VersioningModel
     /**
      * Locate the config path for this module
      *
+     * @deprecated
+     *
      * @param  string $srcPath
      * @return string|false
-     * @deprecated
      */
     protected function locateConfigPath($srcPath)
     {
@@ -210,7 +224,7 @@ class VersioningModel
             return $config;
         }
 
-        if ($srcPath == '.' || $srcPath == '/') {
+        if ($srcPath === '.' || $srcPath === '/') {
             return false;
         }
 
@@ -220,8 +234,9 @@ class VersioningModel
     /**
      * Filter for module names
      *
-     * @return FilterChain
      * @deprecated
+     *
+     * @return FilterChain
      */
     protected function getModuleNameFilter()
     {

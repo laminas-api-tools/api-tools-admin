@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -13,18 +9,26 @@ use Countable;
 use IteratorAggregate;
 use Laminas\ApiTools\Admin\Exception;
 
+use function array_key_exists;
+use function count;
+use function in_array;
+use function is_bool;
+use function sprintf;
+
 class AuthorizationEntity implements
     Countable,
     IteratorAggregate
 {
-    const TYPE_ENTITY     = 'entity';
-    const TYPE_COLLECTION = 'collection';
+    public const TYPE_ENTITY     = 'entity';
+    public const TYPE_COLLECTION = 'collection';
 
+    /** @var string[] */
     protected $allowedRestTypes = [
         self::TYPE_ENTITY,
         self::TYPE_COLLECTION,
     ];
 
+    /** @var array<string, bool> */
     protected $defaultPrivileges = [
         'GET'    => false,
         'POST'   => false,
@@ -33,6 +37,7 @@ class AuthorizationEntity implements
         'DELETE' => false,
     ];
 
+    /** @var array<string, bool> */
     protected $servicePrivileges = [];
 
     public function __construct(array $services = [])
@@ -42,21 +47,25 @@ class AuthorizationEntity implements
         }
     }
 
+    /** @return int */
     public function count()
     {
         return count($this->servicePrivileges);
     }
 
+    /** @return ArrayIterator */
     public function getIterator()
     {
         return new ArrayIterator($this->servicePrivileges);
     }
 
+    /** @return array */
     public function getArrayCopy()
     {
         return $this->servicePrivileges;
     }
 
+    /** @return void */
     public function exchangeArray(array $services)
     {
         foreach ($services as $serviceName => $privileges) {
@@ -64,7 +73,12 @@ class AuthorizationEntity implements
         }
     }
 
-    public function addRestService($serviceName, $entityOrCollection, array $privileges = null)
+    /**
+     * @param string $serviceName
+     * @param string $entityOrCollection
+     * @return $this
+     */
+    public function addRestService($serviceName, $entityOrCollection, ?array $privileges = null)
     {
         if (! in_array($entityOrCollection, $this->allowedRestTypes)) {
             throw new Exception\InvalidArgumentException(sprintf(
@@ -79,22 +93,36 @@ class AuthorizationEntity implements
         return $this;
     }
 
-    public function addRpcService($serviceName, $action, array $privileges = null)
+    /**
+     * @param string $serviceName
+     * @param string $action
+     * @return $this
+     */
+    public function addRpcService($serviceName, $action, ?array $privileges = null)
     {
         if (null === $privileges) {
             $privileges = $this->defaultPrivileges;
         }
 
-        $serviceName = sprintf('%s::%s', $serviceName, $action);
+        $serviceName                           = sprintf('%s::%s', $serviceName, $action);
         $this->servicePrivileges[$serviceName] = $this->filterPrivileges($privileges);
         return $this;
     }
 
+    /**
+     * @param string $serviceName
+     * @return bool
+     */
     public function has($serviceName)
     {
         return array_key_exists($serviceName, $this->servicePrivileges);
     }
 
+    /**
+     * @param string $serviceName
+     * @return array
+     * @throws Exception\InvalidArgumentException
+     */
     public function get($serviceName)
     {
         if (! $this->has($serviceName)) {
@@ -106,7 +134,7 @@ class AuthorizationEntity implements
         return $this->servicePrivileges[$serviceName];
     }
 
-    protected function filterPrivileges(array $privileges)
+    protected function filterPrivileges(array $privileges): array
     {
         foreach ($privileges as $httpMethod => $flag) {
             if (! array_key_exists($httpMethod, $this->defaultPrivileges)) {

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -12,23 +8,28 @@ use Laminas\ServiceManager\AbstractPluginManager;
 use Laminas\ServiceManager\ServiceManager;
 use ReflectionClass;
 
+use function array_filter;
+use function array_keys;
+use function array_merge;
+use function array_unique;
+use function array_values;
+use function is_array;
+use function preg_match;
+use function sort;
+
+use const SORT_STRING;
+
 class AbstractPluginManagerModel
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $plugins;
 
-    /**
-     * @var ServiceManager
-     */
+    /** @var ServiceManager */
     protected $pluginManager;
 
     /**
      * $pluginManager should typically be an instance of
      * Laminas\ServiceManager\AbstractPluginManager.
-     *
-     * @param ServiceManager $pluginManager
      */
     public function __construct(ServiceManager $pluginManager)
     {
@@ -55,7 +56,7 @@ class AbstractPluginManagerModel
         }
 
         // Add invokableClasses via reflection
-        $reflClass = new ReflectionClass($this->pluginManager);
+        $reflClass     = new ReflectionClass($this->pluginManager);
         $this->plugins = array_unique(array_merge(
             $this->getPluginNamesByTypeViaReflection('aliases', $reflClass, $this->pluginManager),
             $this->getPluginNamesByTypeViaReflection('invokableClasses', $reflClass, $this->pluginManager),
@@ -70,8 +71,6 @@ class AbstractPluginManagerModel
      * Retrieve registered plugin names by type of retrieval.
      *
      * @param string $type 'aliases', 'invokableClasses', 'factories'
-     * @param ReflectionClass $r
-     * @param AbstractPluginManager $pluginManager
      * @return array
      */
     private function getPluginNamesByTypeViaReflection($type, ReflectionClass $r, AbstractPluginManager $pluginManager)

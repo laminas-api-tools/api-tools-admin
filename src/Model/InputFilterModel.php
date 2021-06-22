@@ -1,28 +1,27 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Configuration\Exception\InvalidArgumentException as InvalidArgumentConfiguration;
 use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
 
+use function array_key_exists;
+use function is_array;
+use function strlen;
+use function strstr;
+use function strtolower;
+use function substr;
+
 class InputFilterModel
 {
-    /**
-     * @var ConfigResourceFactory
-     */
+    /** @var ConfigResourceFactory */
     protected $configFactory;
 
     /**
      * $validatorPlugins should typically be an instance of
      * Laminas\Validator\ValidatorPluginManager.
-     *
-     * @param ConfigResourceFactory $configFactory
      */
     public function __construct(ConfigResourceFactory $configFactory)
     {
@@ -88,7 +87,8 @@ class InputFilterModel
         }
 
         $validator = $config['api-tools-content-validation'][$controller]['input_filter'];
-        if (! isset($config['input_filter_specs'])
+        if (
+            ! isset($config['input_filter_specs'])
             || ! is_array($config['input_filter_specs'])
             || ! array_key_exists($validator, $config['input_filter_specs'])
         ) {
@@ -101,14 +101,14 @@ class InputFilterModel
 
         // Retrieving the input filter by name
         if ($inputFilterName && $inputFilterName === $validator) {
-            $inputFilter = new $entityType($config['input_filter_specs'][$inputFilterName]);
+            $inputFilter                      = new $entityType($config['input_filter_specs'][$inputFilterName]);
             $inputFilter['input_filter_name'] = $inputFilterName;
             return $inputFilter;
         }
 
         // Retrieving a collection
-        $collection  = new $collectionType();
-        $inputFilter = new $entityType($config['input_filter_specs'][$validator]);
+        $collection                       = new $collectionType();
+        $inputFilter                      = new $entityType($config['input_filter_specs'][$validator]);
         $inputFilter['input_filter_name'] = $validator;
         $collection->enqueue($inputFilter);
         return $collection;
@@ -134,7 +134,7 @@ class InputFilterModel
 
         if (! isset($config['api-tools-content-validation'][$controller])) {
             $validatorName = $validatorName ?: $this->generateValidatorName($controller);
-            $config = $configModule->patchKey(
+            $config        = $configModule->patchKey(
                 ['api-tools-content-validation', $controller, 'input_filter'],
                 $validatorName
             );
@@ -157,8 +157,8 @@ class InputFilterModel
             return false;
         }
 
-        $entityType = $this->getEntityType($controller);
-        $return = new $entityType($updated['input_filter_specs'][$validator]);
+        $entityType                  = $this->getEntityType($controller);
+        $return                      = new $entityType($updated['input_filter_specs'][$validator]);
         $return['input_filter_name'] = $validator;
         return $return;
     }
@@ -204,7 +204,7 @@ class InputFilterModel
             unset($config['api-tools-content-validation']);
         }
 
-        return ($configModule->patch($config) != false);
+        return $configModule->patch($config) !== false;
     }
 
     /**
@@ -254,13 +254,15 @@ class InputFilterModel
 
         $config = $configModule->fetch(true);
 
-        if (isset($config['api-tools-rest'])
+        if (
+            isset($config['api-tools-rest'])
             && array_key_exists($controller, $config['api-tools-rest'])
         ) {
             return true;
         }
 
-        if (isset($config['api-tools-rpc'])
+        if (
+            isset($config['api-tools-rpc'])
             && array_key_exists($controller, $config['api-tools-rpc'])
         ) {
             return true;

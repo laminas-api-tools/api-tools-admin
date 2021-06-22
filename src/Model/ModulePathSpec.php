@@ -1,80 +1,64 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
+use Exception;
 use InvalidArgumentException;
 use Laminas\ApiTools\Configuration\ModuleUtils;
 
+use function array_key_exists;
+use function file_exists;
+use function is_dir;
+use function sprintf;
+use function str_replace;
+use function strtolower;
+use function substr;
+
 /**
- * Class ModulePathSpec
- *
  * Adds PSR-0 and PSR-4 support to Laminas API Tools.
- *
- * @package Laminas\ApiTools\Admin\Model
  */
 class ModulePathSpec
 {
     /**
      * PSR-4 path spec key
      */
-    const PSR_4 = 'psr-4';
+    public const PSR_4 = 'psr-4';
 
     /**
      * PSR-0 path spec key
      */
-    const PSR_0 = 'psr-0';
+    public const PSR_0 = 'psr-0';
 
-    /**
-     * @var ModuleUtils
-     */
+    /** @var ModuleUtils */
     protected $modules;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $modulePathSpec = "%s/module/%s";
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $psrSpecs = [
         self::PSR_0 => '%modulePath%/src/%moduleName%',
         self::PSR_4 => '%modulePath%/src',
     ];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $currentSpec = self::PSR_0;
 
-    /**
-     * @var string  PSR-0
-     */
+    /** @var string  PSR-0 */
     protected $moduleSourcePathSpec;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $restPathSpec = "/V%version%/Rest";
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $rpcPathSpec = "/V%version%/Rpc";
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $applicationPath = '.';
 
     /**
-     * @param ModuleUtils $modules
      * @param string $sourcePathSpec
      * @param string $applicationPath
      */
@@ -140,7 +124,7 @@ class ModulePathSpec
         // see if we can get the path from ModuleUtils, if module isn't set will throw exception
         try {
             $modulePath = $this->modules->getModulePath($moduleName);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $modulePath = sprintf($this->modulePathSpec, $this->applicationPath, $moduleName);
         }
 
@@ -168,7 +152,7 @@ class ModulePathSpec
             $path = $this->normalizePath(str_replace($find, $replace, $pathSpec));
 
             if (is_dir($path) && file_exists($path . '/Module.php')) {
-                $this->currentSpec = $psr;
+                $this->currentSpec          = $psr;
                 $this->moduleSourcePathSpec = $pathSpec;
                 return $path;
             }
@@ -191,10 +175,10 @@ class ModulePathSpec
         $find    = ["\\", "%serviceName%", "%version%"];
         $replace = ["/", $serviceName, $version];
 
-        $path = $this->getModuleSourcePath($moduleName);
+        $path  = $this->getModuleSourcePath($moduleName);
         $path .= str_replace($find, $replace, $this->restPathSpec);
 
-        if (substr($path, -1) != "/") {
+        if (substr($path, -1) !== "/") {
             $path .= "/";
         }
 
@@ -216,10 +200,10 @@ class ModulePathSpec
         $find    = ["\\", "%version%"];
         $replace = ["/", $version];
 
-        $path = $this->getModuleSourcePath($moduleName);
+        $path  = $this->getModuleSourcePath($moduleName);
         $path .= str_replace($find, $replace, $this->rpcPathSpec);
 
-        if (substr($path, -1) != "/") {
+        if (substr($path, -1) !== "/") {
             $path .= "/";
         }
 

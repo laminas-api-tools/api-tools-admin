@@ -1,12 +1,13 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
+
+use function array_key_exists;
+use function array_merge;
+use function array_walk;
+use function is_array;
 
 /**
  * Retrieve and return all validator option metadata
@@ -96,7 +97,7 @@ class ValidatorMetadataModel
             return $this->processedMetadata;
         }
 
-        array_walk($this->processedMetadata, function (& $value, $key, $defaults) {
+        array_walk($this->processedMetadata, function (&$value, $key, $defaults) {
             $value = array_merge($defaults, $value);
         }, $this->defaults);
 

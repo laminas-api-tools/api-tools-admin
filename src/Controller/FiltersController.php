@@ -1,17 +1,16 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
 use Laminas\ApiTools\Admin\Model\FiltersModel;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\ContentNegotiation\JsonModel;
 
 class FiltersController extends AbstractPluginManagerController
 {
+    /** @var string */
     protected $property = 'filters';
 
     public function __construct(FiltersModel $model)
@@ -19,6 +18,7 @@ class FiltersController extends AbstractPluginManagerController
         $this->model = $model;
     }
 
+    /** @return ApiProblemResponse|JsonModel */
     public function filtersAction()
     {
         return $this->handleRequest();

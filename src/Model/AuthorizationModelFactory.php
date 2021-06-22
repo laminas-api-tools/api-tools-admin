@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -12,9 +8,7 @@ use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
 
 class AuthorizationModelFactory
 {
-    /**
-     * @var ConfigResourceFactory
-     */
+    /** @var ConfigResourceFactory */
     protected $configFactory;
 
     /**
@@ -24,21 +18,12 @@ class AuthorizationModelFactory
      */
     protected $models = [];
 
-    /**
-     * @var ModuleModel
-     */
+    /** @var ModuleModel */
     protected $moduleModel;
 
-    /**
-     * @var ModulePathSpec
-     */
+    /** @var ModulePathSpec */
     protected $modules;
 
-    /**
-     * @param ModulePathSpec $modules
-     * @param ConfigResourceFactory $configFactory
-     * @param ModuleModel $moduleModel
-     */
     public function __construct(ModulePathSpec $modules, ConfigResourceFactory $configFactory, ModuleModel $moduleModel)
     {
         $this->modules       = $modules;
@@ -66,9 +51,10 @@ class AuthorizationModelFactory
     }
 
     /**
+     * @deprecated
+     *
      * @param  string $name
      * @return string
-     * @deprecated
      */
     protected function normalizeModuleName($name)
     {

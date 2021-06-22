@@ -1,19 +1,17 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\Configuration\ConfigResource;
 use Laminas\ApiTools\Configuration\ResourceFactory;
 
 class ModuleConfigController extends AbstractConfigController
 {
+    /** @var ResourceFactory */
     protected $configFactory;
 
     public function __construct(ResourceFactory $factory)
@@ -21,6 +19,7 @@ class ModuleConfigController extends AbstractConfigController
         $this->configFactory = $factory;
     }
 
+    /** @return ConfigResource */
     public function getConfig()
     {
         $module = $this->params()->fromQuery('module', false);
@@ -29,7 +28,6 @@ class ModuleConfigController extends AbstractConfigController
                 new ApiProblem(400, 'Missing module parameter')
             );
         }
-        $config = $this->configFactory->factory($module);
-        return $config;
+        return $this->configFactory->factory($module);
     }
 }

@@ -1,25 +1,34 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Controller;
 
+use InputFilter\Module;
 use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Admin\Controller\InputFilterController;
+use Laminas\ApiTools\Admin\Model\InputFilterCollection;
+use Laminas\ApiTools\Admin\Model\InputFilterEntity;
 use Laminas\ApiTools\Admin\Model\InputFilterModel;
 use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
+use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParams;
 use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
+use Laminas\ApiTools\Hal\Collection;
+use Laminas\ApiTools\Hal\Entity;
 use Laminas\Config\Writer\PhpArray;
 use Laminas\Http\Request;
+use Laminas\Http\Response;
+use Laminas\ModuleManager\ModuleManager;
 use Laminas\Mvc\Controller\PluginManager;
 use Laminas\Mvc\MvcEvent;
 use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
+
+use function copy;
+use function json_encode;
+use function unlink;
 
 class InputFilterControllerTest extends TestCase
 {
@@ -29,10 +38,10 @@ class InputFilterControllerTest extends TestCase
     {
         require_once __DIR__ . '/../Model/TestAsset/module/InputFilter/Module.php';
         $modules = [
-            'InputFilter' => new \InputFilter\Module(),
+            'InputFilter' => new Module(),
         ];
 
-        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -45,15 +54,15 @@ class InputFilterControllerTest extends TestCase
         $this->model         = new InputFilterModel($this->configFactory);
         $this->controller    = new InputFilterController($this->model);
 
-        $this->basePath      = __DIR__ . '/../Model/TestAsset/module/InputFilter/config';
-        $this->config        = include $this->basePath . '/module.config.php';
+        $this->basePath = __DIR__ . '/../Model/TestAsset/module/InputFilter/config';
+        $this->config   = include $this->basePath . '/module.config.php';
 
         copy($this->basePath . '/module.config.php', $this->basePath . '/module.config.php.old');
     }
 
     public function tearDown()
     {
-        copy($this->basePath .'/module.config.php.old', $this->basePath . '/module.config.php');
+        copy($this->basePath . '/module.config.php.old', $this->basePath . '/module.config.php');
         unlink($this->basePath . '/module.config.php.old');
     }
 
@@ -66,8 +75,8 @@ class InputFilterControllerTest extends TestCase
 
         $module     = 'InputFilter';
         $controller = 'InputFilter\V1\Rest\Foo\Controller';
-        $params = [
-            'name' => $module,
+        $params     = [
+            'name'                    => $module,
             'controller_service_name' => $controller,
         ];
         $routeMatch = $this->createRouteMatch($params);
@@ -79,16 +88,16 @@ class InputFilterControllerTest extends TestCase
         $this->controller->setEvent($event);
 
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $payload = $result->payload;
-        $this->assertInstanceOf('Laminas\ApiTools\Hal\Collection', $payload);
+        $this->assertInstanceOf(Collection::class, $payload);
         $collection = $payload->getCollection();
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterCollection', $collection);
+        $this->assertInstanceOf(InputFilterCollection::class, $collection);
         $inputFilter = $collection->dequeue();
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $inputFilter);
+        $this->assertInstanceOf(InputFilterEntity::class, $inputFilter);
 
-        $inputFilterKey = $this->config['api-tools-content-validation'][$controller]['input_filter'];
-        $expected = $this->config['input_filter_specs'][$inputFilterKey];
+        $inputFilterKey                = $this->config['api-tools-content-validation'][$controller]['input_filter'];
+        $expected                      = $this->config['input_filter_specs'][$inputFilterKey];
         $expected['input_filter_name'] = $inputFilterKey;
         $this->assertEquals($expected, $inputFilter->getArrayCopy());
     }
@@ -103,10 +112,10 @@ class InputFilterControllerTest extends TestCase
         $module     = 'InputFilter';
         $controller = 'InputFilter\V1\Rest\Foo\Controller';
         $validator  = 'InputFilter\V1\Rest\Foo\Validator';
-        $params = [
-            'name' => $module,
+        $params     = [
+            'name'                    => $module,
             'controller_service_name' => $controller,
-            'input_filter_name' => $validator,
+            'input_filter_name'       => $validator,
         ];
         $routeMatch = $this->createRouteMatch($params);
         $routeMatch->setMatchedRouteName('api-tools-admin/api/module/rest-service/rest_input_filter');
@@ -117,13 +126,13 @@ class InputFilterControllerTest extends TestCase
         $this->controller->setEvent($event);
 
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $payload = $result->payload;
-        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
+        $this->assertInstanceOf(Entity::class, $payload);
         $entity = $payload->getEntity();
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $entity);
+        $this->assertInstanceOf(InputFilterEntity::class, $entity);
 
-        $expected = $this->config['input_filter_specs'][$validator];
+        $expected                      = $this->config['input_filter_specs'][$validator];
         $expected['input_filter_name'] = $validator;
         $this->assertEquals($expected, $entity->getArrayCopy());
     }
@@ -132,10 +141,10 @@ class InputFilterControllerTest extends TestCase
     {
         $inputFilter = [
             [
-                'name' => 'bar',
+                'name'       => 'bar',
                 'validators' => [
                     [
-                        'name' => 'NotEmpty',
+                        'name'    => 'NotEmpty',
                         'options' => [
                             'type' => 127,
                         ],
@@ -155,8 +164,8 @@ class InputFilterControllerTest extends TestCase
 
         $module     = 'InputFilter';
         $controller = 'InputFilter\V1\Rest\Foo\Controller';
-        $params = [
-            'name' => $module,
+        $params     = [
+            'name'                    => $module,
             'controller_service_name' => $controller,
         ];
         $routeMatch = $this->createRouteMatch($params);
@@ -169,22 +178,22 @@ class InputFilterControllerTest extends TestCase
         $event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
         $plugins = new PluginManager($this->prophesize(ContainerInterface::class)->reveal());
-        $plugins->setInvokableClass('bodyParams', 'Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParams');
+        $plugins->setInvokableClass('bodyParams', BodyParams::class);
 
         $this->controller->setRequest($request);
         $this->controller->setEvent($event);
         $this->controller->setPluginManager($plugins);
 
-        $result     = $this->controller->indexAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $result = $this->controller->indexAction();
+        $this->assertInstanceOf(ViewModel::class, $result);
         $payload = $result->payload;
-        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
+        $this->assertInstanceOf(Entity::class, $payload);
         $entity = $payload->getEntity();
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $entity);
+        $this->assertInstanceOf(InputFilterEntity::class, $entity);
 
-        $config    = include $this->basePath . '/module.config.php';
-        $validator = $config['api-tools-content-validation'][$controller]['input_filter'];
-        $expected  = $config['input_filter_specs'][$validator];
+        $config                        = include $this->basePath . '/module.config.php';
+        $validator                     = $config['api-tools-content-validation'][$controller]['input_filter'];
+        $expected                      = $config['input_filter_specs'][$validator];
         $expected['input_filter_name'] = $validator;
         $this->assertEquals($expected, $entity->getArrayCopy());
     }
@@ -199,10 +208,10 @@ class InputFilterControllerTest extends TestCase
         $module     = 'InputFilter';
         $controller = 'InputFilter\V1\Rest\Foo\Controller';
         $validator  = 'InputFilter\V1\Rest\Foo\Validator';
-        $params = [
-            'name' => $module,
+        $params     = [
+            'name'                    => $module,
             'controller_service_name' => $controller,
-            'input_filter_name' => $validator,
+            'input_filter_name'       => $validator,
         ];
         $routeMatch = $this->createRouteMatch($params);
         $routeMatch->setMatchedRouteName('api-tools-admin/api/module/rest-service/rest_input_filter');
@@ -213,7 +222,7 @@ class InputFilterControllerTest extends TestCase
         $this->controller->setEvent($event);
 
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf('Laminas\Http\Response', $result);
+        $this->assertInstanceOf(Response::class, $result);
         $this->assertEquals(204, $result->getStatusCode());
     }
 }

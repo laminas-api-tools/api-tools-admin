@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -21,28 +17,36 @@ class ModuleVersioningModelFactoryFactoryTest extends TestCase
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    public function missingDependencies()
+    /** @psalm-return array<string, array{0: array<string, bool>}> */
+    public function missingDependencies(): array
     {
         return [
-            'all' => [[
-                ConfigResourceFactory::class => false,
-                ModulePathSpec::class => false,
-            ]],
-            'ConfigResourceFactory' => [[
-                ConfigResourceFactory::class => false,
-                ModulePathSpec::class => true,
-            ]],
-            'ModulePathSpec' => [[
-                ConfigResourceFactory::class => true,
-                ModulePathSpec::class => false,
-            ]],
+            'all'                   => [
+                [
+                    ConfigResourceFactory::class => false,
+                    ModulePathSpec::class        => false,
+                ],
+            ],
+            'ConfigResourceFactory' => [
+                [
+                    ConfigResourceFactory::class => false,
+                    ModulePathSpec::class        => true,
+                ],
+            ],
+            'ModulePathSpec'        => [
+                [
+                    ConfigResourceFactory::class => true,
+                    ModulePathSpec::class        => false,
+                ],
+            ],
         ];
     }
 
     /**
      * @dataProvider missingDependencies
+     * @psalm-param array<string, bool> $dependencies
      */
-    public function testFactoryRaisesExceptionWhenMissingDependencies($dependencies)
+    public function testFactoryRaisesExceptionWhenMissingDependencies(array $dependencies)
     {
         $factory = new ModuleVersioningModelFactoryFactory();
 
@@ -57,9 +61,9 @@ class ModuleVersioningModelFactoryFactoryTest extends TestCase
 
     public function testFactoryReturnsConfiguredModuleVersioningModelFactory()
     {
-        $factory = new ModuleVersioningModelFactoryFactory();
+        $factory               = new ModuleVersioningModelFactoryFactory();
         $configResourceFactory = $this->prophesize(ResourceFactory::class)->reveal();
-        $pathSpec = $this->prophesize(ModulePathSpec::class)->reveal();
+        $pathSpec              = $this->prophesize(ModulePathSpec::class)->reveal();
 
         $this->container->has(ConfigResourceFactory::class)->willReturn(true);
         $this->container->has(ModulePathSpec::class)->willReturn(true);

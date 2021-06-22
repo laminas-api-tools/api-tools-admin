@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -16,8 +12,21 @@ use Laminas\Http\Request;
 use Laminas\Mvc\Controller\AbstractActionController;
 use ReflectionClass;
 
+use function class_exists;
+use function count;
+use function explode;
+use function highlight_file;
+use function sprintf;
+use function str_pad;
+use function strlen;
+use function substr;
+use function urldecode;
+
+use const STR_PAD_LEFT;
+
 class SourceController extends AbstractActionController
 {
+    /** @var ModuleModel */
     protected $moduleModel;
 
     public function __construct(ModuleModel $moduleModel)
@@ -25,6 +34,7 @@ class SourceController extends AbstractActionController
         $this->moduleModel = $moduleModel;
     }
 
+    /** @return ApiProblemModel|ViewModel */
     public function sourceAction()
     {
         $request = $this->getRequest();
@@ -77,7 +87,7 @@ class SourceController extends AbstractActionController
                 }
 
                 $reflector = new ReflectionClass($class);
-                $fileName = $reflector->getFileName();
+                $fileName  = $reflector->getFileName();
 
                 $metadata = [
                     'module' => $module,
@@ -108,11 +118,12 @@ class SourceController extends AbstractActionController
         $code      = substr(highlight_file($file, true), 36, -15);
         $lines     = explode('<br />', $code);
         $lineCount = count($lines);
-        $padLength = strlen($lineCount);
+        $padLength = strlen((string) $lineCount);
         $code      = '<code><span style="color: #000000">';
         foreach ($lines as $i => $line) {
-            $lineNumber = str_pad($i + 1, $padLength, '0', STR_PAD_LEFT);
-            $code .= sprintf('<br /><span style="color: #999999">%s  </span>%s', $lineNumber, $line);
+            $lineNumber = $i + 1;
+            $lineNumber = str_pad((string) $lineNumber, $padLength, '0', STR_PAD_LEFT);
+            $code      .= sprintf('<br /><span style="color: #999999">%s  </span>%s', $lineNumber, $line);
         }
         $code .= '</span></code>';
         return $code;
@@ -123,7 +134,6 @@ class SourceController extends AbstractActionController
      *
      * Provided for testing.
      *
-     * @param  Request $request
      * @return $this
      */
     public function setRequest(Request $request)

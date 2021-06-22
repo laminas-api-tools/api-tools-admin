@@ -1,21 +1,40 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Admin\Model\ModuleModel;
 use Laminas\ApiTools\Admin\Model\ModulePathSpec;
 use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ModuleManager\ModuleManager;
 use PHPUnit\Framework\TestCase;
 use Test;
 
+use function array_diff;
+use function array_map;
+use function array_unique;
+use function count;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function is_dir;
+use function mkdir;
+use function preg_match;
+use function range;
+use function rename;
+use function rmdir;
+use function scandir;
+use function sprintf;
+use function str_replace;
+use function sys_get_temp_dir;
+use function uniqid;
+use function unlink;
+use function var_export;
+
 class ModuleModelTest extends TestCase
 {
+    /** @var string */
     public $modulePath;
 
     public function setUp()
@@ -25,7 +44,7 @@ class ModuleModelTest extends TestCase
             unset($this->modulePath);
         }
 
-        $modules = [
+        $modules             = [
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Foa' => new TestAsset\Foa\Module(),
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Foo' => new TestAsset\Foo\Module(),
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar' => new TestAsset\Bar\Module(),
@@ -33,21 +52,21 @@ class ModuleModelTest extends TestCase
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Bat' => new TestAsset\Bat\Module(),
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Bob' => new TestAsset\Bob\Module(),
         ];
-        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
                             ->method('getLoadedModules')
                             ->will($this->returnValue($modules));
 
-        $restConfig           = [
+        $restConfig = [
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Foo\Controller\Foo' => null, // this should never be returned
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Bar' => null,
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Baz' => null,
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Bat\Controller\Bat' => null, // this should never be returned
         ];
 
-        $rpcConfig          = [
+        $rpcConfig = [
             // controller => empty pairs
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Foo\Controller\Act' => null, // this should never be returned
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Act' => null,
@@ -97,7 +116,8 @@ class ModuleModelTest extends TestCase
         $this->assertEquals($moduleNames, $test);
     }
 
-    public function invalidModules()
+    /** @psalm-return array<array-key, array{0: string}> */
+    public function invalidModules(): array
     {
         return [
             ['LaminasTest\ApiTools\Admin\Model\TestAsset\Foo'],
@@ -108,7 +128,7 @@ class ModuleModelTest extends TestCase
     /**
      * @dataProvider invalidModules
      */
-    public function testNullIsReturnedWhenGettingServicesForNonApiToolsModules($module)
+    public function testNullIsReturnedWhenGettingServicesForNonApiToolsModules(string $module)
     {
         $this->assertNull($this->model->getModule($module));
     }
@@ -127,12 +147,12 @@ class ModuleModelTest extends TestCase
                 'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Bar',
                 'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Baz',
             ],
-            'rpc' => [
+            'rpc'  => [
                 'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Act',
                 'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Do',
             ],
         ];
-        $module = $this->model->getModule('LaminasTest\ApiTools\Admin\Model\TestAsset\Bar');
+        $module   = $this->model->getModule('LaminasTest\ApiTools\Admin\Model\TestAsset\Bar');
         $this->assertEquals($expected['rest'], $module->getRestServices());
         $this->assertEquals($expected['rpc'], $module->getRpcServices());
     }
@@ -150,25 +170,24 @@ class ModuleModelTest extends TestCase
         $expected = [
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar' => [
                 'vendor' => false,
-                'rest' => [
+                'rest'   => [
                     'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Bar',
                     'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Baz',
                 ],
-                'rpc' => [
+                'rpc'    => [
                     'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Act',
                     'LaminasTest\ApiTools\Admin\Model\TestAsset\Bar\Controller\Do',
                 ],
             ],
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Baz' => [
                 'vendor' => false,
-                'rest' => [],
-                'rpc'  => [],
+                'rest'   => [],
+                'rpc'    => [],
             ],
             'LaminasTest\ApiTools\Admin\Model\TestAsset\Bob' => [
                 'vendor' => false,
-                'rest' => [
-                ],
-                'rpc' => [
+                'rest'   => [],
+                'rpc'    => [
                     'LaminasTest\ApiTools\Admin\Model\TestAsset\Bob\Controller\Do',
                 ],
             ],
@@ -176,7 +195,7 @@ class ModuleModelTest extends TestCase
 
         $modules = $this->model->getModules();
 
-        $unique  = [];
+        $unique = [];
         foreach ($modules as $module) {
             $name = $module->getNamespace();
             $this->assertArrayHasKey(
@@ -196,8 +215,8 @@ class ModuleModelTest extends TestCase
                 sprintf(
                     'Failed asserting module "%s" vendor flag matches "%s" (received "%s")',
                     $name,
-                    var_export($expectedMetadata['vendor'], 1),
-                    var_export($module->isVendor(), 1)
+                    var_export($expectedMetadata['vendor'], true),
+                    var_export($module->isVendor(), true)
                 )
             );
             $this->assertSame(
@@ -206,8 +225,8 @@ class ModuleModelTest extends TestCase
                 sprintf(
                     'Failed asserting module "%s" rest services match expectations; expected [ %s ], received [ %s ]',
                     $name,
-                    var_export($expectedMetadata['rest'], 1),
-                    var_export($module->getRestServices(), 1)
+                    var_export($expectedMetadata['rest'], true),
+                    var_export($module->getRestServices(), true)
                 )
             );
             $this->assertSame(
@@ -216,8 +235,8 @@ class ModuleModelTest extends TestCase
                 sprintf(
                     'Failed asserting module "%s" rpc services match expectations; expected [ %s ], received [ %s ]',
                     $name,
-                    var_export($expectedMetadata['rpc'], 1),
-                    var_export($module->getRpcServices(), 1)
+                    var_export($expectedMetadata['rpc'], true),
+                    var_export($module->getRpcServices(), true)
                 )
             );
             $unique[] = $name;
@@ -226,9 +245,8 @@ class ModuleModelTest extends TestCase
 
     /**
      * @dataProvider getModuleVersionDataProvider
-     * @return bool
      */
-    public function testCreateModule($version)
+    public function testCreateModule(string $version)
     {
         $module     = 'Foo';
         $modulePath = sys_get_temp_dir() . "/" . uniqid(str_replace('\\', '_', __NAMESPACE__) . '_');
@@ -249,14 +267,13 @@ class ModuleModelTest extends TestCase
         $this->assertTrue(file_exists("$modulePath/module/$module/config/module.config.php"));
 
         $this->removeDir($modulePath);
-        return true;
     }
 
     /**
      * @dataProvider getModuleVersionDataProvider
      * @group feature/psr4
      */
-    public function testCreateModulePSR4($version)
+    public function testCreateModulePSR4(string $version)
     {
         $module     = 'Foo';
         $modulePath = sys_get_temp_dir() . "/" . uniqid(str_replace('\\', '_', __NAMESPACE__) . '_');
@@ -276,7 +293,6 @@ class ModuleModelTest extends TestCase
         $this->assertTrue(file_exists("$modulePath/module/$module/config/module.config.php"));
 
         $this->removeDir($modulePath);
-        return true;
     }
 
     /**
@@ -289,7 +305,7 @@ class ModuleModelTest extends TestCase
         }, range(1, 10));
     }
 
-    protected function getPathSpec($modulePath, $spec = 'psr-0')
+    protected function getPathSpec(string $modulePath, string $spec = 'psr-0'): ModulePathSpec
     {
         return new ModulePathSpec(
             new ModuleUtils($this->moduleManager),
@@ -317,18 +333,17 @@ class ModuleModelTest extends TestCase
 
         $this->assertTrue($this->model->createModule($module, $pathSpec));
         $config = include $modulePath . '/config/application.config.php';
-        $this->assertArrayHasKey('modules', $config, var_export($config, 1));
+        $this->assertArrayHasKey('modules', $config, var_export($config, true));
 
         // Now try and delete
         $this->assertTrue($this->model->deleteModule($module, $modulePath, false));
 
         $config = include $modulePath . '/config/application.config.php';
-        $this->assertArrayHasKey('modules', $config, var_export($config, 1));
+        $this->assertArrayHasKey('modules', $config, var_export($config, true));
         $this->assertNotContains($module, $config['modules']);
         $this->assertTrue(file_exists(sprintf('%s/module/%s', $modulePath, $module)));
 
         $this->removeDir($modulePath);
-        return true;
     }
 
     /**
@@ -428,11 +443,11 @@ class ModuleModelTest extends TestCase
 
     public function testVendorModulesAreMarkedAccordingly()
     {
-        $modules = [
+        $modules       = [
             'Test\Foo' => new Test\Foo\Module(),
             'Test\Bar' => new Test\Foo\Module(),
         ];
-        $moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $moduleManager = $this->getMockBuilder(ModuleManager::class)
                               ->disableOriginalConstructor()
                               ->getMock();
         $moduleManager->expects($this->any())
@@ -453,11 +468,11 @@ class ModuleModelTest extends TestCase
 
     public function testDefaultApiVersionIsSetProperly()
     {
-        $modules = [
+        $modules       = [
             'Test\Bar' => new Test\Bar\Module(),
             'Test\Foo' => new Test\Foo\Module(),
         ];
-        $moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $moduleManager = $this->getMockBuilder(ModuleManager::class)
                               ->disableOriginalConstructor()
                               ->getMock();
         $moduleManager->expects($this->any())
@@ -489,7 +504,7 @@ class ModuleModelTest extends TestCase
      */
     public function testAttemptingToCreateModuleThatAlreadyExistsRaises409Exception()
     {
-        $module = 'Foo';
+        $module           = 'Foo';
         $this->modulePath = $modulePath = sys_get_temp_dir()
           . "/"
           . uniqid(str_replace('\\', '_', __NAMESPACE__) . '_');

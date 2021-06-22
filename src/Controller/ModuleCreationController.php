@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -20,6 +16,7 @@ use Laminas\Mvc\Controller\AbstractActionController;
 
 class ModuleCreationController extends AbstractActionController
 {
+    /** @var ModuleModel */
     protected $moduleModel;
 
     public function __construct(ModuleModel $moduleModel)
@@ -27,6 +24,7 @@ class ModuleCreationController extends AbstractActionController
         $this->moduleModel = $moduleModel;
     }
 
+    /** @return ApiProblemResponse|ViewModel */
     public function apiEnableAction()
     {
         $request = $this->getRequest();
@@ -76,7 +74,6 @@ class ModuleCreationController extends AbstractActionController
      *
      * Provided for testing.
      *
-     * @param  Request $request
      * @return $this
      */
     public function setRequest(Request $request)

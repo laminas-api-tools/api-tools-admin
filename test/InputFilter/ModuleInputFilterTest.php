@@ -1,30 +1,31 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\InputFilter;
 
+use Laminas\ApiTools\Admin\InputFilter\ModuleInputFilter;
 use Laminas\InputFilter\Factory;
 use PHPUnit\Framework\TestCase;
 
+use function array_keys;
+use function sort;
+
 class ModuleInputFilterTest extends TestCase
 {
-    public function getInputFilter()
+    public function getInputFilter(): ModuleInputFilter
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'Laminas\ApiTools\Admin\InputFilter\ModuleInputFilter',
+            'type' => ModuleInputFilter::class,
         ]);
     }
 
-    public function dataProviderIsValid()
+    /** @psalm-return array<string, array{0: array<string, string>}> */
+    public function dataProviderIsValid(): array
     {
         return [
-            'singular-namespace' => [
+            'singular-namespace'   => [
                 ['name' => 'Foo'],
             ],
             'underscore_namespace' => [
@@ -33,14 +34,15 @@ class ModuleInputFilterTest extends TestCase
         ];
     }
 
-    public function dataProviderIsInvalid()
+    /** @psalm-return array<string, array{0: array<string, string>, 1: string[]> */
+    public function dataProviderIsInvalid(): array
     {
         return [
-            'missing-name' => [
+            'missing-name'    => [
                 [],
                 ['name'],
             ],
-            'empty-name' => [
+            'empty-name'      => [
                 ['name' => ''],
                 ['name'],
             ],
@@ -54,7 +56,7 @@ class ModuleInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($data)
+    public function testIsValid(array $data)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
@@ -64,12 +66,12 @@ class ModuleInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsInvalid
      */
-    public function testIsInvalid($data, $expectedMessageKeys)
+    public function testIsInvalid(array $data, array $expectedMessageKeys)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
         $this->assertFalse($filter->isValid());
-        $messages = $filter->getMessages();
+        $messages    = $filter->getMessages();
         $messageKeys = array_keys($messages);
         sort($expectedMessageKeys);
         sort($messageKeys);

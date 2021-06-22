@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -12,35 +8,29 @@ use Laminas\ApiTools\Admin\Model\DbAutodiscoveryModel;
 use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\Mvc\Controller\AbstractActionController;
 
-/**
- * Class DbAutodiscoveryController
- *
- * @package Laminas\ApiTools\Admin\Controller
- */
+use function urldecode;
+
 class DbAutodiscoveryController extends AbstractActionController
 {
-    /**
-     * @var DbAutodiscoveryModel
-     */
+    /** @var DbAutodiscoveryModel */
     protected $model;
 
     /**
      * Constructor
-     *
-     * @param DbAutodiscoveryModel $model
      */
     public function __construct(DbAutodiscoveryModel $model)
     {
         $this->model = $model;
     }
 
+    /** @return ViewModel */
     public function discoverAction()
     {
-        $module = $this->params()->fromRoute('name', false);
-        $version = $this->params()->fromRoute('version', false);
-        $adapter_name = urldecode($this->params()->fromRoute('adapter_name', false));
+        $module      = $this->params()->fromRoute('name', false);
+        $version     = $this->params()->fromRoute('version', false);
+        $adapterName = urldecode($this->params()->fromRoute('adapter_name', false));
 
-        $data = $this->model->fetchColumns($module, $version, $adapter_name);
+        $data = $this->model->fetchColumns($module, $version, $adapterName);
 
         return new ViewModel(['payload' => $data]);
     }

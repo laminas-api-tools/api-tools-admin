@@ -1,19 +1,24 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\AbstractPluginManagerModel;
+use Laminas\ServiceManager\AbstractPluginManager;
 use PHPUnit\Framework\TestCase;
+
+use function count;
 
 abstract class AbstractPluginManagerModelTest extends TestCase
 {
+    /** @var AbstractPluginManagerModel */
     public $model;
+
+    /** @var string */
     public $namespace;
+
+    /** @var AbstractPluginManager */
     public $plugins;
 
     public function setUp()

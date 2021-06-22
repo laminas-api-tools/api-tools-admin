@@ -1,27 +1,36 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Controller;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Admin\Controller\AuthenticationController;
 use Laminas\ApiTools\Admin\Model\AuthenticationModel;
+use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
 use Laminas\ApiTools\Configuration\ConfigResource;
 use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParam;
 use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParams;
 use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
+use Laminas\ApiTools\Hal\Collection;
+use Laminas\ApiTools\Hal\Entity;
 use Laminas\Config\Writer\PhpArray as ConfigWriter;
+use Laminas\Http\PhpEnvironment\Response;
 use Laminas\Http\Request;
 use Laminas\Mvc\Controller\Plugin\Params;
 use Laminas\Mvc\Controller\PluginManager as ControllerPluginManager;
 use Laminas\Mvc\MvcEvent;
 use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
+
+use function array_diff_key;
+use function copy;
+use function count;
+use function extension_loaded;
+use function getenv;
+use function unlink;
 
 class AuthenticationControllerTest extends TestCase
 {
@@ -38,11 +47,11 @@ class AuthenticationControllerTest extends TestCase
         $global = new ConfigResource(require $this->globalFile, $this->globalFile, $writer);
         $local  = new ConfigResource(require $this->localFile, $this->localFile, $writer);
 
-        $moduleModel = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\ModuleModel')
+        $moduleModel = $this->getMockBuilder(ModuleModel::class)
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $model = new AuthenticationModel($global, $local, $moduleModel);
+        $model            = new AuthenticationModel($global, $local, $moduleModel);
         $this->controller = new AuthenticationController($model);
 
         $this->plugins = new ControllerPluginManager($this->prophesize(ContainerInterface::class)->reveal());
@@ -68,7 +77,8 @@ class AuthenticationControllerTest extends TestCase
         unlink($this->globalFile);
     }
 
-    public function invalidRequestMethods()
+    /** @psalm-return array<array-key, array{0: string}> */
+    public function invalidRequestMethods(): array
     {
         return [
             ['patch'],
@@ -78,7 +88,7 @@ class AuthenticationControllerTest extends TestCase
     /**
      * @dataProvider invalidRequestMethods
      */
-    public function testProcessWithInvalidRequestMethodReturnsApiProblemModel($method)
+    public function testProcessWithInvalidRequestMethodReturnsApiProblemModel(string $method)
     {
         $request = new Request();
         $request->setMethod($method);
@@ -86,11 +96,10 @@ class AuthenticationControllerTest extends TestCase
         $this->controller->setRequest($request);
 
         $result = $this->controller->authenticationAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ApiProblem\ApiProblemResponse', $result);
+        $this->assertInstanceOf(ApiProblemResponse::class, $result);
         $apiProblem = $result->getApiProblem();
         $this->assertEquals(405, $apiProblem->status);
     }
-
 
     public function testGetAuthenticationRequest()
     {
@@ -99,7 +108,7 @@ class AuthenticationControllerTest extends TestCase
         $request->getHeaders()->addHeaderLine('Accept', 'application/vnd.api-tools.v2+json');
         $this->controller->setRequest($request);
 
-        $params = [
+        $params           = [
             'authentication_adapter' => 'testbasic',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
@@ -107,9 +116,9 @@ class AuthenticationControllerTest extends TestCase
 
         $result = $this->controller->authenticationAction();
 
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
+        $this->assertInstanceOf(Entity::class, $payload);
 
         $metadata = $payload->getEntity();
         $this->assertEquals('testbasic', $metadata['name']);
@@ -124,20 +133,22 @@ class AuthenticationControllerTest extends TestCase
 
         $result = $this->controller->authenticationAction();
 
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf('Laminas\ApiTools\Hal\Collection', $payload);
+        $this->assertInstanceOf(Collection::class, $payload);
         $collection = $payload->getCollection();
         foreach ($collection as $entity) {
-            $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $entity);
+            $this->assertInstanceOf(Entity::class, $entity);
         }
         $this->assertEquals(4, count($collection));
     }
 
     /**
      * Data for POST requests
+     *
+     * @psalm-return array<string, array{0: array<string, null|string>}>
      */
-    public function postRequestData()
+    public function postRequestData(): array
     {
         $data = [
             'htpasswd' => [
@@ -193,7 +204,7 @@ class AuthenticationControllerTest extends TestCase
     /**
      * @dataProvider postRequestData
      */
-    public function testPostAuthenticationRequest($postData)
+    public function testPostAuthenticationRequest(array $postData)
     {
         $request = new Request();
         $request->setMethod('post');
@@ -206,9 +217,9 @@ class AuthenticationControllerTest extends TestCase
         $this->event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
         $result = $this->controller->authenticationAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
+        $this->assertInstanceOf(Entity::class, $payload);
         $self = $payload->getLinks()->get('self');
         $this->assertEquals('api-tools/api/authentication', $self->getRoute());
         $params = $self->getRouteParams();
@@ -218,7 +229,7 @@ class AuthenticationControllerTest extends TestCase
     /**
      * @dataProvider postRequestData
      */
-    public function testPutAuthenticationRequest($postData)
+    public function testPutAuthenticationRequest(array $postData)
     {
         $request = new Request();
         $request->setMethod('put');
@@ -230,16 +241,16 @@ class AuthenticationControllerTest extends TestCase
         $parameters->setBodyParams($postData);
         $this->event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
-        $params = [
+        $params           = [
             'authentication_adapter' => 'testbasic',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->authenticationAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
+        $this->assertInstanceOf(Entity::class, $payload);
         $self = $payload->getLinks()->get('self');
         $this->assertEquals('api-tools/api/authentication', $self->getRoute());
         $params = $self->getRouteParams();
@@ -257,14 +268,14 @@ class AuthenticationControllerTest extends TestCase
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $this->controller->setRequest($request);
 
-        $params = [
+        $params           = [
             'authentication_adapter' => 'testbasic',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->authenticationAction();
-        $this->assertInstanceOf('Laminas\Http\PhpEnvironment\Response', $result);
+        $this->assertInstanceOf(Response::class, $result);
         $this->assertEquals(204, $result->getStatusCode());
     }
 
@@ -277,7 +288,7 @@ class AuthenticationControllerTest extends TestCase
         $request->getQuery()->set('version', 1);
         $this->controller->setRequest($request);
 
-        $params = [
+        $params           = [
             'name' => 'Status',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
@@ -285,7 +296,7 @@ class AuthenticationControllerTest extends TestCase
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->mappingAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $config = require $this->globalFile;
         $this->assertEquals(
             $config['api-tools-mvc-auth']['authentication']['map']['Status\V1'],
@@ -302,7 +313,7 @@ class AuthenticationControllerTest extends TestCase
         $request->getQuery()->set('version', 1);
         $this->controller->setRequest($request);
 
-        $params = [
+        $params           = [
             'name' => 'Status2',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
@@ -310,7 +321,7 @@ class AuthenticationControllerTest extends TestCase
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->mappingAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $this->assertFalse($result->getVariable('authentication'));
     }
 
@@ -328,7 +339,7 @@ class AuthenticationControllerTest extends TestCase
         ]);
         $this->event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
-        $params = [
+        $params           = [
             'name' => 'Foo',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
@@ -336,7 +347,7 @@ class AuthenticationControllerTest extends TestCase
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->mappingAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $this->assertEquals('testoauth2pdo', $result->getVariable('authentication'));
     }
 
@@ -355,7 +366,7 @@ class AuthenticationControllerTest extends TestCase
         ]);
         $this->event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
-        $params = [
+        $params           = [
             'name' => 'Status',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
@@ -363,7 +374,7 @@ class AuthenticationControllerTest extends TestCase
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->mappingAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $this->assertEquals('testoauth2mongo', $result->getVariable('authentication'));
     }
 
@@ -376,7 +387,7 @@ class AuthenticationControllerTest extends TestCase
         $request->getQuery()->set('version', 1);
         $this->controller->setRequest($request);
 
-        $params = [
+        $params           = [
             'name' => 'Status',
         ];
         $this->routeMatch = $this->createRouteMatch($params);
@@ -384,7 +395,7 @@ class AuthenticationControllerTest extends TestCase
         $this->event->setRouteMatch($this->routeMatch);
 
         $result = $this->controller->mappingAction();
-        $this->assertInstanceOf('Laminas\Http\PhpEnvironment\Response', $result);
+        $this->assertInstanceOf(Response::class, $result);
         $this->assertEquals(204, $result->getStatusCode());
     }
 }

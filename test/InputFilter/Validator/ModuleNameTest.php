@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\InputFilter\Validator;
 
@@ -13,20 +9,22 @@ use PHPUnit\Framework\TestCase;
 
 class ModuleNameTest extends TestCase
 {
-    public function validModuleNames()
+    /** @psalm-return array<string, array{0: string}> */
+    public function validModuleNames(): array
     {
         return [
-            'string' => ['test'],
+            'string'                  => ['test'],
             'string-with-underscores' => ['test_test'],
-            'string-with-digits' => ['test0'],
+            'string-with-digits'      => ['test0'],
         ];
     }
 
-    public function invalidModuleNames()
+    /** @psalm-return array<string, array{0: string}> */
+    public function invalidModuleNames(): array
     {
         return [
-            'eval' => ['eval'],
-            'Eval' => ['Eval'],
+            'eval'          => ['eval'],
+            'Eval'          => ['Eval'],
             'digit-leading' => ['0test'],
         ];
     }
@@ -34,7 +32,7 @@ class ModuleNameTest extends TestCase
     /**
      * @dataProvider validModuleNames
      */
-    public function testValidModuleName($name)
+    public function testValidModuleName(string $name)
     {
         $validator = new ModuleNameValidator();
         $this->assertTrue($validator->isValid($name));
@@ -43,7 +41,7 @@ class ModuleNameTest extends TestCase
     /**
      * @dataProvider invalidModuleNames
      */
-    public function testInvalidModuleName($name)
+    public function testInvalidModuleName(string $name)
     {
         $validator = new ModuleNameValidator();
         $this->assertFalse($validator->isValid($name));

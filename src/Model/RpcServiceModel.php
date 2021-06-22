@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -19,38 +15,45 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver;
 use ReflectionClass;
 
+use function array_fill;
+use function array_filter;
+use function array_keys;
+use function class_exists;
+use function dirname;
+use function file_exists;
+use function file_put_contents;
+use function in_array;
+use function is_array;
+use function lcfirst;
+use function mkdir;
+use function preg_match;
+use function preg_quote;
+use function preg_replace;
+use function sprintf;
+use function str_replace;
+use function strrpos;
+use function strstr;
+use function substr;
+use function ucfirst;
+use function vsprintf;
+
 class RpcServiceModel
 {
-    /**
-     * @var ConfigResource
-     */
+    /** @var ConfigResource */
     protected $configResource;
 
-    /**
-     * @var FilterChain
-     */
+    /** @var FilterChain */
     protected $filter;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $module;
 
-    /**
-     * @var ModuleEntity
-     */
+    /** @var ModuleEntity */
     protected $moduleEntity;
 
-    /**
-     * @var ModulePathSpec
-     */
+    /** @var ModulePathSpec */
     protected $modules;
 
-    /**
-     * @param ModuleEntity $moduleEntity
-     * @param ModulePathSpec $modules
-     * @param ConfigResource $config
-     */
     public function __construct(ModuleEntity $moduleEntity, ModulePathSpec $modules, ConfigResource $config)
     {
         $this->module         = $moduleEntity->getName();
@@ -90,7 +93,7 @@ class RpcServiceModel
             $data['service_name'] = $rpcConfig['service_name'];
         } else {
             $data['service_name'] = $controllerServiceName;
-            $pattern = vsprintf(
+            $pattern              = vsprintf(
                 '#%sV[^%s]+%sRpc%s(?<service>[^%s]+)%sController#',
                 array_fill(0, 6, preg_quote('\\'))
             );
@@ -146,7 +149,7 @@ class RpcServiceModel
                 ), 400);
             }
             $namespaceSep = preg_quote('\\');
-            $pattern = sprintf(
+            $pattern      = sprintf(
                 '#%s%sV%s#',
                 $this->moduleNameToRegex(),
                 $namespaceSep,
@@ -202,7 +205,6 @@ class RpcServiceModel
     /**
      * Delete a service
      *
-     * @param  RpcServiceEntity $entity
      * @param  bool $recursive
      * @return true
      * @throws Exception\RuntimeException
@@ -221,8 +223,8 @@ class RpcServiceModel
         $this->deleteControllersConfig($serviceName);
 
         if ($recursive) {
-            $className = substr($entity->controllerServiceName, 0, strrpos($entity->controllerServiceName, '\\')) .
-                '\\' . $entity->serviceName . 'Controller';
+            $className = substr($entity->controllerServiceName, 0, strrpos($entity->controllerServiceName, '\\'))
+                . '\\' . $entity->serviceName . 'Controller';
             if (! class_exists($className)) {
                 throw new Exception\RuntimeException(sprintf(
                     'I cannot determine the class name, tried with "%s"',
@@ -274,10 +276,12 @@ class RpcServiceModel
         $renderer = new PhpRenderer();
         $renderer->setResolver($resolver);
 
-        if (! file_put_contents(
-            $classPath,
-            "<" . "?php\n" . $renderer->render($view)
-        )) {
+        if (
+            ! file_put_contents(
+                $classPath,
+                "<" . "?php\n" . $renderer->render($view)
+            )
+        ) {
             return false;
         }
 
@@ -329,10 +333,12 @@ class RpcServiceModel
         $renderer = new PhpRenderer();
         $renderer->setResolver($resolver);
 
-        if (! file_put_contents(
-            $classPath,
-            "<" . "?php\n" . $renderer->render($view)
-        )) {
+        if (
+            ! file_put_contents(
+                $classPath,
+                "<" . "?php\n" . $renderer->render($view)
+            )
+        ) {
             return false;
         }
 
@@ -365,7 +371,7 @@ class RpcServiceModel
     protected function routeAlreadyExist($route, $excludeRouteName = null)
     {
         // Remove optional parameter in the route
-        $route = preg_replace('/(\[[^\]]+\])/', '', $route);
+        $route  = preg_replace('/(\[[^\]]+\])/', '', $route);
         $config = $this->configResource->fetch(true);
         if (isset($config['router']['routes'])) {
             foreach ($config['router']['routes'] as $routeName => $routeConfig) {
@@ -405,12 +411,12 @@ class RpcServiceModel
         }
 
         $config = [
-            'router' => [
+            'router'               => [
                 'routes' => [
                     $routeName => [
-                        'type' => 'Segment',
+                        'type'    => 'Segment',
                         'options' => [
-                            'route' => $route,
+                            'route'    => $route,
                             'defaults' => [
                                 'controller' => $controllerService,
                                 'action'     => $action,
@@ -447,13 +453,15 @@ class RpcServiceModel
         array $httpMethods = ['GET'],
         $callable = null
     ) {
-        $config = ['api-tools-rpc' => [
-            $controllerService => [
-                'service_name' => $serviceName,
-                'http_methods' => $httpMethods,
-                'route_name'   => $routeName,
+        $config = [
+            'api-tools-rpc' => [
+                $controllerService => [
+                    'service_name' => $serviceName,
+                    'http_methods' => $httpMethods,
+                    'route_name'   => $routeName,
+                ],
             ],
-        ]];
+        ];
         if (null !== $callable) {
             $config[$controllerService]['callable'] = $callable;
         }
@@ -475,24 +483,26 @@ class RpcServiceModel
 
         $mediaType = $this->createMediaType();
 
-        $config = ['api-tools-content-negotiation' => [
-            'controllers' => [
-                $controllerService => $selector,
-            ],
-            'accept_whitelist' => [
-                $controllerService => [
-                    $mediaType,
-                    'application/json',
-                    'application/*+json',
+        $config = [
+            'api-tools-content-negotiation' => [
+                'controllers'            => [
+                    $controllerService => $selector,
+                ],
+                'accept_whitelist'       => [
+                    $controllerService => [
+                        $mediaType,
+                        'application/json',
+                        'application/*+json',
+                    ],
+                ],
+                'content_type_whitelist' => [
+                    $controllerService => [
+                        $mediaType,
+                        'application/json',
+                    ],
                 ],
             ],
-            'content_type_whitelist' => [
-                $controllerService => [
-                    $mediaType,
-                    'application/json',
-                ],
-            ],
-        ]];
+        ];
         return $this->configResource->patch($config, true);
     }
 
@@ -506,7 +516,7 @@ class RpcServiceModel
      */
     public function updateRoute($controllerService, $routeMatch)
     {
-        $services  = $this->fetch($controllerService);
+        $services = $this->fetch($controllerService);
         if (! $services) {
             return false;
         }
@@ -570,7 +580,7 @@ class RpcServiceModel
             throw new PatchException('Invalid content negotiation whitelist type provided', 422);
         }
         $headerType .= '_whitelist';
-        $config = $this->configResource->fetch(true);
+        $config      = $this->configResource->fetch(true);
         $config['api-tools-content-negotiation'][$headerType][$controllerService] = $whitelist;
         $this->configResource->overwrite($config);
         return true;
@@ -735,7 +745,8 @@ class RpcServiceModel
         }
 
         $config = $config['router']['routes'];
-        if (! isset($config[$routeName])
+        if (
+            ! isset($config[$routeName])
             || ! is_array($config[$routeName])
         ) {
             return false;

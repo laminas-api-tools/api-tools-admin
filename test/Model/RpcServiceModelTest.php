@@ -1,24 +1,41 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
 use BazConf;
 use FooConf;
+use Laminas\ApiTools\Admin\Exception\RuntimeException;
 use Laminas\ApiTools\Admin\Model\ModuleEntity;
 use Laminas\ApiTools\Admin\Model\ModulePathSpec;
+use Laminas\ApiTools\Admin\Model\RpcServiceEntity;
 use Laminas\ApiTools\Admin\Model\RpcServiceModel;
 use Laminas\ApiTools\Admin\Model\VersioningModel;
 use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ApiTools\Configuration\ResourceFactory;
+use Laminas\ApiTools\Rest\Exception\CreationException;
 use Laminas\Config\Writer\PhpArray;
+use Laminas\ModuleManager\ModuleManager;
+use Laminas\Mvc\Controller\AbstractActionController;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+
+use function array_diff;
+use function class_exists;
+use function copy;
+use function file_exists;
+use function file_get_contents;
+use function glob;
+use function is_dir;
+use function lcfirst;
+use function mkdir;
+use function realpath;
+use function rmdir;
+use function scandir;
+use function sprintf;
+use function str_replace;
+use function unlink;
 
 class RpcServiceModelTest extends TestCase
 {
@@ -70,18 +87,18 @@ class RpcServiceModelTest extends TestCase
         ];
 
         $this->moduleEntity  = new ModuleEntity($this->module);
-        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
                             ->method('getLoadedModules')
                             ->will($this->returnValue($modules));
 
-        $this->writer   = new PhpArray();
-        $moduleUtils    = new ModuleUtils($this->moduleManager);
-        $this->modulePathSpec  = new ModulePathSpec($moduleUtils);
-        $this->resource = new ResourceFactory($moduleUtils, $this->writer);
-        $this->codeRpc  = new RpcServiceModel(
+        $this->writer         = new PhpArray();
+        $moduleUtils          = new ModuleUtils($this->moduleManager);
+        $this->modulePathSpec = new ModulePathSpec($moduleUtils);
+        $this->resource       = new ResourceFactory($moduleUtils, $this->writer);
+        $this->codeRpc        = new RpcServiceModel(
             $this->moduleEntity,
             $this->modulePathSpec,
             $this->resource->factory($this->module)
@@ -102,7 +119,7 @@ class RpcServiceModelTest extends TestCase
         /**
          * @todo define exception in Rpc namespace
          */
-        $this->expectException('Laminas\ApiTools\Rest\Exception\CreationException');
+        $this->expectException(CreationException::class);
         $this->codeRpc->createService('Foo Bar', 'route', []);
     }
 
@@ -111,7 +128,7 @@ class RpcServiceModelTest extends TestCase
         /**
          * @todo define exception in Rpc namespace
         */
-        $this->expectException('Laminas\ApiTools\Rest\Exception\CreationException');
+        $this->expectException(CreationException::class);
         $this->codeRpc->createService('Foo:Bar', 'route', []);
     }
 
@@ -120,7 +137,7 @@ class RpcServiceModelTest extends TestCase
         /**
          * @todo define exception in Rpc namespace
         */
-        $this->expectException('Laminas\ApiTools\Rest\Exception\CreationException');
+        $this->expectException(CreationException::class);
         $this->codeRpc->createService('Foo/Bar', 'route', []);
     }
 
@@ -142,7 +159,7 @@ class RpcServiceModelTest extends TestCase
 
     public function testCreateControllerRpc()
     {
-        $serviceName = 'Bar';
+        $serviceName   = 'Bar';
         $moduleSrcPath = sprintf('%s/TestAsset/module/%s/src/%s', __DIR__, $this->module, $this->module);
         if (! is_dir($moduleSrcPath)) {
             mkdir($moduleSrcPath, 0775, true);
@@ -169,9 +186,11 @@ class RpcServiceModelTest extends TestCase
         $this->assertEquals(realpath($fileName), realpath($result->file));
         $this->assertEquals($controllerService, $result->service);
 
-        require_once $fileName;
+        if (! class_exists($className)) {
+            require_once $fileName;
+        }
         $controllerClass = new ReflectionClass($className);
-        $this->assertTrue($controllerClass->isSubclassOf('Laminas\Mvc\Controller\AbstractActionController'));
+        $this->assertTrue($controllerClass->isSubclassOf(AbstractActionController::class));
 
         $actionMethodName = lcfirst($serviceName) . 'Action';
         $this->assertTrue(
@@ -181,10 +200,12 @@ class RpcServiceModelTest extends TestCase
 
         $configFile = $this->modulePathSpec->getModuleConfigFilePath($this->module);
         $config     = include $configFile;
-        $expected = [
-            'controllers' => ['factories' => [
-                $controllerService => $className . 'Factory',
-            ]],
+        $expected   = [
+            'controllers' => [
+                'factories' => [
+                    $controllerService => $className . 'Factory',
+                ],
+            ],
         ];
         $this->assertEquals($expected, $config);
     }
@@ -194,17 +215,17 @@ class RpcServiceModelTest extends TestCase
      */
     public function testCreateControllerRpcPSR4()
     {
-        $this->module = 'BazConf';
-        $this->moduleEntity  = new ModuleEntity($this->module);
-        $moduleUtils    = new ModuleUtils($this->moduleManager);
-        $this->modulePathSpec  = new ModulePathSpec($moduleUtils, 'psr-4', __DIR__ . '/TestAsset');
-        $this->codeRpc  = new RpcServiceModel(
+        $this->module         = 'BazConf';
+        $this->moduleEntity   = new ModuleEntity($this->module);
+        $moduleUtils          = new ModuleUtils($this->moduleManager);
+        $this->modulePathSpec = new ModulePathSpec($moduleUtils, 'psr-4', __DIR__ . '/TestAsset');
+        $this->codeRpc        = new RpcServiceModel(
             $this->moduleEntity,
             $this->modulePathSpec,
             $this->resource->factory($this->module)
         );
 
-        $serviceName = 'Bar';
+        $serviceName   = 'Bar';
         $moduleSrcPath = sprintf('%s/TestAsset/module/%s/src', __DIR__, $this->module);
         if (! is_dir($moduleSrcPath)) {
             mkdir($moduleSrcPath, 0775, true);
@@ -230,9 +251,11 @@ class RpcServiceModelTest extends TestCase
         $this->assertEquals(realpath($fileName), realpath($result->file));
         $this->assertEquals($controllerService, $result->service);
 
-        require_once $fileName;
+        if (! class_exists($className)) {
+            require_once $fileName;
+        }
         $controllerClass = new ReflectionClass($className);
-        $this->assertTrue($controllerClass->isSubclassOf('Laminas\Mvc\Controller\AbstractActionController'));
+        $this->assertTrue($controllerClass->isSubclassOf(AbstractActionController::class));
 
         $actionMethodName = lcfirst($serviceName) . 'Action';
         $this->assertTrue(
@@ -242,15 +265,17 @@ class RpcServiceModelTest extends TestCase
 
         $configFile = $this->modulePathSpec->getModuleConfigFilePath($this->module);
         $config     = include $configFile;
-        $expected = [
-            'controllers' => ['factories' => [
-                $controllerService => $className . 'Factory',
-            ]],
+        $expected   = [
+            'controllers' => [
+                'factories' => [
+                    $controllerService => $className . 'Factory',
+                ],
+            ],
         ];
         $this->assertEquals($expected, $config);
     }
 
-    public function testCanCreateRouteConfiguration()
+    public function testCanCreateRouteConfiguration(): object
     {
         $result = $this->codeRpc->createRoute(
             '/foo_conf/hello_world',
@@ -262,18 +287,20 @@ class RpcServiceModelTest extends TestCase
         $configFile = $this->modulePathSpec->getModuleConfigFilePath($this->module);
         $config     = include $configFile;
         $expected   = [
-            'router' => ['routes' => [
-                'foo-conf.rpc.hello-world' => [
-                    'type' => 'Segment',
-                    'options' => [
-                        'route' => '/foo_conf/hello_world',
-                        'defaults' => [
-                            'controller' => 'FooConf\Rpc\HelloWorld\Controller',
-                            'action' => 'helloWorld',
+            'router'               => [
+                'routes' => [
+                    'foo-conf.rpc.hello-world' => [
+                        'type'    => 'Segment',
+                        'options' => [
+                            'route'    => '/foo_conf/hello_world',
+                            'defaults' => [
+                                'controller' => 'FooConf\Rpc\HelloWorld\Controller',
+                                'action'     => 'helloWorld',
+                            ],
                         ],
                     ],
                 ],
-            ]],
+            ],
             'api-tools-versioning' => [
                 'uri' => [
                     'foo-conf.rpc.hello-world',
@@ -288,9 +315,9 @@ class RpcServiceModelTest extends TestCase
         ];
     }
 
-    public function testCanCreateRpcConfiguration()
+    public function testCanCreateRpcConfiguration(): object
     {
-        $result = $this->codeRpc->createRpcConfig(
+        $result   = $this->codeRpc->createRpcConfig(
             'HelloWorld',
             'FooConf\Rpc\HelloWorld\Controller',
             'foo-conf.rpc.hello-world',
@@ -318,26 +345,29 @@ class RpcServiceModelTest extends TestCase
         ];
     }
 
-    public function contentNegotiationSelectors()
+    /** @psalm-return array<string, array{0: ?string, 1: string}> */
+    public function contentNegotiationSelectors(): array
     {
         return [
             'defaults' => [null, 'Json'],
-            'HalJson' => ['HalJson', 'HalJson'],
+            'HalJson'  => ['HalJson', 'HalJson'],
         ];
     }
 
     /**
      * @dataProvider contentNegotiationSelectors
      */
-    public function testCanCreateContentNegotiationSelectorConfiguration($selector, $expected)
-    {
-        $result = $this->codeRpc->createContentNegotiationConfig('FooConf\Rpc\HelloWorld\Controller', $selector);
+    public function testCanCreateContentNegotiationSelectorConfiguration(
+        ?string $selector,
+        string $expected
+    ): object {
+        $result   = $this->codeRpc->createContentNegotiationConfig('FooConf\Rpc\HelloWorld\Controller', $selector);
         $expected = [
             'api-tools-content-negotiation' => [
-                'controllers' => [
+                'controllers'            => [
                     'FooConf\Rpc\HelloWorld\Controller' => $expected,
                 ],
-                'accept_whitelist' => [
+                'accept_whitelist'       => [
                     'FooConf\Rpc\HelloWorld\Controller' => [
                         'application/vnd.foo-conf.v1+json',
                         'application/json',
@@ -365,33 +395,37 @@ class RpcServiceModelTest extends TestCase
         ];
     }
 
-    public function testCanGenerateAllArtifactsAtOnceViaCreateService()
+    public function testCanGenerateAllArtifactsAtOnceViaCreateService(): object
     {
         $serviceName = 'HelloWorld';
         $route       = '/foo_conf/hello/world';
         $httpMethods = ['GET', 'PATCH'];
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf(RpcServiceEntity::class, $result);
 
         $configFile = $this->modulePathSpec->getModuleConfigFilePath($this->module);
         $expected   = [
-            'controllers' => ['factories' => [
-                'FooConf\V1\Rpc\HelloWorld\Controller' => 'FooConf\V1\Rpc\HelloWorld\HelloWorldControllerFactory',
-            ]],
-            'router' => ['routes' => [
-                'foo-conf.rpc.hello-world' => [
-                    'type' => 'Segment',
-                    'options' => [
-                        'route' => '/foo_conf/hello/world',
-                        'defaults' => [
-                            'controller' => 'FooConf\V1\Rpc\HelloWorld\Controller',
-                            'action' => 'helloWorld',
+            'controllers'                   => [
+                'factories' => [
+                    'FooConf\V1\Rpc\HelloWorld\Controller' => 'FooConf\V1\Rpc\HelloWorld\HelloWorldControllerFactory',
+                ],
+            ],
+            'router'                        => [
+                'routes' => [
+                    'foo-conf.rpc.hello-world' => [
+                        'type'    => 'Segment',
+                        'options' => [
+                            'route'    => '/foo_conf/hello/world',
+                            'defaults' => [
+                                'controller' => 'FooConf\V1\Rpc\HelloWorld\Controller',
+                                'action'     => 'helloWorld',
+                            ],
                         ],
                     ],
                 ],
-            ]],
-            'api-tools-rpc' => [
+            ],
+            'api-tools-rpc'                 => [
                 'FooConf\V1\Rpc\HelloWorld\Controller' => [
                     'service_name' => 'HelloWorld',
                     'http_methods' => ['GET', 'PATCH'],
@@ -399,10 +433,10 @@ class RpcServiceModelTest extends TestCase
                 ],
             ],
             'api-tools-content-negotiation' => [
-                'controllers' => [
+                'controllers'            => [
                     'FooConf\V1\Rpc\HelloWorld\Controller' => $selector,
                 ],
-                'accept_whitelist' => [
+                'accept_whitelist'       => [
                     'FooConf\V1\Rpc\HelloWorld\Controller' => [
                         'application/vnd.foo-conf.v1+json',
                         'application/json',
@@ -416,13 +450,13 @@ class RpcServiceModelTest extends TestCase
                     ],
                 ],
             ],
-            'api-tools-versioning' => [
+            'api-tools-versioning'          => [
                 'uri' => [
                     'foo-conf.rpc.hello-world',
                 ],
             ],
         ];
-        $config = include $configFile;
+        $config     = include $configFile;
         $this->assertEquals($expected, $config);
 
         $class     = 'FooConf\V1\Rpc\HelloWorld\HelloWorldController';
@@ -440,7 +474,7 @@ class RpcServiceModelTest extends TestCase
 
         require_once $classFile;
         $controllerClass = new ReflectionClass($class);
-        $this->assertTrue($controllerClass->isSubclassOf('Laminas\Mvc\Controller\AbstractActionController'));
+        $this->assertTrue($controllerClass->isSubclassOf(AbstractActionController::class));
 
         $actionMethodName = lcfirst($serviceName) . 'Action';
         $this->assertTrue(
@@ -450,15 +484,15 @@ class RpcServiceModelTest extends TestCase
 
         return (object) [
             'rpc_service' => $result->getArrayCopy(),
-            'config_file'  => $configFile,
-            'config'       => $config,
+            'config_file' => $configFile,
+            'config'      => $config,
         ];
     }
 
     /**
      * @depends testCanGenerateAllArtifactsAtOnceViaCreateService
      */
-    public function testCanUpdateRoute($data)
+    public function testCanUpdateRoute(object $data)
     {
         // State is lost in between tests; re-seed the service
         $serviceName = 'HelloWorld';
@@ -466,7 +500,7 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = ['GET', 'PATCH'];
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $service    = $result->getArrayCopy();
+        $service     = $result->getArrayCopy();
 
         // and now do the actual work for the test
         $this->assertTrue($this->codeRpc->updateRoute($service['controller_service_name'], '/api/hello/world'));
@@ -481,7 +515,7 @@ class RpcServiceModelTest extends TestCase
     /**
      * @depends testCanCreateRpcConfiguration
      */
-    public function testCanUpdateHttpMethods($configData)
+    public function testCanUpdateHttpMethods(object $configData)
     {
         $methods = ['GET', 'PUT', 'DELETE'];
         $this->writer->toFile($configData->config_file, $configData->config);
@@ -513,7 +547,7 @@ class RpcServiceModelTest extends TestCase
         $configFile = $this->modulePathSpec->getModuleConfigFilePath($this->module);
         $this->writer->toFile($configFile, [
             'api-tools-content-negotiation' => [
-                'accept_whitelist' => [
+                'accept_whitelist'       => [
                     'FooConf\Rpc\HelloWorld\Controller' => [
                         'application/json',
                         'application/*+json',
@@ -558,10 +592,10 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = ['GET', 'PATCH'];
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf(RpcServiceEntity::class, $result);
 
         $moduleSrcPath = sprintf('%s/TestAsset/module/%s/src/%s', __DIR__, $this->module, $this->module);
-        $servicePath = $moduleSrcPath . '/V1/Rpc/' . $serviceName;
+        $servicePath   = $moduleSrcPath . '/V1/Rpc/' . $serviceName;
 
         $this->codeRpc->deleteService($result);
         $this->assertTrue(file_exists($servicePath));
@@ -603,10 +637,10 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = ['GET', 'PATCH'];
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf(RpcServiceEntity::class, $result);
 
         $moduleSrcPath = sprintf('%s/TestAsset/module/%s/src/%s', __DIR__, $this->module, $this->module);
-        $servicePath = $moduleSrcPath . '/V1/Rpc/' . $serviceName;
+        $servicePath   = $moduleSrcPath . '/V1/Rpc/' . $serviceName;
 
         $this->codeRpc->deleteService($result, true);
         $this->assertFalse(file_exists($servicePath));
@@ -617,11 +651,11 @@ class RpcServiceModelTest extends TestCase
      */
     public function testDeleteServiceRecursivePSR4()
     {
-        $this->module = 'BazConf';
-        $moduleUtils    = new ModuleUtils($this->moduleManager);
-        $this->moduleEntity  = new ModuleEntity($this->module);
-        $this->modulePathSpec  = new ModulePathSpec($moduleUtils, 'psr-4', __DIR__ . '/TestAsset');
-        $this->codeRpc  = new RpcServiceModel(
+        $this->module         = 'BazConf';
+        $moduleUtils          = new ModuleUtils($this->moduleManager);
+        $this->moduleEntity   = new ModuleEntity($this->module);
+        $this->modulePathSpec = new ModulePathSpec($moduleUtils, 'psr-4', __DIR__ . '/TestAsset');
+        $this->codeRpc        = new RpcServiceModel(
             $this->moduleEntity,
             $this->modulePathSpec,
             $this->resource->factory($this->module)
@@ -632,11 +666,11 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = ['GET', 'PATCH'];
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf(RpcServiceEntity::class, $result);
 
         $moduleSrcPath = sprintf('%s/TestAsset/module/%s/src', __DIR__, $this->module);
-        $servicePath = $moduleSrcPath . '/V1/Rpc/' . $serviceName;
-        $filepath = $servicePath . "/". $serviceName . "Controller.php";
+        $servicePath   = $moduleSrcPath . '/V1/Rpc/' . $serviceName;
+        $filepath      = $servicePath . "/" . $serviceName . "Controller.php";
 
         /** deleteService calls class_exists.  ensure that it's loaded in case the autoloader doesn't pick it up */
         if (file_exists($filepath)) {
@@ -657,14 +691,14 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = ['GET', 'PATCH'];
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf(RpcServiceEntity::class, $result);
 
-        $path = __DIR__ . '/TestAsset/module/FooConf';
+        $path            = __DIR__ . '/TestAsset/module/FooConf';
         $versioningModel = new VersioningModel($this->resource->factory('FooConf'));
         $this->assertTrue($versioningModel->createVersion('FooConf', 2));
 
         $serviceName = str_replace('1', '2', $result->controllerServiceName);
-        $service = $this->codeRpc->fetch($serviceName);
+        $service     = $this->codeRpc->fetch($serviceName);
         $this->assertTrue($this->codeRpc->deleteService($service));
 
         $config = include $path . '/config/module.config.php';
@@ -682,7 +716,7 @@ class RpcServiceModelTest extends TestCase
      * @group 72
      * @depends testCanCreateRpcConfiguration
      */
-    public function testCanRemoveAllHttpVerbsWhenUpdating($configData)
+    public function testCanRemoveAllHttpVerbsWhenUpdating(object $configData)
     {
         $methods = [];
         $this->writer->toFile($configData->config_file, $configData->config);
@@ -691,9 +725,6 @@ class RpcServiceModelTest extends TestCase
         $this->assertEquals($methods, $config['api-tools-rpc'][$configData->controller_service]['http_methods']);
     }
 
-    /**
-     * @expectedException Laminas\ApiTools\Admin\Exception\RuntimeException
-     */
     public function testServiceExistsThrowExceptionAndLeaveConfigAsIs()
     {
         $serviceName = 'Foo';
@@ -701,15 +732,16 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = ['GET', 'PATCH'];
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf(RpcServiceEntity::class, $result);
 
-        $route       = '/foo2';
+        $route = '/foo2';
+
+        $this->expectException(RuntimeException::class);
         $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
     }
 
     /**
      * @see https://github.com/zfcampus/zf-apigility-admin/issues/49
-     * @expectedException Laminas\ApiTools\Admin\Exception\RuntimeException
      */
     public function testCreateServiceWithUrlAlreadyExist()
     {
@@ -718,16 +750,17 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = ['GET', 'PATCH'];
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf(RpcServiceEntity::class, $result);
 
         // Create a new RPC entity with same URL match
         $serviceName = 'Bar';
-        $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
+
+        $this->expectException(RuntimeException::class);
+        $result = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
     }
 
     /**
      * @see https://github.com/zfcampus/zf-apigility-admin/issues/49
-     * @expectedException Laminas\ApiTools\Admin\Exception\RuntimeException
      */
     public function testUpdateServiceWithUrlAlreadyExist()
     {
@@ -736,15 +769,17 @@ class RpcServiceModelTest extends TestCase
         $httpMethods = ['GET', 'PATCH'];
         $selector    = 'HalJson';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf(RpcServiceEntity::class, $result);
 
         $serviceName = 'Bar';
         $route       = '/bar';
         $result      = $this->codeRpc->createService($serviceName, $route, $httpMethods, $selector);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\RpcServiceEntity', $result);
+        $this->assertInstanceOf(RpcServiceEntity::class, $result);
 
-        $service    = $result->getArrayCopy();
+        $service = $result->getArrayCopy();
+
         // and now do the actual work for the test
+        $this->expectException(RuntimeException::class);
         $this->codeRpc->updateRoute($service['controller_service_name'], '/foo');
     }
 }

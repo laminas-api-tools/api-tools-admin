@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
@@ -19,9 +15,21 @@ use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ApiTools\Configuration\ResourceFactory;
 use Laminas\Config\Writer\PhpArray;
 use Laminas\EventManager\Event;
+use Laminas\Hydrator\ClassMethodsHydrator;
 use Laminas\ModuleManager\ModuleManager;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+
+use function array_diff;
+use function copy;
+use function file_exists;
+use function glob;
+use function is_dir;
+use function rmdir;
+use function scandir;
+use function sprintf;
+use function unlink;
+use function var_export;
 
 class DbConnectedRestServiceModelTest extends TestCase
 {
@@ -87,7 +95,7 @@ class DbConnectedRestServiceModelTest extends TestCase
         $this->cleanUpAssets();
     }
 
-    public function getCreationPayload()
+    public function getCreationPayload(): DbConnectedRestServiceEntity
     {
         $payload = new DbConnectedRestServiceEntity();
         $payload->exchangeArray([
@@ -127,7 +135,7 @@ class DbConnectedRestServiceModelTest extends TestCase
         $originalEntity = $this->getCreationPayload();
         $result         = $this->model->createService($originalEntity);
         include __DIR__ . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Barbaz/BarbazEntity.php';
-        $r = new ReflectionClass('BarConf\V1\Rest\Barbaz\BarbazEntity');
+        $r      = new ReflectionClass('BarConf\V1\Rest\Barbaz\BarbazEntity');
         $parent = $r->getParentClass();
         $this->assertInstanceOf('ReflectionClass', $parent);
         $this->assertEquals('ArrayObject', $parent->getName());
@@ -137,7 +145,7 @@ class DbConnectedRestServiceModelTest extends TestCase
     {
         $originalEntity = $this->getCreationPayload();
         $result         = $this->model->createService($originalEntity);
-        $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
+        $config         = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
         $this->assertArrayHasKey('api-tools', $config);
         $this->assertArrayHasKey('db-connected', $config['api-tools']);
@@ -157,7 +165,7 @@ class DbConnectedRestServiceModelTest extends TestCase
     {
         $originalEntity = $this->getCreationPayload();
         $result         = $this->model->createService($originalEntity);
-        $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
+        $config         = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
         $this->assertArrayHasKey('api-tools-rest', $config);
         $this->assertArrayHasKey($result->controllerServiceName, $config['api-tools-rest']);
@@ -174,7 +182,7 @@ class DbConnectedRestServiceModelTest extends TestCase
     {
         $originalEntity = $this->getCreationPayload();
         $result         = $this->model->createService($originalEntity);
-        $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
+        $config         = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
 
         $this->assertArrayHasKey('api-tools-hal', $config);
         $this->assertArrayHasKey('metadata_map', $config['api-tools-hal']);
@@ -204,35 +212,39 @@ class DbConnectedRestServiceModelTest extends TestCase
             'route_match'             => '/api/barbaz',
             'entity_class'            => 'BarConf\Rest\Barbaz\BarbazEntity',
         ];
-        $entity = new RestServiceEntity();
+        $entity       = new RestServiceEntity();
         $entity->exchangeArray($originalData);
-        $config = ['api-tools' => ['db-connected' => [
-            'BarConf\Rest\Barbaz\BarbazResource' => [
-                'adapter_name'  => 'Db\Barbaz',
-                'table_name'    => 'barbaz',
-                'hydrator_name' => 'ObjectProperty',
+        $config = [
+            'api-tools' => [
+                'db-connected' => [
+                    'BarConf\Rest\Barbaz\BarbazResource' => [
+                        'adapter_name'  => 'Db\Barbaz',
+                        'table_name'    => 'barbaz',
+                        'hydrator_name' => 'ObjectProperty',
+                    ],
+                ],
             ],
-        ]]];
+        ];
 
         $event = new Event();
         $event->setParam('entity', $entity);
         $event->setParam('config', $config);
         $result = $this->model->onFetch($event);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity', $result);
+        $this->assertInstanceOf(DbConnectedRestServiceEntity::class, $result);
         $asArray = $result->getArrayCopy();
         foreach ($originalData as $key => $value) {
             $this->assertArrayHasKey($key, $asArray);
             if ($key === 'resource_class') {
                 $this->assertNull(
                     $asArray[$key],
-                    sprintf("Failed asserting that resource_class is null\nEntity is: %s\n", var_export($asArray, 1))
+                    sprintf("Failed asserting that resource_class is null\nEntity is: %s\n", var_export($asArray, true))
                 );
                 continue;
             }
             $this->assertEquals(
                 $value,
                 $asArray[$key],
-                sprintf("Failed testing key '%s'\nEntity is: %s\n", $key, var_export($asArray, 1))
+                sprintf("Failed testing key '%s'\nEntity is: %s\n", $key, var_export($asArray, true))
             );
         }
         foreach ($config['api-tools']['db-connected']['BarConf\Rest\Barbaz\BarbazResource'] as $key => $value) {
@@ -255,15 +267,19 @@ class DbConnectedRestServiceModelTest extends TestCase
             'route_match'             => '/api/barbaz',
             'entity_class'            => 'BarConf\Rest\Barbaz\BarbazEntity',
         ];
-        $entity = new RestServiceEntity();
+        $entity       = new RestServiceEntity();
         $entity->exchangeArray($originalData);
-        $config = ['api-tools' => ['db-connected' => [
-            'BarConf\Rest\Barbaz\BarbazResource' => [
-                'adapter_name'  => 'Db\Barbaz',
-                'table_name'    => 'barbaz',
-                'hydrator_name' => 'ObjectProperty',
+        $config = [
+            'api-tools' => [
+                'db-connected' => [
+                    'BarConf\Rest\Barbaz\BarbazResource' => [
+                        'adapter_name'  => 'Db\Barbaz',
+                        'table_name'    => 'barbaz',
+                        'hydrator_name' => 'ObjectProperty',
+                    ],
+                ],
             ],
-        ]]];
+        ];
 
         $event = new Event();
         $event->setParam('entity', $entity);
@@ -271,7 +287,7 @@ class DbConnectedRestServiceModelTest extends TestCase
         $event->setParam('fetch', false);
         $result = $this->model->onFetch($event);
 
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity', $result);
+        $this->assertInstanceOf(DbConnectedRestServiceEntity::class, $result);
         $this->assertEquals('BarConf\Rest\Barbaz\BarbazResource', $result->resourceClass);
         $asArray = $result->getArrayCopy();
         $this->assertArrayHasKey('resource_class', $asArray);
@@ -286,12 +302,12 @@ class DbConnectedRestServiceModelTest extends TestCase
         $newProps = [
             'table_service' => 'My\Custom\Table',
             'adapter_name'  => 'My\Db',
-            'hydrator_name' => 'ClassMethods',
+            'hydrator_name' => 'ClassMethodsHydrator',
         ];
         $originalEntity->exchangeArray($newProps);
         $result = $this->model->updateService($originalEntity);
 
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity', $result);
+        $this->assertInstanceOf(DbConnectedRestServiceEntity::class, $result);
         $this->assertNotSame($originalEntity, $result);
         $this->assertEquals($newProps['table_service'], $result->tableService);
         $this->assertEquals($newProps['adapter_name'], $result->adapterName);
@@ -306,12 +322,12 @@ class DbConnectedRestServiceModelTest extends TestCase
         $newProps = [
             'table_service' => 'My\Custom\Table',
             'adapter_name'  => 'My\Db',
-            'hydrator_name' => 'ClassMethods',
+            'hydrator_name' => 'ClassMethodsHydrator',
         ];
         $originalEntity->exchangeArray($newProps);
         $result = $this->model->updateService($originalEntity);
 
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbConnectedRestServiceEntity', $result);
+        $this->assertInstanceOf(DbConnectedRestServiceEntity::class, $result);
 
         $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
         $this->assertArrayHasKey('api-tools', $config);
@@ -340,7 +356,7 @@ class DbConnectedRestServiceModelTest extends TestCase
 
         $newProps = [
             'entity_identifier_name' => 'id',
-            'hydrator_name'          => 'Laminas\\Hydrator\\ClassMethods',
+            'hydrator_name'          => ClassMethodsHydrator::class,
         ];
         $originalEntity->exchangeArray($newProps);
         $result = $this->model->updateService($originalEntity);
@@ -361,7 +377,7 @@ class DbConnectedRestServiceModelTest extends TestCase
         $this->model->createService($originalEntity);
         $this->model->deleteService($originalEntity);
 
-        $config = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
+        $config     = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';
         $barbazPath = __DIR__ . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Barbaz';
 
         $this->assertTrue(file_exists($barbazPath));

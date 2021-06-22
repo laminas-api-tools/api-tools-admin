@@ -1,30 +1,35 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
 use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\Http\Headers;
 use Laminas\Http\Request;
 use Laminas\Mvc\Controller\AbstractActionController;
 
+use function array_shift;
+use function explode;
+use function json_decode;
+use function strtolower;
+use function trim;
+
 abstract class AbstractConfigController extends AbstractActionController
 {
+    /** @return array */
     abstract public function getConfig();
 
+    /** @return array|ApiProblemResponse */
     public function processAction()
     {
         $request     = $this->getRequest();
         $headers     = $request->getHeaders();
         $accept      = $this->getHeaderType($headers, 'accept');
         $contentType = $this->getHeaderType($headers, 'content-type');
-        $returnTrees = 'application/json' == $accept ? false : true;
+        $returnTrees = 'application/json' === $accept ? false : true;
 
         $config = $this->getConfig();
         if (! $config instanceof ConfigResource) {
@@ -35,7 +40,7 @@ abstract class AbstractConfigController extends AbstractActionController
             case $request::METHOD_GET:
                 return $config->fetch($returnTrees);
             case $request::METHOD_PATCH:
-                $submitTrees = 'application/json' == $contentType ? false : true;
+                $submitTrees = 'application/json' === $contentType ? false : true;
                 $params      = $this->getBodyParams($submitTrees);
                 $result      = $config->patch($params, $submitTrees);
 
@@ -67,7 +72,6 @@ abstract class AbstractConfigController extends AbstractActionController
      *
      * Provided for testing.
      *
-     * @param  Request $request
      * @return $this
      */
     public function setRequest(Request $request)
@@ -97,7 +101,7 @@ abstract class AbstractConfigController extends AbstractActionController
     /**
      * Get the mediatype from a given header
      *
-     * @param  \Laminas\Http\Headers $headers
+     * @param Headers $headers
      * @param  string $header
      * @return string
      */

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
@@ -33,7 +29,7 @@ class RestServiceResourceFactoryTest extends TestCase
         $this->container->has(\ZF\Apigility\Admin\Model\RestServiceModelFactory::class)->willReturn(false);
 
         $this->expectException(ServiceNotCreatedException::class);
-        $this->expectExceptionMessage('missing its ' . RestServiceModelFactory::class. ' dependency');
+        $this->expectExceptionMessage('missing its ' . RestServiceModelFactory::class . ' dependency');
         $factory($this->container->reveal());
     }
 
@@ -46,7 +42,7 @@ class RestServiceResourceFactoryTest extends TestCase
         $this->container->has(\ZF\Apigility\Admin\Model\InputFilterModel::class)->willReturn(false);
 
         $this->expectException(ServiceNotCreatedException::class);
-        $this->expectExceptionMessage('missing its ' . InputFilterModel::class. ' dependency');
+        $this->expectExceptionMessage('missing its ' . InputFilterModel::class . ' dependency');
         $factory($this->container->reveal());
     }
 

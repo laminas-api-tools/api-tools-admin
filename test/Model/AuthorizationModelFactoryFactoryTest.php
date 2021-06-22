@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
@@ -25,44 +21,59 @@ class AuthorizationModelFactoryFactoryTest extends TestCase
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    public function missingDependencies()
+    /** @psalm-return array<string, array{0: array<string, bool>}> */
+    public function missingDependencies(): array
     {
         return [
-            'all' => [[
-                ModulePathSpec::class => false,
-                ConfigResourceFactory::class => false,
-                ModuleModel::class => false,
-            ]],
-            'ModulePathSpec' => [[
-                ModulePathSpec::class => false,
-                ConfigResourceFactory::class => true,
-                ModuleModel::class => true,
-            ]],
-            'ConfigResourceFactory' => [[
-                ModulePathSpec::class => true,
-                ConfigResourceFactory::class => false,
-                ModuleModel::class => true,
-            ]],
-            'ModuleModel' => [[
-                ModulePathSpec::class => true,
-                ConfigResourceFactory::class => true,
-                ModuleModel::class => false,
-            ]],
-            'ModulePathSpec + ConfigResourceFactory' => [[
-                ModulePathSpec::class => false,
-                ConfigResourceFactory::class => false,
-                ModuleModel::class => true,
-            ]],
-            'ModulePathSpec + ModuleModel' => [[
-                ModulePathSpec::class => false,
-                ConfigResourceFactory::class => true,
-                ModuleModel::class => false,
-            ]],
-            'ConfigResourceFactory + ModuleModel' => [[
-                ModulePathSpec::class => true,
-                ConfigResourceFactory::class => false,
-                ModuleModel::class => false,
-            ]],
+            'all'                                    => [
+                [
+                    ModulePathSpec::class        => false,
+                    ConfigResourceFactory::class => false,
+                    ModuleModel::class           => false,
+                ],
+            ],
+            'ModulePathSpec'                         => [
+                [
+                    ModulePathSpec::class        => false,
+                    ConfigResourceFactory::class => true,
+                    ModuleModel::class           => true,
+                ],
+            ],
+            'ConfigResourceFactory'                  => [
+                [
+                    ModulePathSpec::class        => true,
+                    ConfigResourceFactory::class => false,
+                    ModuleModel::class           => true,
+                ],
+            ],
+            'ModuleModel'                            => [
+                [
+                    ModulePathSpec::class        => true,
+                    ConfigResourceFactory::class => true,
+                    ModuleModel::class           => false,
+                ],
+            ],
+            'ModulePathSpec + ConfigResourceFactory' => [
+                [
+                    ModulePathSpec::class        => false,
+                    ConfigResourceFactory::class => false,
+                    ModuleModel::class           => true,
+                ],
+            ],
+            'ModulePathSpec + ModuleModel'           => [
+                [
+                    ModulePathSpec::class        => false,
+                    ConfigResourceFactory::class => true,
+                    ModuleModel::class           => false,
+                ],
+            ],
+            'ConfigResourceFactory + ModuleModel'    => [
+                [
+                    ModulePathSpec::class        => true,
+                    ConfigResourceFactory::class => false,
+                    ModuleModel::class           => false,
+                ],
+            ],
         ];
     }
 
@@ -71,7 +82,7 @@ class AuthorizationModelFactoryFactoryTest extends TestCase
      */
     public function testFactoryRaisesExceptionIfAnyDependenciesAreMissing(array $dependencies)
     {
-        $factory = new AuthorizationModelFactoryFactory;
+        $factory = new AuthorizationModelFactoryFactory();
 
         foreach ($dependencies as $dependency => $presence) {
             $this->container->has($dependency)->willReturn($presence);
@@ -84,10 +95,10 @@ class AuthorizationModelFactoryFactoryTest extends TestCase
 
     public function testFactoryReturnsAuthorizatoinModelFactory()
     {
-        $factory = new AuthorizationModelFactoryFactory;
-        $modulePathSpec = $this->prophesize(ModulePathSpec::class);
+        $factory               = new AuthorizationModelFactoryFactory();
+        $modulePathSpec        = $this->prophesize(ModulePathSpec::class);
         $configResourceFactory = $this->prophesize(ResourceFactory::class);
-        $moduleModel = $this->prophesize(ModuleModel::class);
+        $moduleModel           = $this->prophesize(ModuleModel::class);
 
         $this->container->has(ModulePathSpec::class)->willReturn(true);
         $this->container->get(ModulePathSpec::class)->will([$modulePathSpec, 'reveal']);

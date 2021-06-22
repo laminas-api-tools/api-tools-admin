@@ -1,21 +1,24 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Controller;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Admin\Controller\ConfigController;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
 use Laminas\ApiTools\Configuration\ConfigResource;
 use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParams;
 use Laminas\Http\Request;
 use Laminas\Mvc\Controller\PluginManager as ControllerPluginManager;
 use Laminas\Stdlib\Parameters;
 use PHPUnit\Framework\TestCase;
+
+use function file_put_contents;
+use function json_encode;
+use function sys_get_temp_dir;
+use function tempnam;
+use function unlink;
 
 class ConfigControllerTest extends TestCase
 {
@@ -38,7 +41,8 @@ class ConfigControllerTest extends TestCase
         unlink($this->file);
     }
 
-    public function invalidRequestMethods()
+    /** @psalm-return array<array-key, array{0: string}> */
+    public function invalidRequestMethods(): array
     {
         return [
             ['post'],
@@ -50,20 +54,20 @@ class ConfigControllerTest extends TestCase
     /**
      * @dataProvider invalidRequestMethods
      */
-    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse($method)
+    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse(string $method)
     {
         $request = new Request();
         $request->setMethod($method);
         $this->controller->setRequest($request);
         $result = $this->controller->processAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ApiProblem\ApiProblemResponse', $result);
+        $this->assertInstanceOf(ApiProblemResponse::class, $result);
         $apiProblem = $result->getApiProblem();
         $this->assertEquals(405, $apiProblem->status);
     }
 
     public function testProcessGetRequestWithLaminasApiToolsMediaTypeReturnsFullConfiguration()
     {
-        $config = [
+        $config         = [
             'foo' => 'FOO',
             'bar' => [
                 'baz' => 'bat',
@@ -87,7 +91,7 @@ class ConfigControllerTest extends TestCase
 
     public function testProcessGetRequestWithGenericJsonMediaTypeReturnsFlattenedConfiguration()
     {
-        $config = [
+        $config         = [
             'foo' => 'FOO',
             'bar' => [
                 'baz' => 'bat',
@@ -116,7 +120,7 @@ class ConfigControllerTest extends TestCase
 
     public function testProcessPatchRequestWithLaminasApiToolsMediaTypeReturnsUpdatedConfigurationKeys()
     {
-        $config = [
+        $config         = [
             'foo' => 'FOO',
             'bar' => [
                 'baz' => 'bat',
@@ -153,7 +157,7 @@ class ConfigControllerTest extends TestCase
 
     public function testProcessPatchRequestWithGenericJsonMediaTypeReturnsUpdatedConfigurationKeys()
     {
-        $config = [
+        $config         = [
             'foo' => 'FOO',
             'bar' => [
                 'baz' => 'bat',
@@ -168,7 +172,7 @@ class ConfigControllerTest extends TestCase
         $request->setMethod('patch');
         $request->setPost(new Parameters([
             'bar.baz' => 'UPDATED',
-            'baz' => 'UPDATED',
+            'baz'     => 'UPDATED',
         ]));
         $request->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $controller->setRequest($request);
@@ -178,7 +182,7 @@ class ConfigControllerTest extends TestCase
 
         $expected = [
             'bar.baz' => 'UPDATED',
-            'baz' => 'UPDATED',
+            'baz'     => 'UPDATED',
         ];
         $this->assertEquals($expected, $result);
     }

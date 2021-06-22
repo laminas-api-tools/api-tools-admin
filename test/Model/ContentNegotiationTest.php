@@ -1,17 +1,24 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\ContentNegotiationEntity;
 use Laminas\ApiTools\Admin\Model\ContentNegotiationModel;
 use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\ApiTools\ContentNegotiation\JsonModel;
 use Laminas\Config\Writer\PhpArray as ConfigWriter;
 use PHPUnit\Framework\TestCase;
+
+use function dirname;
+use function file_exists;
+use function file_put_contents;
+use function is_dir;
+use function mkdir;
+use function rmdir;
+use function sys_get_temp_dir;
+use function unlink;
 
 class ContentNegotiationTest extends TestCase
 {
@@ -21,7 +28,7 @@ class ContentNegotiationTest extends TestCase
         $this->globalConfigPath = $this->configPath . '/global.php';
         $this->removeConfigMocks();
         $this->createConfigMocks();
-        $this->configWriter     = new ConfigWriter();
+        $this->configWriter = new ConfigWriter();
     }
 
     public function tearDown()
@@ -52,14 +59,14 @@ class ContentNegotiationTest extends TestCase
         }
     }
 
-    public function createModelFromConfigArray(array $global)
+    public function createModelFromConfigArray(array $global): ContentNegotiationModel
     {
         $this->configWriter->toFile($this->globalConfigPath, $global);
         $globalConfig = new ConfigResource($global, $this->globalConfigPath, $this->configWriter);
         return new ContentNegotiationModel($globalConfig);
     }
 
-    public function assertContentConfigExists($contentName, array $config)
+    public function assertContentConfigExists(string $contentName, array $config): void
     {
         $this->assertArrayHasKey('api-tools-content-negotiation', $config);
         $this->assertArrayHasKey('selectors', $config['api-tools-content-negotiation']);
@@ -67,14 +74,14 @@ class ContentNegotiationTest extends TestCase
         $this->assertInternalType('array', $config['api-tools-content-negotiation']['selectors'][$contentName]);
     }
 
-    public function assertContentConfigEquals(array $expected, $contentName, array $config)
+    public function assertContentConfigEquals(array $expected, string $contentName, array $config): void
     {
         $this->assertContentConfigExists($contentName, $config);
         $config = $config['api-tools-content-negotiation']['selectors'][$contentName];
         $this->assertEquals($expected, $config);
     }
 
-    public function assertContentConfigContains(array $expected, $contentName, array $config)
+    public function assertContentConfigContains(array $expected, string $contentName, array $config): void
     {
         $this->assertContentConfigExists($contentName, $config);
         $config = $config['api-tools-content-negotiation']['selectors'][$contentName];
@@ -87,12 +94,12 @@ class ContentNegotiationTest extends TestCase
     public function testCreateContentNegotiation()
     {
         $toCreate = [
-            'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
+            JsonModel::class => [
                 'application/json',
                 'application/*+json',
             ],
         ];
-        $model = $this->createModelFromConfigArray([]);
+        $model    = $this->createModelFromConfigArray([]);
         $model->create('Json', $toCreate);
 
         $global = include $this->globalConfigPath;
@@ -102,16 +109,16 @@ class ContentNegotiationTest extends TestCase
     public function testUpdateContentNegotiation()
     {
         $toCreate = [
-           'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
+            JsonModel::class => [
                 'application/json',
                 'application/*+json',
             ],
         ];
-        $model = $this->createModelFromConfigArray([]);
+        $model    = $this->createModelFromConfigArray([]);
         $model->create('Json', $toCreate);
 
         $toUpdate = [
-            'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
+            JsonModel::class => [
                 'application/json',
             ],
         ];
@@ -123,12 +130,12 @@ class ContentNegotiationTest extends TestCase
     public function testRemoveContentNegotiation()
     {
         $toCreate = [
-           'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
+            JsonModel::class => [
                 'application/json',
                 'application/*+json',
             ],
         ];
-        $model = $this->createModelFromConfigArray([]);
+        $model    = $this->createModelFromConfigArray([]);
         $model->create('Json', $toCreate);
 
         $model->remove('Json');
@@ -139,12 +146,12 @@ class ContentNegotiationTest extends TestCase
     public function testFetchAllContentNegotiation()
     {
         $toCreate = [
-            'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
+            JsonModel::class => [
                 'application/json',
                 'application/*+json',
             ],
         ];
-        $model = $this->createModelFromConfigArray([]);
+        $model    = $this->createModelFromConfigArray([]);
         $model->create('Json', $toCreate);
 
         $toCreate2 = [
@@ -159,25 +166,25 @@ class ContentNegotiationTest extends TestCase
         $this->assertContentConfigContains($toCreate2, 'Foo', $global);
 
         $result = $model->fetchAll();
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         foreach ($result as $value) {
-            $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ContentNegotiationEntity', $value);
+            $this->assertInstanceOf(ContentNegotiationEntity::class, $value);
         }
     }
 
     public function testFetchContentNegotiation()
     {
         $toCreate = [
-            'Laminas\ApiTools\ContentNegotiation\JsonModel' => [
+            JsonModel::class => [
                 'application/json',
                 'application/*+json',
             ],
         ];
-        $model = $this->createModelFromConfigArray([]);
+        $model    = $this->createModelFromConfigArray([]);
         $model->create('Json', $toCreate);
 
         $content = $model->fetch('Json');
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ContentNegotiationEntity', $content);
+        $this->assertInstanceOf(ContentNegotiationEntity::class, $content);
         $arrayCopy = $content->getArrayCopy();
         $this->assertArrayHasKey('content_name', $arrayCopy);
         $this->assertEquals('Json', $arrayCopy['content_name']);

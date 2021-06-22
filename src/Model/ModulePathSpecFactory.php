@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -12,16 +8,20 @@ use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 
+use function is_array;
+use function is_dir;
+use function sprintf;
+
 class ModulePathSpecFactory
 {
     /**
-     * @param ContainerInterface $container
      * @return ModulePathSpec
      * @throws ServiceNotCreatedException
      */
     public function __invoke(ContainerInterface $container)
     {
-        if (! $container->has(ModuleUtils::class)
+        if (
+            ! $container->has(ModuleUtils::class)
             && ! $container->has(\ZF\Configuration\ModuleUtils::class)
         ) {
             throw new ServiceNotCreatedException(sprintf(
@@ -45,7 +45,6 @@ class ModulePathSpecFactory
     /**
      * Retrieve the api-tools-admin configuration array, if present.
      *
-     * @param ContainerInterface $container
      * @return array
      */
     private function getConfig(ContainerInterface $container)
@@ -56,7 +55,8 @@ class ModulePathSpecFactory
 
         $config = $container->get('config');
 
-        if (! isset($config['api-tools-admin'])
+        if (
+            ! isset($config['api-tools-admin'])
             || ! is_array($config['api-tools-admin'])
         ) {
             return [];
@@ -71,14 +71,14 @@ class ModulePathSpecFactory
      */
     private function getPathSpecFromConfig(array $config)
     {
-        return isset($config['path_spec']) ? $config['path_spec'] : 'psr-0';
+        return $config['path_spec'] ?? 'psr-0';
     }
 
     /**
      * @param array $config
      * @return string '.' if no module_path found in configuration, otherwise
      *     value of module_path.
-     * @throws ServiceNotCreatedException if configured module_path is not a
+     * @throws ServiceNotCreatedException If configured module_path is not a
      *     valid directory.
      */
     private function getPathFromConfig(array $config)

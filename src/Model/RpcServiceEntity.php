@@ -1,52 +1,74 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use InvalidArgumentException;
 use Laminas\ApiTools\Hal\Collection as HalCollection;
+use OutOfRangeException;
 use RuntimeException;
+
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_object;
+use function is_string;
+use function sprintf;
+use function str_replace;
+use function strtolower;
 
 class RpcServiceEntity
 {
+    /** @var string[] */
     protected $acceptWhitelist = [
         'application/json',
         'application/*+json',
     ];
 
+    /** @var string[] */
     protected $contentTypeWhitelist = [
         'application/json',
     ];
 
+    /** @var string */
     protected $controllerClass;
 
+    /** @var string */
     protected $controllerServiceName;
 
+    /** @var string[] */
     protected $httpMethods = ['GET'];
 
+    /** @var InputFilterCollection|HalCollection */
     protected $inputFilters;
 
+    /** @var string|array<string, string> */
     protected $documentation;
 
+    /** @var string */
     protected $routeMatch;
 
+    /** @var string */
     protected $routeName;
 
+    /** @var string */
     protected $selector = 'Json';
 
+    /** @var string */
     protected $serviceName;
 
+    /**
+     * @param string $name
+     * @return mixed
+     * @throws OutOfRangeException
+     */
     public function __get($name)
     {
         if (! isset($this->{$name})) {
-            throw new \OutOfRangeException(sprintf(
+            throw new OutOfRangeException(sprintf(
                 '%s does not contain a property by the name of "%s"',
-                __CLASS__,
+                self::class,
                 $name
             ));
         }
@@ -56,8 +78,8 @@ class RpcServiceEntity
     /**
      * @todo   validation
      * @param  array $data
-     * @throws InvalidArgumentException if a particular value does not validate
-     * @throws RuntimeException if the object does not have a controller service name following population
+     * @throws InvalidArgumentException If a particular value does not validate.
+     * @throws RuntimeException If the object does not have a controller service name following population.
      */
     public function exchangeArray(array $data)
     {
@@ -70,8 +92,8 @@ class RpcServiceEntity
                     if (! is_array($value)) {
                         throw new InvalidArgumentException(sprintf(
                             '%s expects an array value for "%s"; received "%s"',
-                            __CLASS__,
-                            (is_object($value) ? get_class($value) : gettype($value))
+                            self::class,
+                            is_object($value) ? get_class($value) : gettype($value)
                         ));
                     }
                     $this->acceptWhitelist = $value;
@@ -80,8 +102,8 @@ class RpcServiceEntity
                     if (! is_array($value)) {
                         throw new InvalidArgumentException(sprintf(
                             '%s expects an array value for "%s"; received "%s"',
-                            __CLASS__,
-                            (is_object($value) ? get_class($value) : gettype($value))
+                            self::class,
+                            is_object($value) ? get_class($value) : gettype($value)
                         ));
                     }
                     $this->contentTypeWhitelist = $value;
@@ -96,14 +118,15 @@ class RpcServiceEntity
                     if (! is_array($value)) {
                         throw new InvalidArgumentException(sprintf(
                             '%s expects an array value for "%s"; received "%s"',
-                            __CLASS__,
-                            (is_object($value) ? get_class($value) : gettype($value))
+                            self::class,
+                            is_object($value) ? get_class($value) : gettype($value)
                         ));
                     }
                     $this->httpMethods = $value;
                     break;
                 case 'inputfilters':
-                    if ($value instanceof InputFilterCollection
+                    if (
+                        $value instanceof InputFilterCollection
                         || $value instanceof HalCollection
                     ) {
                         $this->inputFilters = $value;
@@ -129,12 +152,13 @@ class RpcServiceEntity
             }
         }
 
-        if (empty($this->controllerServiceName)
+        if (
+            empty($this->controllerServiceName)
             || ! is_string($this->controllerServiceName)
         ) {
             throw new RuntimeException(sprintf(
                 '%s requires a controller service name; none present following population',
-                __CLASS__
+                self::class
             ));
         }
     }

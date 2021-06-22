@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -20,12 +16,17 @@ use Laminas\Mvc\MvcEvent;
 use Laminas\Stdlib\RequestInterface as Request;
 use RuntimeException;
 
+use function sprintf;
+
 class AuthorizationController extends AbstractActionController
 {
+    /** @var AuthorizationModelFactory */
     protected $factory;
 
+    /** @var null|AuthorizationModel */
     protected $model;
 
+    /** @var null|string */
     protected $moduleName;
 
     public function __construct(AuthorizationModelFactory $factory)
@@ -33,6 +34,7 @@ class AuthorizationController extends AbstractActionController
         $this->factory = $factory;
     }
 
+    /** @return ViewModel|ApiProblemResponse */
     public function authorizationAction()
     {
         $request = $this->getRequest();
@@ -91,7 +93,7 @@ class AuthorizationController extends AbstractActionController
 
     /**
      * @return string
-     * @throws RuntimeException if module name is not present in route matches
+     * @throws RuntimeException If module name is not present in route matches.
      */
     public function getModuleName()
     {
@@ -103,7 +105,7 @@ class AuthorizationController extends AbstractActionController
         if (! $event instanceof MvcEvent) {
             throw new RuntimeException(sprintf(
                 '%s cannot operate correctly without a composed MvcEvent',
-                __CLASS__
+                self::class
             ));
         }
 
@@ -112,7 +114,7 @@ class AuthorizationController extends AbstractActionController
         if (! $moduleName) {
             throw new RuntimeException(sprintf(
                 '%s cannot operate correctly without a "name" segment in the route matches',
-                __CLASS__
+                self::class
             ));
         }
         $this->moduleName = $moduleName;
@@ -125,7 +127,7 @@ class AuthorizationController extends AbstractActionController
      * Provided for testing.
      *
      * @deprecated since 1.5; unused, and will be deleted.
-     * @param  Request $request
+     *
      * @return $this
      */
     public function setRequest(Request $request)

@@ -1,18 +1,25 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\DbAdapterEntity;
 use Laminas\ApiTools\Admin\Model\DbAdapterModel;
 use Laminas\ApiTools\Configuration\ConfigResource;
 use Laminas\Config\Writer\PhpArray as ConfigWriter;
 use Laminas\Stdlib\ArrayUtils;
 use PHPUnit\Framework\TestCase;
+
+use function array_merge;
+use function dirname;
+use function file_exists;
+use function file_put_contents;
+use function is_dir;
+use function mkdir;
+use function rmdir;
+use function sys_get_temp_dir;
+use function unlink;
 
 class DbAdapterModelTest extends TestCase
 {
@@ -23,7 +30,7 @@ class DbAdapterModelTest extends TestCase
         $this->localConfigPath  = $this->configPath . '/local.php';
         $this->removeConfigMocks();
         $this->createConfigMocks();
-        $this->configWriter     = new ConfigWriter();
+        $this->configWriter = new ConfigWriter();
     }
 
     public function tearDown()
@@ -58,7 +65,7 @@ class DbAdapterModelTest extends TestCase
         }
     }
 
-    public function createModelFromConfigArrays(array $global, array $local)
+    public function createModelFromConfigArrays(array $global, array $local): DbAdapterModel
     {
         $this->configWriter->toFile($this->globalConfigPath, $global);
         $this->configWriter->toFile($this->localConfigPath, $local);
@@ -68,7 +75,7 @@ class DbAdapterModelTest extends TestCase
         return new DbAdapterModel($globalConfig, $localConfig);
     }
 
-    public function assertDbConfigExists($adapterName, array $config)
+    public function assertDbConfigExists(string $adapterName, array $config): void
     {
         $this->assertArrayHasKey('db', $config);
         $this->assertArrayHasKey('adapters', $config['db']);
@@ -76,14 +83,14 @@ class DbAdapterModelTest extends TestCase
         $this->assertInternalType('array', $config['db']['adapters'][$adapterName]);
     }
 
-    public function assertDbConfigEquals(array $expected, $adapterName, array $config)
+    public function assertDbConfigEquals(array $expected, string $adapterName, array $config): void
     {
         $this->assertDbConfigExists($adapterName, $config);
         $config = $config['db']['adapters'][$adapterName];
         $this->assertEquals($expected, $config);
     }
 
-    public function assertDbConfigContains(array $expected, $adapterName, array $config)
+    public function assertDbConfigContains(array $expected, string $adapterName, array $config): void
     {
         $this->assertDbConfigExists($adapterName, $config);
         $config = $config['db']['adapters'][$adapterName];
@@ -110,7 +117,7 @@ class DbAdapterModelTest extends TestCase
         $global = include $this->globalConfigPath;
         $this->assertDbConfigEquals([], 'Db\New', $global);
 
-        $local  = include $this->localConfigPath;
+        $local = include $this->localConfigPath;
         $this->assertDbConfigEquals([
             'driver'   => 'Pdo_Sqlite',
             'database' => __FILE__,
@@ -126,7 +133,7 @@ class DbAdapterModelTest extends TestCase
         $global = include $this->globalConfigPath;
         $this->assertDbConfigEquals([], 'Db\New', $global);
 
-        $local  = include $this->localConfigPath;
+        $local = include $this->localConfigPath;
         $this->assertDbConfigEquals($toCreate, 'Db\New', $local);
     }
 
@@ -139,7 +146,7 @@ class DbAdapterModelTest extends TestCase
                 ],
             ],
         ];
-        $localSeedConfig = [
+        $localSeedConfig  = [
             'db' => [
                 'adapters' => [
                     'Db\Old' => [
@@ -149,14 +156,14 @@ class DbAdapterModelTest extends TestCase
                 ],
             ],
         ];
-        $model = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
+        $model            = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
         $model->create('Db\New', ['driver' => 'Pdo_Sqlite', 'database' => __FILE__]);
 
         $global = include $this->globalConfigPath;
         $this->assertDbConfigEquals([], 'Db\Old', $global);
         $this->assertDbConfigEquals([], 'Db\New', $global);
 
-        $local  = include $this->localConfigPath;
+        $local = include $this->localConfigPath;
         $this->assertDbConfigEquals($localSeedConfig['db']['adapters']['Db\Old'], 'Db\Old', $local);
         $this->assertDbConfigEquals($localSeedConfig['db']['adapters']['Db\Old'], 'Db\New', $local);
     }
@@ -172,14 +179,14 @@ class DbAdapterModelTest extends TestCase
                 ],
             ],
         ];
-        $localSeedConfig = [
+        $localSeedConfig  = [
             'db' => [
                 'adapters' => [
-                    'Db\Old' => [
+                    'Db\Old'   => [
                         'driver'   => 'Pdo_Sqlite',
                         'database' => __FILE__,
                     ],
-                    'Db\New' => [
+                    'Db\New'   => [
                         'driver'   => 'Pdo_Sqlite',
                         'database' => __FILE__,
                     ],
@@ -190,12 +197,12 @@ class DbAdapterModelTest extends TestCase
                 ],
             ],
         ];
-        $model        = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
-        $adapters     = $model->fetchAll();
-        $adapterNames = [];
+        $model            = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
+        $adapters         = $model->fetchAll();
+        $adapterNames     = [];
         foreach ($adapters as $adapter) {
-            $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbAdapterEntity', $adapter);
-            $adapter = $adapter->getArrayCopy();
+            $this->assertInstanceOf(DbAdapterEntity::class, $adapter);
+            $adapter        = $adapter->getArrayCopy();
             $adapterNames[] = $adapter['adapter_name'];
         }
         $this->assertEquals([
@@ -216,14 +223,14 @@ class DbAdapterModelTest extends TestCase
                 ],
             ],
         ];
-        $localSeedConfig = [
+        $localSeedConfig  = [
             'db' => [
                 'adapters' => [
-                    'Db\Old' => [
+                    'Db\Old'   => [
                         'driver'   => 'Pdo_Sqlite',
                         'database' => __FILE__,
                     ],
-                    'Db\New' => [
+                    'Db\New'   => [
                         'driver'   => 'Pdo_Sqlite',
                         'database' => __FILE__,
                     ],
@@ -234,9 +241,9 @@ class DbAdapterModelTest extends TestCase
                 ],
             ],
         ];
-        $model       = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
-        $adapter     = $model->fetch('Db\New');
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbAdapterEntity', $adapter);
+        $model            = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
+        $adapter          = $model->fetch('Db\New');
+        $this->assertInstanceOf(DbAdapterEntity::class, $adapter);
         $adapter = $adapter->getArrayCopy();
         $this->assertEquals('Db\New', $adapter['adapter_name']);
         unset($adapter['adapter_name']);
@@ -255,11 +262,11 @@ class DbAdapterModelTest extends TestCase
             'username' => 'username',
             'password' => 'password',
         ];
-        $entity = $model->update('Db\New', $newConfig);
+        $entity    = $model->update('Db\New', $newConfig);
 
         // Ensure the entity returned from the update is what we expect
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbAdapterEntity', $entity);
-        $entity = $entity->getArrayCopy();
+        $this->assertInstanceOf(DbAdapterEntity::class, $entity);
+        $entity   = $entity->getArrayCopy();
         $expected = array_merge(['adapter_name' => 'Db\New'], $newConfig);
         $this->assertEquals($expected, $entity);
 
@@ -281,7 +288,8 @@ class DbAdapterModelTest extends TestCase
         $this->assertArrayNotHasKey('Db\New', $local['db']['adapters']);
     }
 
-    public function postgresDbTypes()
+    /** @psalm-return array<string, array{0: string}> */
+    public function postgresDbTypes(): array
     {
         return [
             'pdo'    => ['Pdo_Pgsql'],
@@ -293,19 +301,19 @@ class DbAdapterModelTest extends TestCase
      * @group 184
      * @dataProvider postgresDbTypes
      */
-    public function testCreatingPostgresConfigDoesNotIncludeCharset($driver)
+    public function testCreatingPostgresConfigDoesNotIncludeCharset(string $driver)
     {
         $toCreate = [
-            'driver' => $driver,
+            'driver'   => $driver,
             'database' => 'test',
             'username' => 'test',
             'password' => 'test',
-            'charset' => 'UTF-8',
+            'charset'  => 'UTF-8',
         ];
         $model    = $this->createModelFromConfigArrays([], []);
         $model->create('Db\New', $toCreate);
 
-        $local  = include $this->localConfigPath;
+        $local = include $this->localConfigPath;
 
         $expected = $toCreate;
         unset($expected['charset']);
@@ -317,14 +325,14 @@ class DbAdapterModelTest extends TestCase
      * @group 184
      * @dataProvider postgresDbTypes
      */
-    public function testUpdatingPostgresConfigDoesNotAllowCharset($driver)
+    public function testUpdatingPostgresConfigDoesNotAllowCharset(string $driver)
     {
         $toCreate = [
-            'driver' => $driver,
+            'driver'   => $driver,
             'database' => 'test',
             'username' => 'test',
             'password' => 'test',
-            'charset' => 'UTF-8',
+            'charset'  => 'UTF-8',
         ];
         $model    = $this->createModelFromConfigArrays([], []);
         $model->create('Db\New', $toCreate);
@@ -336,11 +344,11 @@ class DbAdapterModelTest extends TestCase
             'password' => 'test',
             'charset'  => 'latin-1',
         ];
-        $entity = $model->update('Db\New', $newConfig);
+        $entity    = $model->update('Db\New', $newConfig);
 
         // Ensure the entity returned from the update is what we expect
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\DbAdapterEntity', $entity);
-        $entity = $entity->getArrayCopy();
+        $this->assertInstanceOf(DbAdapterEntity::class, $entity);
+        $entity   = $entity->getArrayCopy();
         $expected = array_merge(['adapter_name' => 'Db\New'], $newConfig);
         unset($expected['charset']);
 

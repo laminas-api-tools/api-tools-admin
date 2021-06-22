@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -12,10 +8,12 @@ use Laminas\ApiTools\Admin\Exception;
 use Laminas\EventManager\EventManager;
 use ReflectionClass;
 
+use function sprintf;
+
 class RestServiceModelFactory extends RpcServiceModelFactory
 {
-    const TYPE_DEFAULT      = RestServiceModel::class;
-    const TYPE_DB_CONNECTED = DbConnectedRestServiceModel::class;
+    public const TYPE_DEFAULT      = RestServiceModel::class;
+    public const TYPE_DB_CONNECTED = DbConnectedRestServiceModel::class;
 
     /**
      * @param string $module
@@ -41,7 +39,7 @@ class RestServiceModelFactory extends RpcServiceModelFactory
                 $this->models[$type][$module] = $restModel;
                 return $restModel;
             case self::TYPE_DB_CONNECTED:
-                $model = new $type($restModel);
+                $model                        = new $type($restModel);
                 $this->models[$type][$module] = $model;
                 return $model;
             default:

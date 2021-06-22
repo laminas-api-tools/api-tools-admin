@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -19,7 +15,7 @@ class ModuleConfigControllerFactoryTest extends TestCase
     public function setUp()
     {
         $this->configResourceFactory = $this->prophesize(ResourceFactory::class)->reveal();
-        $this->container = $this->prophesize(ContainerInterface::class);
+        $this->container             = $this->prophesize(ContainerInterface::class);
         $this->container->get(ConfigResourceFactory::class)->willReturn($this->configResourceFactory);
     }
 
@@ -35,7 +31,7 @@ class ModuleConfigControllerFactoryTest extends TestCase
 
     public function testLegacyFactoryReturnsModuleConfigControllerComposingConfigResource()
     {
-        $factory = new ModuleConfigControllerFactory();
+        $factory     = new ModuleConfigControllerFactory();
         $controllers = $this->prophesize(AbstractPluginManager::class);
         $controllers->getServiceLocator()->will([$this->container, 'reveal']);
 

@@ -1,11 +1,14 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
+
 namespace Laminas\ApiTools\Admin;
+
+use function closedir;
+use function opendir;
+use function readdir;
+use function rmdir;
+use function unlink;
 
 class Utility
 {
@@ -22,7 +25,7 @@ class Utility
         }
 
         while (false !== ($obj = readdir($dh))) {
-            if ($obj == '.' || $obj == '..') {
+            if ($obj === '.' || $obj === '..') {
                 continue;
             }
             if (! @unlink($dir . '/' . $obj)) {

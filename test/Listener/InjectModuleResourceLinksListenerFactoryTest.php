@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Listener;
 
@@ -17,9 +13,9 @@ class InjectModuleResourceLinksListenerFactoryTest extends TestCase
 {
     public function testFactoryReturnsTheListenerWithViewHelpersContainerComposed()
     {
-        $factory = new InjectModuleResourceLinksListenerFactory();
+        $factory     = new InjectModuleResourceLinksListenerFactory();
         $viewHelpers = $this->prophesize(ContainerInterface::class)->reveal();
-        $container = $this->prophesize(ContainerInterface::class);
+        $container   = $this->prophesize(ContainerInterface::class);
 
         $container->get('ViewHelperManager')->willReturn($viewHelpers);
         $listener = $factory($container->reveal());

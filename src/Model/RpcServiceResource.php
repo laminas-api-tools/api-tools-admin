@@ -1,13 +1,10 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
+use Exception;
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Hal\Collection as HalCollection;
 use Laminas\ApiTools\Hal\Entity as HalEntity;
@@ -18,59 +15,50 @@ use Laminas\ApiTools\Rest\Exception\PatchException;
 use Laminas\Mvc\Controller\ControllerManager;
 use RuntimeException;
 
+use function count;
+use function get_class;
+use function is_array;
+use function is_object;
+use function is_string;
+use function sprintf;
+use function str_replace;
+use function strtolower;
+
 class RpcServiceResource extends AbstractResourceListener
 {
-    /**
-     * @var ControllerManager
-     */
+    /** @var ControllerManager */
     protected $controllerManager;
 
-    /**
-     * @var InputFilterModel
-     */
+    /** @var InputFilterModel */
     protected $inputFilterModel;
 
-    /**
-     * @var DocumentationModel
-     */
+    /** @var DocumentationModel */
     protected $documentationModel;
 
-    /**
-     * @var RpcServiceModel
-     */
+    /** @var RpcServiceModel */
     protected $model;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $moduleName;
 
-    /**
-     * @var RpcServiceModelFactory
-     */
+    /** @var RpcServiceModelFactory */
     protected $rpcFactory;
 
-    /**
-     * @param RpcServiceModelFactory $rpcFactory
-     * @param InputFilterModel $inputFilterModel
-     * @param ControllerManager $controllerManager
-     * @param DocumentationModel $documentationModel
-     */
     public function __construct(
         RpcServiceModelFactory $rpcFactory,
         InputFilterModel $inputFilterModel,
         ControllerManager $controllerManager,
         DocumentationModel $documentationModel
     ) {
-        $this->rpcFactory = $rpcFactory;
-        $this->inputFilterModel = $inputFilterModel;
-        $this->controllerManager = $controllerManager;
+        $this->rpcFactory         = $rpcFactory;
+        $this->inputFilterModel   = $inputFilterModel;
+        $this->controllerManager  = $controllerManager;
         $this->documentationModel = $documentationModel;
     }
 
     /**
      * @return string
-     * @throws RuntimeException if module name is not present in route matches
+     * @throws RuntimeException If module name is not present in route matches.
      */
     public function getModuleName()
     {
@@ -82,7 +70,7 @@ class RpcServiceResource extends AbstractResourceListener
         if (! $moduleName) {
             throw new RuntimeException(sprintf(
                 '%s cannot operate correctly without a "name" segment in the route matches',
-                __CLASS__
+                self::class
             ));
         }
         $this->moduleName = $moduleName;
@@ -97,7 +85,7 @@ class RpcServiceResource extends AbstractResourceListener
         if ($this->model instanceof RpcServiceModel) {
             return $this->model;
         }
-        $moduleName = $this->getModuleName();
+        $moduleName  = $this->getModuleName();
         $this->model = $this->rpcFactory->factory($moduleName);
         return $this->model;
     }
@@ -120,7 +108,8 @@ class RpcServiceResource extends AbstractResourceListener
             'selector'     => null,
         ];
 
-        if (empty($data['service_name'])
+        if (
+            empty($data['service_name'])
             || ! is_string($data['service_name'])
         ) {
             throw new CreationException('Unable to create RPC service; missing service_name');
@@ -132,20 +121,23 @@ class RpcServiceResource extends AbstractResourceListener
             throw new CreationException('Service by that name already exists', 409);
         }
 
-        if (empty($data['route_match'])
+        if (
+            empty($data['route_match'])
             || ! is_string($data['route_match'])
         ) {
             throw new CreationException('Unable to create RPC service; missing route');
         }
         $creationData['route_match'] = $data['route_match'];
 
-        if (! empty($data['http_methods'])
+        if (
+            ! empty($data['http_methods'])
             && (is_string($data['http_methods']) || is_array($data['http_methods']))
         ) {
             $creationData['http_methods'] = $data['http_methods'];
         }
 
-        if (! empty($data['selector'])
+        if (
+            ! empty($data['selector'])
             && is_string($data['selector'])
         ) {
             $creationData['selector'] = $data['selector'];
@@ -158,7 +150,7 @@ class RpcServiceResource extends AbstractResourceListener
                 $creationData['http_methods'],
                 $creationData['selector']
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($e->getCode() !== 500) {
                 return new ApiProblem($e->getCode(), $e->getMessage());
             }
@@ -212,7 +204,7 @@ class RpcServiceResource extends AbstractResourceListener
      * @param  string $id
      * @param  object|array $data
      * @return ApiProblem|RpcServiceEntity
-     * @throws PatchException if unable to update configuration
+     * @throws PatchException If unable to update configuration.
      */
     public function patch($id, $data)
     {
@@ -252,7 +244,7 @@ class RpcServiceResource extends AbstractResourceListener
                     default:
                         break;
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 if ($e->getCode() !== 500) {
                     return new ApiProblem($e->getCode(), $e->getMessage());
                 }
@@ -283,13 +275,12 @@ class RpcServiceResource extends AbstractResourceListener
 
     /**
      * Inject the input filters collection, if any, as an embedded collection
-     *
-     * @param RpcServiceEntity $service
      */
     protected function injectInputFilters(RpcServiceEntity $service)
     {
         $inputFilters = $this->inputFilterModel->fetch($this->moduleName, $service->controllerServiceName);
-        if (! $inputFilters instanceof InputFilterCollection
+        if (
+            ! $inputFilters instanceof InputFilterCollection
             || ! count($inputFilters)
         ) {
             return;
@@ -299,16 +290,16 @@ class RpcServiceResource extends AbstractResourceListener
         $parentName = str_replace('\\', '-', $service->controllerServiceName);
         foreach ($inputFilters as $inputFilter) {
             $inputFilter['input_filter_name'] = str_replace('\\', '-', $inputFilter['input_filter_name']);
-            $entity = new HalEntity($inputFilter, $inputFilter['input_filter_name']);
-            $links  = $entity->getLinks();
+            $entity                           = new HalEntity($inputFilter, $inputFilter['input_filter_name']);
+            $links                            = $entity->getLinks();
             $links->add(Link::factory([
-                'rel' => 'self',
+                'rel'   => 'self',
                 'route' => [
-                    'name' => 'api-tools/api/module/rpc-service/input-filter',
+                    'name'   => 'api-tools/api/module/rpc-service/input-filter',
                     'params' => [
-                        'name' => $this->moduleName,
+                        'name'                    => $this->moduleName,
                         'controller_service_name' => $parentName,
-                        'input_filter_name' => $inputFilter['input_filter_name'],
+                        'input_filter_name'       => $inputFilter['input_filter_name'],
                     ],
                 ],
             ]));
@@ -319,7 +310,7 @@ class RpcServiceResource extends AbstractResourceListener
         $collection->setCollectionName('input_filter');
         $collection->setCollectionRoute('api-tools/module/rpc-service/input-filter');
         $collection->setCollectionRouteParams([
-            'name' => $this->moduleName,
+            'name'                    => $this->moduleName,
             'controller_service_name' => $service->controllerServiceName,
         ]);
 
@@ -344,8 +335,6 @@ class RpcServiceResource extends AbstractResourceListener
 
     /**
      * Inject the class name of the controller, if it can be resolved.
-     *
-     * @param RpcServiceEntity $service
      */
     protected function injectControllerClass(RpcServiceEntity $service)
     {

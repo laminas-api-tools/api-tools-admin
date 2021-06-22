@@ -1,41 +1,31 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Configuration\ConfigResource;
 
+use function is_array;
+
 class DoctrineAdapterModel
 {
-    /**
-     * @var ConfigResource
-     */
+    /** @var ConfigResource */
     protected $globalConfig;
 
-    /**
-     * @var ConfigResource
-     */
+    /** @var ConfigResource */
     protected $localConfig;
 
-    /**
-     * @param ConfigResource $globalConfig
-     * @param ConfigResource $localConfig
-     */
     public function __construct(ConfigResource $globalConfig, ConfigResource $localConfig)
     {
         $this->globalConfig = $globalConfig;
-        $this->localConfig = $localConfig;
+        $this->localConfig  = $localConfig;
     }
 
     /**
      * Create Doctrine adapter configuration
      *
-     * @param $name
+     * @param string $name
      * @param array $adapterConfig
      * @return DoctrineAdapterEntity
      */
@@ -51,7 +41,7 @@ class DoctrineAdapterModel
     /**
      * Update an existing Doctrine adapter
      *
-     * @param $name
+     * @param string $name
      * @param array $adapterConfig
      * @return DoctrineAdapterEntity
      */
@@ -63,7 +53,7 @@ class DoctrineAdapterModel
     /**
      * Remove a named adapter
      *
-     * @param $name
+     * @param string $name
      * @return bool
      */
     public function remove($name)
@@ -82,7 +72,8 @@ class DoctrineAdapterModel
     public function fetchAll()
     {
         $fromConfigFile = $this->localConfig->fetch(true);
-        if (isset($fromConfigFile['doctrine']['connection'])
+        if (
+            isset($fromConfigFile['doctrine']['connection'])
             && is_array($fromConfigFile['doctrine']['connection'])
         ) {
             foreach ($fromConfigFile['doctrine']['connection'] as $connection) {
@@ -110,13 +101,14 @@ class DoctrineAdapterModel
     /**
      * Fetch configuration details for a named adapter
      *
-     * @param $name
+     * @param string $name
      * @return bool|DoctrineAdapterEntity
      */
     public function fetch($name)
     {
         $config = $this->localConfig->fetch(true);
-        if (! isset($config['doctrine']['connection'][$name])
+        if (
+            ! isset($config['doctrine']['connection'][$name])
             || ! is_array($config['doctrine']['connection'][$name])
         ) {
             return false;
@@ -149,9 +141,7 @@ class DoctrineAdapterModel
      */
     private function isOdmAdapter(array $connection)
     {
-        return (
-            isset($connection['connectionString'])
-            || isset($connection['dbname'])
-        );
+        return isset($connection['connectionString'])
+            || isset($connection['dbname']);
     }
 }

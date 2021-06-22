@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -14,16 +10,18 @@ use Laminas\ApiTools\Doctrine\Admin\Model\DoctrineRestServiceModel;
 use Laminas\EventManager\SharedEventManagerInterface;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 
+use function sprintf;
+
 class RestServiceModelFactoryFactory
 {
     /**
-     * @param ContainerInterface $container
      * @return RestServiceModelFactory
      * @throws ServiceNotCreatedException
      */
     public function __invoke(ContainerInterface $container)
     {
-        if (! $container->has(ModulePathSpec::class)
+        if (
+            ! $container->has(ModulePathSpec::class)
             || ! $container->has(ConfigResourceFactory::class)
             || ! $container->has(ModuleModel::class)
             || ! $container->has('SharedEventManager')
@@ -48,8 +46,6 @@ class RestServiceModelFactoryFactory
     /**
      * Attach shared listeners to the RestServiceModel.
      *
-     * @param SharedEventManagerInterface $sharedEvents
-     * @param ContainerInterface $container
      * @return void
      */
     private function attachSharedListeners(SharedEventManagerInterface $sharedEvents, ContainerInterface $container)
@@ -61,7 +57,7 @@ class RestServiceModelFactoryFactory
         );
 
         $modules = $container->get('ModuleManager');
-        $loaded = $modules->getLoadedModules(false);
+        $loaded  = $modules->getLoadedModules(false);
         if (! isset($loaded['Laminas\ApiTools\Doctrine\Admin'])) {
             return;
         }

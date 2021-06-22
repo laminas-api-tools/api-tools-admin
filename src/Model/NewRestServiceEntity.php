@@ -1,19 +1,21 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Rest\Exception\CreationException;
 
+use function sprintf;
+use function str_replace;
+use function strtolower;
+
 class NewRestServiceEntity extends RestServiceEntity
 {
+    /** @var string */
     protected $serviceName;
 
+    /** @return void */
     public function exchangeArray(array $data)
     {
         parent::exchangeArray($data);
@@ -50,9 +52,10 @@ class NewRestServiceEntity extends RestServiceEntity
         }
     }
 
+    /** @return array */
     public function getArrayCopy()
     {
-        $return = parent::getArrayCopy();
+        $return                 = parent::getArrayCopy();
         $return['service_name'] = $this->serviceName;
         return $return;
     }

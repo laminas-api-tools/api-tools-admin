@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -15,14 +11,9 @@ use Laminas\ApiTools\MvcAuth\Authentication\DefaultAuthenticationListener as Aut
 
 class AuthenticationTypeController extends AbstractAuthenticationController
 {
-    /**
-     * @var AuthListener
-     */
+    /** @var AuthListener */
     protected $authListener;
 
-    /**
-     * @param AuthListener $authListener
-     */
     public function __construct(AuthListener $authListener)
     {
         $this->authListener = $authListener;
@@ -32,6 +23,7 @@ class AuthenticationTypeController extends AbstractAuthenticationController
      * Get the authentication type list
      * Since Laminas API Tools 1.1
      *
+     * @return ViewModel|ApiProblemResponse
      */
     public function authTypeAction()
     {

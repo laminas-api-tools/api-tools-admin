@@ -1,35 +1,26 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Configuration\ConfigResource;
 
+use function is_array;
+use function strstr;
+
 class DbAdapterModel
 {
-    /**
-     * @var ConfigResource
-     */
+    /** @var ConfigResource */
     protected $globalConfig;
 
-    /**
-     * @var ConfigResource
-     */
+    /** @var ConfigResource */
     protected $localConfig;
 
-    /**
-     * @param ConfigResource $globalConfig
-     * @param ConfigResource $localConfig
-     */
     public function __construct(ConfigResource $globalConfig, ConfigResource $localConfig)
     {
         $this->globalConfig = $globalConfig;
-        $this->localConfig = $localConfig;
+        $this->localConfig  = $localConfig;
     }
 
     /**
@@ -43,7 +34,8 @@ class DbAdapterModel
     {
         $key = 'db.adapters.' . $name;
 
-        if (strstr($adapterConfig['driver'], 'Pgsql')
+        if (
+            strstr($adapterConfig['driver'], 'Pgsql')
             && isset($adapterConfig['charset'])
         ) {
             unset($adapterConfig['charset']);
@@ -92,9 +84,10 @@ class DbAdapterModel
      */
     public function fetchAll()
     {
-        $config = [];
+        $config         = [];
         $fromConfigFile = $this->localConfig->fetch(true);
-        if (isset($fromConfigFile['db']['adapters'])
+        if (
+            isset($fromConfigFile['db']['adapters'])
             && is_array($fromConfigFile['db']['adapters'])
         ) {
             $config = $fromConfigFile['db']['adapters'];
@@ -117,7 +110,8 @@ class DbAdapterModel
     public function fetch($name)
     {
         $config = $this->localConfig->fetch(true);
-        if (! isset($config['db']['adapters'][$name])
+        if (
+            ! isset($config['db']['adapters'][$name])
             || ! is_array($config['db']['adapters'][$name])
         ) {
             return false;

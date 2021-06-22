@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -12,18 +8,22 @@ use Laminas\ApiTools\Admin\Exception;
 use Laminas\Filter\FilterPluginManager;
 use Laminas\ServiceManager\ServiceManager;
 
+use function array_flip;
+use function array_key_exists;
+use function array_walk;
+use function get_class;
+use function is_array;
+use function sprintf;
+
 class FiltersModel extends AbstractPluginManagerModel
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $metadata;
 
     /**
      * $pluginManager should be an instance of
      * Laminas\Filter\FilterPluginManager.
      *
-     * @param ServiceManager $pluginManager
      * @param array $metadata
      */
     public function __construct(ServiceManager $pluginManager, array $metadata = [])
@@ -31,7 +31,7 @@ class FiltersModel extends AbstractPluginManagerModel
         if (! $pluginManager instanceof FilterPluginManager) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an instance of Laminas\Filter\FilterPluginManager; received "%s"',
-                __CLASS__,
+                self::class,
                 get_class($pluginManager)
             ));
         }
@@ -57,7 +57,7 @@ class FiltersModel extends AbstractPluginManagerModel
         $plugins  = array_flip($plugins);
         $metadata = $this->metadata;
 
-        array_walk($plugins, function (& $value, $key) use ($metadata) {
+        array_walk($plugins, function (&$value, $key) use ($metadata) {
             if (! array_key_exists($key, $metadata)) {
                 $value = [];
                 return;

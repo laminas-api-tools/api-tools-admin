@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
@@ -19,7 +15,19 @@ use Laminas\ApiTools\Admin\Model\ModulePathSpec;
 use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ApiTools\Configuration\ResourceFactory;
 use Laminas\Config\Writer\PhpArray;
+use Laminas\ModuleManager\ModuleManager;
 use PHPUnit\Framework\TestCase;
+
+use function array_diff;
+use function copy;
+use function count;
+use function glob;
+use function is_dir;
+use function preg_match;
+use function rmdir;
+use function scandir;
+use function sprintf;
+use function unlink;
 
 class AuthorizationModelTest extends TestCase
 {
@@ -54,7 +62,7 @@ class AuthorizationModelTest extends TestCase
         copy($configPath . '/module.config.php.dist', $configPath . '/module.config.php');
     }
 
-    public function setUpModel($module)
+    public function setUpModel(string $module): void
     {
         $this->module = $module;
         $this->cleanUpAssets();
@@ -67,7 +75,7 @@ class AuthorizationModelTest extends TestCase
         ];
 
         $this->moduleEntity  = new ModuleEntity($this->module);
-        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -93,30 +101,30 @@ class AuthorizationModelTest extends TestCase
     public function assertDefaultPrivileges(array $privileges)
     {
         $this->assertEquals([
-            'GET' => false,
-            'POST' => false,
-            'PUT' => false,
-            'PATCH' => false,
+            'GET'    => false,
+            'POST'   => false,
+            'PUT'    => false,
+            'PATCH'  => false,
             'DELETE' => false,
         ], $privileges);
     }
 
-    protected function mapConfigToPayload(array $config)
+    protected function mapConfigToPayload(array $config): array
     {
         foreach ($config as $key => $value) {
             // Replace keys to match what the API is going to send back and forth
             if (isset($value['actions'])) {
                 foreach ($value['actions'] as $action => $privileges) {
-                    $newKey = sprintf('%s::%s', $key, $action);
+                    $newKey          = sprintf('%s::%s', $key, $action);
                     $config[$newKey] = $privileges;
                 }
             }
             if (isset($value['entity'])) {
-                $newKey = sprintf('%s::__entity__', $key);
+                $newKey          = sprintf('%s::__entity__', $key);
                 $config[$newKey] = $value['entity'];
             }
             if (isset($value['collection'])) {
-                $newKey = sprintf('%s::__collection__', $key);
+                $newKey          = sprintf('%s::__collection__', $key);
                 $config[$newKey] = $value['collection'];
             }
             unset($config[$key]);
@@ -124,7 +132,7 @@ class AuthorizationModelTest extends TestCase
         return $config;
     }
 
-    protected function mapEntityToConfig(AuthorizationEntity $entity)
+    protected function mapEntityToConfig(AuthorizationEntity $entity): array
     {
         $normalized = [];
         foreach ($entity->getArrayCopy() as $spec => $privileges) {
@@ -132,7 +140,7 @@ class AuthorizationModelTest extends TestCase
             if (! isset($matches['action'])) {
                 $normalized[$matches['service']]['actions']['index'] = $privileges;
             } elseif (preg_match('/^__(?P<type>collection|entity)__$/', $matches['action'], $actionMatches)) {
-                $type = $actionMatches['type'];
+                $type                                   = $actionMatches['type'];
                 $normalized[$matches['service']][$type] = $privileges;
             } else {
                 $normalized[$matches['service']]['actions'][$matches['action']] = $privileges;
@@ -145,7 +153,7 @@ class AuthorizationModelTest extends TestCase
     {
         $this->setUpModel('FooConf');
         $entity = $this->model->fetch();
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
         $this->assertEquals(0, count($entity));
     }
 
@@ -153,7 +161,7 @@ class AuthorizationModelTest extends TestCase
     {
         $this->setUpModel('AuthConf');
         $entity = $this->model->fetch();
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
         $this->assertEquals(6, count($entity));
         $expected = [
             'AuthConf\V1\Rest\Foo\Controller::__entity__',
@@ -163,7 +171,7 @@ class AuthorizationModelTest extends TestCase
             'AuthConf\V1\Rpc\Baz\Controller::baz',
             'AuthConf\V1\Rpc\Bat\Controller::bat',
         ];
-        $actual = [];
+        $actual   = [];
         foreach ($entity as $serviceName => $privileges) {
             $actual[] = $serviceName;
             $this->assertDefaultPrivileges($privileges);
@@ -175,7 +183,7 @@ class AuthorizationModelTest extends TestCase
     {
         $this->setUpModel('AuthConfDefaults');
         $entity = $this->model->fetch();
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
         $this->assertEquals(6, count($entity));
         $this->assertTrue($entity->has('AuthConfDefaults\V1\Rpc\Bat\Controller::index'));
     }
@@ -184,7 +192,7 @@ class AuthorizationModelTest extends TestCase
     {
         $this->setUpModel('AuthConf');
         $entity = $this->model->fetch(2); // <- VERSION!
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
         $this->assertEquals(9, count($entity));
         $expected = [
             'AuthConf\V2\Rest\Foo\Controller::__entity__',
@@ -197,7 +205,7 @@ class AuthorizationModelTest extends TestCase
             'AuthConf\V2\Rpc\Bat\Controller::bat',
             'AuthConf\V2\Rpc\New\Controller::new',
         ];
-        $actual = [];
+        $actual   = [];
         foreach ($entity as $serviceName => $privileges) {
             $actual[] = $serviceName;
             $this->assertDefaultPrivileges($privileges);
@@ -215,7 +223,7 @@ class AuthorizationModelTest extends TestCase
 
         // Have the model fetch it
         $entity = $this->model->fetch();
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
         $entity = $this->mapEntityToConfig($entity);
         $this->assertEquals($config, $entity);
     }
@@ -236,7 +244,7 @@ class AuthorizationModelTest extends TestCase
         }
 
         $entity = $this->model->update($newPrivileges);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthorizationEntity', $entity);
+        $this->assertInstanceOf(AuthorizationEntity::class, $entity);
 
         // Test that the entity matches the new privileges
         $this->assertEquals($newPrivileges, $entity->getArrayCopy());
