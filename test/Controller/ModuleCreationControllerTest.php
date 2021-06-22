@@ -1,22 +1,36 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Controller;
 
+use Foo\Module;
 use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Admin\Controller\ModuleCreationController;
+use Laminas\ApiTools\Admin\Model\ModuleEntity;
 use Laminas\ApiTools\Admin\Model\ModuleModel;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParam;
 use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
+use Laminas\ApiTools\Hal\Entity;
 use Laminas\Http\Request;
 use Laminas\ModuleManager\ModuleManager;
 use Laminas\Mvc\Controller\PluginManager;
 use Laminas\Mvc\MvcEvent;
 use PHPUnit\Framework\TestCase;
+
+use function array_diff;
+use function chdir;
+use function file_put_contents;
+use function getcwd;
+use function is_dir;
+use function mkdir;
+use function rmdir;
+use function scandir;
+use function sys_get_temp_dir;
+use function uniqid;
+use function unlink;
 
 class ModuleCreationControllerTest extends TestCase
 {
@@ -31,7 +45,8 @@ class ModuleCreationControllerTest extends TestCase
         $this->controller     = new ModuleCreationController($this->moduleResource);
     }
 
-    public function invalidRequestMethods()
+    /** @psalm-return array<array-key, array{0: string}> */
+    public function invalidRequestMethods(): array
     {
         return [
             ['get'],
@@ -44,13 +59,13 @@ class ModuleCreationControllerTest extends TestCase
     /**
      * @dataProvider invalidRequestMethods
      */
-    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse($method)
+    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse(string $method)
     {
         $request = new Request();
         $request->setMethod($method);
         $this->controller->setRequest($request);
         $result = $this->controller->apiEnableAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ApiProblem\ApiProblemResponse', $result);
+        $this->assertInstanceOf(ApiProblemResponse::class, $result);
         $apiProblem = $result->getApiProblem();
         $this->assertEquals(405, $apiProblem->status);
     }
@@ -72,12 +87,12 @@ class ModuleCreationControllerTest extends TestCase
 
         require 'module/Foo/Module.php';
 
-        $moduleManager  = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $moduleManager = $this->getMockBuilder(ModuleManager::class)
                                ->disableOriginalConstructor()
                                ->getMock();
         $moduleManager->expects($this->any())
                       ->method('getLoadedModules')
-                      ->will($this->returnValue(['Foo' => new \Foo\Module]));
+                      ->will($this->returnValue(['Foo' => new Module()]));
 
         $moduleResource = new ModuleModel(
             $moduleManager,
@@ -97,7 +112,7 @@ class ModuleCreationControllerTest extends TestCase
         $event->setParam('LaminasContentNegotiationParameterData', $parameters);
 
         $plugins = new PluginManager($this->prophesize(ContainerInterface::class)->reveal());
-        $plugins->setInvokableClass('bodyParam', 'Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParam');
+        $plugins->setInvokableClass('bodyParam', BodyParam::class);
 
         $controller->setRequest($request);
         $controller->setEvent($event);
@@ -105,10 +120,10 @@ class ModuleCreationControllerTest extends TestCase
 
         $result = $controller->apiEnableAction();
 
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
         $payload = $result->getVariable('payload');
-        $this->assertInstanceOf('Laminas\ApiTools\Hal\Entity', $payload);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ModuleEntity', $payload->getEntity());
+        $this->assertInstanceOf(Entity::class, $payload);
+        $this->assertInstanceOf(ModuleEntity::class, $payload->getEntity());
 
         $metadata = $payload->getEntity();
         $this->assertEquals('Foo', $metadata->getName());
@@ -117,12 +132,12 @@ class ModuleCreationControllerTest extends TestCase
         chdir($currentDir);
     }
 
-    protected function removeDir($dir)
+    protected function removeDir(string $dir): void
     {
-        $files = array_diff(scandir($dir), ['.','..']);
+        $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
             is_dir("$dir/$file") ? $this->removeDir("$dir/$file") : unlink("$dir/$file");
         }
-        return @rmdir($dir);
+        @rmdir($dir);
     }
 }

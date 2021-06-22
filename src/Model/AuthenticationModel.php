@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -22,31 +18,38 @@ use MongoDB\Driver\Exception\InvalidArgumentException as MongoDbInvalidArgumentE
 use PDO;
 use PDOException;
 
+use function array_diff_uassoc;
+use function array_keys;
+use function array_merge;
+use function array_search;
+use function array_shift;
+use function array_udiff_assoc;
+use function count;
+use function explode;
+use function implode;
+use function in_array;
+use function is_array;
+use function key;
+use function sprintf;
+use function strlen;
+use function strtolower;
+use function substr;
+use function usort;
+
 class AuthenticationModel
 {
-    const ADAPTER_HTTP   = HttpAdapter::class;
-    const ADAPTER_OAUTH2 = OAuth2Adapter::class;
+    public const ADAPTER_HTTP   = HttpAdapter::class;
+    public const ADAPTER_OAUTH2 = OAuth2Adapter::class;
 
-    /**
-     * @var ConfigResource
-     */
+    /** @var ConfigResource */
     protected $globalConfig;
 
-    /**
-     * @var ConfigResource
-     */
+    /** @var ConfigResource */
     protected $localConfig;
 
-    /**
-     * @var ModuleModel
-     */
+    /** @var ModuleModel */
     protected $modules;
 
-    /**
-     * @param ConfigResource $globalConfig
-     * @param ConfigResource $localConfig
-     * @param ModuleModel $modules
-     */
     public function __construct(ConfigResource $globalConfig, ConfigResource $localConfig, ModuleModel $modules)
     {
         $this->globalConfig = $globalConfig;
@@ -59,7 +62,7 @@ class AuthenticationModel
      *
      * @param array $authenticationConfig
      * @return AuthenticationEntity
-     * @throws \Laminas\ApiTools\Rest\Exception\CreationException
+     * @throws CreationException
      */
     public function create(array $authenticationConfig)
     {
@@ -67,18 +70,18 @@ class AuthenticationModel
             throw new CreationException('Authentication already exists', 409);
         }
 
-        $entity  = $this->createAuthenticationEntityFromConfig($authenticationConfig);
+        $entity = $this->createAuthenticationEntityFromConfig($authenticationConfig);
 
         if ($entity->isOAuth2()) {
-            $data = $entity->getArrayCopy();
-            $dsnType = isset($data['dsn_type']) ? $data['dsn_type'] : AuthenticationEntity::DSN_PDO;
+            $data    = $entity->getArrayCopy();
+            $dsnType = $data['dsn_type'] ?? AuthenticationEntity::DSN_PDO;
             $this->validateDsn($data['dsn'], $data['username'], $data['password'], $dsnType);
         }
 
         $allData = $entity->getArrayCopy();
         unset($allData['type']);
-        $global  = $this->removeSensitiveConfig($allData);
-        $local   = array_udiff_assoc($allData, $global, sprintf('%s::arrayDiffRecursive', __CLASS__));
+        $global = $this->removeSensitiveConfig($allData);
+        $local  = array_udiff_assoc($allData, $global, sprintf('%s::arrayDiffRecursive', self::class));
         switch (true) {
             case $entity->isBasic():
             case $entity->isDigest():
@@ -214,7 +217,7 @@ class AuthenticationModel
         $filter->setData($adapter);
 
         if (! $filter->isValid()) {
-            $msg = $filter->getMessages();
+            $msg   = $filter->getMessages();
             $field = key($msg);
             throw new Exception\InvalidArgumentException(
                 $msg[$field][0],
@@ -224,8 +227,8 @@ class AuthenticationModel
 
         $result = $filter->getValues();
         if (AuthenticationEntity::TYPE_OAUTH2 === $result['type']) {
-            $username = isset($result['oauth2_username']) ? $result['oauth2_username'] : null;
-            $password = isset($result['oauth2_password']) ? $result['oauth2_password'] : null;
+            $username = $result['oauth2_username'] ?? null;
+            $password = $result['oauth2_password'] ?? null;
             $this->validateDsn($result['oauth2_dsn'], $username, $password, $result['oauth2_type']);
         }
         return $result;
@@ -280,16 +283,16 @@ class AuthenticationModel
         $current->exchangeArray($authenticationConfig);
 
         if ($current->isOAuth2()) {
-            $data = $current->getArrayCopy();
-            $dsnType = isset($data['dsn_type']) ? $data['dsn_type'] : AuthenticationEntity::DSN_PDO;
+            $data    = $current->getArrayCopy();
+            $dsnType = $data['dsn_type'] ?? AuthenticationEntity::DSN_PDO;
             $this->validateDsn($data['dsn'], $data['username'], $data['password'], $dsnType);
         }
 
         $allData = $current->getArrayCopy();
         unset($allData['type']);
 
-        $global  = $this->removeSensitiveConfig($allData);
-        $local   = array_udiff_assoc($allData, $global, sprintf('%s::arrayDiffRecursive', __CLASS__));
+        $global = $this->removeSensitiveConfig($allData);
+        $local  = array_udiff_assoc($allData, $global, sprintf('%s::arrayDiffRecursive', self::class));
         switch (true) {
             case $current->isBasic():
             case $current->isDigest():
@@ -403,7 +406,7 @@ class AuthenticationModel
     {
         $name = $module;
         if (false !== $version) {
-            $name .= '\V'. (int) $version;
+            $name .= '\V' . (int) $version;
         }
 
         $config = $this->globalConfig->fetch(true);
@@ -434,7 +437,7 @@ class AuthenticationModel
         if (null !== $version) {
             $name .= '\V' . (int) $version;
         }
-        $key = 'api-tools-mvc-auth.authentication.map.' . $name;
+        $key    = 'api-tools-mvc-auth.authentication.map.' . $name;
         $config = $this->localConfig->fetch(true);
         if (! isset($config['api-tools-mvc-auth']['authentication']['adapters'][$auth])) {
             throw new Exception\InvalidArgumentException(
@@ -477,11 +480,11 @@ class AuthenticationModel
     protected function createAuthenticationEntityFromConfig(array $config)
     {
         switch (true) {
-            case (isset($config['accept_schemes'])):
-                $type   = array_shift($config['accept_schemes']);
-                $realm  = isset($config['realm']) ? $config['realm'] : 'api';
+            case isset($config['accept_schemes']):
+                $type  = array_shift($config['accept_schemes']);
+                $realm = $config['realm'] ?? 'api';
                 return new AuthenticationEntity($type, $realm, $config);
-            case (isset($config['dsn']) || isset($config['dsn_type'])):
+            case isset($config['dsn']) || isset($config['dsn_type']):
                 return new AuthenticationEntity(AuthenticationEntity::TYPE_OAUTH2, $config);
         }
     }
@@ -524,12 +527,12 @@ class AuthenticationModel
     public static function arrayDiffRecursive($a, $b)
     {
         if (is_array($a) && is_array($b)) {
-            return array_diff_uassoc($a, $b, sprintf('%s::arrayDiffRecursive', __CLASS__));
+            return array_diff_uassoc($a, $b, sprintf('%s::arrayDiffRecursive', self::class));
         }
         if ($a === $b) {
             return 0;
         }
-        return ($a > $b) ? 1 : -1;
+        return $a > $b ? 1 : -1;
     }
 
     /**
@@ -540,7 +543,8 @@ class AuthenticationModel
      */
     protected function fetchHttpAuthConfiguration(array $config)
     {
-        if (! isset($config['api-tools-mvc-auth']['authentication']['http']['accept_schemes'])
+        if (
+            ! isset($config['api-tools-mvc-auth']['authentication']['http']['accept_schemes'])
             || ! is_array($config['api-tools-mvc-auth']['authentication']['http']['accept_schemes'])
         ) {
             return false;
@@ -549,7 +553,8 @@ class AuthenticationModel
         $config = $config['api-tools-mvc-auth']['authentication']['http'];
 
         $localConfig = $this->localConfig->fetch(true);
-        if (isset($localConfig['api-tools-mvc-auth']['authentication']['http'])
+        if (
+            isset($localConfig['api-tools-mvc-auth']['authentication']['http'])
             && is_array($localConfig['api-tools-mvc-auth']['authentication']['http'])
         ) {
             $config = array_merge($config, $localConfig['api-tools-mvc-auth']['authentication']['http']);
@@ -575,13 +580,15 @@ class AuthenticationModel
         }
 
         $localConfig = $this->localConfig->fetch(true);
-        if (isset($localConfig['api-tools-oauth2']['db'])
+        if (
+            isset($localConfig['api-tools-oauth2']['db'])
             && is_array($localConfig['api-tools-oauth2']['db'])
         ) {
             return array_merge($oauth2Config, $localConfig['api-tools-oauth2']['db']);
         }
 
-        if (isset($localConfig['api-tools-oauth2']['mongo'])
+        if (
+            isset($localConfig['api-tools-oauth2']['mongo'])
             && is_array($localConfig['api-tools-oauth2']['mongo'])
         ) {
             return array_merge($oauth2Config, $localConfig['api-tools-oauth2']['mongo']);
@@ -593,7 +600,6 @@ class AuthenticationModel
     /**
      * Patch the HTTP Authentication configuration
      *
-     * @param AuthenticationEntity $entity
      * @param array $global
      * @param array $local
      */
@@ -607,7 +613,6 @@ class AuthenticationModel
     /**
      * Patch the OAuth2 configuration
      *
-     * @param AuthenticationEntity $entity
      * @param array $global
      * @param array $local
      * @return void
@@ -641,12 +646,12 @@ class AuthenticationModel
     /**
      * Validate a DSN
      *
-     * @param  string $dsnType
      * @param  string $dsn
      * @param  string $username
      * @param  string $password
-     * @throws Exception\InvalidArgumentException on invalid DSN
+     * @param  string $dsnType
      * @return bool
+     * @throws Exception\InvalidArgumentException On invalid DSN.
      */
     protected function validateDsn($dsn, $username = null, $password = null, $dsnType = AuthenticationEntity::DSN_PDO)
     {
@@ -667,7 +672,7 @@ class AuthenticationModel
     }
 
     /**
-     * @param  $dsn
+     * @param  string $dsn
      * @return MongoClient
      */
     protected function createMongoDSN($dsn)
@@ -676,9 +681,9 @@ class AuthenticationModel
     }
 
     /**
-     * @param  $dsn
-     * @param  $username
-     * @param  $password
+     * @param  string $dsn
+     * @param  string $username
+     * @param  string $password
      * @return PDO
      */
     protected function createPdoDSN($dsn, $username, $password)
@@ -826,7 +831,7 @@ class AuthenticationModel
         }
 
         $routes = $this->fromOAuth2RegexToArray($config);
-        $index = array_search($url, $routes);
+        $index  = array_search($url, $routes);
         if (false === $index) {
             return false;
         }
@@ -862,7 +867,7 @@ class AuthenticationModel
     {
         $result = [];
         if (isset($config['api-tools-mvc-auth']['authentication']['adapters'][$name])) {
-            $adapter = $config['api-tools-mvc-auth']['authentication']['adapters'][$name];
+            $adapter        = $config['api-tools-mvc-auth']['authentication']['adapters'][$name];
             $result['name'] = $name;
             switch ($adapter['adapter']) {
                 case self::ADAPTER_HTTP:
@@ -881,27 +886,17 @@ class AuthenticationModel
                     }
                     break;
                 case self::ADAPTER_OAUTH2:
-                    $result['type'] = 'oauth2';
-                    $result['oauth2_type'] = isset($adapter['storage']['adapter'])
-                        ? $adapter['storage']['adapter']
-                        : null;
-                    $result['oauth2_dsn'] = isset($adapter['storage']['dsn'])
-                        ? $adapter['storage']['dsn']
-                        : null;
-                    $result['oauth2_route'] = isset($adapter['storage']['route'])
-                        ? $adapter['storage']['route']
-                        : null;
+                    $result['type']         = 'oauth2';
+                    $result['oauth2_type']  = $adapter['storage']['adapter'] ?? null;
+                    $result['oauth2_dsn']   = $adapter['storage']['dsn'] ?? null;
+                    $result['oauth2_route'] = $adapter['storage']['route'] ?? null;
                     if (isset($adapter['storage']['options'])) {
                         $result['oauth2_options'] = $adapter['storage']['options'];
                     }
-                    switch (strtolower($result['oauth2_type'])) {
+                    switch (strtolower($result['oauth2_type'] ?? '')) {
                         case strtolower(AuthenticationEntity::DSN_PDO):
-                            $result['oauth2_username'] = isset($adapter['storage']['username'])
-                                ? $adapter['storage']['username']
-                                : null;
-                            $result['oauth2_password'] = isset($adapter['storage']['password'])
-                                ? $adapter['storage']['password']
-                                : null;
+                            $result['oauth2_username'] = $adapter['storage']['username'] ?? null;
+                            $result['oauth2_password'] = $adapter['storage']['password'] ?? null;
                             break;
                         case strtolower(AuthenticationEntity::DSN_MONGO):
                             $result['oauth2_database'] = $adapter['storage']['database'];
@@ -914,8 +909,8 @@ class AuthenticationModel
                     }
                     break;
                 default:
-                    $result['type'] = 'custom';
-                    $result['route'] = isset($adapter['storage']['route']) ? $adapter['storage']['route'] : null;
+                    $result['type']  = 'custom';
+                    $result['route'] = $adapter['storage']['route'] ?? null;
             }
         }
         return $result;

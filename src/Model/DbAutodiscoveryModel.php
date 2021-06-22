@@ -1,39 +1,40 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Exception\InvalidArgumentException as ExceptionInvalidArgumentException;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Exception\InvalidArgumentException;
 use Laminas\Db\Metadata\Metadata;
+use Laminas\Db\Metadata\Object\ColumnObject;
+use Laminas\Db\Metadata\Object\ConstraintObject;
 
-/**
- * Class DbAutodiscoveryModel
- *
- * @package Laminas\ApiTools\Admin\Model
- */
+use function array_values;
+use function in_array;
+use function strpos;
+use function strtolower;
+use function strtoupper;
+use function ucfirst;
+
 class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
 {
     /**
-     * @param $module
-     * @param $version
-     * @param $adapter_name
+     * @param string $module
+     * @param string|int $version
+     * @param string $adapterName
      * @return array
      */
-    public function fetchColumns($module, $version, $adapter_name)
+    public function fetchColumns($module, $version, $adapterName)
     {
         $tables = [];
         if (! isset($this->config['db']['adapters'])) {
-            // error
+            throw new ExceptionInvalidArgumentException('DB config is missing "db.adapters" subkey');
         }
         $config = $this->config['db']['adapters'];
 
-        $adapter = new Adapter($config[$adapter_name]);
+        $adapter = new Adapter($config[$adapterName]);
 
         try {
             $metadata = new Metadata($adapter);
@@ -54,25 +55,25 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
             $tableData = [
                 'table_name' => $tableName,
             ];
-            $table = $metadata->getTable($tableName);
+            $table     = $metadata->getTable($tableName);
 
             $tableData['columns'] = [];
 
             $constraints = $this->getConstraints($metadata, $tableName);
 
-            /** @var \Laminas\Db\Metadata\Object\ColumnObject $column */
+            /** @var ColumnObject $column */
             foreach ($table->getColumns() as $column) {
                 $item = [
-                    'name' => $column->getName(),
-                    'type' => $column->getDataType(),
-                    'required' => ! $column->isNullable(),
-                    'filters' => [],
-                    'validators' => [],
+                    'name'        => $column->getName(),
+                    'type'        => $column->getDataType(),
+                    'required'    => ! $column->isNullable(),
+                    'filters'     => [],
+                    'validators'  => [],
                     'constraints' => [],
                 ];
 
                 foreach ($constraints as $constraint) {
-                    if ($column->getName() == $constraint['column']) {
+                    if ($column->getName() === $constraint['column']) {
                         $item['constraints'][] = ucfirst(strtolower($constraint['type']));
 
                         switch (strtoupper($constraint['type'])) {
@@ -85,22 +86,22 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
                                     $column->getName()
                                 );
 
-                                $validator = $this->validators['foreign_key'];
-                                $referencedColumns = $constraintObj->getReferencedColumns();
+                                $validator            = $this->validators['foreign_key'];
+                                $referencedColumns    = $constraintObj->getReferencedColumns();
                                 $validator['options'] = [
-                                    'adapter' => $adapter_name,
-                                    'table' => $constraintObj->getReferencedTableName(),
+                                    'adapter' => $adapterName,
+                                    'table'   => $constraintObj->getReferencedTableName(),
                                     //TODO: handle composite key constraint
                                     'field' => $referencedColumns[0],
                                 ];
                                 $item['validators'][] = $validator;
                                 break;
                             case 'UNIQUE':
-                                $validator = $this->validators['unique'];
+                                $validator            = $this->validators['unique'];
                                 $validator['options'] = [
-                                    'adapter' => $adapter_name,
-                                    'table' => $tableName,
-                                    'field' => $column->getName(),
+                                    'adapter' => $adapterName,
+                                    'table'   => $tableName,
+                                    'field'   => $column->getName(),
                                 ];
                                 $item['validators'][] = $validator;
                                 break;
@@ -116,12 +117,19 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
                         $tableData['columns'][] = $item;
                         continue;
                     }
-                    $item['filters'] = $this->filters['text'];
-                    $validator = $this->validators['text'];
+                    $item['filters']             = $this->filters['text'];
+                    $validator                   = $this->validators['text'];
                     $validator['options']['max'] = $column->getCharacterMaximumLength();
-                    $item['validators'][] = $validator;
-                } elseif (in_array(strtolower($column->getDataType()), [
-                    'tinyint', 'smallint', 'mediumint', 'int', 'bigint'])) {
+                    $item['validators'][]        = $validator;
+                } elseif (
+                    in_array(strtolower($column->getDataType()), [
+                        'tinyint',
+                        'smallint',
+                        'mediumint',
+                        'int',
+                        'bigint',
+                    ])
+                ) {
                     $item['length'] = $column->getNumericPrecision();
                     if (in_array('Primary key', array_values($item['constraints']))) {
                         unset($item['filters']);
@@ -132,7 +140,6 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
                     $item['filters'] = $this->filters['integer'];
                 }
 
-
                 $tableData['columns'][] = $item;
             }
             $tables[] = $tableData;
@@ -141,19 +148,18 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
     }
 
     /**
-     * @param Metadata $metadata
-     * @param $tableName
+     * @param string $tableName
      * @return array
      */
     protected function getConstraints(Metadata $metadata, $tableName)
     {
         $constraints = [];
-        /** @var \Laminas\Db\Metadata\Object\ConstraintObject $constraint */
+        /** @var ConstraintObject $constraint */
         foreach ($metadata->getConstraints($tableName) as $constraint) {
             foreach ($constraint->getColumns() as $column) {
                 $constraints[] = [
                     'column' => $column,
-                    'type' => $constraint->getType(),
+                    'type'   => $constraint->getType(),
                 ];
             }
         }
@@ -162,17 +168,16 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
     }
 
     /**
-     * @param Metadata $metadata
-     * @param $tableName
-     * @param $columnName
-     * @return null|\Laminas\Db\Metadata\Object\ConstraintObject
+     * @param string $tableName
+     * @param string $columnName
+     * @return null|ConstraintObject
      */
     protected function getConstraintForColumn(Metadata $metadata, $tableName, $columnName)
     {
-        /** @var \Laminas\Db\Metadata\Object\ConstraintObject $constraint */
+        /** @var ConstraintObject $constraint */
         foreach ($metadata->getConstraints($tableName) as $constraint) {
             foreach ($constraint->getColumns() as $column) {
-                if ($column == $columnName) {
+                if ($column === $columnName) {
                     return $constraint;
                 }
             }

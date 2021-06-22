@@ -1,21 +1,23 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
+use function in_array;
+use function is_array;
+use function str_replace;
+use function strpos;
+use function strtolower;
+
 class AuthenticationEntity
 {
-    const TYPE_BASIC = 'basic';
-    const TYPE_DIGEST = 'digest';
-    const TYPE_OAUTH2 = 'oauth2';
+    public const TYPE_BASIC  = 'basic';
+    public const TYPE_DIGEST = 'digest';
+    public const TYPE_OAUTH2 = 'oauth2';
 
-    const DSN_PDO = 'PDO';
-    const DSN_MONGO = 'Mongo';
+    public const DSN_PDO   = 'PDO';
+    public const DSN_MONGO = 'Mongo';
 
     /**
      * Digest domains for HTTP digest authentication (space-separated list of paths)
@@ -101,13 +103,18 @@ class AuthenticationEntity
      */
     protected $database;
 
+    /**
+     * @param string $type
+     * @param string $realmOrParams
+     */
     public function __construct($type = self::TYPE_BASIC, $realmOrParams = 'api', array $params = [])
     {
         $this->type = in_array($type, [self::TYPE_BASIC, self::TYPE_DIGEST, self::TYPE_OAUTH2])
             ? $type
             : self::TYPE_BASIC;
 
-        if ($type === self::TYPE_OAUTH2
+        if (
+            $type === self::TYPE_OAUTH2
             && is_array($realmOrParams)
         ) {
             $this->exchangeArray($realmOrParams);
@@ -117,34 +124,35 @@ class AuthenticationEntity
         }
     }
 
+    /** @return array */
     public function getArrayCopy()
     {
         switch ($this->type) {
             case self::TYPE_BASIC:
                 return [
-                    'type' => 'http_basic',
+                    'type'           => 'http_basic',
                     'accept_schemes' => [self::TYPE_BASIC],
-                    'realm' => $this->realm,
-                    'htpasswd' => $this->htpasswd,
+                    'realm'          => $this->realm,
+                    'htpasswd'       => $this->htpasswd,
                 ];
 
             case self::TYPE_DIGEST:
                 return [
-                    'type' => 'http_digest',
+                    'type'           => 'http_digest',
                     'accept_schemes' => [self::TYPE_DIGEST],
-                    'realm' => $this->realm,
-                    'htdigest' => $this->htdigest,
+                    'realm'          => $this->realm,
+                    'htdigest'       => $this->htdigest,
                     'digest_domains' => $this->digestDomains,
-                    'nonce_timeout' => $this->nonceTimeout,
+                    'nonce_timeout'  => $this->nonceTimeout,
                 ];
 
             case self::TYPE_OAUTH2:
                 $array = [
-                    'type' => 'oauth2',
-                    'dsn_type' => $this->dsnType,
-                    'dsn' => $this->dsn,
-                    'username' => $this->username,
-                    'password' => $this->password,
+                    'type'        => 'oauth2',
+                    'dsn_type'    => $this->dsnType,
+                    'dsn'         => $this->dsn,
+                    'username'    => $this->username,
+                    'password'    => $this->password,
                     'route_match' => $this->routeMatch,
                 ];
 
@@ -218,23 +226,27 @@ class AuthenticationEntity
         }
     }
 
+    /** @return string */
     public function getDsnType()
     {
         return $this->dsnType;
     }
 
+    /** @return bool */
     public function isBasic()
     {
-        return ($this->type === self::TYPE_BASIC);
+        return $this->type === self::TYPE_BASIC;
     }
 
+    /** @return bool */
     public function isDigest()
     {
-        return ($this->type === self::TYPE_DIGEST);
+        return $this->type === self::TYPE_DIGEST;
     }
 
+    /** @return bool */
     public function isOAuth2()
     {
-        return ($this->type === self::TYPE_OAUTH2);
+        return $this->type === self::TYPE_OAUTH2;
     }
 }

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
@@ -12,13 +8,15 @@ use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Admin\Model\HydratorsModel;
 use Laminas\Hydrator\HydratorPluginManager;
 
+use function count;
+
 class HydratorsModelTest extends AbstractPluginManagerModelTest
 {
     public function setUp()
     {
         $this->namespace = '\\Hydrator\\';
-        $this->plugins = new HydratorPluginManager($this->prophesize(ContainerInterface::class)->reveal());
-        $this->model = new HydratorsModel($this->plugins);
+        $this->plugins   = new HydratorPluginManager($this->prophesize(ContainerInterface::class)->reveal());
+        $this->model     = new HydratorsModel($this->plugins);
     }
 
     public function testFetchAllReturnsListOfAvailablePlugins()

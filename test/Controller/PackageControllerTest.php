@@ -1,15 +1,12 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Controller;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ApiTools\Admin\Controller\PackageController;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
 use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParam;
 use Laminas\ApiTools\ContentNegotiation\ControllerPlugin\BodyParams;
 use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
@@ -18,19 +15,27 @@ use Laminas\Mvc\Controller\PluginManager as ControllerPluginManager;
 use Laminas\Mvc\MvcEvent;
 use PHPUnit\Framework\TestCase;
 
+use function chdir;
+use function file_exists;
+use function file_get_contents;
+use function getcwd;
+use function strlen;
+use function sys_get_temp_dir;
+
 class PackageControllerTest extends TestCase
 {
     public function setUp()
     {
         // Seed with symlink path for zfdeploy.php
         $this->controller = new PackageController('vendor/bin/zfdeploy.php');
-        $this->plugins = new ControllerPluginManager($this->prophesize(ContainerInterface::class)->reveal());
+        $this->plugins    = new ControllerPluginManager($this->prophesize(ContainerInterface::class)->reveal());
         $this->plugins->setService('bodyParam', new BodyParam());
         $this->plugins->setService('bodyParams', new BodyParams());
         $this->controller->setPluginManager($this->plugins);
     }
 
-    public function invalidRequestMethods()
+    /** @psalm-return array<array-key, array{0: string}> */
+    public function invalidRequestMethods(): array
     {
         return [
             ['patch'],
@@ -42,19 +47,18 @@ class PackageControllerTest extends TestCase
     /**
      * @dataProvider invalidRequestMethods
      */
-    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse($method)
+    public function testProcessWithInvalidRequestMethodReturnsApiProblemResponse(string $method)
     {
         $request = new Request();
         $request->setMethod($method);
         $this->controller->setRequest($request);
         $result = $this->controller->indexAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ApiProblem\ApiProblemResponse', $result);
+        $this->assertInstanceOf(ApiProblemResponse::class, $result);
         $apiProblem = $result->getApiProblem();
         $this->assertEquals(405, $apiProblem->status);
     }
 
-
-    public function testProcessPostRequestReturnsToken()
+    public function testProcessPostRequestReturnsToken(): array
     {
         $request = new Request();
         $request->setMethod('post');

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<ruleset
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="./vendor/squizlabs/php_codesniffer/phpcs.xsd">
+
+    <arg name="basepath" value="."/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="80"/>
+
+    <!-- Show progress -->
+    <arg value="p"/>
+
+    <!-- Paths to check -->
+    <file>bin</file>
+    <file>config</file>
+    <file>src</file>
+    <file>test</file>
+    <file>view</file>
+
+    <!--
+        These files are ignored in .gitignore, and should not be scanned by phpcs.
+    -->
+    <exclude-pattern>test/Model/TestAsset/module/AuthConf/config/module.config.php</exclude-pattern>
+    <exclude-pattern>test/Model/TestAsset/module/AuthConfDefaults/config/module.config.php</exclude-pattern>
+    <exclude-pattern>test/Model/TestAsset/module/AuthConfWithConfig/config/module.config.php</exclude-pattern>
+    <exclude-pattern>test/Model/TestAsset/module/BarConf/config/module.config.php</exclude-pattern>
+    <exclude-pattern>test/Model/TestAsset/module/BazConf/config/module.config.php</exclude-pattern>
+    <exclude-pattern>test/Model/TestAsset/module/FooConf/config/module.config.php</exclude-pattern>
+
+    <!--
+        This file performs include statements that can lead to fatal errors due
+        to attempts to redefine classes, and must be scanned manually
+    -->
+    <exclude-pattern>test/Model/VersioningModelTest.php</exclude-pattern>
+
+    <!-- Include all rules from Laminas Coding Standard -->
+    <rule ref="LaminasCodingStandard"/>
+</ruleset>

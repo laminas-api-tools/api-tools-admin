@@ -1,31 +1,29 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin;
 
+use Interop\Container\ContainerInterface;
 use Laminas\ModuleManager\ModuleManagerInterface;
 use Laminas\Mvc\MvcEvent;
+use Traversable;
+
+use function defined;
+use function function_exists;
+use function ini_set;
+use function is_writable;
+use function preg_match;
 
 class Module
 {
-    /**
-     * @var MvcEvent
-     */
+    /** @var MvcEvent */
     protected $mvcEvent;
 
-    /**
-     * @var callable
-     */
+    /** @var callable */
     protected $urlHelper;
 
-    /**
-     * @var \Interop\Container\ContainerInterface
-     */
+    /** @var ContainerInterface */
     protected $sm;
 
     /**
@@ -34,8 +32,6 @@ class Module
      * If the admin UI module is not loaded yet, load it.
      *
      * Disable the opcache as well.
-     *
-     * @param ModuleManagerInterface $modules
      */
     public function init(ModuleManagerInterface $modules)
     {
@@ -50,7 +46,7 @@ class Module
     /**
      * Returns configuration to merge with application configuration
      *
-     * @return array|\Traversable
+     * @return array|Traversable
      */
     public function getConfig()
     {
@@ -59,8 +55,6 @@ class Module
 
     /**
      * Listen to the bootstrap event
-     *
-     * @param MvcEvent $e
      */
     public function onBootstrap(MvcEvent $e)
     {
@@ -124,7 +118,8 @@ class Module
      */
     protected function disableOpCache()
     {
-        if (isset($_SERVER['SERVER_SOFTWARE'])
+        if (
+            isset($_SERVER['SERVER_SOFTWARE'])
             && preg_match('/^PHP .*? Development Server$/', $_SERVER['SERVER_SOFTWARE'])
         ) {
             // skip the built-in PHP webserver (OPcache reset is not needed +

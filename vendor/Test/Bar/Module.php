@@ -8,6 +8,6 @@ class Module implements ApiToolsProviderInterface
 {
     public function getConfig()
     {
-        return array();
+        return [];
     }
 }

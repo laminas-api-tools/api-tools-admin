@@ -1,26 +1,42 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Model\ModuleEntity;
 use Laminas\ApiTools\Admin\Model\ModuleModel;
 use Laminas\ApiTools\Admin\Model\ModulePathSpec;
 use Laminas\ApiTools\Admin\Model\ModuleResource;
 use Laminas\ApiTools\Configuration\ModuleUtils;
+use Laminas\ModuleManager\ModuleManager;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+
+use function array_diff;
+use function class_exists;
+use function dirname;
+use function file_exists;
+use function file_put_contents;
+use function is_dir;
+use function mkdir;
+use function preg_match;
+use function preg_quote;
+use function rmdir;
+use function scandir;
+use function spl_autoload_register;
+use function sprintf;
+use function str_replace;
+use function sys_get_temp_dir;
+use function uniqid;
+use function unlink;
 
 class ModuleResourceTest extends TestCase
 {
     public function setUp()
     {
-        $modules = [];
-        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $modules             = [];
+        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
                                     ->disableOriginalConstructor()
                                     ->getMock();
         $this->moduleManager->expects($this->any())
@@ -51,7 +67,6 @@ class ModuleResourceTest extends TestCase
 
         $this->seedApplicationConfig();
         $this->setupModuleAutoloader();
-//        $this->resource->setModulePath($this->modulePath);
     }
 
     public function tearDown()
@@ -108,36 +123,36 @@ class ModuleResourceTest extends TestCase
     public function testCreateReturnsModuleWithVersion1()
     {
         $moduleName = uniqid('Foo');
-        $module = $this->resource->create([
+        $module     = $this->resource->create([
             'name' => $moduleName,
         ]);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ModuleEntity', $module);
+        $this->assertInstanceOf(ModuleEntity::class, $module);
         $this->assertEquals([1], $module->getVersions());
     }
 
     public function testCreateReturnsModuleWithSpecifiedVersion()
     {
         $moduleName = uniqid('Foo');
-        $module = $this->resource->create([
+        $module     = $this->resource->create([
             'name'    => $moduleName,
             'version' => '2',
         ]);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ModuleEntity', $module);
+        $this->assertInstanceOf(ModuleEntity::class, $module);
         $this->assertEquals([2], $module->getVersions());
     }
 
     public function testFetchNewlyCreatedModuleInjectsVersion()
     {
-        $moduleName = uniqid('Foo');
-        $module = $this->resource->create([
-            'name'    => $moduleName,
+        $moduleName  = uniqid('Foo');
+        $module      = $this->resource->create([
+            'name' => $moduleName,
         ]);
         $moduleClass = $module->getNamespace() . '\Module';
 
-        $modules = [
-            $moduleName => new $moduleClass,
+        $modules       = [
+            $moduleName => new $moduleClass(),
         ];
-        $moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $moduleManager = $this->getMockBuilder(ModuleManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $moduleManager->expects($this->any())
@@ -151,15 +166,15 @@ class ModuleResourceTest extends TestCase
         );
         $resource = new ModuleResource($model, new ModulePathSpec(new ModuleUtils($moduleManager)));
         $module   = $resource->fetch($moduleName);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ModuleEntity', $module);
+        $this->assertInstanceOf(ModuleEntity::class, $module);
         $this->assertEquals([1], $module->getVersions());
     }
 
     public function testFetchModuleInjectsVersions()
     {
-        $moduleName = uniqid('Foo');
-        $module = $this->resource->create([
-            'name'    => $moduleName,
+        $moduleName  = uniqid('Foo');
+        $module      = $this->resource->create([
+            'name' => $moduleName,
         ]);
         $moduleClass = $module->getNamespace() . '\Module';
 
@@ -168,10 +183,10 @@ class ModuleResourceTest extends TestCase
         mkdir(sprintf('%s/V2', $path), 0775, true);
         mkdir(sprintf('%s/V3', $path), 0775, true);
 
-        $modules = [
-            $moduleName => new $moduleClass,
+        $modules       = [
+            $moduleName => new $moduleClass(),
         ];
-        $moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $moduleManager = $this->getMockBuilder(ModuleManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $moduleManager->expects($this->any())
@@ -185,7 +200,7 @@ class ModuleResourceTest extends TestCase
         );
         $resource = new ModuleResource($model, new ModulePathSpec(new ModuleUtils($moduleManager)));
         $module   = $resource->fetch($moduleName);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\ModuleEntity', $module);
+        $this->assertInstanceOf(ModuleEntity::class, $module);
         $this->assertEquals([1, 2, 3], $module->getVersions());
     }
 }

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -14,30 +10,26 @@ use Laminas\ApiTools\Rest\Exception\CreationException;
 use Laminas\Http\Response;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 
+use function is_array;
+use function is_object;
+
 class DoctrineAdapterResource extends AbstractResourceListener
 {
-    /**
-     * @var DbAdapterModel
-     */
+    /** @var DbAdapterModel */
     protected $model;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $loadedModules;
 
-    /**
-     * @var null|ServiceLocatorInterface
-     */
+    /** @var null|ServiceLocatorInterface */
     protected $serviceLocator;
 
     /**
-     * @param DoctrineAdapterModel $model
      * @param array $loadedModules List of loaded modules
      */
     public function __construct(DoctrineAdapterModel $model, array $loadedModules = [])
     {
-        $this->model = $model;
+        $this->model         = $model;
         $this->loadedModules = $loadedModules;
     }
 
@@ -45,7 +37,7 @@ class DoctrineAdapterResource extends AbstractResourceListener
      * Set service locator
      *
      * @deprecated since 1.5.0, and no longer used internally.
-     * @param ServiceLocatorInterface $serviceLocator
+     *
      * @return $this
      */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
@@ -56,6 +48,7 @@ class DoctrineAdapterResource extends AbstractResourceListener
 
     /**
      * @deprecated since 1.5.0, and no longer used internally.
+     *
      * @return null|ServiceLocatorInterface
      */
     public function getServiceLocator()
@@ -64,7 +57,7 @@ class DoctrineAdapterResource extends AbstractResourceListener
     }
 
     /**
-     * @param $id
+     * @param string|int $id
      * @return DbAdapterEntity|ApiProblem
      */
     public function fetch($id)
@@ -82,7 +75,8 @@ class DoctrineAdapterResource extends AbstractResourceListener
      */
     public function fetchAll($params = [])
     {
-        if (! isset($this->loadedModules['Laminas\ApiTools\Doctrine\Admin'])
+        if (
+            ! isset($this->loadedModules['Laminas\ApiTools\Doctrine\Admin'])
             || ! isset($this->loadedModules['Laminas\ApiTools\Doctrine\Server'])
         ) {
             $response = new Response();
@@ -106,7 +100,7 @@ class DoctrineAdapterResource extends AbstractResourceListener
     public function create($data)
     {
         if (is_object($data)) {
-            $data = (array)$data;
+            $data = (array) $data;
             if (! isset($data['doctrine_adapter_name'])) {
                 throw new CreationException('Missing doctrine_adapter_name', 422);
             }
@@ -120,7 +114,7 @@ class DoctrineAdapterResource extends AbstractResourceListener
     }
 
     /**
-     * @param $id
+     * @param string|int $id
      * @param object|array $data
      * @return DbAdapterEntity|ApiProblem
      */
@@ -142,7 +136,7 @@ class DoctrineAdapterResource extends AbstractResourceListener
     }
 
     /**
-     * @param $id
+     * @param string|int $id
      * @return true
      */
     public function delete($id)

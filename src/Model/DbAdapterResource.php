@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -12,11 +8,12 @@ use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\ApiTools\Rest\Exception\CreationException;
 
+use function is_array;
+use function is_object;
+
 class DbAdapterResource extends AbstractResourceListener
 {
-    /**
-     * @var DbAdapterModel
-     */
+    /** @var DbAdapterModel */
     protected $model;
 
     public function __construct(DbAdapterModel $model)
@@ -24,6 +21,10 @@ class DbAdapterResource extends AbstractResourceListener
         $this->model = $model;
     }
 
+    /**
+     * @param int|string $id
+     * @return ApiProblem|DbAdapterEntity
+     */
     public function fetch($id)
     {
         $entity = $this->model->fetch($id);
@@ -33,11 +34,19 @@ class DbAdapterResource extends AbstractResourceListener
         return $entity;
     }
 
+    /**
+     * @param array $params
+     * @return array
+     */
     public function fetchAll($params = [])
     {
         return $this->model->fetchAll();
     }
 
+    /**
+     * @param array|object $data
+     * @return DbAdapterEntity
+     */
     public function create($data)
     {
         if (is_object($data)) {
@@ -54,6 +63,11 @@ class DbAdapterResource extends AbstractResourceListener
         return $this->model->create($name, $data);
     }
 
+    /**
+     * @param int|string $id
+     * @param array|object $data
+     * @return DbAdapterEntity
+     */
     public function patch($id, $data)
     {
         if (is_object($data)) {
@@ -71,6 +85,10 @@ class DbAdapterResource extends AbstractResourceListener
         return $this->model->update($id, $data);
     }
 
+    /**
+     * @param int|string $id
+     * @return bool
+     */
     public function delete($id)
     {
         $this->model->remove($id);

@@ -1,20 +1,14 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\InputFilter\Validator;
 
 class ServiceNameValidator extends AbstractValidator
 {
-    const SERVICE_NAME = 'serviceName';
+    public const SERVICE_NAME = 'serviceName';
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $messageTemplates = [
         self::SERVICE_NAME => "'%value%' is not a valid service name",
     ];

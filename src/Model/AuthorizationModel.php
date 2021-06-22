@@ -1,47 +1,37 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Configuration\ConfigResource;
 
+use function array_keys;
+use function array_walk;
+use function in_array;
+use function is_array;
+use function preg_match;
+use function preg_quote;
+use function preg_replace;
+use function sprintf;
+
 class AuthorizationModel
 {
-    /**
-     * @var ConfigResource
-     */
+    /** @var ConfigResource */
     protected $configResource;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $module;
 
-    /**
-     * @var ModuleEntity
-     */
+    /** @var ModuleEntity */
     protected $moduleEntity;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $modulePath;
 
-    /**
-     * @var ModulePathSpec
-     */
+    /** @var ModulePathSpec */
     protected $modules;
 
-    /**
-     * @param ModuleEntity $moduleEntity
-     * @param ModulePathSpec $modules
-     * @param ConfigResource $config
-     */
     public function __construct(ModuleEntity $moduleEntity, ModulePathSpec $modules, ConfigResource $config)
     {
         $this->module         = $moduleEntity->getName();
@@ -111,13 +101,15 @@ class AuthorizationModel
     {
         $entity = new AuthorizationEntity();
 
-        if (isset($config['api-tools-rest'])
+        if (
+            isset($config['api-tools-rest'])
             && is_array($config['api-tools-rest'])
         ) {
             $this->createDefaultPrivilegesForRestServices(array_keys($config['api-tools-rest']), $entity, $version);
         }
 
-        if (isset($config['api-tools-rpc'])
+        if (
+            isset($config['api-tools-rpc'])
             && is_array($config['api-tools-rpc'])
         ) {
             $this->createDefaultPrivilegesForRpcServices($config['api-tools-rpc'], $entity, $config, $version);
@@ -130,7 +122,6 @@ class AuthorizationModel
      * Create default privileges for a list of REST services of the specified version
      *
      * @param array $services
-     * @param AuthorizationEntity $entity
      * @param int $version
      */
     protected function createDefaultPrivilegesForRestServices(array $services, AuthorizationEntity $entity, $version)
@@ -148,7 +139,6 @@ class AuthorizationModel
      * Create default privileges for a list of RPC services of the specified version
      *
      * @param array $services
-     * @param AuthorizationEntity $entity
      * @param array $config Used to determine action associated with RPC service (via route config)
      * @param int $version
      */
@@ -224,7 +214,7 @@ class AuthorizationModel
         foreach ($config as $service => $value) {
             if (isset($value['actions'])) {
                 foreach ($value['actions'] as $action => $privileges) {
-                    $newKey = sprintf('%s::%s', $service, $action);
+                    $newKey          = sprintf('%s::%s', $service, $action);
                     $config[$newKey] = $privileges;
                 }
             }
@@ -232,15 +222,15 @@ class AuthorizationModel
              * @todo Remove this stanza for 1.0.0
              */
             if (isset($value['resource'])) {
-                $newKey = sprintf('%s::__entity__', $service);
+                $newKey          = sprintf('%s::__entity__', $service);
                 $config[$newKey] = $value['resource'];
             }
             if (isset($value['entity'])) {
-                $newKey = sprintf('%s::__entity__', $service);
+                $newKey          = sprintf('%s::__entity__', $service);
                 $config[$newKey] = $value['entity'];
             }
             if (isset($value['collection'])) {
-                $newKey = sprintf('%s::__collection__', $service);
+                $newKey          = sprintf('%s::__collection__', $service);
                 $config[$newKey] = $value['collection'];
             }
             unset($config[$service]);
@@ -268,7 +258,8 @@ class AuthorizationModel
              */
             if (preg_match('/^__(?P<type>collection|entity|resource)__$/', $matches['action'], $actionMatches)) {
                 // REST collection or entity
-                $type = ($actionMatches['type'] == 'resource') ? 'entity' : $actionMatches['type'];
+                // phpcs:ignore Generic.Files.LineLength.TooLong
+                $type                               = $actionMatches['type'] === 'resource' ? 'entity' : $actionMatches['type'];
                 $config[$matches['service']][$type] = $privileges;
             } else {
                 // RPC action
@@ -282,14 +273,14 @@ class AuthorizationModel
     /**
      * Identify services in the current version without authorization configuration and inject them into the entity
      *
-     * @param AuthorizationEntity $entity
      * @param int $version
      * @param array $config
      */
     protected function injectServicesWithoutPrivileges(AuthorizationEntity $entity, $version, array $config)
     {
         $services = $this->getBaseServiceNamesFromEntity($entity);
-        if (isset($config['api-tools-rest'])
+        if (
+            isset($config['api-tools-rest'])
             && is_array($config['api-tools-rest'])
         ) {
             $missingServices = [];
@@ -305,7 +296,8 @@ class AuthorizationModel
             $this->createDefaultPrivilegesForRestServices($missingServices, $entity, $version);
         }
 
-        if (isset($config['api-tools-rpc'])
+        if (
+            isset($config['api-tools-rpc'])
             && is_array($config['api-tools-rpc'])
         ) {
             $missingServices = [];
@@ -325,7 +317,6 @@ class AuthorizationModel
     /**
      * Determine the base service name for authorization service keys
      *
-     * @param AuthorizationEntity $entity
      * @return array
      */
     protected function getBaseServiceNamesFromEntity(AuthorizationEntity $entity)

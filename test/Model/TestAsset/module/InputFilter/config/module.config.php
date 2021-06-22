@@ -1,12 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 return [
-    'input_filter_specs' => [
+    'input_filter_specs'           => [
         'InputFilter\V1\Rest\Foo\Validator' => [
             'foo' => [
-                'name' => 'foo',
+                'name'       => 'foo',
                 'validators' => [
                     [
-                        'name' => 'NotEmpty',
+                        'name'    => 'NotEmpty',
                         'options' => [
                             'type' => 127,
                         ],
@@ -21,7 +24,7 @@ return [
             'input_filter' => 'InputFilter\V1\Rest\Foo\Validator',
         ],
     ],
-    'api-tools-rest' => [
+    'api-tools-rest'               => [
         'InputFilter\V1\Rest\Foo\Controller' => [],
         'InputFilter\V1\Rest\Bar\Controller' => [],
     ],

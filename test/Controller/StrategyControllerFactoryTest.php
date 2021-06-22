@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -31,7 +27,7 @@ class StrategyControllerFactoryTest extends TestCase
 
     public function testLegacyFactoryReturnsStrategyController()
     {
-        $factory = new StrategyControllerFactory();
+        $factory     = new StrategyControllerFactory();
         $controllers = $this->prophesize(AbstractPluginManager::class);
 
         $controllers->getServiceLocator()->willReturn($this->container);

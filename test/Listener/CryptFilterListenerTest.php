@@ -1,15 +1,17 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Listener;
 
 use Laminas\ApiTools\Admin\Listener\CryptFilterListener;
+use Laminas\Filter\Compress;
+use Laminas\Filter\Compress\Gz;
+use Laminas\Filter\Encrypt;
+use Laminas\Filter\Encrypt\BlockCipher;
+use Laminas\Http\Request;
 use Laminas\Mvc\MvcEvent;
+use Laminas\Stdlib\RequestInterface;
 use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +23,7 @@ class CryptFilterListenerTest extends TestCase
     {
         $this->listener   = new CryptFilterListener();
         $this->event      = new MvcEvent();
-        $this->request    = $this->createMock('Laminas\Http\Request');
+        $this->request    = $this->createMock(Request::class);
         $this->routeMatch = $this->getMockBuilder($this->getRouteMatchClass())
             ->disableOriginalConstructor(true)
             ->getMock();
@@ -46,7 +48,7 @@ class CryptFilterListenerTest extends TestCase
 
     public function testReturnsNullIfRequestIsNotAnHttpRequest()
     {
-        $request = $this->createMock('Laminas\Stdlib\RequestInterface');
+        $request = $this->createMock(RequestInterface::class);
         $this->event->setRequest($request);
         $this->assertNull($this->listener->onRoute($this->event));
     }
@@ -104,10 +106,10 @@ class CryptFilterListenerTest extends TestCase
     {
         $filters = [
             [
-                'name' => 'Laminas\Filter\Encrypt\BlockCipher',
+                'name' => BlockCipher::class,
             ],
             [
-                'name' => 'Laminas\Filter\Compress\Gz',
+                'name' => Gz::class,
             ],
         ];
 
@@ -115,7 +117,7 @@ class CryptFilterListenerTest extends TestCase
         $this->initRouteMatch();
         $this->event->setParam('LaminasContentNegotiationParameterData', ['filters' => $filters]);
         $this->assertTrue($this->listener->onRoute($this->event));
-        $data = $this->event->getParam('LaminasContentNegotiationParameterData');
+        $data    = $this->event->getParam('LaminasContentNegotiationParameterData');
         $filters = $data['filters'];
 
         foreach ($filters as $filter) {
@@ -124,10 +126,10 @@ class CryptFilterListenerTest extends TestCase
             $this->assertArrayHasKey('adapter', $filter['options']);
 
             switch ($filter['name']) {
-                case 'Laminas\Filter\Compress':
+                case Compress::class:
                     $this->assertEquals('Gz', $filter['options']['adapter']);
                     break;
-                case 'Laminas\Filter\Encrypt':
+                case Encrypt::class:
                     $this->assertEquals('BlockCipher', $filter['options']['adapter']);
                     break;
                 default:

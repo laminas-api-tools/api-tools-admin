@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -17,12 +13,12 @@ class DashboardControllerFactoryTest extends TestCase
 {
     public function setUp()
     {
-        $this->authenticationModel = $this->prophesize(Model\AuthenticationModel::class)->reveal();
+        $this->authenticationModel     = $this->prophesize(Model\AuthenticationModel::class)->reveal();
         $this->contentNegotiationModel = $this->prophesize(Model\ContentNegotiationModel::class)->reveal();
-        $this->dbAdapterModel = $this->prophesize(Model\DbAdapterModel::class)->reveal();
-        $this->moduleModel = $this->prophesize(Model\ModuleModel::class)->reveal();
+        $this->dbAdapterModel          = $this->prophesize(Model\DbAdapterModel::class)->reveal();
+        $this->moduleModel             = $this->prophesize(Model\ModuleModel::class)->reveal();
         $this->restServiceModelFactory = $this->prophesize(Model\RestServiceModelFactory::class)->reveal();
-        $this->rpcServiceModelFactory = $this->prophesize(Model\RpcServiceModelFactory::class)->reveal();
+        $this->rpcServiceModelFactory  = $this->prophesize(Model\RpcServiceModelFactory::class)->reveal();
 
         $this->container = $this->prophesize(ContainerInterface::class);
         $this->container->get(Model\AuthenticationModel::class)->willReturn($this->authenticationModel);
@@ -50,7 +46,7 @@ class DashboardControllerFactoryTest extends TestCase
 
     public function testLegacyFactoryReturnsDashboardController()
     {
-        $factory = new DashboardControllerFactory();
+        $factory     = new DashboardControllerFactory();
         $controllers = $this->prophesize(AbstractPluginManager::class);
 
         $controllers->getServiceLocator()->will([$this->container, 'reveal']);

@@ -1,22 +1,14 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 class HydratorsModelFactory extends AbstractPluginManagerModelFactory
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $pluginManagerService = 'HydratorManager';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $pluginManagerModel = HydratorsModel::class;
 }

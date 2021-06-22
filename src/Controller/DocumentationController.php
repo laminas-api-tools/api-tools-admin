@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -17,8 +13,12 @@ use Laminas\ApiTools\Hal\Link\Link as HalLink;
 use Laminas\Http\Request as HttpRequest;
 use Laminas\Mvc\Controller\AbstractActionController;
 
+use function preg_match;
+use function sprintf;
+
 class DocumentationController extends AbstractActionController
 {
+    /** @var DocumentationModel */
     protected $model;
 
     public function __construct(DocumentationModel $docModel)
@@ -26,13 +26,14 @@ class DocumentationController extends AbstractActionController
         $this->model = $docModel;
     }
 
+    /** @return ViewModel|ApiProblemResponse */
     public function indexAction()
     {
-        $request = $this->getRequest();
-        $httpMethod = $request->getMethod();
-        $module = $this->params()->fromRoute('name', false);
+        $request               = $this->getRequest();
+        $httpMethod            = $request->getMethod();
+        $module                = $this->params()->fromRoute('name', false);
         $controllerServiceName = $this->params()->fromRoute('controller_service_name', false);
-        $controllerType = $this->params()->fromRoute('controller_type'); // rest or rpc
+        $controllerType        = $this->params()->fromRoute('controller_type'); // rest or rpc
 
         $routeName = $this->deriveRouteName($this->getEvent()->getRouteMatch()->getMatchedRouteName());
 
@@ -42,13 +43,13 @@ class DocumentationController extends AbstractActionController
                     $this->model->fetchDocumentation($module, $controllerServiceName),
                     'documentation'
                 );
-                $self = new HalLink('self');
+                $self   = new HalLink('self');
                 $self->setRoute($routeName);
                 $result->getLinks()->add($self);
                 break;
             case HttpRequest::METHOD_PUT:
                 $documentation = $this->bodyParams();
-                $result = new HalEntity(
+                $result        = new HalEntity(
                     $this->model->storeDocumentation(
                         $module,
                         $controllerType,
@@ -58,13 +59,13 @@ class DocumentationController extends AbstractActionController
                     ),
                     'documentation'
                 );
-                $self = new HalLink('self');
+                $self          = new HalLink('self');
                 $self->setRoute($routeName);
                 $result->getLinks()->add($self);
                 break;
             case HttpRequest::METHOD_PATCH:
                 $documentation = $this->bodyParams();
-                $result = new HalEntity(
+                $result        = new HalEntity(
                     $this->model->storeDocumentation(
                         $module,
                         $controllerType,
@@ -74,7 +75,7 @@ class DocumentationController extends AbstractActionController
                     ),
                     'documentation'
                 );
-                $self = new HalLink('self');
+                $self          = new HalLink('self');
                 $self->setRoute($routeName);
                 $result->getLinks()->add($self);
                 break;
@@ -92,7 +93,7 @@ class DocumentationController extends AbstractActionController
         return new ViewModel(['payload' => $result]);
     }
 
-    protected function deriveRouteName($route)
+    protected function deriveRouteName(string $route): string
     {
         $matches = [];
         preg_match('/(?P<type>rpc|rest)/', $route, $matches);

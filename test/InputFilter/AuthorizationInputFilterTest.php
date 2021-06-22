@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\InputFilter;
 
@@ -13,7 +9,8 @@ use PHPUnit\Framework\TestCase;
 
 class AuthorizationInputFilterTest extends TestCase
 {
-    public function dataProviderIsValid()
+    /** @psalm-return array<string, array{0: array<string, array<string, bool>>}> */
+    public function dataProviderIsValid(): array
     {
         return [
             'empty' => [
@@ -22,13 +19,19 @@ class AuthorizationInputFilterTest extends TestCase
             'valid' => [
                 [
                     'Foo\V1\Rest\Bar\Controller::__entity__' => ['POST' => true, 'GET' => false],
-                    'Foo\V1\Rpc\Boom\Controller::boom' => ['GET' => true, 'DELETE' => false, 'PATCH' => true],
+                    'Foo\V1\Rpc\Boom\Controller::boom'       => ['GET' => true, 'DELETE' => false, 'PATCH' => true],
                 ],
             ],
         ];
     }
 
-    public function dataProviderIsInvalid()
+    /**
+     * @psalm-return array<string, array{
+     *     0: array<string, string|array<string, bool>>,
+     *     1: array<string, string[]>
+     * }>
+     */
+    public function dataProviderIsInvalid(): array
     {
         return [
             'invalid-controller-name' => [
@@ -42,7 +45,7 @@ class AuthorizationInputFilterTest extends TestCase
                     ],
                 ],
             ],
-            'values-not-array' => [
+            'values-not-array'        => [
                 [
                     'Foo\V1\Rest\Bar\Controller::__entity__' => 'GET=true',
                 ],
@@ -52,7 +55,7 @@ class AuthorizationInputFilterTest extends TestCase
                     ],
                 ],
             ],
-            'invalid-http-method' => [
+            'invalid-http-method'     => [
                 [
                     'Foo\V1\Rest\Bar\Controller::__entity__' => ['MYMETHOD' => true],
                 ],
@@ -66,9 +69,9 @@ class AuthorizationInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($data)
+    public function testIsValid(array $data)
     {
-        $filter = new AuthorizationInputFilter;
+        $filter = new AuthorizationInputFilter();
         $filter->setData($data);
         $this->assertTrue($filter->isValid());
     }
@@ -76,9 +79,9 @@ class AuthorizationInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsInvalid
      */
-    public function testIsInvalid($data, $messages)
+    public function testIsInvalid(array $data, array $messages)
     {
-        $filter = new AuthorizationInputFilter;
+        $filter = new AuthorizationInputFilter();
         $filter->setData($data);
         $this->assertFalse($filter->isValid());
         $this->assertEquals($messages, $filter->getMessages());

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -15,14 +11,10 @@ use Laminas\View\Model\JsonModel;
 
 abstract class AbstractPluginManagerController extends AbstractActionController
 {
-    /**
-     * @var object
-     */
+    /** @var object */
     protected $model;
 
-    /**
-     * @var string Name of property in view model to which values are assigned
-     */
+    /** @var string Name of property in view model to which values are assigned */
     protected $property;
 
     /**
@@ -34,7 +26,7 @@ abstract class AbstractPluginManagerController extends AbstractActionController
     {
         $request = $this->getRequest();
 
-        if ($request->getMethod() != $request::METHOD_GET) {
+        if ($request->getMethod() !== $request::METHOD_GET) {
             return new ApiProblemResponse(
                 new ApiProblem(405, 'Only the GET method is allowed for this URI')
             );

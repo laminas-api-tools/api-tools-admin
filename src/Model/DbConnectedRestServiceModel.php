@@ -1,27 +1,23 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Admin\Utility;
+use Laminas\EventManager\Event;
 use Laminas\Filter\StaticFilter;
 use ReflectionClass;
 
+use function array_merge;
+use function dirname;
+use function sprintf;
+
 class DbConnectedRestServiceModel
 {
-    /**
-     * @var RestServiceModel
-     */
+    /** @var RestServiceModel */
     protected $restModel;
 
-    /**
-     * @param RestServiceModel $restModel
-     */
     public function __construct(RestServiceModel $restModel)
     {
         $this->restModel = $restModel;
@@ -30,7 +26,7 @@ class DbConnectedRestServiceModel
     /**
      * Determine if the given entity is DB-connected, and, if so, recast to a DbConnectedRestServiceEntity
      *
-     * @param  \Laminas\EventManager\Event $e
+     * @param Event $e
      * @return void|DbConnectedRestServiceEntity
      */
     public static function onFetch($e)
@@ -66,7 +62,6 @@ class DbConnectedRestServiceModel
     /**
      * Create a new DB-Connected REST service
      *
-     * @param  DbConnectedRestServiceEntity $entity
      * @return DbConnectedRestServiceEntity
      */
     public function createService(DbConnectedRestServiceEntity $entity)
@@ -121,12 +116,11 @@ class DbConnectedRestServiceModel
     /**
      * Update a DB-Connected service
      *
-     * @param  DbConnectedRestServiceEntity $entity
      * @return DbConnectedRestServiceEntity
      */
     public function updateService(DbConnectedRestServiceEntity $entity)
     {
-        $updatedEntity  = $this->restModel->updateService($entity);
+        $updatedEntity = $this->restModel->updateService($entity);
 
         // We need the resource class in order to update db-connected config!
         if (! $entity->resourceClass && $updatedEntity->resourceClass) {
@@ -135,7 +129,7 @@ class DbConnectedRestServiceModel
             ]);
         }
 
-        $updatedProps   = $this->updateDbConnectedConfig($entity);
+        $updatedProps = $this->updateDbConnectedConfig($entity);
         $updatedEntity->exchangeArray($updatedProps);
         $this->updateHalConfig($entity);
 
@@ -152,7 +146,6 @@ class DbConnectedRestServiceModel
     /**
      * Delete a DB-Connected service
      *
-     * @param  DbConnectedRestServiceEntity $entity
      * @param  bool $recursive
      * @return true
      */
@@ -170,8 +163,6 @@ class DbConnectedRestServiceModel
 
     /**
      * Create DB-Connected configuration based on entity
-     *
-     * @param  DbConnectedRestServiceEntity $entity
      */
     public function createDbConnectedConfig(DbConnectedRestServiceEntity $entity)
     {
@@ -179,42 +170,48 @@ class DbConnectedRestServiceModel
             'table_service' => sprintf('%s\\Table', $entity->resourceClass),
         ]);
 
-        $config = ['api-tools' => ['db-connected' => [
-            $entity->resourceClass => [
-                'adapter_name'            => $entity->adapterName,
-                'table_name'              => $entity->tableName,
-                'hydrator_name'           => $entity->hydratorName,
-                'controller_service_name' => $entity->controllerServiceName,
-                'entity_identifier_name'  => $entity->entityIdentifierName,
+        $config = [
+            'api-tools' => [
+                'db-connected' => [
+                    $entity->resourceClass => [
+                        'adapter_name'            => $entity->adapterName,
+                        'table_name'              => $entity->tableName,
+                        'hydrator_name'           => $entity->hydratorName,
+                        'controller_service_name' => $entity->controllerServiceName,
+                        'entity_identifier_name'  => $entity->entityIdentifierName,
+                    ],
+                ],
             ],
-        ]]];
+        ];
         $this->restModel->configResource->patch($config, true);
     }
 
     /**
      * Update the DB-Connected configuration for the entity
      *
-     * @param  DbConnectedRestServiceEntity $entity
+     * @return array
      */
     public function updateDbConnectedConfig(DbConnectedRestServiceEntity $entity)
     {
-        $properties = ['api-tools' => ['db-connected' => [
-            $entity->resourceClass => [
-                'adapter_name'           => $entity->adapterName,
-                'table_name'             => $entity->tableName,
-                'table_service'          => $entity->tableService,
-                'hydrator_name'          => $entity->hydratorName,
-                'entity_identifier_name' => $entity->entityIdentifierName,
+        $properties = [
+            'api-tools' => [
+                'db-connected' => [
+                    $entity->resourceClass => [
+                        'adapter_name'           => $entity->adapterName,
+                        'table_name'             => $entity->tableName,
+                        'table_service'          => $entity->tableService,
+                        'hydrator_name'          => $entity->hydratorName,
+                        'entity_identifier_name' => $entity->entityIdentifierName,
+                    ],
+                ],
             ],
-        ]]];
+        ];
         $this->restModel->configResource->patch($properties, true);
         return $properties['api-tools']['db-connected'][$entity->resourceClass];
     }
 
     /**
      * Update the HAL configuration for the service
-     *
-     * @param DbConnectedRestServiceEntity $entity
      */
     public function updateHalConfig(DbConnectedRestServiceEntity $entity)
     {
@@ -228,8 +225,6 @@ class DbConnectedRestServiceModel
 
     /**
      * Delete the DB-Connected configuration for the entity
-     *
-     * @param  DbConnectedRestServiceEntity $entity
      */
     public function deleteDbConnectedConfig(DbConnectedRestServiceEntity $entity)
     {

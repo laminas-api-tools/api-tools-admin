@@ -1,60 +1,67 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\InputFilter;
 
+use Laminas\ApiTools\Admin\InputFilter\DbAdapterInputFilter;
 use Laminas\InputFilter\Factory;
 use PHPUnit\Framework\TestCase;
 
+use function array_keys;
+use function sort;
+
 class DbAdapterInputFilterTest extends TestCase
 {
-    public function getInputFilter()
+    public function getInputFilter(): DbAdapterInputFilter
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'Laminas\ApiTools\Admin\InputFilter\DbAdapterInputFilter',
+            'type' => DbAdapterInputFilter::class,
         ]);
     }
 
-    public function dataProviderIsValid()
+    /** @psalm-return array<string, array{0: array<string, string>}> */
+    public function dataProviderIsValid(): array
     {
         return [
             'valid' => [
                 [
                     'adapter_name' => 'Db\Status',
-                    'database' => '/path/to/foobar',
-                    'driver' => 'pdo_sqlite',
+                    'database'     => '/path/to/foobar',
+                    'driver'       => 'pdo_sqlite',
                 ],
             ],
         ];
     }
 
-    public function dataProviderIsInvalid()
+    /**
+     * @psalm-return array<string, array{
+     *     0: array<string, string>,
+     *     1: string[]
+     * }>
+     */
+    public function dataProviderIsInvalid(): array
     {
         return [
             'missing-adapter-name' => [
                 [
                     'database' => '/path/to/foobar',
-                    'driver' => 'pdo_sqlite',
+                    'driver'   => 'pdo_sqlite',
                 ],
                 ['adapter_name'],
             ],
-            'missing-database' => [
+            'missing-database'     => [
                 [
                     'adapter_name' => 'Db\Status',
-                    'driver' => 'pdo_sqlite',
+                    'driver'       => 'pdo_sqlite',
                 ],
                 ['database'],
             ],
-            'missing-driver' => [
+            'missing-driver'       => [
                 [
                     'adapter_name' => 'Db\Status',
-                    'database' => '/path/to/foobar',
+                    'database'     => '/path/to/foobar',
                 ],
                 ['driver'],
             ],
@@ -64,7 +71,7 @@ class DbAdapterInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($data)
+    public function testIsValid(array $data)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
@@ -74,13 +81,13 @@ class DbAdapterInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsInvalid
      */
-    public function testIsInvalid($data, $expectedMessageKeys)
+    public function testIsInvalid(array $data, array $expectedMessageKeys)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
         $this->assertFalse($filter->isValid());
 
-        $messages = $filter->getMessages();
+        $messages    = $filter->getMessages();
         $messageKeys = array_keys($messages);
         sort($expectedMessageKeys);
         sort($messageKeys);

@@ -1,36 +1,31 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\Stdlib\ArraySerializableInterface;
 
+use function array_merge;
+use function strtolower;
+
 class DoctrineAdapterEntity implements ArraySerializableInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $name;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $config;
 
     /**
      * Constructor
      *
-     * @param $name
-     * @param $config
+     * @param string $name
+     * @param array $config
      */
     public function __construct($name, $config)
     {
-        $this->name = $name;
+        $this->name   = $name;
         $this->config = $config;
     }
 
@@ -62,7 +57,7 @@ class DoctrineAdapterEntity implements ArraySerializableInterface
      */
     public function getArrayCopy()
     {
-        $baseKey = (isset($this->config['driverClass']))
+        $baseKey = isset($this->config['driverClass'])
             ? 'doctrine.entitymanager.'
             : 'doctrine.documentmanager.';
 

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -16,11 +12,18 @@ use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\ApiTools\Hal\Collection as HalCollection;
 use Laminas\ApiTools\Hal\Entity as HalEntity;
 use Laminas\ApiTools\Hal\Link\Link;
+use Laminas\ApiTools\Hal\Link\LinkCollection;
 use Laminas\Http\Request;
+use Laminas\Http\Response;
 use Laminas\Mvc\Controller\AbstractActionController;
+
+use function preg_match;
+use function sprintf;
+use function str_replace;
 
 class InputFilterController extends AbstractActionController
 {
+    /** @var InputFilterModel */
     protected $model;
 
     public function __construct(InputFilterModel $model)
@@ -28,6 +31,7 @@ class InputFilterController extends AbstractActionController
         $this->model = $model;
     }
 
+    /** @return ApiProblemResponse|Response|ViewModel */
     public function indexAction()
     {
         $event           = $this->getEvent();
@@ -63,9 +67,9 @@ class InputFilterController extends AbstractActionController
                     $result = new HalCollection($result);
                     $result->setCollectionName('input_filter');
                     $result->getLinks()->add(Link::factory([
-                        'rel' => 'self',
+                        'rel'   => 'self',
                         'route' => [
-                            'name' => $route,
+                            'name'   => $route,
                             'params' => [
                                 'name'                    => $module,
                                 'controller_service_name' => str_replace('\\', '-', $controller),
@@ -91,7 +95,7 @@ class InputFilterController extends AbstractActionController
 
             case $request::METHOD_PUT:
                 $inputFilter = $this->bodyParams();
-                $result = $this->model->update($module, $controller, $inputFilter);
+                $result      = $this->model->update($module, $controller, $inputFilter);
                 if (! $result) {
                     return new ApiProblemResponse(
                         new ApiProblem(
@@ -149,7 +153,6 @@ class InputFilterController extends AbstractActionController
      *
      * Provided for testing.
      *
-     * @param  Request $request
      * @return $this
      */
     public function setRequest(Request $request)
@@ -158,19 +161,27 @@ class InputFilterController extends AbstractActionController
         return $this;
     }
 
-    protected function deriveRouteName($route)
+    protected function deriveRouteName(string $route): string
     {
         $matches = [];
         preg_match('/(?P<type>rpc|rest)/', $route, $matches);
         return sprintf('api-tools/api/module/%s-service/input-filter', $matches['type']);
     }
 
+    /**
+     * @param LinkCollection $links
+     * @param string $route
+     * @param string $module
+     * @param string $controller
+     * @param string $inputFilterName
+     * @return void
+     */
     public function injectEntitySelfLink($links, $route, $module, $controller, $inputFilterName)
     {
         $links->add(Link::factory([
-            'rel' => 'self',
+            'rel'   => 'self',
             'route' => [
-                'name' => $route,
+                'name'   => $route,
                 'params' => [
                     'name'                    => $module,
                     'controller_service_name' => $controller,

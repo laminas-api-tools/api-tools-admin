@@ -1,24 +1,28 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Rest\Exception\CreationException;
-use Laminas\Hydrator\ArraySerializable;
+use Laminas\Hydrator\ArraySerializableHydrator;
+
+use function sprintf;
+use function str_replace;
+use function strtolower;
 
 class DbConnectedRestServiceEntity extends RestServiceEntity
 {
+    /** @var string */
     protected $adapterName;
 
-    protected $hydratorName = ArraySerializable::class;
+    /** @var string */
+    protected $hydratorName = ArraySerializableHydrator::class;
 
+    /** @var string */
     protected $tableName;
 
+    /** @var string */
     protected $tableService;
 
     public function exchangeArray(array $data)
@@ -78,9 +82,10 @@ class DbConnectedRestServiceEntity extends RestServiceEntity
         }
     }
 
+    /** @return array */
     public function getArrayCopy()
     {
-        $data = parent::getArrayCopy();
+        $data                  = parent::getArrayCopy();
         $data['adapter_name']  = $this->adapterName;
         $data['hydrator_name'] = $this->hydratorName;
         $data['table_name']    = $this->tableName;

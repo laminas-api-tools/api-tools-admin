@@ -1,26 +1,20 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\InputFilter\RestService;
 
 use Laminas\ApiTools\Admin\InputFilter\Validator\ServiceNameValidator;
 use Laminas\InputFilter\InputFilter;
 
+use function is_array;
+
 class PostInputFilter extends InputFilter
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $localMessages;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $isUpdate = false;
 
     /**
@@ -29,24 +23,26 @@ class PostInputFilter extends InputFilter
     public function init()
     {
         $this->add([
-            'name' => 'service_name',
-            'required' => false,
+            'name'       => 'service_name',
+            'required'   => false,
             'validators' => [
                 ['name' => ServiceNameValidator::class],
             ],
         ]);
         $this->add([
-            'name' => 'adapter_name',
+            'name'     => 'adapter_name',
             'required' => false,
         ]);
         $this->add([
-            'name' => 'table_name',
+            'name'     => 'table_name',
             'required' => false,
         ]);
     }
 
     /**
      * Override isValid to provide conditional input checking
+     *
+     * @param null|array|object $context
      * @return bool
      */
     public function isValid($context = null)
@@ -60,6 +56,7 @@ class PostInputFilter extends InputFilter
 
     /**
      * Override getMessages() to ensure our conditional logic messages can be passed upward
+     *
      * @return array
      */
     public function getMessages()
@@ -84,7 +81,8 @@ class PostInputFilter extends InputFilter
     {
         $context = $this->getRawValues();
 
-        if (! isset($context['service_name'])
+        if (
+            ! isset($context['service_name'])
             && ! isset($context['adapter_name'])
             && ! isset($context['table_name'])
         ) {
@@ -101,7 +99,8 @@ class PostInputFilter extends InputFilter
         }
 
         if (isset($context['service_name'])) {
-            if (isset($context['adapter_name'])
+            if (
+                isset($context['adapter_name'])
                 || isset($context['table_name'])
             ) {
                 $this->localMessages = [
@@ -113,7 +112,8 @@ class PostInputFilter extends InputFilter
             return true;
         }
 
-        if (! empty($context['adapter_name'])
+        if (
+            ! empty($context['adapter_name'])
             && ! isset($context['table_name'])
         ) {
             $this->localMessages = [
@@ -122,7 +122,8 @@ class PostInputFilter extends InputFilter
             return false;
         }
 
-        if (! isset($context['adapter_name'])
+        if (
+            ! isset($context['adapter_name'])
             && ! empty($context['table_name'])
         ) {
             $this->localMessages = [

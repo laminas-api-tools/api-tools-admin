@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -12,6 +8,7 @@ use Laminas\ApiTools\Configuration\ConfigResource;
 
 class ConfigController extends AbstractConfigController
 {
+    /** @var ConfigResource */
     protected $config;
 
     public function __construct(ConfigResource $config)
@@ -19,6 +16,7 @@ class ConfigController extends AbstractConfigController
         $this->config = $config;
     }
 
+    /** @return ConfigResource */
     public function getConfig()
     {
         return $this->config;

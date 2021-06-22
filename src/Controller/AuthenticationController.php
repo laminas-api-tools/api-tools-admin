@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -18,10 +14,14 @@ use Laminas\ApiTools\Hal\Collection;
 use Laminas\ApiTools\Hal\Entity;
 use Laminas\ApiTools\Hal\Link\Link;
 use Laminas\Http\Request;
+use Laminas\Http\Response;
 use Laminas\Stdlib\ResponseInterface;
+
+use function strtolower;
 
 class AuthenticationController extends AbstractAuthenticationController
 {
+    /** @var AuthenticationModel */
     protected $model;
 
     public function __construct(AuthenticationModel $model)
@@ -29,6 +29,7 @@ class AuthenticationController extends AbstractAuthenticationController
         $this->model = $model;
     }
 
+    /** @return ViewModel|ApiProblemResponse|ResponseInterface */
     public function authenticationAction()
     {
         $request = $this->getRequest();
@@ -49,7 +50,6 @@ class AuthenticationController extends AbstractAuthenticationController
     /**
      * Manage the authentication API version 1
      *
-     * @param  Request $request
      * @return ViewModel|ApiProblemResponse|ResponseInterface
      */
     protected function authVersion1(Request $request)
@@ -64,7 +64,7 @@ class AuthenticationController extends AbstractAuthenticationController
                 }
                 break;
             case $request::METHOD_POST:
-                $entity = $this->model->create($this->bodyParams());
+                $entity   = $this->model->create($this->bodyParams());
                 $response = $this->getResponse();
                 $response->setStatusCode(201);
                 $response->getHeaders()->addHeaderLine(
@@ -90,7 +90,7 @@ class AuthenticationController extends AbstractAuthenticationController
 
         $halEntity = new Entity($entity, null);
         $halEntity->getLinks()->add(Link::factory([
-            'rel' => 'self',
+            'rel'   => 'self',
             'route' => $this->getRouteForEntity($entity),
         ]));
         return new ViewModel(['payload' => $halEntity]);
@@ -99,8 +99,7 @@ class AuthenticationController extends AbstractAuthenticationController
     /**
      * Manage the authentication API version 2
      *
-     * @param  Request $request
-     * @return ViewModel|ApiProblemResponse|\Laminas\Http\Response
+     * @return ViewModel|ApiProblemResponse|Response
      */
     protected function authVersion2(Request $request)
     {
@@ -139,6 +138,8 @@ class AuthenticationController extends AbstractAuthenticationController
     /**
      * Mapping action for v2
      * Since Laminas API Tools 1.1
+     *
+     * @return ApiProblemResponse|ViewModel
      */
     public function mappingAction()
     {
@@ -163,7 +164,6 @@ class AuthenticationController extends AbstractAuthenticationController
      * Map the authentication adapter to a module
      * Since Laminas API Tools 1.1
      *
-     * @param  Request $request
      * @return ViewModel|ApiProblemResponse
      */
     protected function mappingAuthentication(Request $request)
@@ -192,7 +192,6 @@ class AuthenticationController extends AbstractAuthenticationController
     /**
      * Determine the route to use for a given entity
      *
-     * @param  AuthenticationEntity $entity
      * @return string
      */
     protected function getRouteForEntity(AuthenticationEntity $entity)
@@ -256,7 +255,7 @@ class AuthenticationController extends AbstractAuthenticationController
      * Create a new authentication adapter
      *
      * @param array $params
-     * @return ApiProblemResponse|\Laminas\Http\Response
+     * @return ApiProblemResponse|Response
      */
     private function createAuthenticationAdapter($params)
     {
@@ -304,7 +303,7 @@ class AuthenticationController extends AbstractAuthenticationController
      * Remove an existing authentication adapter
      *
      * @param string $adapter
-     * @return ApiProblemResponse|\Laminas\Http\Response
+     * @return ApiProblemResponse|Response
      */
     private function removeAuthenticationAdapter($adapter)
     {
@@ -380,7 +379,7 @@ class AuthenticationController extends AbstractAuthenticationController
         foreach ($collection as $entity) {
             $halEntity = new Entity($entity, 'name');
             $halEntity->getLinks()->add(Link::factory([
-                'rel' => 'self',
+                'rel'   => 'self',
                 'route' => [
                     'name'   => 'api-tools/api/authentication',
                     'params' => ['authentication_adapter' => $entity['name']],
@@ -401,7 +400,7 @@ class AuthenticationController extends AbstractAuthenticationController
     {
         $halEntity = new Entity($entity, 'name');
         $halEntity->getLinks()->add(Link::factory([
-            'rel' => 'self',
+            'rel'   => 'self',
             'route' => [
                 'name'   => 'api-tools/api/authentication',
                 'params' => ['authentication_adapter' => $entity['name']],

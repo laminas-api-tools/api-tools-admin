@@ -1,22 +1,22 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\InputFilter;
 
 use Laminas\ApiTools\Admin\InputFilter\CreateContentNegotiationInputFilter;
+use Laminas\View\Model\ViewModel;
 use PHPUnit\Framework\TestCase;
+
+use function var_export;
 
 class CreateContentNegotiationInputFilterTest extends TestCase
 {
-    public function dataProviderIsValid()
+    /** @psalm-return array<string, array{0: array<string, mixed>}> */
+    public function dataProviderIsValid(): array
     {
         return [
-            'content-name-only' => [
+            'content-name-only'          => [
                 [
                     'content_name' => 'test',
                 ],
@@ -24,21 +24,27 @@ class CreateContentNegotiationInputFilterTest extends TestCase
             'content-name-and-selectors' => [
                 [
                     'content_name' => 'test',
-                    'selectors' => [
-                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                    'selectors'    => [
+                        ViewModel::class => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
             ],
         ];
     }
 
-    public function dataProviderIsInvalid()
+    /**
+     * @psalm-return array<string, array {
+     *     0: array<string, array<string, mixed>>,
+     *     1: array<string, array<string, string>>
+     * }>
+     */
+    public function dataProviderIsInvalid(): array
     {
         return [
             'missing-content-name' => [
                 [
                     'selectors' => [
-                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                        ViewModel::class => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
                 [
@@ -47,71 +53,83 @@ class CreateContentNegotiationInputFilterTest extends TestCase
                     ],
                 ],
             ],
-            'null-content-name' => [
+            'null-content-name'    => [
                 [
                     'content_name' => null,
-                    'selectors' => [
-                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                    'selectors'    => [
+                        ViewModel::class => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
-                ['content_name' => [
-                    'isEmpty' => 'Value is required and can\'t be empty',
-                ]],
+                [
+                    'content_name' => [
+                        'isEmpty' => 'Value is required and can\'t be empty',
+                    ],
+                ],
             ],
-            'bool-content-name' => [
+            'bool-content-name'    => [
                 [
                     'content_name' => true,
-                    'selectors' => [
-                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                    'selectors'    => [
+                        ViewModel::class => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
-                ['content_name' => [
-                    'invalidType' => 'Value must be a string; received boolean',
-                ]],
+                [
+                    'content_name' => [
+                        'invalidType' => 'Value must be a string; received boolean',
+                    ],
+                ],
             ],
-            'int-content-name' => [
+            'int-content-name'     => [
                 [
                     'content_name' => 1,
-                    'selectors' => [
-                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                    'selectors'    => [
+                        ViewModel::class => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
-                ['content_name' => [
-                    'invalidType' => 'Value must be a string; received integer',
-                ]],
+                [
+                    'content_name' => [
+                        'invalidType' => 'Value must be a string; received integer',
+                    ],
+                ],
             ],
-            'float-content-name' => [
+            'float-content-name'   => [
                 [
                     'content_name' => 1.1,
-                    'selectors' => [
-                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                    'selectors'    => [
+                        ViewModel::class => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
-                ['content_name' => [
-                    'invalidType' => 'Value must be a string; received double',
-                ]],
+                [
+                    'content_name' => [
+                        'invalidType' => 'Value must be a string; received double',
+                    ],
+                ],
             ],
-            'array-content-name' => [
+            'array-content-name'   => [
                 [
                     'content_name' => ['content_name'],
-                    'selectors' => [
-                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                    'selectors'    => [
+                        ViewModel::class => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
-                ['content_name' => [
-                    'invalidType' => 'Value must be a string; received array',
-                ]],
+                [
+                    'content_name' => [
+                        'invalidType' => 'Value must be a string; received array',
+                    ],
+                ],
             ],
-            'object-content-name' => [
+            'object-content-name'  => [
                 [
                     'content_name' => (object) ['content_name'],
-                    'selectors' => [
-                        'Laminas\View\Model\ViewModel' => ['text/html', 'application/xhtml+xml'],
+                    'selectors'    => [
+                        ViewModel::class => ['text/html', 'application/xhtml+xml'],
                     ],
                 ],
-                ['content_name' => [
-                    'invalidType' => 'Value must be a string; received stdClass',
-                ]],
+                [
+                    'content_name' => [
+                        'invalidType' => 'Value must be a string; received stdClass',
+                    ],
+                ],
             ],
         ];
     }
@@ -119,19 +137,19 @@ class CreateContentNegotiationInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($data)
+    public function testIsValid(array $data)
     {
-        $filter = new CreateContentNegotiationInputFilter;
+        $filter = new CreateContentNegotiationInputFilter();
         $filter->setData($data);
-        $this->assertTrue($filter->isValid(), var_export($filter->getMessages(), 1));
+        $this->assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
     }
 
     /**
      * @dataProvider dataProviderIsInvalid
      */
-    public function testIsInvalid($data, $messages)
+    public function testIsInvalid(array $data, array $messages)
     {
-        $filter = new CreateContentNegotiationInputFilter;
+        $filter = new CreateContentNegotiationInputFilter();
         $filter->setData($data);
         $this->assertFalse($filter->isValid());
         $this->assertEquals($messages, $filter->getMessages());

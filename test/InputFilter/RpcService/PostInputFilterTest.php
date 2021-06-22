@@ -1,20 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\ApiTools\Admin\InputFilter\RpcService;
 
+use Laminas\ApiTools\Admin\InputFilter\RpcService\PostInputFilter;
 use Laminas\InputFilter\Factory;
 use PHPUnit\Framework\TestCase;
 
+use function array_keys;
+use function sort;
+
 class PostInputFilterTest extends TestCase
 {
-    public function getInputFilter()
+    public function getInputFilter(): PostInputFilter
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'Laminas\ApiTools\Admin\InputFilter\RpcService\PostInputFilter',
+            'type' => PostInputFilter::class,
         ]);
     }
 
+    /** @psalm-return array<string, array{0: array<string, string>}> */
     public function dataProviderIsValid()
     {
         return [
@@ -27,18 +34,19 @@ class PostInputFilterTest extends TestCase
         ];
     }
 
+    /** @psalm-return array<string, array{0: array<string, string>, 1: string[]}> */
     public function dataProviderIsInvalid()
     {
         return [
-            'empty' => [
+            'empty'                   => [
                 [],
                 ['service_name', 'route_match'],
             ],
-            'missing-service-name' => [
+            'missing-service-name'    => [
                 ['route_match' => '/bar'],
                 ['service_name'],
             ],
-            'missing-route-match' => [
+            'missing-route-match'     => [
                 ['service_name' => 'Foo_Bar'],
                 ['route_match'],
             ],
@@ -52,7 +60,7 @@ class PostInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($data)
+    public function testIsValid(array $data)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
@@ -62,7 +70,7 @@ class PostInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsInvalid
      */
-    public function testIsInvalid($data, $expectedMessageKeys)
+    public function testIsInvalid(array $data, array $expectedMessageKeys)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);

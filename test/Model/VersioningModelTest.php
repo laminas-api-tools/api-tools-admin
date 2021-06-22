@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Admin\Model\VersioningModel;
@@ -13,8 +7,13 @@ use Laminas\ApiTools\Configuration\ConfigResource;
 use Laminas\Config\Writer\PhpArray;
 use PHPUnit\Framework\TestCase;
 
+use function var_export;
+
 class VersioningModelTest extends TestCase
 {
+    /** @var VersioningModel */
+    protected $model;
+
     public function setUp()
     {
         $this->moduleConfigFile     = __DIR__ . '/TestAsset/module/Version/config/module.config.php';
@@ -92,13 +91,14 @@ class VersioningModelTest extends TestCase
 
         $config = include $this->moduleConfigFile;
         $this->assertArrayHasKey('router', $config);
-        // @codingStandardsIgnoreStart
+
+        // phpcs:disable Generic.Files.LineLength.TooLong,WebimpressCodingStandard.Formatting.StringClassReference.Found
         $this->assertEquals('Version\\V1\\Rest\Message\Controller', $config['router']['routes']['version.rest.message']['options']['defaults']['controller']);
         $this->assertEquals('Version\\V1\\Rest\Comment\Controller', $config['router']['routes']['version.rest.comment']['options']['defaults']['controller']);
 
         $this->assertArrayHasKey('api-tools-rest', $config);
         $this->assertArrayHasKey('Version\\V1\\Rest\\Message\\Controller', $config['api-tools-rest']);
-        $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\Controller', $config['api-tools-rest'], var_export($config, 1));
+        $this->assertArrayHasKey('Version\\V2\\Rest\\Message\\Controller', $config['api-tools-rest'], var_export($config, true));
 
         $this->assertEquals('Version\\V1\\Rest\\Message\\MessageResource', $config['api-tools-rest']['Version\\V1\\Rest\\Message\\Controller']['listener']);
         $this->assertEquals('Version\\V2\\Rest\\Message\\MessageResource', $config['api-tools-rest']['Version\\V2\\Rest\\Message\\Controller']['listener']);
@@ -122,14 +122,12 @@ class VersioningModelTest extends TestCase
         $this->assertArrayHasKey('Version\\V2\\Rest\\Comment\\CommentEntity', $config['api-tools-hal']['metadata_map']);
         $this->assertArrayHasKey('Version\\V1\\Rest\\Comment\\CommentCollection', $config['api-tools-hal']['metadata_map']);
         $this->assertArrayHasKey('Version\\V2\\Rest\\Comment\\CommentCollection', $config['api-tools-hal']['metadata_map']);
-        // @codingStandardsIgnoreEnd
 
         $this->assertArrayHasKey('api-tools', $config);
         $this->assertArrayHasKey(
             'Version\\V1\\Rest\\Message\\MessageResource',
             $config['api-tools']['db-connected']
         );
-        // @codingStandardsIgnoreStart
         $this->assertEquals(
             'Version\\V1\\Rest\\Message\\Controller',
             $config['api-tools']['db-connected']['Version\\V1\\Rest\\Message\\MessageResource']['controller_service_name']
@@ -138,17 +136,14 @@ class VersioningModelTest extends TestCase
             'Version\\V1\\Rest\\Message\\MessageResource\\Table',
             $config['api-tools']['db-connected']['Version\\V1\\Rest\\Message\\MessageResource']['table_service']
         );
-        // @codingStandardsIgnoreEnd
         $this->assertArrayHasKey(
             'Version\\V2\\Rest\\Message\\MessageResource',
             $config['api-tools']['db-connected']
         );
-        // @codingStandardsIgnoreStart
         $this->assertEquals(
             'Version\\V2\\Rest\\Message\\Controller',
             $config['api-tools']['db-connected']['Version\\V2\\Rest\\Message\\MessageResource']['controller_service_name']
         );
-        // @codingStandardsIgnoreEnd
         $this->assertEquals(
             'Version\\V2\\Rest\\Message\\MessageResource\\Table',
             $config['api-tools']['db-connected']['Version\\V2\\Rest\\Message\\MessageResource']['table_service']
@@ -181,6 +176,7 @@ class VersioningModelTest extends TestCase
             'Version\V2\Rpc\Ping\PingController',
             $config['controllers']['invokables']['Version\V2\Rpc\Ping\Controller']
         );
+        // phpcs:enable
 
         $this->removeDir(__DIR__ . "/TestAsset/module/Version/src/Version/V2");
     }

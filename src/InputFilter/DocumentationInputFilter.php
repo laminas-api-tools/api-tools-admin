@@ -1,25 +1,21 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\InputFilter;
 
 use Laminas\InputFilter\InputFilter;
 
+use function in_array;
+use function is_array;
+use function is_string;
+
 class DocumentationInputFilter extends InputFilter
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $messages = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $validHttpMethodDocumentationKeys = [
         'identifier',
         'description',
@@ -27,9 +23,7 @@ class DocumentationInputFilter extends InputFilter
         'response',
     ];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $validHttpMethods = [
         'GET',
         'POST',
@@ -47,7 +41,7 @@ class DocumentationInputFilter extends InputFilter
     public function isValid($context = null)
     {
         $this->messages = [];
-        $isValid = true;
+        $isValid        = true;
 
         if (! is_array($this->data)) {
             $this->messages['general']['invalidData'] = 'Documentation payload must be an array';
@@ -60,7 +54,7 @@ class DocumentationInputFilter extends InputFilter
                 if (isset($this->data['collection']) || isset($this->data['entity'])) {
                     $this->messages[$key][] = 'HTTP methods cannot be present when "collection" or "entity"'
                         . ' is also present; please verify data for "' . $key . '"';
-                    $isValid = false;
+                    $isValid                = false;
                     continue;
                 }
 
@@ -77,7 +71,7 @@ class DocumentationInputFilter extends InputFilter
                 if (! is_array($data)) {
                     $this->messages[$key][] = 'Collections and entities methods must be an array of HTTP methods;'
                         . ' received invalid entry for "' . $key . '"';
-                    $isValid = false;
+                    $isValid                = false;
                     continue;
                 }
 
@@ -91,13 +85,13 @@ class DocumentationInputFilter extends InputFilter
                         if (! is_string($subData)) {
                             $this->messages[$key][] = 'Description must be provided as a string;'
                                 . ' please verify description for "' . $subKey . '"';
-                            $isValid = false;
+                            $isValid                = false;
                             continue;
                         }
                     } else {
                         $this->messages[$key][] = 'Key must be description or an HTTP indexed list;'
                             . ' please verify documentation for "' . $subKey . '"';
-                        $isValid = false;
+                        $isValid                = false;
                         continue;
                     }
                 }
@@ -110,7 +104,7 @@ class DocumentationInputFilter extends InputFilter
                 if (! is_string($data)) {
                     $this->messages[$key][] = 'Description must be provided as a string;'
                         . ' please verify description for "' . $key . '"';
-                    $isValid = false;
+                    $isValid                = false;
                     continue;
                 }
 
@@ -120,7 +114,7 @@ class DocumentationInputFilter extends InputFilter
             // everything else is invalid
             $this->messages[$key][] = 'An invalid key was encountered in the top position for "' . $key . '"; '
                 . 'must be one of an HTTP method, collection, entity, or description';
-            $isValid = false;
+            $isValid                = false;
         }
 
         return $isValid;

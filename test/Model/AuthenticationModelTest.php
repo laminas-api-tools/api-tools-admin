@@ -1,19 +1,42 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
+use Laminas\ApiTools\Admin\Exception\InvalidArgumentException;
+use Laminas\ApiTools\Admin\Model\AuthenticationEntity;
 use Laminas\ApiTools\Admin\Model\AuthenticationModel;
+use Laminas\ApiTools\Admin\Model\ModuleEntity;
+use Laminas\ApiTools\Admin\Model\ModuleModel;
 use Laminas\ApiTools\Configuration\ConfigResource;
+use Laminas\ApiTools\MvcAuth\Authentication\HttpAdapter;
+use Laminas\ApiTools\MvcAuth\Authentication\OAuth2Adapter;
+use Laminas\ApiTools\OAuth2\Adapter\MongoAdapter;
+use Laminas\ApiTools\OAuth2\Adapter\PdoAdapter;
 use Laminas\Config\Writer\PhpArray as ConfigWriter;
 use Laminas\Stdlib\ArrayUtils;
 use MongoClient;
 use PHPUnit\Framework\TestCase;
+
+use function array_merge;
+use function class_exists;
+use function count;
+use function dirname;
+use function extension_loaded;
+use function file_exists;
+use function file_put_contents;
+use function getenv;
+use function in_array;
+use function is_array;
+use function is_dir;
+use function mkdir;
+use function rmdir;
+use function sys_get_temp_dir;
+use function uniqid;
+use function unlink;
+use function var_export;
+use function version_compare;
 
 class AuthenticationModelTest extends TestCase
 {
@@ -24,7 +47,7 @@ class AuthenticationModelTest extends TestCase
         $this->localConfigPath  = $this->configPath . '/local.php';
         $this->removeConfigMocks();
         $this->createConfigMocks();
-        $this->configWriter     = new ConfigWriter();
+        $this->configWriter = new ConfigWriter();
     }
 
     public function tearDown()
@@ -59,7 +82,7 @@ class AuthenticationModelTest extends TestCase
         }
     }
 
-    public function createModelFromConfigArrays(array $global, array $local)
+    public function createModelFromConfigArrays(array $global, array $local): AuthenticationModel
     {
         $this->configWriter->toFile($this->globalConfigPath, $global);
         $this->configWriter->toFile($this->localConfigPath, $local);
@@ -67,8 +90,7 @@ class AuthenticationModelTest extends TestCase
         $globalConfig = new ConfigResource($mergedConfig, $this->globalConfigPath, $this->configWriter);
         $localConfig  = new ConfigResource($mergedConfig, $this->localConfigPath, $this->configWriter);
 
-
-        $moduleEntity = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\ModuleEntity')
+        $moduleEntity = $this->getMockBuilder(ModuleEntity::class)
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -78,9 +100,9 @@ class AuthenticationModelTest extends TestCase
 
         $moduleEntity->expects($this->any())
                      ->method('getVersions')
-                     ->will($this->returnValue([1,2]));
+                     ->will($this->returnValue([1, 2]));
 
-        $moduleModel = $this->getMockBuilder('Laminas\ApiTools\Admin\Model\ModuleModel')
+        $moduleModel = $this->getMockBuilder(ModuleModel::class)
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -91,21 +113,21 @@ class AuthenticationModelTest extends TestCase
         return new AuthenticationModel($globalConfig, $localConfig, $moduleModel);
     }
 
-    public function assertAuthenticationConfigExists($key, array $config)
+    public function assertAuthenticationConfigExists(string $key, array $config): void
     {
         $this->assertArrayHasKey('api-tools-mvc-auth', $config);
         $this->assertArrayHasKey('authentication', $config['api-tools-mvc-auth']);
         $this->assertArrayHasKey($key, $config['api-tools-mvc-auth']['authentication']);
     }
 
-    public function assertAuthenticationConfigEquals($key, array $expected, array $config)
+    public function assertAuthenticationConfigEquals(string $key, array $expected, array $config): void
     {
         $this->assertAuthenticationConfigExists($key, $config);
         $config = $config['api-tools-mvc-auth']['authentication'][$key];
         $this->assertEquals($expected, $config);
     }
 
-    public function assertAuthenticationConfigContains($authKey, array $expected, array $config)
+    public function assertAuthenticationConfigContains(string $authKey, array $expected, array $config): void
     {
         $this->assertAuthenticationConfigExists($authKey, $config);
         $config = $config['api-tools-mvc-auth']['authentication'][$authKey];
@@ -123,7 +145,7 @@ class AuthenticationModelTest extends TestCase
             'htpasswd'       => __DIR__ . '/htpasswd',
         ];
 
-        $model    = $this->createModelFromConfigArrays([], []);
+        $model = $this->createModelFromConfigArrays([], []);
         $model->create($toCreate);
 
         $global = include $this->globalConfigPath;
@@ -132,9 +154,9 @@ class AuthenticationModelTest extends TestCase
             'realm'          => 'laminascon',
         ], $global);
 
-        $local  = include $this->localConfigPath;
+        $local = include $this->localConfigPath;
         $this->assertAuthenticationConfigEquals('http', [
-            'htpasswd'       => __DIR__ . '/htpasswd',
+            'htpasswd' => __DIR__ . '/htpasswd',
         ], $local);
     }
 
@@ -150,7 +172,7 @@ class AuthenticationModelTest extends TestCase
                 ],
             ],
         ];
-        $localSeedConfig = [
+        $localSeedConfig  = [
             'api-tools-mvc-auth' => [
                 'authentication' => [
                     'http' => [
@@ -159,9 +181,9 @@ class AuthenticationModelTest extends TestCase
                 ],
             ],
         ];
-        $model  = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
-        $entity = $model->fetch();
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthenticationEntity', $entity);
+        $model            = $this->createModelFromConfigArrays($globalSeedConfig, $localSeedConfig);
+        $entity           = $model->fetch();
+        $this->assertInstanceOf(AuthenticationEntity::class, $entity);
         $expected = array_merge(
             ['type' => 'http_basic'],
             $globalSeedConfig['api-tools-mvc-auth']['authentication']['http'],
@@ -177,17 +199,17 @@ class AuthenticationModelTest extends TestCase
             'realm'          => 'laminascon',
             'htpasswd'       => __DIR__ . '/htpasswd',
         ];
-        $model = $this->createModelFromConfigArrays([], []);
+        $model    = $this->createModelFromConfigArrays([], []);
         $model->create($toCreate);
 
         $newConfig = [
             'realm'    => 'api',
             'htpasswd' => sys_get_temp_dir() . '/htpasswd',
         ];
-        $entity = $model->update($newConfig);
+        $entity    = $model->update($newConfig);
 
         // Ensure the entity returned from the update is what we expect
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\AuthenticationEntity', $entity);
+        $this->assertInstanceOf(AuthenticationEntity::class, $entity);
         $expected = array_merge(['type' => 'http_basic'], $toCreate, $newConfig);
         $this->assertEquals($expected, $entity->getArrayCopy());
 
@@ -228,7 +250,7 @@ class AuthenticationModelTest extends TestCase
             'route_match' => '/api/oauth',
         ];
 
-        $model    = $this->createModelFromConfigArrays([], []);
+        $model = $this->createModelFromConfigArrays([], []);
         $model->create($toCreate);
 
         $global = include $this->globalConfigPath;
@@ -240,24 +262,25 @@ class AuthenticationModelTest extends TestCase
         $this->assertEquals(
             '/api/oauth',
             $global['router']['routes']['oauth']['options']['route'],
-            var_export($global, 1)
+            var_export($global, true)
         );
 
-        $local  = include $this->localConfigPath;
+        $local = include $this->localConfigPath;
         $this->assertEquals([
-            'storage' => 'Laminas\ApiTools\OAuth2\Adapter\PdoAdapter',
-            'db' => [
-                'dsn_type'    => 'PDO',
-                'dsn'         => 'sqlite::memory:',
-                'username'    => 'me',
-                'password'    => 'too',
+            'storage' => PdoAdapter::class,
+            'db'      => [
+                'dsn_type' => 'PDO',
+                'dsn'      => 'sqlite::memory:',
+                'username' => 'me',
+                'password' => 'too',
             ],
         ], $local['api-tools-oauth2']);
     }
 
     public function testCreatingOAuth2ConfigurationWritesToEachConfigFileForMongo()
     {
-        if (! (extension_loaded('mongo') || extension_loaded('mongodb'))
+        if (
+            ! (extension_loaded('mongo') || extension_loaded('mongodb'))
             || ! class_exists(MongoClient::class)
             || version_compare(MongoClient::VERSION, '1.4.1', '<')
         ) {
@@ -265,13 +288,13 @@ class AuthenticationModelTest extends TestCase
         }
 
         $toCreate = [
-            'dsn'         => 'mongodb://localhost:27017',
+            'dsn'         => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
             'database'    => 'apiToolsTest',
             'dsn_type'    => 'Mongo',
             'route_match' => '/api/oauth',
         ];
 
-        $model    = $this->createModelFromConfigArrays([], []);
+        $model = $this->createModelFromConfigArrays([], []);
         $model->create($toCreate);
 
         $global = include $this->globalConfigPath;
@@ -283,18 +306,18 @@ class AuthenticationModelTest extends TestCase
         $this->assertEquals(
             '/api/oauth',
             $global['router']['routes']['oauth']['options']['route'],
-            var_export($global, 1)
+            var_export($global, true)
         );
 
-        $local  = include $this->localConfigPath;
+        $local = include $this->localConfigPath;
         $this->assertEquals([
-            'storage' => 'Laminas\ApiTools\OAuth2\Adapter\MongoAdapter',
-            'mongo' => [
-                'dsn_type'    => 'Mongo',
-                'dsn'         => 'mongodb://localhost:27017',
-                'username'    => null,
-                'password'    => null,
-                'database'    => 'apiToolsTest',
+            'storage' => MongoAdapter::class,
+            'mongo'   => [
+                'dsn_type' => 'Mongo',
+                'dsn'      => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
+                'username' => null,
+                'password' => null,
+                'database' => 'apiToolsTest',
             ],
         ], $local['api-tools-oauth2']);
     }
@@ -308,7 +331,7 @@ class AuthenticationModelTest extends TestCase
             'route_match' => '/api/oauth',
         ];
 
-        $model    = $this->createModelFromConfigArrays([], []);
+        $model = $this->createModelFromConfigArrays([], []);
         $model->create($toCreate);
 
         $model->remove();
@@ -327,7 +350,8 @@ class AuthenticationModelTest extends TestCase
      */
     public function testRemovingOAuth2MongoConfigurationRemovesConfigurationFromEachFile()
     {
-        if (! (extension_loaded('mongo') || extension_loaded('mongodb'))
+        if (
+            ! (extension_loaded('mongo') || extension_loaded('mongodb'))
             || ! class_exists(MongoClient::class)
             || version_compare(MongoClient::VERSION, '1.4.1', '<')
         ) {
@@ -336,11 +360,11 @@ class AuthenticationModelTest extends TestCase
 
         $toCreate = [
             'dsn_type'    => 'mongo',
-            'dsn'         => 'mongodb://localhost:27017/api-tools',
+            'dsn'         => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING') . '/api-tools',
             'route_match' => '/api/oauth',
         ];
 
-        $model    = $this->createModelFromConfigArrays([], []);
+        $model = $this->createModelFromConfigArrays([], []);
         $model->create($toCreate);
 
         $model->remove();
@@ -359,7 +383,8 @@ class AuthenticationModelTest extends TestCase
      */
     public function testAttemptingToCreateOAuth2ConfigurationWithInvalidMongoDsnRaisesException()
     {
-        if (! (extension_loaded('mongo') || extension_loaded('mongodb'))
+        if (
+            ! (extension_loaded('mongo') || extension_loaded('mongodb'))
             || ! class_exists(MongoClient::class)
             || version_compare(MongoClient::VERSION, '1.4.1', '<')
         ) {
@@ -372,9 +397,9 @@ class AuthenticationModelTest extends TestCase
             'route_match' => '/api/oauth',
             'dsn_type'    => 'Mongo',
         ];
-        $model = $this->createModelFromConfigArrays([], []);
+        $model    = $this->createModelFromConfigArrays([], []);
 
-        $this->expectException('Laminas\ApiTools\Admin\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('DSN');
         $this->expectExceptionCode(422);
         $model->create($toCreate);
@@ -391,9 +416,9 @@ class AuthenticationModelTest extends TestCase
             'password'    => 'too',
             'route_match' => '/api/oauth',
         ];
-        $model = $this->createModelFromConfigArrays([], []);
+        $model    = $this->createModelFromConfigArrays([], []);
 
-        $this->expectException('Laminas\ApiTools\Admin\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('DSN');
         $this->expectExceptionCode(422);
         $model->create($toCreate);
@@ -410,21 +435,20 @@ class AuthenticationModelTest extends TestCase
             'password'    => 'too',
             'route_match' => '/api/oauth',
         ];
-        $model = $this->createModelFromConfigArrays([], []);
+        $model    = $this->createModelFromConfigArrays([], []);
 
         $model->create($toCreate);
         $newConfig = [
             'dsn' => 'sqlite:/tmp/' . uniqid() . '/.db',
         ];
 
-        $this->expectException('Laminas\ApiTools\Admin\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('DSN');
         $this->expectExceptionCode(422);
         $entity = $model->update($newConfig);
     }
 
-
-    public function getAuthAdapters()
+    public function getAuthAdapters(): array
     {
         return [
             [
@@ -439,13 +463,13 @@ class AuthenticationModelTest extends TestCase
                             ],
                         ],
                     ],
-                    'router' => [
+                    'router'             => [
                         'routes' => [
                             'oauth' => [
-                                'type' => 'regex',
+                                'type'    => 'regex',
                                 'options' => [
                                     'regex' => '(?P<oauth>(/oauth_mongo|/oauth_pdo))',
-                                    'spec' => '%oauth%',
+                                    'spec'  => '%oauth%',
                                 ],
                             ],
                         ],
@@ -456,47 +480,48 @@ class AuthenticationModelTest extends TestCase
                         'authentication' => [
                             'adapters' => [
                                 'test1' => [
-                                    'adapter' => 'Laminas\ApiTools\MvcAuth\Authentication\HttpAdapter',
+                                    'adapter' => HttpAdapter::class,
                                     'options' => [
                                         'accept_schemes' => ['basic'],
-                                        'realm' => 'api',
-                                        'htpasswd' => 'data/htpasswd',
+                                        'realm'          => 'api',
+                                        'htpasswd'       => 'data/htpasswd',
                                     ],
                                 ],
                                 'test2' => [
-                                    'adapter' => 'Laminas\ApiTools\MvcAuth\Authentication\HttpAdapter',
+                                    'adapter' => HttpAdapter::class,
                                     'options' => [
                                         'accept_schemes' => ['digest'],
-                                        'realm' => 'api',
+                                        'realm'          => 'api',
                                         'digest_domains' => 'domain.com',
-                                        'nonce_timeout' => 3600,
-                                        'htdigest' => 'data/htpasswd',
+                                        'nonce_timeout'  => 3600,
+                                        'htdigest'       => 'data/htpasswd',
                                     ],
                                 ],
                                 'test3' => [
-                                    'adapter' => 'Laminas\ApiTools\MvcAuth\Authentication\OAuth2Adapter',
+                                    'adapter' => OAuth2Adapter::class,
                                     'storage' => [
-                                        'adapter' => 'pdo',
-                                        'route' => '/oauth_pdo',
-                                        'dsn' => 'mysql:host=localhost;dbname=oauth2',
+                                        'adapter'  => 'pdo',
+                                        'route'    => '/oauth_pdo',
+                                        'dsn'      => 'mysql:host=localhost;dbname=oauth2',
                                         'username' => 'test',
                                         'password' => 'test',
-                                        'options' => [
+                                        'options'  => [
                                             1002 => 'SET NAMES utf8',
                                         ],
                                     ],
                                 ],
                                 'test4' => [
-                                    'adapter' => 'Laminas\ApiTools\MvcAuth\Authentication\OAuth2Adapter',
+                                    'adapter' => OAuth2Adapter::class,
                                     'storage' => [
-                                        'adapter' => 'mongo',
-                                        'route' => '/oauth_mongo',
+                                        'adapter'      => 'mongo',
+                                        'route'        => '/oauth_mongo',
                                         'locator_name' => 'SomeServiceName',
-                                        'dsn' => 'mongodb://localhost',
+                                        // phpcs:ignore Generic.Files.LineLength.TooLong
+                                        'dsn'      => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
                                         'database' => 'oauth2',
-                                        'options' => [
-                                            'username' => 'username',
-                                            'password' => 'password',
+                                        'options'  => [
+                                            'username'         => 'username',
+                                            'password'         => 'password',
                                             'connectTimeoutMS' => 500,
                                         ],
                                     ],
@@ -515,7 +540,7 @@ class AuthenticationModelTest extends TestCase
      *
      * @dataProvider getAuthAdapters
      */
-    public function testFetchAllAuthenticationAdapter($global, $local)
+    public function testFetchAllAuthenticationAdapter(array $global, array $local)
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
@@ -534,7 +559,7 @@ class AuthenticationModelTest extends TestCase
      *
      * @dataProvider getAuthAdapters
      */
-    public function testFetchAuthenticationAdapter($global, $local)
+    public function testFetchAuthenticationAdapter(array $global, array $local)
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
@@ -560,13 +585,13 @@ class AuthenticationModelTest extends TestCase
         );
     }
 
-    public function getDataForAuthAdapters()
+    public function getDataForAuthAdapters(): array
     {
         return [
             [
-                'name' => 'test10',
-                'type' => 'basic',
-                'realm' => 'api',
+                'name'     => 'test10',
+                'type'     => 'basic',
+                'realm'    => 'api',
                 'htpasswd' => __DIR__ . '/TestAsset/htpasswd',
             ],
             [
@@ -593,11 +618,11 @@ class AuthenticationModelTest extends TestCase
                 'name'                => 'test13',
                 'type'                => 'oauth2',
                 'oauth2_type'         => 'mongo',
-                'oauth2_dsn'          => 'mongodb://localhost',
-                'oauth2_database'     => 'api-tools-admin-test',
+                'oauth2_dsn'          => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
+                'oauth2_database'     => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_DATABASE'),
                 'oauth2_route'        => '/oauth13',
                 'oauth2_locator_name' => null,
-                'oauth2_options'  => [
+                'oauth2_options'      => [
                     'foo' => 'bar',
                 ],
             ],
@@ -610,13 +635,14 @@ class AuthenticationModelTest extends TestCase
      *
      * @dataProvider getAuthAdapters
      */
-    public function testCreateAuthenticationAdapter($global, $local)
+    public function testCreateAuthenticationAdapter(array $global, array $local)
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
         $data = $this->getDataForAuthAdapters();
         foreach ($data as $adapter) {
-            if (isset($adapter['oauth2_type'])
+            if (
+                isset($adapter['oauth2_type'])
                 && 'mongo' === $adapter['oauth2_type']
                 && ! extension_loaded('mongo')
             ) {
@@ -639,13 +665,13 @@ class AuthenticationModelTest extends TestCase
      *
      * @dataProvider getAuthAdapters
      */
-    public function testUpdateAuthenticationAdapter($global, $local)
+    public function testUpdateAuthenticationAdapter(array $global, array $local)
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
-        $data = $this->getDataForAuthAdapters();
+        $data            = $this->getDataForAuthAdapters();
         $data[2]['name'] = 'test1';
-        $result = $model->updateAuthenticationAdapter('test1', $data[2]);
+        $result          = $model->updateAuthenticationAdapter('test1', $data[2]);
         $this->assertTrue(is_array($result));
         $this->assertEquals($data[2], $result);
         $config = include $this->globalConfigPath;
@@ -658,7 +684,7 @@ class AuthenticationModelTest extends TestCase
      *
      * @dataProvider getAuthAdapters
      */
-    public function testRemoveAuthenticationAdapter($global, $local)
+    public function testRemoveAuthenticationAdapter(array $global, array $local)
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
@@ -678,7 +704,7 @@ class AuthenticationModelTest extends TestCase
      *
      * @dataProvider getAuthAdapters
      */
-    public function testGetAuthenticationMap($global, $local)
+    public function testGetAuthenticationMap(array $global)
     {
         $model = $this->createModelFromConfigArrays($global, []);
 
@@ -698,7 +724,7 @@ class AuthenticationModelTest extends TestCase
      *
      * @dataProvider getAuthAdapters
      */
-    public function testAddAuthenticationMap($global, $local)
+    public function testAddAuthenticationMap(array $global, array $local)
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
@@ -711,11 +737,12 @@ class AuthenticationModelTest extends TestCase
      * Since Laminas API Tools 1.1
      *
      * @dataProvider getAuthAdapters
-     * @expectedException Laminas\ApiTools\Admin\Exception\InvalidArgumentException
      */
-    public function testAddInvalidAuthenticationMap($global, $local)
+    public function testAddInvalidAuthenticationMap(array $global, array $local)
     {
         $model = $this->createModelFromConfigArrays($global, $local);
+
+        $this->expectException(InvalidArgumentException::class);
         $model->saveAuthenticationMap('test', 'Foo', 1);
     }
 
@@ -725,7 +752,7 @@ class AuthenticationModelTest extends TestCase
      *
      * @dataProvider getAuthAdapters
      */
-    public function testUpdateAuthenticationMap($global, $local)
+    public function testUpdateAuthenticationMap(array $global, array $local)
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
@@ -741,7 +768,7 @@ class AuthenticationModelTest extends TestCase
      *
      * @dataProvider getAuthAdapters
      */
-    public function testRemoveAuthenticationMap($global, $local)
+    public function testRemoveAuthenticationMap(array $global, array $local)
     {
         $model = $this->createModelFromConfigArrays($global, $local);
 
@@ -755,51 +782,51 @@ class AuthenticationModelTest extends TestCase
         $this->assertTrue(! isset($config['api-tools-mvc-auth']['authentication']['map']['Foo']));
     }
 
-    public function getOldAuthenticationConfig()
+    public function getOldAuthenticationConfig(): array
     {
         return [
-            'http_basic' => [
+            'http_basic'   => [
                 'api-tools-mvc-auth' => [
                     'authentication' => [
                         'http' => [
                             'accept_schemes' => ['basic'],
-                            'realm' => 'My Web Site',
-                            'htpasswd' => __DIR__ . '/TestAsset/htpasswd',
+                            'realm'          => 'My Web Site',
+                            'htpasswd'       => __DIR__ . '/TestAsset/htpasswd',
                         ],
                     ],
                 ],
             ],
-            'http_digest' => [
+            'http_digest'  => [
                 'api-tools-mvc-auth' => [
                     'authentication' => [
                         'http' => [
                             'accept_schemes' => ['digest'],
-                            'realm' => 'My Web Site',
+                            'realm'          => 'My Web Site',
                             'digest_domains' => 'domain.com',
-                            'nonce_timeout' => 3600,
-                            'htdigest' => __DIR__ . '/TestAsset/htdigest',
+                            'nonce_timeout'  => 3600,
+                            'htdigest'       => __DIR__ . '/TestAsset/htdigest',
                         ],
                     ],
                 ],
             ],
-            'oauth2_pdo' => [
+            'oauth2_pdo'   => [
                 'api-tools-oauth2' => [
-                    'storage' => 'Laminas\\ApiTools\\OAuth2\\Adapter\\PdoAdapter',
-                    'db' => [
-                        'dsn_type'  => 'PDO',
-                        'dsn'       => 'sqlite:/' . __DIR__ . '/TestAsset/db.sqlite',
-                        'username'  => null,
-                        'password'  => null,
+                    'storage' => PdoAdapter::class,
+                    'db'      => [
+                        'dsn_type' => 'PDO',
+                        'dsn'      => 'sqlite:/' . __DIR__ . '/TestAsset/db.sqlite',
+                        'username' => null,
+                        'password' => null,
                     ],
                 ],
             ],
             'oauth2_mongo' => [
                 'api-tools-oauth2' => [
-                    'storage' => 'Laminas\\ApiTools\\OAuth2\\Adapter\\MongoAdapter',
-                    'mongo' => [
+                    'storage' => MongoAdapter::class,
+                    'mongo'   => [
                         'dsn_type'     => 'Mongo',
-                        'dsn'          => 'mongodb://localhost',
-                        'database'     => 'api-tools-admin-test',
+                        'dsn'          => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
+                        'database'     => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_DATABASE'),
                         'locator_name' => 'MongoDB',
                     ],
                 ],
@@ -850,17 +877,17 @@ class AuthenticationModelTest extends TestCase
                 'authentication' => [
                     'adapters' => [
                         'custom1' => [
-                            'adapter' => 'Laminas\\ApiTools\\MvcAuth\\Authentication\\OAuth2Adapter',
+                            'adapter' => OAuth2Adapter::class,
                             'storage' => [
                                 'storage' => 'MyAuth\OAuth2Adapter',
-                                'route' => '/oauth',
+                                'route'   => '/oauth',
                             ],
                         ],
                         'custom2' => [
                             'adapter' => 'MyAuth\\CustomAuthAdapter',
                             'storage' => [
                                 'storage' => 'MyAuth\OAuth2Adapter',
-                                'route' => '/oauth',
+                                'route'   => '/oauth',
                             ],
                         ],
                     ],

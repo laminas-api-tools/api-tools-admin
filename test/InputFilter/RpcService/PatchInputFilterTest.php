@@ -1,29 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\ApiTools\Admin\InputFilter\RpcService;
 
+use Laminas\ApiTools\Admin\InputFilter\RpcService\PatchInputFilter;
 use Laminas\InputFilter\Factory;
 use PHPUnit\Framework\TestCase;
 
+use function array_keys;
+use function sort;
+
 class PatchInputFilterTest extends TestCase
 {
-    public function getInputFilter()
+    public function getInputFilter(): PatchInputFilter
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'Laminas\ApiTools\Admin\InputFilter\RpcService\PatchInputFilter',
+            'type' => PatchInputFilter::class,
         ]);
     }
 
-    public function dataProviderIsValid()
+    /** @psalm-return array<string, array{0: array<string, mixed>, 1: string[]}> */
+    public function dataProviderIsValid(): array
     {
         return [
             [
                 [
-                    'service_name' => 'Foo',
-                    'route_match' => '/foo',
-                    'controller_class' => 'FooBar\V1\Rpc\Foo\FooController',
-                    'accept_whitelist' => [
+                    'service_name'           => 'Foo',
+                    'route_match'            => '/foo',
+                    'controller_class'       => 'FooBar\V1\Rpc\Foo\FooController',
+                    'accept_whitelist'       => [
                         'application/vnd.foo.v1+json',
                         'application/hal+json',
                         'application/json',
@@ -32,21 +39,22 @@ class PatchInputFilterTest extends TestCase
                         'application/vnd.foo.v1+json',
                         'application/json',
                     ],
-                    'selector' => 'HalJson',
-                    'http_methods' => ['GET', 'POST', 'PATCH'],
+                    'selector'               => 'HalJson',
+                    'http_methods'           => ['GET', 'POST', 'PATCH'],
                 ],
             ],
         ];
     }
 
-    public function dataProviderIsInvalid()
+    /** @psalm-return array<string, array{0: array<string, mixed>, 1: string[]}> */
+    public function dataProviderIsInvalid(): array
     {
         return [
             'missing-service-name' => [
                 [
-                    'route_match' => '/foo',
-                    'controller_class' => 'FooBar\V1\Rpc\Foo\FooController',
-                    'accept_whitelist' => [
+                    'route_match'            => '/foo',
+                    'controller_class'       => 'FooBar\V1\Rpc\Foo\FooController',
+                    'accept_whitelist'       => [
                         'application/vnd.foo.v1+json',
                         'application/hal+json',
                         'application/json',
@@ -55,26 +63,27 @@ class PatchInputFilterTest extends TestCase
                         'application/vnd.foo.v1+json',
                         'application/json',
                     ],
-                    'selector' => 'HalJson',
-                    'http_methods' => ['GET', 'POST', 'PATCH'],
+                    'selector'               => 'HalJson',
+                    'http_methods'           => ['GET', 'POST', 'PATCH'],
                 ],
                 ['service_name'],
             ],
-            'null-values' => [
+            'null-values'          => [
                 [
-                    'service_name' => 'Foo',
-                    'route_match' => null,
-                    'controller_class' => null,
-                    'accept_whitelist' => [
+                    'service_name'           => 'Foo',
+                    'route_match'            => null,
+                    'controller_class'       => null,
+                    'accept_whitelist'       => [
                         'application/vnd.foo.v1+json',
-                        'application/hal+json', 'application/json',
+                        'application/hal+json',
+                        'application/json',
                     ],
                     'content_type_whitelist' => [
                         'application/vnd.foo.v1+json',
                         'application/json',
                     ],
-                    'selector' => null,
-                    'http_methods' => ['GET', 'POST', 'PATCH'],
+                    'selector'               => null,
+                    'http_methods'           => ['GET', 'POST', 'PATCH'],
                 ],
                 ['route_match', 'controller_class'],
             ],
@@ -84,7 +93,7 @@ class PatchInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($data)
+    public function testIsValid(array $data)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
@@ -94,7 +103,7 @@ class PatchInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsInvalid
      */
-    public function testIsInvalid($data, $expectedMessageKeys)
+    public function testIsInvalid(array $data, array $expectedMessageKeys)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);

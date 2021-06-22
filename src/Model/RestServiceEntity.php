@@ -1,75 +1,106 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Hal\Collection as HalCollection;
 use Laminas\Filter\FilterChain;
+use Laminas\Hydrator\ArraySerializableHydrator;
+use OutOfRangeException;
+
+use function property_exists;
+use function sprintf;
+use function str_replace;
+use function strtolower;
 
 class RestServiceEntity
 {
+    /** @var string[] */
     protected $acceptWhitelist = [
         'application/json',
         'application/*+json',
     ];
 
+    /** @var string */
     protected $collectionClass;
 
+    /** @var string[] */
     protected $collectionHttpMethods = ['GET', 'POST'];
 
+    /** @var string */
     protected $collectionName;
 
+    /** @var string[] */
     protected $collectionQueryWhitelist = [];
 
+    /** @var string[] */
     protected $contentTypeWhitelist = [
         'application/json',
     ];
 
+    /** @var string */
     protected $controllerServiceName;
 
+    /** @var string|array<string, string> */
     protected $documentation;
 
+    /** @var string */
     protected $entityClass;
 
+    /** @var string[] */
     protected $entityHttpMethods = ['GET', 'PATCH', 'PUT', 'DELETE'];
 
+    /** @var string */
     protected $entityIdentifierName = 'id';
 
+    /** @var array<string, FilterChain> */
     protected $filters = [];
 
-    protected $hydratorName = \Laminas\Hydrator\ArraySerializable::class;
+    /** @var string */
+    protected $hydratorName = ArraySerializableHydrator::class;
 
+    /** @var InputFilterCollection|HalCollection */
     protected $inputFilters;
 
+    /** @var string */
     protected $module;
 
+    /** @var int */
     protected $pageSize = 25;
 
+    /** @var string */
     protected $pageSizeParam;
 
+    /** @var string */
     protected $resourceClass;
 
+    /** @var string */
     protected $routeIdentifierName;
 
+    /** @var string */
     protected $routeMatch;
 
+    /** @var string */
     protected $routeName;
 
+    /** @var string */
     protected $selector = 'HalJson';
 
+    /** @var string */
     protected $serviceName;
 
+    /**
+     * @param string $name
+     * @return mixed
+     * @throws OutOfRangeException
+     */
     public function __get($name)
     {
         if ($name === 'filter') {
-            throw new \OutOfRangeException(sprintf(
+            throw new OutOfRangeException(sprintf(
                 '%s does not contain a property by the name of "%s"',
-                __CLASS__,
+                self::class,
                 $name
             ));
         }
@@ -82,15 +113,19 @@ class RestServiceEntity
         }
 
         if (! property_exists($this, $name)) {
-            throw new \OutOfRangeException(sprintf(
+            throw new OutOfRangeException(sprintf(
                 '%s does not contain a property by the name of "%s"',
-                __CLASS__,
+                self::class,
                 $name
             ));
         }
         return $this->{$name};
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     public function __isset($name)
     {
         if ($name === 'filter') {
@@ -104,7 +139,7 @@ class RestServiceEntity
             $name = 'entityHttpMethods';
         }
 
-        return (property_exists($this, $name));
+        return property_exists($this, $name);
     }
 
     public function exchangeArray(array $data)
@@ -151,7 +186,8 @@ class RestServiceEntity
                     $legacyIdentifierName = $value;
                     break;
                 case 'inputfilters':
-                    if ($value instanceof InputFilterCollection
+                    if (
+                        $value instanceof InputFilterCollection
                         || $value instanceof HalCollection
                     ) {
                         $this->inputFilters = $value;
@@ -202,6 +238,7 @@ class RestServiceEntity
         }
     }
 
+    /** @return array */
     public function getArrayCopy()
     {
         $array = [
@@ -235,12 +272,12 @@ class RestServiceEntity
         return $array;
     }
 
-    protected function normalizeServiceNameForIdentifier($serviceName)
+    protected function normalizeServiceNameForIdentifier(string $serviceName): string
     {
         return $this->getIdentifierNormalizationFilter()->filter($serviceName);
     }
 
-    protected function normalizeServiceNameForRoute($serviceName)
+    protected function normalizeServiceNameForRoute(string $serviceName): string
     {
         return $this->getRouteNormalizationFilter()->filter($serviceName);
     }
@@ -252,7 +289,8 @@ class RestServiceEntity
      */
     protected function getIdentifierNormalizationFilter()
     {
-        if (isset($this->filters['identifier'])
+        if (
+            isset($this->filters['identifier'])
             && $this->filters['identifier'] instanceof FilterChain
         ) {
             return $this->filters['identifier'];
@@ -271,7 +309,8 @@ class RestServiceEntity
      */
     protected function getRouteNormalizationFilter()
     {
-        if (isset($this->filters['route'])
+        if (
+            isset($this->filters['route'])
             && $this->filters['route'] instanceof FilterChain
         ) {
             return $this->filters['route'];

@@ -1,19 +1,29 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Controller;
 
 use Laminas\ApiTools\Admin\Controller\AuthenticationTypeController;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\ApiTools\MvcAuth\Authentication\DefaultAuthenticationListener as AuthListener;
+use Laminas\ApiTools\OAuth2\Adapter\MongoAdapter;
+use Laminas\ApiTools\OAuth2\Adapter\PdoAdapter;
 use Laminas\Http\Request;
 use Laminas\Mvc\MvcEvent;
 use LaminasTest\ApiTools\Admin\RouteAssetsTrait;
 use PHPUnit\Framework\TestCase;
+
+use function array_keys;
+use function array_merge;
+use function array_search;
+use function copy;
+use function file_put_contents;
+use function getenv;
+use function stristr;
+use function unlink;
+use function var_export;
 
 class AuthenticationTypeControllerTest extends TestCase
 {
@@ -36,10 +46,10 @@ class AuthenticationTypeControllerTest extends TestCase
         $this->controller->setEvent($this->event);
     }
 
-    protected function getController($localFile, $globalFile)
+    protected function getController(string $localFile, string $globalFile): AuthenticationTypeController
     {
         $authListener = new AuthListener();
-        $config = array_merge(require $globalFile, require $localFile);
+        $config       = array_merge(require $globalFile, require $localFile);
 
         /* Register old authentication adapter types */
         if (isset($config['api-tools-oauth2'])) {
@@ -63,10 +73,10 @@ class AuthenticationTypeControllerTest extends TestCase
                 }
                 if (false !== stristr($adapterConfig['adapter'], 'http')) {
                     if (isset($adapterConfig['options']['htpasswd'])) {
-                        $authListener->addAuthenticationTypes([$adapter . '-' . 'basic']);
+                        $authListener->addAuthenticationTypes([$adapter . '-basic']);
                     }
                     if (isset($adapterConfig['options']['htdigest'])) {
-                        $authListener->addAuthenticationTypes([$adapter . '-' . 'digest']);
+                        $authListener->addAuthenticationTypes([$adapter . '-digest']);
                     }
                     continue;
                 }
@@ -83,17 +93,21 @@ class AuthenticationTypeControllerTest extends TestCase
         unlink($this->globalFile);
     }
 
-    public function invalidRequestMethods()
+    /** @psalm-return array<string, array{0: string}> */
+    public function invalidRequestMethods(): array
     {
         return [
-            ['post', 'put', 'patch', 'delete'],
+            'post'   => ['post'],
+            'put'    => ['put'],
+            'patch'  => ['patch'],
+            'delete' => ['delete'],
         ];
     }
 
     /**
      * @dataProvider invalidRequestMethods
      */
-    public function testProcessWithInvalidRequestMethodReturnsApiProblemModel($method)
+    public function testProcessWithInvalidRequestMethodReturnsApiProblemModel(string $method)
     {
         $request = new Request();
         $request->setMethod($method);
@@ -101,11 +115,10 @@ class AuthenticationTypeControllerTest extends TestCase
         $this->controller->setRequest($request);
 
         $result = $this->controller->authTypeAction();
-        $this->assertInstanceOf('Laminas\ApiTools\ApiProblem\ApiProblemResponse', $result);
+        $this->assertInstanceOf(ApiProblemResponse::class, $result);
         $apiProblem = $result->getApiProblem();
         $this->assertEquals(405, $apiProblem->status);
     }
-
 
     public function testGetAuthenticationRequest()
     {
@@ -116,8 +129,8 @@ class AuthenticationTypeControllerTest extends TestCase
 
         $result = $this->controller->authTypeAction();
 
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
-        $config = require $this->localFile;
+        $this->assertInstanceOf(ViewModel::class, $result);
+        $config   = require $this->localFile;
         $adapters = array_keys($config['api-tools-mvc-auth']['authentication']['adapters']);
 
         foreach ($config['api-tools-mvc-auth']['authentication']['adapters'] as $adapter => $adapterConfig) {
@@ -125,11 +138,11 @@ class AuthenticationTypeControllerTest extends TestCase
                 continue;
             }
             if (isset($adapterConfig['options']['htpasswd'])) {
-                $index = array_search($adapter, $adapters);
+                $index            = array_search($adapter, $adapters);
                 $adapters[$index] = $adapter . '-basic';
             }
             if (isset($adapterConfig['options']['htdigest'])) {
-                $index = array_search($adapter, $adapters);
+                $index            = array_search($adapter, $adapters);
                 $adapters[$index] = $adapter . '-digest';
             }
         }
@@ -137,16 +150,16 @@ class AuthenticationTypeControllerTest extends TestCase
         $this->assertEquals($adapters, $result->getVariable('auth-types'));
     }
 
-    public function getOldAuthConfig()
+    public function getOldAuthConfig(): array
     {
         return [
-            'basic' => [
+            'basic'        => [
                 [
                     'api-tools-mvc-auth' => [
                         'authentication' => [
                             'http' => [
                                 'accept_schemes' => ['basic'],
-                                'realm' => 'My Web Site',
+                                'realm'          => 'My Web Site',
                             ],
                         ],
                     ],
@@ -162,15 +175,15 @@ class AuthenticationTypeControllerTest extends TestCase
                 ],
                 ['basic'],
             ],
-            'digest' => [
+            'digest'       => [
                 [
                     'api-tools-mvc-auth' => [
                         'authentication' => [
                             'http' => [
                                 'accept_schemes' => ['digest'],
-                                'realm' => 'My Web Site',
-                                'domain_digest' => 'domain.com',
-                                'nonce_timeout' => 3600,
+                                'realm'          => 'My Web Site',
+                                'domain_digest'  => 'domain.com',
+                                'nonce_timeout'  => 3600,
                             ],
                         ],
                     ],
@@ -186,7 +199,7 @@ class AuthenticationTypeControllerTest extends TestCase
                 ],
                 ['digest'],
             ],
-            'oauth2-pdo' => [
+            'oauth2-pdo'   => [
                 [
                     'router' => [
                         'routes' => [
@@ -200,12 +213,12 @@ class AuthenticationTypeControllerTest extends TestCase
                 ],
                 [
                     'api-tools-oauth2' => [
-                        'storage' => 'Laminas\\ApiTools\\OAuth2\\Adapter\\PdoAdapter',
-                        'db' => [
-                            'dsn_type'  => 'PDO',
-                            'dsn'       => 'sqlite:/' . __DIR__ . '/TestAsset/Auth2/config/autoload/db.sqlite',
-                            'username'  => null,
-                            'password'  => null,
+                        'storage' => PdoAdapter::class,
+                        'db'      => [
+                            'dsn_type' => 'PDO',
+                            'dsn'      => 'sqlite:/' . __DIR__ . '/TestAsset/Auth2/config/autoload/db.sqlite',
+                            'username' => null,
+                            'password' => null,
                         ],
                     ],
                 ],
@@ -225,11 +238,11 @@ class AuthenticationTypeControllerTest extends TestCase
                 ],
                 [
                     'api-tools-oauth2' => [
-                        'storage' => 'Laminas\\ApiTools\\OAuth2\\Adapter\\MongoAdapter',
-                        'mongo' => [
+                        'storage' => MongoAdapter::class,
+                        'mongo'   => [
                             'dsn_type'     => 'Mongo',
-                            'dsn'          => 'mongodb://localhost',
-                            'database'     => 'api-tools-admin-test',
+                            'dsn'          => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
+                            'database'     => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_DATABASE'),
                             'locator_name' => 'MongoDB',
                         ],
                     ],
@@ -242,10 +255,10 @@ class AuthenticationTypeControllerTest extends TestCase
     /**
      * @dataProvider getOldAuthConfig
      */
-    public function testGetAuthenticationWithOldConfiguration($global, $local, $expected)
+    public function testGetAuthenticationWithOldConfiguration(array $global, array $local, array $expected)
     {
-        file_put_contents($this->globalFile, '<' . '?php return '. var_export($global, true) . ';');
-        file_put_contents($this->localFile, '<' . '?php return '. var_export($local, true) . ';');
+        file_put_contents($this->globalFile, '<' . '?php return ' . var_export($global, true) . ';');
+        file_put_contents($this->localFile, '<' . '?php return ' . var_export($local, true) . ';');
 
         $controller = $this->getController($this->localFile, $this->globalFile);
 
@@ -262,7 +275,7 @@ class AuthenticationTypeControllerTest extends TestCase
 
         $result = $controller->authTypeAction();
 
-        $this->assertInstanceOf('Laminas\ApiTools\ContentNegotiation\ViewModel', $result);
+        $this->assertInstanceOf(ViewModel::class, $result);
 
         $types = $result->getVariable('auth-types');
         $this->assertEquals($expected, $types);

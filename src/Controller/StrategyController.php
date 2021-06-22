@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -16,14 +12,9 @@ use Laminas\Mvc\Controller\AbstractActionController;
 
 class StrategyController extends AbstractActionController
 {
-    /**
-     * @param ContainerInterface
-     */
+    /** @var ContainerInterface */
     protected $serviceLocator;
 
-    /**
-     * @param ContainerInterface $serviceLocator
-     */
     public function __construct(ContainerInterface $serviceLocator)
     {
         $this->serviceLocator = $serviceLocator;
@@ -37,9 +28,10 @@ class StrategyController extends AbstractActionController
         return $this->serviceLocator;
     }
 
+    /** @return ApiProblemModel|array */
     public function existsAction()
     {
-        $container = $this->getServiceLocator();
+        $container    = $this->getServiceLocator();
         $strategyName = $this->params()->fromRoute('strategy_name', false);
 
         if (! $container->has($strategyName)) {

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Listener;
 
@@ -18,7 +14,6 @@ use Laminas\Router\RouteMatch;
 class DisableHttpCacheListener
 {
     /**
-     * @param MvcEvent $e
      * @return void
      */
     public function __invoke(MvcEvent $e)
@@ -47,10 +42,8 @@ class DisableHttpCacheListener
      * Prepare cache-busting headers for GET requests
      *
      * Invoked from the onFinish() method for GET requests to disable client-side HTTP caching.
-     *
-     * @param Headers $headers
      */
-    protected function disableHttpCache(Headers $headers)
+    protected function disableHttpCache(Headers $headers): void
     {
         $headers->addHeader(new GenericHeader('Expires', '0'));
         $headers->addHeader(new GenericMultiHeader('Cache-Control', 'no-store, no-cache, must-revalidate'));

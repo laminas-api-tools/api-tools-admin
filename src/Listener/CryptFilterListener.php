@@ -1,13 +1,10 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Listener;
 
+use Laminas\ApiTools\Admin\Controller\InputFilter;
 use Laminas\ApiTools\ContentNegotiation\ParameterDataContainer;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\ListenerAggregateInterface;
@@ -16,6 +13,10 @@ use Laminas\Filter\Compress\CompressionAlgorithmInterface;
 use Laminas\Filter\Encrypt\EncryptionAlgorithmInterface;
 use Laminas\Mvc\MvcEvent;
 use ReflectionClass;
+
+use function method_exists;
+use function strrpos;
+use function substr;
 
 class CryptFilterListener implements ListenerAggregateInterface
 {
@@ -33,13 +34,13 @@ class CryptFilterListener implements ListenerAggregateInterface
     /**
      * Adjust the filter options for Crypt filter adapters
      *
-     * @param MvcEvent $e
      * @return void|true
      */
     public function onRoute(MvcEvent $e)
     {
         $request = $e->getRequest();
-        if (! method_exists($request, 'isPut')
+        if (
+            ! method_exists($request, 'isPut')
             || ! $request->isPut()
         ) {
             // Not an HTTP request, or not a PUT request; nothing to do
@@ -53,7 +54,7 @@ class CryptFilterListener implements ListenerAggregateInterface
         }
 
         $controller = $matches->getParam('controller', false);
-        if ($controller !== \Laminas\ApiTools\Admin\Controller\InputFilter::class) {
+        if ($controller !== InputFilter::class) {
             // Not the InputFilter controller; nothing to do
             return;
         }
@@ -83,12 +84,13 @@ class CryptFilterListener implements ListenerAggregateInterface
 
             // If filter implements CompressionAlgorithmInterface or EncryptionAlgorithmInterface,
             // we change the filter's name to the parent, and we add the adapter param to filter's name.
-            if ($class->implementsInterface(CompressionAlgorithmInterface::class)
+            if (
+                $class->implementsInterface(CompressionAlgorithmInterface::class)
                 || $class->implementsInterface(EncryptionAlgorithmInterface::class)
             ) {
-                $name    = substr($filter, 0, strrpos($filter, '\\'));
-                $adapter = substr($filter, strrpos($filter, '\\') + 1);
-                $data['filters'][$key]['name'] = $name;
+                $name                                        = substr($filter, 0, strrpos($filter, '\\'));
+                $adapter                                     = substr($filter, strrpos($filter, '\\') + 1);
+                $data['filters'][$key]['name']               = $name;
                 $data['filters'][$key]['options']['adapter'] = $adapter;
             }
         }

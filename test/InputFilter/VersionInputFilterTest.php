@@ -1,62 +1,69 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\InputFilter;
 
+use Laminas\ApiTools\Admin\InputFilter\VersionInputFilter;
 use Laminas\InputFilter\Factory;
 use PHPUnit\Framework\TestCase;
 
+use function array_keys;
+use function sort;
+
 class VersionInputFilterTest extends TestCase
 {
-    public function getInputFilter()
+    public function getInputFilter(): VersionInputFilter
     {
         $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'Laminas\ApiTools\Admin\InputFilter\VersionInputFilter',
+            'type' => VersionInputFilter::class,
         ]);
     }
 
-    public function dataProviderIsValid()
+    /** @psalm-return array<string, array{0: array<string, string|int>}> */
+    public function dataProviderIsValid(): array
     {
         return [
-            'valid' => [
+            'valid'               => [
                 [
-                    'module' => 'foo',
+                    'module'  => 'foo',
                     'version' => 5,
                 ],
             ],
             'version-with-alphas' => [
                 [
-                    'module' => 'foo',
+                    'module'  => 'foo',
                     'version' => 'alpha',
                 ],
             ],
-            'version-with-mixed' => [
+            'version-with-mixed'  => [
                 [
-                    'module' => 'foo',
+                    'module'  => 'foo',
                     'version' => 'alpha_1',
                 ],
             ],
         ];
     }
 
-    public function dataProviderIsInvalid()
+    /**
+     * @psalm-return array<string, array{
+     *     0: array<string, string>
+     *     1: string[]
+     * }>
+     */
+    public function dataProviderIsInvalid(): array
     {
         return [
-            'empty' => [
+            'empty'               => [
                 [],
                 ['module', 'version'],
             ],
-            'missing-module' => [
+            'missing-module'      => [
                 ['version' => 'foo'],
                 ['module'],
             ],
-            'missing-version' => [
+            'missing-version'     => [
                 ['module' => 'foo'],
                 ['version'],
             ],
@@ -74,7 +81,7 @@ class VersionInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($data)
+    public function testIsValid(array $data)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
@@ -84,12 +91,12 @@ class VersionInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsInvalid
      */
-    public function testIsInvalid($data, $expectedMessageKeys)
+    public function testIsInvalid(array $data, array $expectedMessageKeys)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
         $this->assertFalse($filter->isValid());
-        $messages = $filter->getMessages();
+        $messages    = $filter->getMessages();
         $messageKeys = array_keys($messages);
         sort($expectedMessageKeys);
         sort($messageKeys);

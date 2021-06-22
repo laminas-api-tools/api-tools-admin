@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -15,20 +11,22 @@ use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\FactoryInterface;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 
+use function sprintf;
+
 class DocumentationModelFactory implements FactoryInterface
 {
     /**
      * Create and return a DocumentationModel instance.
      *
-     * @param ContainerInterface $container
      * @param string $requestedName
      * @param null|array $options
      * @return DocumentationModel
      * @throws ServiceNotCreatedException
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        if (! $container->has(ConfigResourceFactory::class)
+        if (
+            ! $container->has(ConfigResourceFactory::class)
             && ! $container->has(\ZF\Configuration\ConfigResourceFactory::class)
         ) {
             throw new ServiceNotCreatedException(sprintf(
@@ -50,7 +48,6 @@ class DocumentationModelFactory implements FactoryInterface
      *
      * Provided for backwards compatibility; proxies to __invoke().
      *
-     * @param ServiceLocatorInterface $container
      * @return DocumentationModel
      */
     public function createService(ServiceLocatorInterface $container)

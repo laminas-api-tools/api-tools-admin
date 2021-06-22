@@ -1,29 +1,28 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Admin\Model\DocumentationModel;
+use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ApiTools\Configuration\ResourceFactory;
 use Laminas\Config\Writer\WriterInterface;
 use PHPUnit\Framework\TestCase;
 
 class DocumentationModelTest extends TestCase
 {
+    /** @var array */
     protected $actualDocData;
 
-    protected $docModel = null;
+    /** @var DocumentationModel */
+    protected $docModel;
 
     public function setup()
     {
         $this->actualDocData = include __DIR__ . '/TestAsset/module/Doc/config/documentation.config.php';
 
-        $mockModuleUtils = $this->getMockBuilder('Laminas\ApiTools\Configuration\ModuleUtils')
+        $mockModuleUtils = $this->getMockBuilder(ModuleUtils::class)
             ->disableOriginalConstructor()
             ->getMock();
         $mockModuleUtils
@@ -35,7 +34,7 @@ class DocumentationModelTest extends TestCase
             $mockModuleUtils,
             $this->prophesize(WriterInterface::class)->reveal()
         );
-        $this->docModel = new DocumentationModel($configResourceFactory, $mockModuleUtils);
+        $this->docModel        = new DocumentationModel($configResourceFactory, $mockModuleUtils);
     }
 
     public function testFetchRestDocumentation()

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -12,30 +8,24 @@ use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\ApiTools\Rest\Exception\CreationException;
 
+use function is_object;
+use function preg_match;
+use function str_replace;
+
 class ModuleResource extends AbstractResourceListener
 {
-    /**
-     * @var ModuleModel
-     */
+    /** @var ModuleModel */
     protected $modules;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $modulePath = '.';
 
-    /**
-     * @var ModulePathSpec
-     */
+    /** @var ModulePathSpec */
     protected $modulePathSpec;
 
-    /**
-     * @param ModuleModel $modules
-     * @param ModulePathSpec $pathSpec
-     */
     public function __construct(ModuleModel $modules, ModulePathSpec $pathSpec)
     {
-        $this->modules = $modules;
+        $this->modules        = $modules;
         $this->modulePathSpec = $pathSpec;
     }
 
@@ -73,7 +63,7 @@ class ModuleResource extends AbstractResourceListener
             throw new CreationException('Missing module name');
         }
 
-        $version = isset($data['version']) ? $data['version'] : 1;
+        $version = $data['version'] ?? 1;
         $name    = str_replace(['.', '/'], '\\', $data['name']);
         if (! preg_match('#^[a-zA-Z][a-zA-Z0-9_]*(\\\\[a-zA-Z][a-zA-Z0-9_]*)*$#', $name)) {
             throw new CreationException('Invalid module name; must be a valid PHP namespace name');
@@ -124,7 +114,7 @@ class ModuleResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        $request = $this->getEvent()->getRequest();
+        $request   = $this->getEvent()->getRequest();
         $recursive = $request->getQuery('recursive', false);
 
         $module = $this->modules->getModule($id);

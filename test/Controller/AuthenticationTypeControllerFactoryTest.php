@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -18,7 +14,7 @@ class AuthenticationTypeControllerFactoryTest extends TestCase
     public function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);
-        $this->listener = $this->prophesize(DefaultAuthenticationListener::class)->reveal();
+        $this->listener  = $this->prophesize(DefaultAuthenticationListener::class)->reveal();
         $this->container->get(DefaultAuthenticationListener::class)->willReturn($this->listener);
     }
 
@@ -34,7 +30,7 @@ class AuthenticationTypeControllerFactoryTest extends TestCase
 
     public function testLegacyFactoryReturnsAuthenticationTypeController()
     {
-        $factory = new AuthenticationTypeControllerFactory();
+        $factory     = new AuthenticationTypeControllerFactory();
         $controllers = $this->prophesize(AbstractPluginManager::class);
 
         $controllers->getServiceLocator()->will([$this->container, 'reveal']);

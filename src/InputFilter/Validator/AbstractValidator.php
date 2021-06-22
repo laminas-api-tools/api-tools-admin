@@ -1,17 +1,18 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\InputFilter\Validator;
 
 use Laminas\Validator\AbstractValidator as BaseAbstractValidator;
 
+use function in_array;
+use function preg_match;
+use function strtolower;
+
 abstract class AbstractValidator extends BaseAbstractValidator
 {
+    /** @var string[] */
     protected $reservedWords = [
         '__halt_compiler',
         'abstract',

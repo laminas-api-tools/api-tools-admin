@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -19,12 +15,11 @@ class FiltersControllerFactory implements FactoryInterface
     /**
      * Create and return a FiltersController instance.
      *
-     * @param ContainerInterface $container
      * @param string $requestedName
      * @param null|array $options
      * @return FiltersController
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         return new FiltersController($container->get(FiltersModel::class));
     }
@@ -34,7 +29,6 @@ class FiltersControllerFactory implements FactoryInterface
      *
      * Provided for backwards compatibility; proxies to __invoke().
      *
-     * @param ServiceLocatorInterface $container
      * @return FiltersController
      */
     public function createService(ServiceLocatorInterface $container)

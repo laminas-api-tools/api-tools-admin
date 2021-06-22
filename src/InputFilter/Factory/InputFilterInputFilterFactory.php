@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\InputFilter\Factory;
 
@@ -20,12 +16,11 @@ class InputFilterInputFilterFactory implements FactoryInterface
     /**
      * Create and return an InputFilterInputFilter instance.
      *
-     * @param ContainerInterface $container
      * @param string $requestedName
      * @param null|array $options
      * @return InputFilterInputFilter
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         $factory = new InputFilterFactory();
         $factory->setInputFilterManager($container->get('InputFilterManager'));
@@ -40,7 +35,6 @@ class InputFilterInputFilterFactory implements FactoryInterface
      *
      * Provided for backwards compatibility; proxies to __invoke().
      *
-     * @param ServiceLocatorInterface $container
      * @return InputFilterInputFilter
      */
     public function createService(ServiceLocatorInterface $container)

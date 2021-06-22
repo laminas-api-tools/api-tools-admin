@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -18,6 +14,8 @@ use Laminas\Filter\StripTags;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Validator\StringLength;
 
+use function sprintf;
+
 /**
  * This class is instantiated with a $config in some implementations (DbAutodiscoveryModel)
  * but this is dependent on the root service locator for the moduleHasService call below
@@ -25,42 +23,34 @@ use Laminas\Validator\StringLength;
  */
 abstract class AbstractAutodiscoveryModel
 {
-    /**
-     * @var ServiceLocatorInterface
-     */
+    /** @var ServiceLocatorInterface */
     protected $serviceLocator;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $config;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $validators = [
-        'text' => [
-            'name' => StringLength::class,
+        'text'        => [
+            'name'    => StringLength::class,
             'options' => [
                 'min' => 1,
                 'max' => 1,
             ],
         ],
-        'unique' => [
-            'name' => DbNoRecordExists::class,
+        'unique'      => [
+            'name'    => DbNoRecordExists::class,
             'options' => [],
         ],
         'foreign_key' => [
-            'name' => DbRecordExists::class,
+            'name'    => DbRecordExists::class,
             'options' => [],
         ],
     ];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $filters = [
-        'text' => [
+        'text'    => [
             ['name' => StringTrim::class],
             ['name' => StripTags::class],
         ],
@@ -74,7 +64,7 @@ abstract class AbstractAutodiscoveryModel
      * Get service locator
      *
      * @return ServiceLocatorInterface
-     * @throws Exception if no service locator is composed
+     * @throws Exception If no service locator is composed.
      */
     public function getServiceLocator()
     {
@@ -88,7 +78,6 @@ abstract class AbstractAutodiscoveryModel
     /**
      * Set service locator
      *
-     * @param ServiceLocatorInterface $serviceLocator
      * @return AbstractAutodiscoveryModel
      */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
@@ -101,7 +90,7 @@ abstract class AbstractAutodiscoveryModel
     /**
      * Constructor
      *
-     * @param $config
+     * @param array $config
      */
     public function __construct($config)
     {
@@ -109,14 +98,14 @@ abstract class AbstractAutodiscoveryModel
     }
 
     /**
-     * @param $module
-     * @param $version
-     * @param $tableName
+     * @param string $module
+     * @param string|int $version
+     * @param string $tableName
      * @return bool
      */
     protected function moduleHasService($module, $version, $tableName)
     {
-        $resourceName = StaticFilter::execute($tableName, 'WordUnderscoreToCamelCase');
+        $resourceName  = StaticFilter::execute($tableName, 'WordUnderscoreToCamelCase');
         $resourceClass = sprintf(
             '%s\\V%s\\Rest\\%s\\%sResource',
             $module,

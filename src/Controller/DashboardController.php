@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
@@ -12,6 +8,7 @@ use Laminas\ApiTools\Admin\Model\AuthenticationEntity;
 use Laminas\ApiTools\Admin\Model\AuthenticationModel;
 use Laminas\ApiTools\Admin\Model\ContentNegotiationModel;
 use Laminas\ApiTools\Admin\Model\DbAdapterModel;
+use Laminas\ApiTools\Admin\Model\DoctrineAdapterModel;
 use Laminas\ApiTools\Admin\Model\ModuleModel;
 use Laminas\ApiTools\Admin\Model\RestServiceModelFactory;
 use Laminas\ApiTools\Admin\Model\RpcServiceModelFactory;
@@ -21,20 +18,30 @@ use Laminas\ApiTools\Hal\Entity;
 use Laminas\ApiTools\Hal\Link\Link;
 use Laminas\Mvc\Controller\AbstractActionController;
 
+use function array_map;
+use function sort;
+
 class DashboardController extends AbstractActionController
 {
+    /** @var AuthenticationModel */
     protected $authentication;
 
+    /** @var ContentNegotiationModel */
     protected $contentNegotiation;
 
+    /** @var DbAdapterModel */
     protected $dbAdapters;
 
+    /** @var null|DoctrineAdapterModel */
     protected $doctrineAdapters;
 
+    /** @var ModuleModel */
     protected $modules;
 
+    /** @var RestServiceModelFactory */
     protected $restServicesFactory;
 
+    /** @var RpcServiceModelFactory */
     protected $rpcServicesFactory;
 
     public function __construct(
@@ -53,6 +60,7 @@ class DashboardController extends AbstractActionController
         $this->rpcServicesFactory  = $rpcServicesFactory;
     }
 
+    /** @return ViewModel */
     public function dashboardAction()
     {
         $dbAdapters = new Collection($this->dbAdapters->fetchAll());
@@ -91,7 +99,7 @@ class DashboardController extends AbstractActionController
         $entity = new Entity($dashboard, 'dashboard');
         $links  = $entity->getLinks();
         $links->add(Link::factory([
-            'rel' => 'self',
+            'rel'   => 'self',
             'route' => [
                 'name' => 'api-tools/api/dashboard',
             ],
@@ -100,14 +108,15 @@ class DashboardController extends AbstractActionController
         return new ViewModel(['payload' => $entity]);
     }
 
+    /** @return ViewModel */
     public function settingsDashboardAction()
     {
         $authentication = $this->authentication->fetch();
         if ($authentication) {
             $authenticationEntity = $authentication;
-            $authentication = new Entity($authentication, null);
+            $authentication       = new Entity($authentication, null);
             $authentication->getLinks()->add(Link::factory([
-                'rel' => 'self',
+                'rel'   => 'self',
                 'route' => $this->getRouteForEntity($authenticationEntity),
             ]));
         }
@@ -127,7 +136,7 @@ class DashboardController extends AbstractActionController
         $entity = new Entity($dashboard, 'settings-dashboard');
         $links  = $entity->getLinks();
         $links->add(Link::factory([
-            'rel' => 'self',
+            'rel'   => 'self',
             'route' => [
                 'name' => 'api-tools/api/settings-dashboard',
             ],
@@ -141,7 +150,6 @@ class DashboardController extends AbstractActionController
      *
      * Copied from AuthenticationController
      *
-     * @param  AuthenticationEntity $entity
      * @return string
      */
     protected function getRouteForEntity(AuthenticationEntity $entity)

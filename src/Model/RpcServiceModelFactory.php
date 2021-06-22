@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
@@ -13,9 +9,7 @@ use Laminas\EventManager\SharedEventManagerInterface;
 
 class RpcServiceModelFactory
 {
-    /**
-     * @var ConfigResourceFactory
-     */
+    /** @var ConfigResourceFactory */
     protected $configFactory;
 
     /**
@@ -25,27 +19,15 @@ class RpcServiceModelFactory
      */
     protected $models = [];
 
-    /**
-     * @var ModuleModel
-     */
+    /** @var ModuleModel */
     protected $moduleModel;
 
-    /**
-     * @var ModulePathSpec
-     */
+    /** @var ModulePathSpec */
     protected $modules;
 
-    /**
-     * @var SharedEventManagerInterface
-     */
+    /** @var SharedEventManagerInterface */
     protected $sharedEventManager;
 
-    /**
-     * @param  ModulePathSpec $modules
-     * @param  ConfigResourceFactory $configFactory
-     * @param  SharedEventManagerInterface $sharedEvents
-     * @param  ModuleModel $moduleModel
-     */
     public function __construct(
         ModulePathSpec $modules,
         ConfigResourceFactory $configFactory,
@@ -78,9 +60,10 @@ class RpcServiceModelFactory
     }
 
     /**
+     * @deprecated
+     *
      * @param  string $name
      * @return string
-     * @deprecated
      */
     protected function normalizeModuleName($name)
     {

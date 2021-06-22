@@ -1,15 +1,20 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\InputFilter\Authentication;
 
+use Laminas\ApiTools\Admin\InputFilter\Authentication\BasicInputFilter;
 use Laminas\InputFilter\Factory;
 use PHPUnit\Framework\TestCase;
+
+use function array_keys;
+use function sort;
+use function sys_get_temp_dir;
+use function touch;
+use function uniqid;
+use function unlink;
+use function var_export;
 
 class BasicInputFilterTest extends TestCase
 {
@@ -24,18 +29,19 @@ class BasicInputFilterTest extends TestCase
         unlink($this->htpasswd);
     }
 
-    public function getInputFilter()
+    public function getInputFilter(): BasicInputFilter
     {
-        $factory = new Factory;
+        $factory = new Factory();
         return $factory->createInputFilter([
-            'type' => 'Laminas\ApiTools\Admin\InputFilter\Authentication\BasicInputFilter',
+            'type' => BasicInputFilter::class,
         ]);
     }
 
-    public function dataProviderIsValid()
+    /** @psalm-return array<string, array{0: array<string, string>}> */
+    public function dataProviderIsValid(): array
     {
         return [
-            'basic-only' => [
+            'basic-only'       => [
                 ['accept_schemes' => ['basic'], 'realm' => 'My Realm'],
             ],
             'basic-and-digest' => [
@@ -44,10 +50,16 @@ class BasicInputFilterTest extends TestCase
         ];
     }
 
-    public function dataProviderIsInvalid()
+    /**
+     * @psalm-return array<string, array{
+     *     0: array<string, string>,
+     *     1: string[]
+     * }>
+     */
+    public function dataProviderIsInvalid(): array
     {
         return [
-            'empty' => [
+            'empty'            => [
                 [],
                 [
                     'accept_schemes',
@@ -55,7 +67,7 @@ class BasicInputFilterTest extends TestCase
                     'htpasswd',
                 ],
             ],
-            'empty-data' => [
+            'empty-data'       => [
                 ['accept_schemes' => '', 'realm' => '', 'htpasswd' => ''],
                 [
                     'accept_schemes',
@@ -75,24 +87,24 @@ class BasicInputFilterTest extends TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($data)
+    public function testIsValid(array $data)
     {
         $data['htpasswd'] = $this->htpasswd;
-        $filter = $this->getInputFilter();
+        $filter           = $this->getInputFilter();
         $filter->setData($data);
-        $this->assertTrue($filter->isValid(), var_export($filter->getMessages(), 1));
+        $this->assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
     }
 
     /**
      * @dataProvider dataProviderIsInvalid
      */
-    public function testIsInvalid($data, $expectedMessageKeys)
+    public function testIsInvalid(array $data, array $expectedMessageKeys)
     {
         $filter = $this->getInputFilter();
         $filter->setData($data);
         $this->assertFalse($filter->isValid());
 
-        $messages = $filter->getMessages();
+        $messages    = $filter->getMessages();
         $messageKeys = array_keys($messages);
         sort($expectedMessageKeys);
         sort($messageKeys);

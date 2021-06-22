@@ -1,25 +1,23 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
 use Laminas\ApiTools\Admin\Model\DoctrineAdapterEntity;
 use PHPUnit\Framework\TestCase;
 
+use function getenv;
+
 class DoctrineAdapterEntityTest extends TestCase
 {
     public function testCanRepresentAnOrmEntity()
     {
-        $config = [
+        $config     = [
             'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
-            'params' => [],
+            'params'      => [],
         ];
-        $entity = new DoctrineAdapterEntity('test', $config);
+        $entity     = new DoctrineAdapterEntity('test', $config);
         $serialized = $entity->getArrayCopy();
 
         $this->assertArrayHasKey('adapter_name', $serialized);
@@ -28,10 +26,10 @@ class DoctrineAdapterEntityTest extends TestCase
 
     public function testCanRepresentAnOdmEntity()
     {
-        $config = [
-            'connectionString' => 'mongodb://localhost:27017',
+        $config     = [
+            'connectionString' => getenv('TESTS_LAMINAS_API_TOOLS_ADMIN_EXTMONGODB_CONNECTSTRING'),
         ];
-        $entity = new DoctrineAdapterEntity('test', $config);
+        $entity     = new DoctrineAdapterEntity('test', $config);
         $serialized = $entity->getArrayCopy();
 
         $this->assertArrayHasKey('adapter_name', $serialized);

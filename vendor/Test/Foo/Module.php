@@ -8,10 +8,10 @@ class Module implements ApiToolsProviderInterface
 {
     public function getConfig()
     {
-        return array(
-            'api-tools-versioning' => array(
+        return [
+            'api-tools-versioning' => [
                 'default_version' => 123,
-            ),
-        );
+            ],
+        ];
     }
 }

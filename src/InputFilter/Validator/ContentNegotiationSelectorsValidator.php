@@ -1,28 +1,35 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\InputFilter\Validator;
 
 use Laminas\Validator\AbstractValidator as LaminasAbstractValidator;
+use Laminas\View\Model\ModelInterface;
+
+use function class_exists;
+use function class_implements;
+use function get_class;
+use function gettype;
+use function in_array;
+use function is_array;
+use function is_object;
+use function strpos;
 
 class ContentNegotiationSelectorsValidator extends LaminasAbstractValidator
 {
-    const INVALID_VALUE       = 'invalidValue';
-    const CLASS_NOT_FOUND     = 'classNotFound';
-    const INVALID_VIEW_MODEL  = 'invalidViewModel';
-    const INVALID_MEDIA_TYPES = 'invalidMediaTypes';
-    const INVALID_MEDIA_TYPE  = 'invalidMediaType';
+    public const INVALID_VALUE       = 'invalidValue';
+    public const CLASS_NOT_FOUND     = 'classNotFound';
+    public const INVALID_VIEW_MODEL  = 'invalidViewModel';
+    public const INVALID_MEDIA_TYPES = 'invalidMediaTypes';
+    public const INVALID_MEDIA_TYPE  = 'invalidMediaType';
 
+    /** @var array<string, string> */
     protected $messageTemplates = [
-        self::INVALID_VALUE       => 'Value must be an array; received %value%',
-        self::CLASS_NOT_FOUND     => 'Class name (%value%) does not exist',
-        self::INVALID_VIEW_MODEL  =>
-            'Class name (%value%) is invalid; must be a valid Laminas\View\Model\ModelInterface instance',
+        self::INVALID_VALUE   => 'Value must be an array; received %value%',
+        self::CLASS_NOT_FOUND => 'Class name (%value%) does not exist',
+        self::INVALID_VIEW_MODEL
+            => 'Class name (%value%) is invalid; must be a valid Laminas\View\Model\ModelInterface instance',
         self::INVALID_MEDIA_TYPES => 'Values for the media-types must be provided as an indexed array',
         self::INVALID_MEDIA_TYPE  => 'Invalid media type (%value%) provided',
     ];
@@ -40,7 +47,7 @@ class ContentNegotiationSelectorsValidator extends LaminasAbstractValidator
         if (! is_array($value)) {
             $this->error(
                 self::INVALID_VALUE,
-                (is_object($value) ? get_class($value) : gettype($value))
+                is_object($value) ? get_class($value) : gettype($value)
             );
             return false;
         }
@@ -53,7 +60,7 @@ class ContentNegotiationSelectorsValidator extends LaminasAbstractValidator
             }
 
             $interfaces = class_implements($className);
-            if (false === $interfaces || ! in_array(\Laminas\View\Model\ModelInterface::class, $interfaces)) {
+            if (false === $interfaces || ! in_array(ModelInterface::class, $interfaces)) {
                 $isValid = false;
                 $this->error(self::INVALID_VIEW_MODEL, $className);
                 continue;

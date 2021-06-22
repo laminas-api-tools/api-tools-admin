@@ -1,20 +1,17 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\InputFilter\Validator;
 
+use function is_string;
+use function preg_match;
+
 class MediaTypeArrayValidator extends AbstractValidator
 {
-    const MEDIA_TYPE_ARRAY = 'mediaTypeArray';
+    public const MEDIA_TYPE_ARRAY = 'mediaTypeArray';
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $messageTemplates = [
         self::MEDIA_TYPE_ARRAY => "'%value%' is not a correctly formatted media type",
     ];

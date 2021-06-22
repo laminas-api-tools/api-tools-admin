@@ -1,29 +1,34 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin\Model;
 
+use InputFilter\Module;
+use Laminas\ApiTools\Admin\Model\InputFilterCollection;
+use Laminas\ApiTools\Admin\Model\InputFilterEntity;
 use Laminas\ApiTools\Admin\Model\InputFilterModel;
 use Laminas\ApiTools\Configuration\ModuleUtils;
 use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
 use Laminas\Config\Writer\PhpArray;
+use Laminas\ModuleManager\ModuleManager;
 use PHPUnit\Framework\TestCase;
+
+use function copy;
+use function count;
+use function sprintf;
+use function unlink;
+use function var_export;
 
 class InputFilterModelTest extends TestCase
 {
     public function setUp()
     {
         $modules = [
-            'InputFilter' => new \InputFilter\Module(),
+            'InputFilter' => new Module(),
         ];
 
-
-        $this->moduleManager = $this->getMockBuilder('Laminas\ModuleManager\ModuleManager')
+        $this->moduleManager = $this->getMockBuilder(ModuleManager::class)
                                     ->disableOriginalConstructor()
                                     ->getMock();
 
@@ -36,25 +41,25 @@ class InputFilterModelTest extends TestCase
         $this->configFactory = new ConfigResourceFactory($moduleUtils, $this->writer);
         $this->model         = new InputFilterModel($this->configFactory);
 
-        $this->basePath      = __DIR__ . '/TestAsset/module/InputFilter/config';
-        $this->config        = include $this->basePath . '/module.config.php';
+        $this->basePath = __DIR__ . '/TestAsset/module/InputFilter/config';
+        $this->config   = include $this->basePath . '/module.config.php';
 
         copy($this->basePath . '/module.config.php', $this->basePath . '/module.config.php.old');
     }
 
     public function tearDown()
     {
-        copy($this->basePath .'/module.config.php.old', $this->basePath . '/module.config.php');
+        copy($this->basePath . '/module.config.php.old', $this->basePath . '/module.config.php');
         unlink($this->basePath . '/module.config.php.old');
     }
 
     public function testFetch()
     {
         $result = $this->model->fetch('InputFilter', 'InputFilter\V1\Rest\Foo\Controller');
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterCollection', $result);
+        $this->assertInstanceOf(InputFilterCollection::class, $result);
         $this->assertEquals(1, count($result));
         $inputFilter = $result->dequeue();
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $inputFilter);
+        $this->assertInstanceOf(InputFilterEntity::class, $inputFilter);
         $this->assertEquals(
             $this->config['input_filter_specs']['InputFilter\V1\Rest\Foo\Validator']['foo'],
             $inputFilter['foo']
@@ -65,22 +70,22 @@ class InputFilterModelTest extends TestCase
     {
         $inputFilter = [
             'bar' => [
-                'name' => 'bar',
-                'required' => true,
+                'name'        => 'bar',
+                'required'    => true,
                 'allow_empty' => true,
-                'validators' => [
+                'validators'  => [
                     [
                         'name' => 'NotEmpty',
                     ],
                 ],
             ],
         ];
-        $result = $this->model->update('InputFilter', 'InputFilter\V1\Rest\Foo\Controller', $inputFilter);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $result);
+        $result      = $this->model->update('InputFilter', 'InputFilter\V1\Rest\Foo\Controller', $inputFilter);
+        $this->assertInstanceOf(InputFilterEntity::class, $result);
         $this->assertEquals(
             $inputFilter['bar'],
             $result['bar'],
-            sprintf("Updates: %s\n\nResult: %s\n", var_export($inputFilter, 1), var_export($result, 1))
+            sprintf("Updates: %s\n\nResult: %s\n", var_export($inputFilter, true), var_export($result, true))
         );
     }
 
@@ -88,10 +93,10 @@ class InputFilterModelTest extends TestCase
     {
         $inputfilter = [
             'bar' => [
-                'name' => 'bar',
-                'required' => true,
+                'name'        => 'bar',
+                'required'    => true,
                 'allow_empty' => true,
-                'validators' => [
+                'validators'  => [
                     [
                         'name' => 'NotEmpty',
                     ],
@@ -101,8 +106,8 @@ class InputFilterModelTest extends TestCase
 
         // new controller
         $controller = 'InputFilter\V1\Rest\Bar\Controller';
-        $result = $this->model->update('InputFilter', $controller, $inputfilter);
-        $this->assertInstanceOf('Laminas\ApiTools\Admin\Model\InputFilterEntity', $result);
+        $result     = $this->model->update('InputFilter', $controller, $inputfilter);
+        $this->assertInstanceOf(InputFilterEntity::class, $result);
         $this->assertEquals($inputfilter['bar'], $result['bar']);
 
         $config = include $this->basePath . '/module.config.php';

@@ -1,38 +1,38 @@
 <?php
 
-/**
- * @see       https://github.com/laminas-api-tools/api-tools-admin for the canonical source repository
- * @copyright https://github.com/laminas-api-tools/api-tools-admin/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas-api-tools/api-tools-admin/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\InputFilter\Authentication;
 
 use Laminas\InputFilter\InputFilter;
+
+use function in_array;
 
 class BaseInputFilter extends InputFilter
 {
     public function init()
     {
         $this->add([
-            'name' => 'name',
+            'name'          => 'name',
             'error_message' => 'Please provide a name for HTTP authentication',
-            'filters' => [
+            'filters'       => [
                 ['name' => 'StringToLower'],
             ],
         ]);
         $this->add([
-            'name' => 'type',
+            'name'          => 'type',
             'error_message' => 'Please provide the HTTP authentication type',
-            'filters' => [
+            'filters'       => [
                 ['name' => 'StringToLower'],
             ],
-            'validators' => [
+            'validators'    => [
                 [
-                    'name' => 'Callback',
-                    'options' => ['callback' => function ($value) {
-                        return in_array($value, ['basic', 'digest', 'oauth2']);
-                    }],
+                    'name'    => 'Callback',
+                    'options' => [
+                        'callback' => function ($value) {
+                            return in_array($value, ['basic', 'digest', 'oauth2']);
+                        },
+                    ],
                 ],
             ],
         ]);
