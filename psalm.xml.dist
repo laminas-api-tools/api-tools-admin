@@ -33,6 +33,15 @@
                 <referencedMethod name="PHPUnit\Framework\MockObject\Builder\InvocationMocker::with"/>
             </errorLevel>
         </InternalMethod>
+
+        <MissingFile>
+            <errorLevel type="suppress">
+                <file name="test/Model/DbAutodiscoveryModelFactoryTest.php" />
+                <file name="test/Model/DbConnectedRestServiceModelTest.php" />
+                <file name="test/Model/RestServiceModelTest.php" />
+                <file name="test/Model/RestServiceResourceTest.php" />
+            </errorLevel>
+        </MissingFile>
     </issueHandlers>
 
     <plugins>
