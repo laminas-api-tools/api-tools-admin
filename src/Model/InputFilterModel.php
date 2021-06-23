@@ -163,7 +163,10 @@ class InputFilterModel
         $entityType = $this->getEntityType($controller);
         $return     = new $entityType($updated['input_filter_specs'][$validator]);
 
-        assert($return instanceof ArrayAccess, sprintf('Entity of type %s does not implement ArrayAccess'));
+        assert($return instanceof ArrayAccess, sprintf(
+            'Entity of type %s does not implement ArrayAccess',
+            $entityType
+        ));
 
         $return['input_filter_name'] = $validator;
         return $return;
