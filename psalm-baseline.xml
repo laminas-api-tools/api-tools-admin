@@ -409,12 +409,10 @@
       <code>add</code>
       <code>add</code>
     </DeprecatedMethod>
-    <InvalidScalarArgument occurrences="5">
+    <InvalidScalarArgument occurrences="3">
       <code>$e-&gt;getCode()</code>
       <code>$e-&gt;getCode()</code>
       <code>$e-&gt;getCode()</code>
-      <code>$version</code>
-      <code>$version</code>
     </InvalidScalarArgument>
     <LessSpecificReturnStatement occurrences="1">
       <code>$this-&gt;removeAuthenticationMap($module, $version)</code>
@@ -1750,28 +1748,17 @@
     <InvalidDocblock occurrences="1">
       <code>public static function arrayDiffRecursive($a, $b)</code>
     </InvalidDocblock>
-    <MissingClosureParamType occurrences="4">
-      <code>$a</code>
-      <code>$a</code>
-      <code>$b</code>
-      <code>$b</code>
-    </MissingClosureParamType>
     <MissingReturnType occurrences="1">
       <code>arrayDiffRecursive</code>
     </MissingReturnType>
-    <MixedArgument occurrences="24">
-      <code>$a</code>
-      <code>$a</code>
+    <MixedArgument occurrences="19">
       <code>$adapter['oauth2_route']</code>
       <code>$adapter['oauth2_type']</code>
       <code>$adapter['oauth2_type']</code>
       <code>$adapter['options']['accept_schemes']</code>
       <code>$adapter['storage']['route']</code>
       <code>$adapter['type']</code>
-      <code>$b</code>
-      <code>$b</code>
       <code>$config</code>
-      <code>$config['accept_schemes']</code>
       <code>$msg[$field][0]</code>
       <code>$name</code>
       <code>$password</code>
@@ -1894,11 +1881,6 @@
       <code>$config</code>
       <code>$config</code>
     </PossiblyUndefinedVariable>
-    <RedundantCastGivenDocblockType occurrences="3">
-      <code>(int) $version</code>
-      <code>(int) $version</code>
-      <code>(int) $version</code>
-    </RedundantCastGivenDocblockType>
     <UnusedForeachValue occurrences="1">
       <code>$adapter</code>
     </UnusedForeachValue>
@@ -4175,11 +4157,6 @@
       <code>willReturn</code>
     </PossiblyUndefinedMethod>
   </file>
-  <file src="test/Controller/TestAsset/ConfigWriter.php">
-    <MissingConstructor occurrences="1">
-      <code>$writtenFilename</code>
-    </MissingConstructor>
-  </file>
   <file src="test/Controller/VersioningControllerFactoryTest.php">
     <DeprecatedMethod occurrences="1">
       <code>getServiceLocator</code>
@@ -5237,18 +5214,16 @@
       <code>'BarConf\V1\Rest\Barbaz\BarbazEntity'</code>
       <code>'ReflectionClass'</code>
     </ArgumentTypeCoercion>
-    <EmptyArrayAccess occurrences="6">
-      <code>$config['api-tools']</code>
-      <code>$config['api-tools']</code>
-      <code>$config['api-tools']</code>
-      <code>$config['api-tools']</code>
-      <code>$config['api-tools-hal']</code>
-      <code>$config['api-tools-rest']</code>
-    </EmptyArrayAccess>
     <MissingFile occurrences="1">
       <code>include __DIR__ . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Barbaz/BarbazEntity.php'</code>
     </MissingFile>
-    <MixedArgument occurrences="25">
+    <MixedArgument occurrences="31">
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
       <code>$config['api-tools']</code>
       <code>$config['api-tools']</code>
       <code>$config['api-tools']</code>
@@ -5275,17 +5250,23 @@
       <code>$result-&gt;entityClass</code>
       <code>$result-&gt;resourceClass</code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="22">
-      <code>$config['api-tools']['db-connected']</code>
-      <code>$config['api-tools']['db-connected']</code>
-      <code>$config['api-tools']['db-connected']</code>
-      <code>$config['api-tools']['db-connected']</code>
-      <code>$config['api-tools']['db-connected']</code>
-      <code>$config['api-tools']['db-connected']</code>
-      <code>$config['api-tools']['db-connected']</code>
-      <code>$config['api-tools-hal']['metadata_map']</code>
-      <code>$config['api-tools-hal']['metadata_map']</code>
-      <code>$config['api-tools-rest'][$result-&gt;controllerServiceName]</code>
+    <MixedArrayAccess occurrences="28">
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-rest']</code>
+      <code>$config['api-tools-rest']</code>
       <code>$halConfig['hydrator']</code>
       <code>$resourceConfig['adapter_name']</code>
       <code>$resourceConfig['controller_service_name']</code>
@@ -5304,7 +5285,13 @@
       <code>$config['api-tools-hal']['metadata_map'][$result-&gt;entityClass]</code>
       <code>$config['api-tools-rest'][$result-&gt;controllerServiceName]</code>
     </MixedArrayOffset>
-    <MixedAssignment occurrences="6">
+    <MixedAssignment occurrences="12">
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
       <code>$file</code>
       <code>$halConfig</code>
       <code>$resourceConfig</code>
@@ -5363,6 +5350,9 @@
     </PossiblyUndefinedMethod>
   </file>
   <file src="test/Model/DocumentationModelTest.php">
+    <MixedAssignment occurrences="1">
+      <code>$this-&gt;actualDocData</code>
+    </MixedAssignment>
     <PossiblyInvalidArgument occurrences="1">
       <code>$writer</code>
     </PossiblyInvalidArgument>
@@ -5593,29 +5583,11 @@
     <DocblockTypeContradiction occurrences="1">
       <code>empty($this-&gt;modules)</code>
     </DocblockTypeContradiction>
-    <EmptyArrayAccess occurrences="16">
-      <code>$config['api-tools-content-negotiation']</code>
-      <code>$config['api-tools-content-negotiation']</code>
-      <code>$config['api-tools-hal']</code>
-      <code>$config['api-tools-hal']</code>
-      <code>$config['api-tools-hal']</code>
-      <code>$config['api-tools-hal']</code>
-      <code>$config['api-tools-hal']</code>
-      <code>$config['api-tools-rest']</code>
-      <code>$config['api-tools-rest']</code>
-      <code>$config['api-tools-rest']</code>
-      <code>$config['api-tools-rest']</code>
-      <code>$config['api-tools-versioning']</code>
-      <code>$config['router']</code>
-      <code>$config['router']</code>
-      <code>$config['router']</code>
-      <code>$config['service_manager']</code>
-    </EmptyArrayAccess>
     <InvalidArgument occurrences="1"/>
     <MissingClosureParamType occurrences="1">
       <code>$e</code>
     </MissingClosureParamType>
-    <MixedArgument occurrences="86">
+    <MixedArgument occurrences="101">
       <code>$collectionConfig</code>
       <code>$collectionConfig</code>
       <code>$collectionConfig</code>
@@ -5626,6 +5598,21 @@
       <code>$collectionName</code>
       <code>$collectionName</code>
       <code>$collectionName</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
       <code>$config</code>
       <code>$config</code>
       <code>$config</code>
@@ -5708,7 +5695,7 @@
       <code>$payload</code>
       <code>$payload</code>
     </MixedArgumentTypeCoercion>
-    <MixedArrayAccess occurrences="58">
+    <MixedArrayAccess occurrences="73">
       <code>$collectionConfig['is_collection']</code>
       <code>$collectionConfig['route_identifier_name']</code>
       <code>$collectionConfig['route_identifier_name']</code>
@@ -5725,29 +5712,44 @@
       <code>$config['accept_whitelist']</code>
       <code>$config['accept_whitelist']</code>
       <code>$config['accept_whitelist']</code>
-      <code>$config['api-tools-hal']['metadata_map']</code>
-      <code>$config['api-tools-hal']['metadata_map']</code>
-      <code>$config['api-tools-hal']['metadata_map']</code>
-      <code>$config['api-tools-hal']['metadata_map']</code>
-      <code>$config['api-tools-hal']['metadata_map']</code>
-      <code>$config['api-tools-rest'][$original-&gt;controllerServiceName]</code>
-      <code>$config['api-tools-rest'][$original-&gt;controllerServiceName]</code>
-      <code>$config['api-tools-rest'][$original-&gt;controllerServiceName]</code>
-      <code>$config['api-tools-rest']['BarConf\Rest\Foo\Controller']</code>
-      <code>$config['api-tools-versioning']['uri']</code>
+      <code>$config['api-tools-content-negotiation']</code>
+      <code>$config['api-tools-content-negotiation']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-hal']</code>
+      <code>$config['api-tools-rest']</code>
+      <code>$config['api-tools-rest']</code>
+      <code>$config['api-tools-rest']</code>
+      <code>$config['api-tools-rest']</code>
+      <code>$config['api-tools-rest']</code>
+      <code>$config['api-tools-rest']</code>
+      <code>$config['api-tools-rest']</code>
+      <code>$config['api-tools-rest']</code>
+      <code>$config['api-tools-versioning']</code>
       <code>$config['content_type_whitelist']</code>
       <code>$config['content_type_whitelist']</code>
       <code>$config['content_type_whitelist']</code>
       <code>$config['controllers']</code>
       <code>$config['controllers']</code>
       <code>$config['controllers']</code>
+      <code>$config['router']</code>
+      <code>$config['router']</code>
+      <code>$config['router']</code>
+      <code>$config['router']</code>
+      <code>$config['router']</code>
+      <code>$config['router']</code>
       <code>$config['router']['routes']</code>
       <code>$config['router']['routes']</code>
-      <code>$config['router']['routes']</code>
-      <code>$config['router']['routes']</code>
-      <code>$config['router']['routes']</code>
-      <code>$config['service_manager']['factories']</code>
-      <code>$config['service_manager']['factories']</code>
+      <code>$config['service_manager']</code>
+      <code>$config['service_manager']</code>
+      <code>$config['service_manager']</code>
       <code>$entityConfig['entity_identifier_name']</code>
       <code>$entityConfig['entity_identifier_name']</code>
       <code>$entityConfig['hydrator']</code>
@@ -5781,7 +5783,7 @@
       <code>$config['controllers'][$original-&gt;controllerServiceName]</code>
       <code>$config['router']['routes'][$original-&gt;routeName]</code>
     </MixedArrayOffset>
-    <MixedAssignment occurrences="27">
+    <MixedAssignment occurrences="44">
       <code>$collectionConfig</code>
       <code>$collectionConfig</code>
       <code>$collectionConfig</code>
@@ -5796,6 +5798,23 @@
       <code>$config</code>
       <code>$config</code>
       <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config</code>
+      <code>$config2</code>
       <code>$entityConfig</code>
       <code>$entityConfig</code>
       <code>$entityConfig</code>
@@ -5854,10 +5873,6 @@
     </PossiblyUndefinedMethod>
   </file>
   <file src="test/Model/RestServiceResourceTest.php">
-    <EmptyArrayAccess occurrences="2">
-      <code>$config['api-tools']</code>
-      <code>$config['api-tools-hal']</code>
-    </EmptyArrayAccess>
     <MixedArgument occurrences="6">
       <code>$agConfig['hydrator_name']</code>
       <code>$config['api-tools']['db-connected']</code>
@@ -5887,9 +5902,6 @@
       <code>$this-&gt;docs</code>
       <code>$this-&gt;filter</code>
     </PossiblyInvalidArgument>
-    <RedundantCondition occurrences="1">
-      <code>assertIsArray</code>
-    </RedundantCondition>
   </file>
   <file src="test/Model/RpcServiceModelFactoryFactoryTest.php">
     <MixedArgument occurrences="4">
@@ -6074,17 +6086,6 @@
       <code>reveal</code>
       <code>reveal</code>
     </PossiblyUndefinedMethod>
-  </file>
-  <file src="test/Model/TestAsset/module/FooConf/src/FooConf/Module.php">
-    <MissingFile occurrences="1">
-      <code>include __DIR__ . '/config/module.config.php'</code>
-    </MissingFile>
-    <MixedInferredReturnType occurrences="1">
-      <code>array&lt;string, mixed&gt;</code>
-    </MixedInferredReturnType>
-    <MixedReturnStatement occurrences="1">
-      <code>include __DIR__ . '/config/module.config.php'</code>
-    </MixedReturnStatement>
   </file>
   <file src="test/Model/ValidatorMetadataModelTest.php">
     <MixedArgument occurrences="2">

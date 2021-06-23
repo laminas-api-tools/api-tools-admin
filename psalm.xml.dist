@@ -14,7 +14,9 @@
         <directory name="view"/>
 
         <ignoreFiles>
-            <file name="test/TestAsset/Closure.php"/>
+            <directory name="test/Controller/TestAsset"/>
+            <directory name="test/Model/TestAsset"/>
+            <directory name="test/TestAsset"/>
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
