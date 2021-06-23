@@ -95,7 +95,7 @@ class RpcServiceResource extends AbstractResourceListener
      * Create a new RPC service
      *
      * @param  array|object $data
-     * @return RpcServiceEntity|ApiProblem
+     * @return false|RpcServiceEntity|ApiProblem
      * @throws CreationException
      */
     public function create($data)
@@ -183,7 +183,7 @@ class RpcServiceResource extends AbstractResourceListener
      * Fetch metadata for all RPC services
      *
      * @param  array $params
-     * @return RpcServiceEntity[]
+     * @return (RpcServiceEntity|false)[]
      */
     public function fetchAll($params = [])
     {
@@ -202,9 +202,9 @@ class RpcServiceResource extends AbstractResourceListener
     /**
      * Update an existing RPC service
      *
-     * @param  string $id
-     * @param  object|array $data
-     * @return ApiProblem|RpcServiceEntity
+     * @param string $id
+     * @param object|array $data
+     * @return ApiProblem|RpcServiceEntity|false
      * @throws PatchException If unable to update configuration.
      */
     public function patch($id, $data)
@@ -277,6 +277,8 @@ class RpcServiceResource extends AbstractResourceListener
 
     /**
      * Inject the input filters collection, if any, as an embedded collection
+     *
+     * @return void
      */
     protected function injectInputFilters(RpcServiceEntity $service)
     {
@@ -321,6 +323,9 @@ class RpcServiceResource extends AbstractResourceListener
         ]);
     }
 
+    /**
+     * @return void
+     */
     protected function injectDocumentation(RpcServiceEntity $service)
     {
         $documentation = $this->documentationModel->fetchDocumentation(
@@ -337,6 +342,8 @@ class RpcServiceResource extends AbstractResourceListener
 
     /**
      * Inject the class name of the controller, if it can be resolved.
+     *
+     * @return void
      */
     protected function injectControllerClass(RpcServiceEntity $service)
     {

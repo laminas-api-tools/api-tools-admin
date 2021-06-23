@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<psalm
+  totallyTyped="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="https://getpsalm.org/schema/config"
+  xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    errorBaseline="psalm-baseline.xml"
+>
+    <projectFiles>
+        <directory name="bin"/>
+        <directory name="config"/>
+        <directory name="src"/>
+        <directory name="test"/>
+        <directory name="view"/>
+
+        <ignoreFiles>
+            <directory name="test/Controller/TestAsset"/>
+            <directory name="test/Model/TestAsset"/>
+            <directory name="test/TestAsset"/>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+        <InternalMethod>
+            <errorLevel type="suppress">
+                <referencedMethod name="PHPUnit\Framework\MockObject\Builder\InvocationMocker::method"/>
+            </errorLevel>
+            <errorLevel type="suppress">
+                <referencedMethod name="PHPUnit\Framework\MockObject\Builder\InvocationMocker::willReturn"/>
+            </errorLevel>
+            <errorLevel type="suppress">
+                <referencedMethod name="PHPUnit\Framework\MockObject\Builder\InvocationMocker::with"/>
+            </errorLevel>
+        </InternalMethod>
+
+        <MissingFile>
+            <errorLevel type="suppress">
+                <file name="test/Model/DbAutodiscoveryModelFactoryTest.php" />
+                <file name="test/Model/DbConnectedRestServiceModelTest.php" />
+                <file name="test/Model/RestServiceModelTest.php" />
+                <file name="test/Model/RestServiceResourceTest.php" />
+            </errorLevel>
+        </MissingFile>
+    </issueHandlers>
+
+    <plugins>
+        <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
+    </plugins>
+</psalm>

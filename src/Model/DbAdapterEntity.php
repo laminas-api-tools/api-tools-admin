@@ -35,6 +35,7 @@ class DbAdapterEntity
      * Reset state of entity
      *
      * @param array<string, mixed> $array
+     * @return void
      */
     public function exchangeArray(array $array)
     {

@@ -85,7 +85,7 @@ class AbstractPluginManagerModel
         $rProp = $r->getProperty($type);
         $rProp->setAccessible(true);
 
-        $filterFn = function ($v) {
+        $filterFn = function ($v): bool {
             return $this->filterPluginName($v);
         };
 

@@ -245,7 +245,7 @@ class InjectModuleResourceLinksListenerTest extends TestCase
         self::assertNull($listener($this->event->reveal()));
     }
 
-    /** @psalm-return array<string, array{0: string}> */
+    /** @psalm-return array<class-string, array{0: class-string}> */
     public function serviceEntities(): array
     {
         return [
@@ -445,7 +445,7 @@ class InjectModuleResourceLinksListenerTest extends TestCase
 
     /**
      * @psalm-return iterable<string, array{
-     *     0: array|RestInputFilterEntity|RpcInputFilterEntity,
+     *     0: array|RestServiceEntity|RpcServiceEntity,
      *     1: string,
      *     2: string
      * }>

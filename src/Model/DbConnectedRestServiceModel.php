@@ -166,6 +166,8 @@ class DbConnectedRestServiceModel
 
     /**
      * Create DB-Connected configuration based on entity
+     *
+     * @return void
      */
     public function createDbConnectedConfig(DbConnectedRestServiceEntity $entity)
     {
@@ -215,6 +217,8 @@ class DbConnectedRestServiceModel
 
     /**
      * Update the HAL configuration for the service
+     *
+     * @return void
      */
     public function updateHalConfig(DbConnectedRestServiceEntity $entity)
     {
@@ -228,6 +232,8 @@ class DbConnectedRestServiceModel
 
     /**
      * Delete the DB-Connected configuration for the entity
+     *
+     * @return void
      */
     public function deleteDbConnectedConfig(DbConnectedRestServiceEntity $entity)
     {

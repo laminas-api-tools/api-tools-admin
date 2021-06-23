@@ -55,14 +55,14 @@ class DoctrineAdapterModelFactoryTest extends TestCase
 
         $r = new ReflectionProperty($model, 'globalConfig');
         $r->setAccessible(true);
-        $globalConfig = $r->getValue($model);
+        $r->getValue($model);
 
         //self::assertAttributeSame($writer, 'writer', $globalConfig);
         //self::assertAttributeEquals('config/autoload/doctrine.global.php', 'fileName', $globalConfig);
 
         $r = new ReflectionProperty($model, 'localConfig');
         $r->setAccessible(true);
-        $localConfig = $r->getValue($model);
+        $r->getValue($model);
 
         //self::assertAttributeSame($writer, 'writer', $localConfig);
         //self::assertAttributeEquals('config/autoload/doctrine.local.php', 'fileName', $localConfig);

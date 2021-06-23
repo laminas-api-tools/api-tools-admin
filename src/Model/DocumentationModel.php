@@ -13,6 +13,7 @@ use function array_intersect_key;
 use function array_key_exists;
 use function dirname;
 use function file_exists;
+use function sprintf;
 
 class DocumentationModel
 {
@@ -33,10 +34,111 @@ class DocumentationModel
 
     /**
      * @param string $type
+     * @throws InvalidArgumentConfiguration When an invalid $type is provided.
      * @psalm-param self::TYPE_* $type
-     * @return array<string, null|string|array<string, null|string>>
+     * @psalm-return array{
+     *     description: null|string,
+     *     collection: array{
+     *         description: null|string,
+     *         GET: array{
+     *             identifier: null|string,
+     *             description: null|string,
+     *             request: null|string,
+     *             response: null|string
+     *         },
+     *         POST: array{
+     *             identifier: null|string,
+     *             description: null|string,
+     *             request: null|string,
+     *             response: null|string
+     *         },
+     *         PUT: array{
+     *             identifier: null|string,
+     *             description: null|string,
+     *             request: null|string,
+     *             response: null|string
+     *         },
+     *         PATCH: array{
+     *             identifier: null|string,
+     *             description: null|string,
+     *             request: null|string,
+     *             response: null|string
+     *         },
+     *         DELETE: array{
+     *             identifier: null|string,
+     *             description: null|string,
+     *             request: null|string,
+     *             response: null|string
+     *         }
+     *     },
+     *     entity: array{
+     *         description: null|string,
+     *         GET: array{
+     *             identifier: null|string,
+     *             description: null|string,
+     *             request: null|string,
+     *             response: null|string
+     *         },
+     *         POST: array{
+     *             identifier: null|string,
+     *             description: null|string,
+     *             request: null|string,
+     *             response: null|string
+     *         },
+     *         PUT: array{
+     *             identifier: null|string,
+     *             description: null|string,
+     *             request: null|string,
+     *             response: null|string
+     *         },
+     *         PATCH: array{
+     *             identifier: null|string,
+     *             description: null|string,
+     *             request: null|string,
+     *             response: null|string
+     *         },
+     *         DELETE: array{
+     *             identifier: null|string,
+     *             description: null|string,
+     *             request: null|string,
+     *             response: null|string
+     *         }
+     *     }
+     * }|array{
+     *     description: null|string,
+     *     GET: array{
+     *         identifier: null|string,
+     *         description: null|string,
+     *         request: null|string,
+     *         response: null|string
+     *     },
+     *     POST: array{
+     *         identifier: null|string,
+     *         description: null|string,
+     *         request: null|string,
+     *         response: null|string
+     *     },
+     *     PUT: array{
+     *         identifier: null|string,
+     *         description: null|string,
+     *         request: null|string,
+     *         response: null|string
+     *     },
+     *     PATCH: array{
+     *         identifier: null|string,
+     *         description: null|string,
+     *         request: null|string,
+     *         response: null|string
+     *     },
+     *     DELETE: array{
+     *         identifier: null|string,
+     *         description: null|string,
+     *         request: null|string,
+     *         response: null|string
+     *     }
+     * }
      */
-    public function getSchemaTemplate($type = self::TYPE_REST)
+    public function getSchemaTemplate($type = self::TYPE_REST): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         switch ($type) {
@@ -69,6 +171,11 @@ class DocumentationModel
                     'PATCH'       => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
                     'DELETE'      => ['identifier' => null, 'description' => null, 'request' => null, 'response' => null],
                 ];
+            default:
+                throw new InvalidArgumentConfiguration(sprintf(
+                    'Only schema types of "rest" or "rpc" are supported by %s',
+                    __METHOD__
+                ));
         }
         // phpcs:enable
     }

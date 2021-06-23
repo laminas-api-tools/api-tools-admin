@@ -13,7 +13,9 @@ namespace LaminasTest\ApiTools\Admin\TestAsset;
  */
 class Closure
 {
-    /** @return mixed */
+    /**
+     * @return mixed
+     */
     public function call()
     {
     }

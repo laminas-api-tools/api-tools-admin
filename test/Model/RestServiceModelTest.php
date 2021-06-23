@@ -1024,7 +1024,7 @@ class RestServiceModelTest extends TestCase
 
         // create a second service with the same name and data
         try {
-            $result = $this->codeRest->createService($details);
+            $this->codeRest->createService($details);
             self::fail('Should not have created service due to duplicate existing already');
         } catch (RuntimeException $e) {
             $config2 = include __DIR__ . '/TestAsset/module/BarConf/config/module.config.php';

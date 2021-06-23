@@ -35,7 +35,7 @@ class ContentNegotiationEntity
     /**
      * Reset state of entity
      *
-     * @param  array $array
+     * @return void
      */
     public function exchangeArray(array $array)
     {

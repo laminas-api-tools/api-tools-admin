@@ -190,10 +190,10 @@ class ModuleVersioningModel
      *
      * @param string $source
      * @param string $target
-     * @param int $previous
-     * @param int $version
+     * @param int|string $previous
+     * @param int|string $version
      */
-    protected function recursiveCopy($source, $target, $previous, $version)
+    protected function recursiveCopy($source, $target, $previous, $version): void
     {
         $dir = opendir($source);
         @mkdir($target);
