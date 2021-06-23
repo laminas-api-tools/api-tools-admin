@@ -59,7 +59,7 @@ class ContentNegotiationModelFactoryTest extends TestCase
 
         $r = new ReflectionProperty($model, 'globalConfig');
         $r->setAccessible(true);
-        $config = $r->getValue($model);
+        $r->getValue($model);
 
         //self::assertAttributeEquals([], 'config', $config);
         //self::assertAttributeEquals('config/autoload/global.php', 'fileName', $config);

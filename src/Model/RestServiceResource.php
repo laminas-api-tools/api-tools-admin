@@ -245,6 +245,8 @@ class RestServiceResource extends AbstractResourceListener
 
     /**
      * Inject the input filters collection, if any, as an embedded collection
+     *
+     * @return void
      */
     protected function injectInputFilters(RestServiceEntity $service)
     {
@@ -289,6 +291,9 @@ class RestServiceResource extends AbstractResourceListener
         ]);
     }
 
+    /**
+     * @return void
+     */
     protected function injectDocumentation(RestServiceEntity $service)
     {
         $documentation = $this->documentationModel->fetchDocumentation(

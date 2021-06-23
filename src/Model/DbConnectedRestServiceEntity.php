@@ -27,6 +27,7 @@ class DbConnectedRestServiceEntity extends RestServiceEntity
 
     /**
      * @param array $data
+     * @return void
      */
     public function exchangeArray(array $data)
     {

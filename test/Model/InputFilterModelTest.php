@@ -138,7 +138,7 @@ class InputFilterModelTest extends TestCase
         self::assertTrue($this->model->moduleExists('InputFilter'));
     }
 
-    public function testControllerExists()
+    public function testControllerExists(): void
     {
         self::assertTrue($this->model->controllerExists('InputFilter', 'InputFilter\V1\Rest\Foo\Controller'));
     }

@@ -11,10 +11,8 @@ use PHPUnit\Framework\TestCase;
 
 class ModulePathSpecTest extends TestCase
 {
-    /**
-     * @return MockObject|ModuleUtils
-     */
-    protected function getModuleUtils(): MockObject
+    /** @return MockObject&ModuleUtils */
+    protected function getModuleUtils()
     {
         $utils = $this->getMockBuilder(ModuleUtils::class)
                     ->disableOriginalConstructor()

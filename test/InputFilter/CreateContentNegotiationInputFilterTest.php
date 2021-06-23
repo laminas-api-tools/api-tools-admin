@@ -33,9 +33,14 @@ class CreateContentNegotiationInputFilterTest extends TestCase
     }
 
     /**
-     * @psalm-return array<string, array {
-     *     0: array<string, array<string, mixed>>,
-     *     1: array<string, array<string, string>>
+     * @psalm-return array<string, array{
+     *     0: array{
+     *         selectors: array<string, list<string>>,
+     *         content_name?: mixed
+     *     },
+     *     1: array{
+     *         content_name: array<string, string>
+     *     }
      * }>
      */
     public function dataProviderIsInvalid(): array

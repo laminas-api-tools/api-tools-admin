@@ -144,7 +144,7 @@ class ModuleEntity
     /**
      * Populate object from array
      *
-     * @param  array $data
+     * @return void
      */
     public function exchangeArray(array $data)
     {
@@ -221,7 +221,8 @@ class ModuleEntity
      * module lives in a vendor subdirectory.
      *
      * @throws ReflectionException
-     * @todo   Add other criteria, such as "library"?
+     * @todo Add other criteria, such as "library"?
+     * @return void
      */
     protected function determineVendorStatus()
     {

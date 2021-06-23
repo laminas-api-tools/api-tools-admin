@@ -121,11 +121,13 @@ class AuthorizationModel
     /**
      * Create default privileges for a list of REST services of the specified version
      *
-     * @param array $services
-     * @param int $version
+     * @param int|string $version
      */
-    protected function createDefaultPrivilegesForRestServices(array $services, AuthorizationEntity $entity, $version)
-    {
+    protected function createDefaultPrivilegesForRestServices(
+        array $services,
+        AuthorizationEntity $entity,
+        $version
+    ): void {
         foreach ($services as $serviceName) {
             if (! preg_match('/' . preg_quote('\\') . 'V' . $version . preg_quote('\\') . '/', $serviceName)) {
                 continue;
@@ -138,16 +140,15 @@ class AuthorizationModel
     /**
      * Create default privileges for a list of RPC services of the specified version
      *
-     * @param array $services
      * @param array $config Used to determine action associated with RPC service (via route config)
-     * @param int $version
+     * @param int|string $version
      */
     protected function createDefaultPrivilegesForRpcServices(
         array $services,
         AuthorizationEntity $entity,
         array $config,
         $version
-    ) {
+    ): void {
         foreach ($services as $serviceName => $serviceConfig) {
             if (! preg_match('/' . preg_quote('\\') . 'V' . $version . preg_quote('\\') . '/', $serviceName)) {
                 continue;
@@ -273,10 +274,9 @@ class AuthorizationModel
     /**
      * Identify services in the current version without authorization configuration and inject them into the entity
      *
-     * @param int $version
-     * @param array $config
+     * @param int|string $version
      */
-    protected function injectServicesWithoutPrivileges(AuthorizationEntity $entity, $version, array $config)
+    protected function injectServicesWithoutPrivileges(AuthorizationEntity $entity, $version, array $config): void
     {
         $services = $this->getBaseServiceNamesFromEntity($entity);
         if (

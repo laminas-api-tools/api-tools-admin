@@ -474,10 +474,10 @@ class AuthenticationModel
     /**
      * Create an AuthenticationEntity based on the configuration given
      *
-     * @param  array $config
-     * @return AuthenticationEntity
+     * @throws Exception\InvalidArgumentException When configuration is missing
+     *     required elements.
      */
-    protected function createAuthenticationEntityFromConfig(array $config)
+    protected function createAuthenticationEntityFromConfig(array $config): AuthenticationEntity
     {
         switch (true) {
             case isset($config['accept_schemes']):
@@ -486,6 +486,11 @@ class AuthenticationModel
                 return new AuthenticationEntity($type, $realm, $config);
             case isset($config['dsn']) || isset($config['dsn_type']):
                 return new AuthenticationEntity(AuthenticationEntity::TYPE_OAUTH2, $config);
+            default:
+                throw new Exception\InvalidArgumentException(sprintf(
+                    'Authentication configuration is missing one or more required elements; cannot create %s',
+                    AuthenticationEntity::class
+                ));
         }
     }
 
@@ -520,9 +525,10 @@ class AuthenticationModel
      *
      * Necessary starting in PHP 5.4; see https://bugs.php.net/bug.php?id=60278
      *
-     * @param  mixed $a
-     * @param  mixed $b
-     * @return int
+     * @param mixed $a
+     * @param mixed $b
+     * @return array|int
+     * @psalm-return -1|0|1|array
      */
     public static function arrayDiffRecursive($a, $b)
     {
@@ -599,11 +605,8 @@ class AuthenticationModel
 
     /**
      * Patch the HTTP Authentication configuration
-     *
-     * @param array $global
-     * @param array $local
      */
-    protected function patchHttpAuthConfig(AuthenticationEntity $entity, array $global, array $local)
+    protected function patchHttpAuthConfig(AuthenticationEntity $entity, array $global, array $local): void
     {
         $key = 'api-tools-mvc-auth.authentication.http';
         $this->globalConfig->patchKey($key, $global);
@@ -612,12 +615,8 @@ class AuthenticationModel
 
     /**
      * Patch the OAuth2 configuration
-     *
-     * @param array $global
-     * @param array $local
-     * @return void
      */
-    protected function patchOAuth2Config(AuthenticationEntity $entity, array $global, array $local)
+    protected function patchOAuth2Config(AuthenticationEntity $entity, array $global, array $local): void
     {
         if (isset($global['route_match']) && $global['route_match']) {
             $this->globalConfig->patchKey('router.routes.oauth.options.route', $global['route_match']);
@@ -646,15 +645,14 @@ class AuthenticationModel
     /**
      * Validate a DSN
      *
-     * @param  string $dsn
-     * @param  string $username
-     * @param  string $password
-     * @param  string $dsnType
-     * @return bool
      * @throws Exception\InvalidArgumentException On invalid DSN.
      */
-    protected function validateDsn($dsn, $username = null, $password = null, $dsnType = AuthenticationEntity::DSN_PDO)
-    {
+    protected function validateDsn(
+        string $dsn,
+        ?string $username = null,
+        ?string $password = null,
+        string $dsnType = AuthenticationEntity::DSN_PDO
+    ): bool {
         $method = sprintf('create%sDSN', strtolower($dsnType));
 
         try {
@@ -672,22 +670,14 @@ class AuthenticationModel
     }
 
     /**
-     * @param string $dsn
-     * @return MongoClient
      * @throws MongoConnectionException
      */
-    protected function createMongoDSN($dsn)
+    protected function createMongoDSN(string $dsn): MongoClient
     {
         return new MongoClient($dsn);
     }
 
-    /**
-     * @param  string $dsn
-     * @param  string|null $username
-     * @param  string|null $password
-     * @return PDO
-     */
-    protected function createPdoDSN($dsn, $username, $password)
+    protected function createPdoDSN(string $dsn, ?string $username, ?string $password): PDO
     {
         return new PDO($dsn, $username, $password);
     }
@@ -695,10 +685,9 @@ class AuthenticationModel
     /**
      * Add a new authentication adapter in local config
      *
-     * @param array $adapter
      * @return true
      */
-    protected function saveAuthenticationAdapter(array $adapter)
+    protected function saveAuthenticationAdapter(array $adapter): bool
     {
         $key = 'api-tools-mvc-auth.authentication.adapters.' . $adapter['name'];
         switch ($adapter['type']) {
@@ -790,11 +779,8 @@ class AuthenticationModel
      * Update the OAuth2 route
      *
      * Since Laminas API Tools 1.1
-     *
-     * @param  string $url
-     * @return void
      */
-    protected function updateOAuth2Route($url)
+    protected function updateOAuth2Route(string $url): void
     {
         $config = $this->globalConfig->fetch(true);
 
@@ -819,11 +805,8 @@ class AuthenticationModel
      * Remove a url from OAuth2 route
      *
      * Since Laminas API Tools 1.1
-     *
-     * @param  string $url
-     * @return bool
      */
-    protected function removeOAuth2Route($url)
+    protected function removeOAuth2Route(string $url): bool
     {
         $config = $this->globalConfig->fetch(true);
 
@@ -859,12 +842,8 @@ class AuthenticationModel
     /**
      * Load authentication data from configuration version 2
      * Since Laminas API Tools 1.1
-     *
-     * @param  string $name
-     * @param  array $config
-     * @return array
      */
-    protected function loadAuthenticationAdapterFromConfig($name, array $config)
+    protected function loadAuthenticationAdapterFromConfig(string $name, array $config): array
     {
         $result = [];
         if (isset($config['api-tools-mvc-auth']['authentication']['adapters'][$name])) {

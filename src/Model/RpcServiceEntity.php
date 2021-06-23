@@ -76,8 +76,8 @@ class RpcServiceEntity
     }
 
     /**
-     * @todo   validation
-     * @param  array $data
+     * @todo validation
+     * @return void
      * @throws InvalidArgumentException If a particular value does not validate.
      * @throws RuntimeException If the object does not have a controller service name following population.
      */

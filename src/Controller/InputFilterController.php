@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Controller;
 
+use ArrayAccess;
 use Laminas\ApiTools\Admin\Model\InputFilterCollection;
 use Laminas\ApiTools\Admin\Model\InputFilterModel;
 use Laminas\ApiTools\ApiProblem\ApiProblem;
@@ -97,7 +98,7 @@ class InputFilterController extends AbstractActionController
             case $request::METHOD_PUT:
                 $inputFilter = $this->bodyParams();
                 $result      = $this->model->update($module, $controller, $inputFilter);
-                if (! $result) {
+                if (! $result instanceof ArrayAccess) {
                     return new ApiProblemResponse(
                         new ApiProblem(
                             500,

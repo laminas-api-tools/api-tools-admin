@@ -44,14 +44,14 @@ class AuthorizationEntityTest extends TestCase
         ];
     }
 
-    public function testEntityIsIterable()
+    public function testEntityIsIterable(): void
     {
         $values = $this->getSeedValuesForEntity();
         $entity = new AuthorizationEntity($values);
         self::assertInstanceOf('Traversable', $entity);
     }
 
-    public function testIteratingEntityReturnsAKeyForEachOfRestEntityAndCollection()
+    public function testIteratingEntityReturnsAKeyForEachOfRestEntityAndCollection(): void
     {
         $values = $this->getSeedValuesForEntity();
         $entity = new AuthorizationEntity($values);
@@ -64,7 +64,7 @@ class AuthorizationEntityTest extends TestCase
         self::assertContains('Foo\V1\Rest\Session\Controller::__collection__', $keys);
     }
 
-    public function testIteratingEntityReturnsAKeyForEachActionOfRpcController()
+    public function testIteratingEntityReturnsAKeyForEachActionOfRpcController(): void
     {
         $values = $this->getSeedValuesForEntity();
         $entity = new AuthorizationEntity($values);
@@ -77,7 +77,7 @@ class AuthorizationEntityTest extends TestCase
         self::assertContains('Foo\V1\Rpc\Message\Controller::translate', $keys);
     }
 
-    public function testCanAddARestServiceAtATime()
+    public function testCanAddARestServiceAtATime(): void
     {
         $entity = new AuthorizationEntity();
         $entity->addRestService('Foo\V1\Rest\Session\Controller', AuthorizationEntity::TYPE_ENTITY, [
@@ -103,7 +103,7 @@ class AuthorizationEntityTest extends TestCase
         self::assertContains('Foo\V1\Rest\Session\Controller::__collection__', $keys);
     }
 
-    public function testCanAddAnRpcServiceAtATime()
+    public function testCanAddAnRpcServiceAtATime(): void
     {
         $entity = new AuthorizationEntity();
         $entity->addRpcService('Foo\V1\Rpc\Message\Controller', 'message', [
@@ -129,7 +129,7 @@ class AuthorizationEntityTest extends TestCase
         self::assertContains('Foo\V1\Rpc\Message\Controller::translate', $keys);
     }
 
-    public function testCanRetrieveNamedServices()
+    public function testCanRetrieveNamedServices(): void
     {
         $entity = new AuthorizationEntity();
         $entity->addRpcService('Foo\V1\Rpc\Message\Controller', 'message', [
@@ -150,7 +150,7 @@ class AuthorizationEntityTest extends TestCase
         ], $privileges);
     }
 
-    public function testAddingARestServiceWithoutHttpMethodsProvidesDefaults()
+    public function testAddingARestServiceWithoutHttpMethodsProvidesDefaults(): void
     {
         $entity = new AuthorizationEntity();
         $entity->addRestService('Foo\V1\Rest\Session\Controller', AuthorizationEntity::TYPE_ENTITY);
@@ -165,7 +165,7 @@ class AuthorizationEntityTest extends TestCase
         ], $privileges);
     }
 
-    public function testAddingAnRpcServiceWithoutHttpMethodsProvidesDefaults()
+    public function testAddingAnRpcServiceWithoutHttpMethodsProvidesDefaults(): void
     {
         $entity = new AuthorizationEntity();
         $entity->addRpcService('Foo\V1\Rpc\Message\Controller', 'message');

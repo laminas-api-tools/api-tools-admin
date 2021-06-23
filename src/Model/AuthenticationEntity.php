@@ -124,7 +124,24 @@ class AuthenticationEntity
         }
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return (int|string|string[])[]|null
+     * @psalm-return array{
+     *     type: 'http_basic'|'http_digest'|'oauth2',
+     *     accept_schemes?: array{0: 'basic'|'digest'},
+     *     realm?: string,
+     *     htpasswd?: string,
+     *     htdigest?: string,
+     *     digest_domains?: string,
+     *     nonce_timeout?: int,
+     *     dsn_type?: string,
+     *     dsn?: string,
+     *     username?: string,
+     *     password?: string,
+     *     route_match?: string,
+     *     database?: string
+     * }
+     */
     public function getArrayCopy()
     {
         switch ($this->type) {
@@ -166,9 +183,13 @@ class AuthenticationEntity
                 }
 
                 return $array;
+
+            default:
+                return [];
         }
     }
 
+    /** @return void */
     public function exchangeArray(array $array)
     {
         switch ($this->type) {

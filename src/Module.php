@@ -32,6 +32,8 @@ class Module
      * If the admin UI module is not loaded yet, load it.
      *
      * Disable the opcache as well.
+     *
+     * @return void
      */
     public function init(ModuleManagerInterface $modules)
     {
@@ -55,6 +57,8 @@ class Module
 
     /**
      * Listen to the bootstrap event
+     *
+     * @return void
      */
     public function onBootstrap(MvcEvent $e)
     {
@@ -115,6 +119,8 @@ class Module
      *
      * Disables opcode caching for opcode caches that allow doing so during
      * runtime; the admin API will not work with opcode caching enabled.
+     *
+     * @return void
      */
     protected function disableOpCache()
     {

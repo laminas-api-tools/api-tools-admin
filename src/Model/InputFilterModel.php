@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin\Model;
 
+use ArrayAccess;
 use Laminas\ApiTools\Configuration\Exception\InvalidArgumentException as InvalidArgumentConfiguration;
 use Laminas\ApiTools\Configuration\ResourceFactory as ConfigResourceFactory;
 
 use function array_key_exists;
+use function assert;
 use function is_array;
+use function sprintf;
 use function strlen;
 use function strstr;
 use function strtolower;
@@ -47,7 +50,7 @@ class InputFilterModel
      * @param  string $module
      * @param  string $controller
      * @param  array $inputFilter
-     * @return array|bool
+     * @return false|object
      */
     public function update($module, $controller, $inputFilter)
     {
@@ -117,11 +120,11 @@ class InputFilterModel
     /**
      * Add input filter
      *
-     * @param  string $module
-     * @param  string $controller
-     * @param  array  $inputFilter
-     * @param  string $validatorName
-     * @return array|bool
+     * @param string $module
+     * @param string $controller
+     * @param array  $inputFilter
+     * @param null|string $validatorName
+     * @return false|ArrayAccess
      */
     protected function addInputFilter($module, $controller, $inputFilter, $validatorName = null)
     {
@@ -157,8 +160,11 @@ class InputFilterModel
             return false;
         }
 
-        $entityType                  = $this->getEntityType($controller);
-        $return                      = new $entityType($updated['input_filter_specs'][$validator]);
+        $entityType = $this->getEntityType($controller);
+        $return     = new $entityType($updated['input_filter_specs'][$validator]);
+
+        assert($return instanceof ArrayAccess, sprintf('Entity of type %s does not implement ArrayAccess'));
+
         $return['input_filter_name'] = $validator;
         return $return;
     }

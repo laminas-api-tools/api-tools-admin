@@ -127,8 +127,8 @@ class RpcServiceModel
     /**
      * Fetch all services
      *
-     * @param int $version
-     * @return RpcServiceEntity[]
+     * @param null|int|string $version
+     * @return (RpcServiceEntity|false)[]
      * @throws Exception\RuntimeException
      */
     public function fetchAll($version = null)
@@ -177,12 +177,12 @@ class RpcServiceModel
      *
      * Creates the controller and all configuration, returning the full configuration as a tree.
      *
-     * @todo   Return the controller service name
-     * @param  string $serviceName
-     * @param  string $routeMatch
-     * @param  array $httpMethods
-     * @param  null|string $selector
-     * @return RpcServiceEntity
+     * @todo Return the controller service name
+     * @param string $serviceName
+     * @param string $routeMatch
+     * @param array $httpMethods
+     * @param null|string $selector
+     * @return RpcServiceEntity|false
      * @throws CreationException
      */
     public function createService($serviceName, $routeMatch, $httpMethods, $selector = null)
@@ -590,8 +590,9 @@ class RpcServiceModel
     /**
      * Removes the route configuration for a named route
      *
-     * @param  string $routeName
-     * @param  string $serviceName
+     * @param string $routeName
+     * @param string $serviceName
+     * @return void
      */
     public function deleteRouteConfig($routeName, $serviceName)
     {
@@ -609,8 +610,9 @@ class RpcServiceModel
      *
      * Only for version 1; later versions will do nothing
      *
-     * @param  string $routeName
-     * @param  string $serviceName
+     * @param string $routeName
+     * @param string $serviceName
+     * @return void
      */
     public function deleteVersioningConfig($routeName, $serviceName)
     {
@@ -642,7 +644,8 @@ class RpcServiceModel
     /**
      * Remove any controller service configuration for a service
      *
-     * @param  string $serviceName
+     * @param string $serviceName
+     * @return void
      */
     public function deleteControllersConfig($serviceName)
     {
@@ -655,7 +658,8 @@ class RpcServiceModel
     /**
      * Delete the RPC configuration for a named RPC service
      *
-     * @param  string $serviceName
+     * @param string $serviceName
+     * @return void
      */
     public function deleteRpcConfig($serviceName)
     {
@@ -667,7 +671,8 @@ class RpcServiceModel
      * Delete the Content Negotiation configuration for a named RPC
      * service
      *
-     * @param  string $serviceName
+     * @param string $serviceName
+     * @return void
      */
     public function deleteContentNegotiationConfig($serviceName)
     {
@@ -684,7 +689,8 @@ class RpcServiceModel
     /**
      * Delete content-validation configuration associated with a service
      *
-     * @param  string $serviceName
+     * @param string $serviceName
+     * @return void
      */
     public function deleteContentValidationConfig($serviceName)
     {
@@ -695,7 +701,8 @@ class RpcServiceModel
     /**
      * Delete authorization configuration associated with a service
      *
-     * @param  string $serviceName
+     * @param string $serviceName
+     * @return void
      */
     public function deleteAuthorizationConfig($serviceName)
     {

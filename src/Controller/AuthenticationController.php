@@ -28,7 +28,9 @@ class AuthenticationController extends AbstractAuthenticationController
         $this->model = $model;
     }
 
-    /** @return ViewModel|ApiProblemResponse|ResponseInterface */
+    /**
+     * @return Response|ResponseInterface|ViewModel
+     */
     public function authenticationAction()
     {
         $request = $this->getRequest();

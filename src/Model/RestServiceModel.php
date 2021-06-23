@@ -150,14 +150,12 @@ class RestServiceModel implements EventManagerAwareInterface
         return $this->events;
     }
 
-    // phpcs:disable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
-
     /**
      * @param  string $controllerService
      * @param  bool $isFetchOperation If this is for a non-fetch operation,
      *     pass boolean false; allows listeners to include additional data
      *     necessary for clean updates.
-     * @return RestServiceEntity|false
+     * @return RestServiceEntity
      * @throws Exception\RuntimeException
      */
     public function fetch($controllerService, $isFetchOperation = true)
@@ -215,12 +213,10 @@ class RestServiceModel implements EventManagerAwareInterface
         return $entity;
     }
 
-    // phpcs:enable
-
     /**
      * Fetch all services
      *
-     * @param int $version
+     * @param null|int|string $version
      * @return RestServiceEntity[]
      * @throws Exception\RuntimeException
      */
@@ -693,9 +689,10 @@ class RestServiceModel implements EventManagerAwareInterface
     /**
      * Creates REST configuration
      *
-     * @param  string $controllerService
-     * @param  string $resourceClass
-     * @param  string $routeName
+     * @param string $controllerService
+     * @param string $resourceClass
+     * @param string $routeName
+     * @return void
      */
     public function createRestConfig(RestServiceEntity $details, $controllerService, $resourceClass, $routeName)
     {
@@ -724,7 +721,8 @@ class RestServiceModel implements EventManagerAwareInterface
      * Create content negotiation configuration based on payload and discovered
      * controller service name
      *
-     * @param  string $controllerService
+     * @param string $controllerService
+     * @return void
      */
     public function createContentNegotiationConfig(RestServiceEntity $details, $controllerService)
     {
@@ -748,9 +746,10 @@ class RestServiceModel implements EventManagerAwareInterface
     /**
      * Create HAL configuration
      *
-     * @param  string $entityClass
-     * @param  string $collectionClass
-     * @param  string $routeName
+     * @param string $entityClass
+     * @param string $collectionClass
+     * @param string $routeName
+     * @return void
      */
     public function createHalConfig(RestServiceEntity $details, $entityClass, $collectionClass, $routeName)
     {
@@ -781,6 +780,7 @@ class RestServiceModel implements EventManagerAwareInterface
      * Update the route for an existing service
      *
      * @throws Exception\RuntimeException
+     * @return void
      */
     public function updateRoute(RestServiceEntity $original, RestServiceEntity $update)
     {
@@ -811,6 +811,8 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * Update REST configuration
+     *
+     * @return void
      */
     public function updateRestConfig(RestServiceEntity $original, RestServiceEntity $update)
     {
@@ -839,6 +841,8 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * Update the content negotiation configuration for the service
+     *
+     * @return void
      */
     public function updateContentNegotiationConfig(RestServiceEntity $original, RestServiceEntity $update)
     {
@@ -872,6 +876,8 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * Update HAL configuration
+     *
+     * @return void
      */
     public function updateHalConfig(RestServiceEntity $original, RestServiceEntity $update)
     {
@@ -971,6 +977,8 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * Delete the route associated with the given service
+     *
+     * @return void
      */
     public function deleteRoute(RestServiceEntity $entity)
     {
@@ -988,6 +996,8 @@ class RestServiceModel implements EventManagerAwareInterface
     /**
      * Delete the REST configuration associated with the given
      * service
+     *
+     * @return void
      */
     public function deleteRestConfig(RestServiceEntity $entity)
     {
@@ -998,6 +1008,8 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * Delete content-negotiation configuration associated with a service
+     *
+     * @return void
      */
     public function deleteContentNegotiationConfig(RestServiceEntity $entity)
     {
@@ -1015,6 +1027,8 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * Delete content-validation configuration associated with a service
+     *
+     * @return void
      */
     public function deleteContentValidationConfig(RestServiceEntity $entity)
     {
@@ -1025,6 +1039,8 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * Delete HAL configuration for the service
+     *
+     * @return void
      */
     public function deleteHalConfig(RestServiceEntity $entity)
     {
@@ -1040,6 +1056,8 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * Delete any authorization configuration for a service
+     *
+     * @return void
      */
     public function deleteAuthorizationConfig(RestServiceEntity $entity)
     {
@@ -1052,6 +1070,8 @@ class RestServiceModel implements EventManagerAwareInterface
      * Delete versioning configuration for a service
      *
      * Removes the route name from api-tools-versioning.
+     *
+     * @return void
      */
     public function deleteVersioningConfig(RestServiceEntity $entity)
     {
@@ -1084,6 +1104,8 @@ class RestServiceModel implements EventManagerAwareInterface
 
     /**
      * Delete any service manager configuration for the resource
+     *
+     * @return void
      */
     public function deleteServiceManagerConfig(RestServiceEntity $entity)
     {
@@ -1198,7 +1220,8 @@ class RestServiceModel implements EventManagerAwareInterface
     /**
      * Retrieve route information for a given service based on the configuration available
      *
-     * @param  array $config
+     * @param array $config
+     * @return void
      */
     protected function getRouteInfo(RestServiceEntity $metadata, array $config)
     {
@@ -1218,8 +1241,9 @@ class RestServiceModel implements EventManagerAwareInterface
      * Merge the content negotiation configuration for the given controller
      * service into the REST metadata
      *
-     * @param  string $controllerServiceName
-     * @param  array $config
+     * @param string $controllerServiceName
+     * @param array $config
+     * @return void
      */
     protected function mergeContentNegotiationConfig($controllerServiceName, RestServiceEntity $metadata, array $config)
     {
@@ -1250,8 +1274,9 @@ class RestServiceModel implements EventManagerAwareInterface
     /**
      * Merge entity and collection class into metadata, if found
      *
-     * @param  string $controllerServiceName
-     * @param  array $config
+     * @param string $controllerServiceName
+     * @param array $config
+     * @return void
      */
     protected function mergeHalConfig($controllerServiceName, RestServiceEntity $metadata, array $config)
     {

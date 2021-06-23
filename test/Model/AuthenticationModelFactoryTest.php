@@ -59,14 +59,14 @@ class AuthenticationModelFactoryTest extends TestCase
 
         $r = new ReflectionProperty($model, 'globalConfig');
         $r->setAccessible(true);
-        $globalConfig = $r->getValue($model);
+        $r->getValue($model);
 
         //self::assertAttributeSame($writer, 'writer', $globalConfig);
         //self::assertAttributeEquals('config/autoload/global.php', 'fileName', $globalConfig);
 
         $r = new ReflectionProperty($model, 'localConfig');
         $r->setAccessible(true);
-        $localConfig = $r->getValue($model);
+        $r->getValue($model);
 
         //self::assertAttributeSame($writer, 'writer', $localConfig);
         //self::assertAttributeEquals('config/autoload/local.php', 'fileName', $localConfig);

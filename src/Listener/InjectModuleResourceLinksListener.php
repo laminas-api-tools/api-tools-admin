@@ -106,6 +106,7 @@ class InjectModuleResourceLinksListener
      *
      * @param EventInterface $e
      * return void
+     * @return void
      */
     public function onHalRenderEvents(EventInterface $e)
     {
