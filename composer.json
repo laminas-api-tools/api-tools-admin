@@ -56,6 +56,7 @@
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
+        "ext-sqlite3": "*",
         "alcaeus/mongo-php-adapter": "^1.2",
         "laminas/laminas-coding-standard": "~2.3.0",
         "laminas/laminas-config": "^2.6 || ^3.2",
