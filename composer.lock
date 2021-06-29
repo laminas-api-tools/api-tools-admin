@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "73ce09f39672de9f1d139f36cac767df",
+    "content-hash": "aea4bbb5b04c63bd97fd51fc3db5aa64",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -149,29 +149,29 @@
         },
         {
             "name": "laminas-api-tools/api-tools",
-            "version": "1.4.1",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas-api-tools/api-tools.git",
-                "reference": "4da80f50e2052d1898f1a05bbfe7515015212803"
+                "reference": "9895f9c112f04ad5dbaf22ec9da2dc2eaf0f61e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas-api-tools/api-tools/zipball/4da80f50e2052d1898f1a05bbfe7515015212803",
-                "reference": "4da80f50e2052d1898f1a05bbfe7515015212803",
+                "url": "https://api.github.com/repos/laminas-api-tools/api-tools/zipball/9895f9c112f04ad5dbaf22ec9da2dc2eaf0f61e8",
+                "reference": "9895f9c112f04ad5dbaf22ec9da2dc2eaf0f61e8",
                 "shasum": ""
             },
             "require": {
-                "laminas-api-tools/api-tools-api-problem": "^1.2.1",
-                "laminas-api-tools/api-tools-content-negotiation": "^1.2.2",
-                "laminas-api-tools/api-tools-content-validation": "^1.3.3",
+                "laminas-api-tools/api-tools-api-problem": "^1.4",
+                "laminas-api-tools/api-tools-content-negotiation": "^1.5",
+                "laminas-api-tools/api-tools-content-validation": "^1.9",
                 "laminas-api-tools/api-tools-hal": "^1.4.1",
-                "laminas-api-tools/api-tools-mvc-auth": "^1.4.1",
-                "laminas-api-tools/api-tools-oauth2": "^1.4",
-                "laminas-api-tools/api-tools-provider": "^1.2",
-                "laminas-api-tools/api-tools-rest": "^1.3.1",
-                "laminas-api-tools/api-tools-rpc": "^1.3",
-                "laminas-api-tools/api-tools-versioning": "^1.2",
+                "laminas-api-tools/api-tools-mvc-auth": "^1.6.0",
+                "laminas-api-tools/api-tools-oauth2": "^1.7",
+                "laminas-api-tools/api-tools-provider": "^1.4",
+                "laminas-api-tools/api-tools-rest": "^1.6.0",
+                "laminas-api-tools/api-tools-rpc": "^1.5",
+                "laminas-api-tools/api-tools-versioning": "^1.4",
                 "laminas/laminas-db": "^2.8.1",
                 "laminas/laminas-eventmanager": "^2.6.3 || ^3.0.1",
                 "laminas/laminas-loader": "^2.5.1",
@@ -180,15 +180,18 @@
                 "laminas/laminas-servicemanager": "^2.7.6 || ^3.1.1",
                 "laminas/laminas-stdlib": "^2.7.7 || ^3.0.1",
                 "laminas/laminas-zendframework-bridge": "^1.0",
-                "php": "^5.6 || ^7.0"
+                "php": "^7.3 || ~8.0.0"
             },
             "replace": {
                 "zfcampus/zf-apigility": "^1.4.0"
             },
             "require-dev": {
-                "laminas/laminas-coding-standard": "~1.0.0",
+                "laminas/laminas-coding-standard": "~2.3.0",
                 "laminas/laminas-http": "^2.5.4",
-                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.5"
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.3",
+                "psalm/plugin-phpunit": "^0.16.1",
+                "vimeo/psalm": "^4.8"
             },
             "suggest": {
                 "alcaeus/mongo-php-adapter": "^1.0.5, if you are using ext/mongodb and wish to use the MongoConnectedListener.",
@@ -197,10 +200,6 @@
             },
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-master": "1.4.x-dev",
-                    "dev-develop": "1.5.x-dev"
-                },
                 "laminas": {
                     "module": "Laminas\\ApiTools"
                 }
@@ -230,7 +229,13 @@
                 "rss": "https://github.com/laminas-api-tools/api-tools/releases.atom",
                 "source": "https://github.com/laminas-api-tools/api-tools"
             },
-            "time": "2020-04-01T20:31:10+00:00"
+            "funding": [
+                {
+                    "url": "https://funding.communitybridge.org/projects/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "time": "2021-06-23T17:46:35+00:00"
         },
         {
             "name": "laminas-api-tools/api-tools-admin-ui",
@@ -1488,16 +1493,16 @@
         },
         {
             "name": "laminas/laminas-escaper",
-            "version": "2.7.0",
+            "version": "2.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-escaper.git",
-                "reference": "5e04bc5ae5990b17159d79d331055e2c645e5cc5"
+                "reference": "67dac07c6b4857fbf2bd7a5257a4e1ca8a1c00d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-escaper/zipball/5e04bc5ae5990b17159d79d331055e2c645e5cc5",
-                "reference": "5e04bc5ae5990b17159d79d331055e2c645e5cc5",
+                "url": "https://api.github.com/repos/laminas/laminas-escaper/zipball/67dac07c6b4857fbf2bd7a5257a4e1ca8a1c00d0",
+                "reference": "67dac07c6b4857fbf2bd7a5257a4e1ca8a1c00d0",
                 "shasum": ""
             },
             "require": {
@@ -1508,7 +1513,7 @@
                 "zendframework/zend-escaper": "^2.6.1"
             },
             "require-dev": {
-                "laminas/laminas-coding-standard": "~1.0.0",
+                "laminas/laminas-coding-standard": "~2.3.0",
                 "phpunit/phpunit": "^9.3",
                 "psalm/plugin-phpunit": "^0.12.2",
                 "vimeo/psalm": "^3.16"
@@ -1547,7 +1552,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2020-11-17T21:26:43+00:00"
+            "time": "2021-06-24T16:45:38+00:00"
         },
         {
             "name": "laminas/laminas-eventmanager",
@@ -3098,16 +3103,16 @@
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
-            "version": "1.2.0",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-zendframework-bridge.git",
-                "reference": "6cccbddfcfc742eb02158d6137ca5687d92cee32"
+                "reference": "13af2502d9bb6f7d33be2de4b51fb68c6cdb476e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/6cccbddfcfc742eb02158d6137ca5687d92cee32",
-                "reference": "6cccbddfcfc742eb02158d6137ca5687d92cee32",
+                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/13af2502d9bb6f7d33be2de4b51fb68c6cdb476e",
+                "reference": "13af2502d9bb6f7d33be2de4b51fb68c6cdb476e",
                 "shasum": ""
             },
             "require": {
@@ -3156,7 +3161,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-02-25T21:54:58+00:00"
+            "time": "2021-06-24T12:49:22+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -4369,61 +4374,6 @@
             "time": "2013-10-30T17:23:01+00:00"
         },
         {
-            "name": "jean85/pretty-package-versions",
-            "version": "1.6.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Jean85/pretty-package-versions.git",
-                "reference": "1e0104b46f045868f11942aea058cd7186d6c303"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Jean85/pretty-package-versions/zipball/1e0104b46f045868f11942aea058cd7186d6c303",
-                "reference": "1e0104b46f045868f11942aea058cd7186d6c303",
-                "shasum": ""
-            },
-            "require": {
-                "composer/package-versions-deprecated": "^1.8.0",
-                "php": "^7.0|^8.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.0|^8.5|^9.2"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Jean85\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Alessandro Lai",
-                    "email": "alessandro.lai85@gmail.com"
-                }
-            ],
-            "description": "A wrapper for ocramius/package-versions to get pretty versions strings",
-            "keywords": [
-                "composer",
-                "package",
-                "release",
-                "versions"
-            ],
-            "support": {
-                "issues": "https://github.com/Jean85/pretty-package-versions/issues",
-                "source": "https://github.com/Jean85/pretty-package-versions/tree/1.6.0"
-            },
-            "time": "2021-02-04T16:20:16+00:00"
-        },
-        {
             "name": "justinrainbow/json-schema",
             "version": "1.6.1",
             "source": {
@@ -4595,34 +4545,34 @@
         },
         {
             "name": "mongodb/mongodb",
-            "version": "1.8.0",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mongodb/mongo-php-library.git",
-                "reference": "953dbc19443aa9314c44b7217a16873347e6840d"
+                "reference": "9480f994de9f70e2ae5a946b21e6fc04bf5a6c3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/953dbc19443aa9314c44b7217a16873347e6840d",
-                "reference": "953dbc19443aa9314c44b7217a16873347e6840d",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/9480f994de9f70e2ae5a946b21e6fc04bf5a6c3c",
+                "reference": "9480f994de9f70e2ae5a946b21e6fc04bf5a6c3c",
                 "shasum": ""
             },
             "require": {
                 "ext-hash": "*",
                 "ext-json": "*",
-                "ext-mongodb": "^1.8.1",
-                "jean85/pretty-package-versions": "^1.2",
-                "php": "^7.0 || ^8.0",
-                "symfony/polyfill-php80": "^1.19"
+                "ext-mongodb": "^1.6",
+                "php": "^5.6 || ^7.0"
             },
             "require-dev": {
-                "squizlabs/php_codesniffer": "^3.5, <3.5.5",
-                "symfony/phpunit-bridge": "5.x-dev"
+                "phpunit/phpunit": "^5.7.27 || ^6.4 || ^8.3",
+                "sebastian/comparator": "^1.0 || ^2.0 || ^3.0",
+                "squizlabs/php_codesniffer": "^3.4",
+                "symfony/phpunit-bridge": "^4.4@dev"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.8.x-dev"
+                    "dev-master": "1.5.x-dev"
                 }
             },
             "autoload": {
@@ -4645,6 +4595,10 @@
                 {
                     "name": "Jeremy Mikola",
                     "email": "jmikola@gmail.com"
+                },
+                {
+                    "name": "Katherine Walker",
+                    "email": "katherine.walker@mongodb.com"
                 }
             ],
             "description": "MongoDB driver library",
@@ -4657,9 +4611,9 @@
             ],
             "support": {
                 "issues": "https://github.com/mongodb/mongo-php-library/issues",
-                "source": "https://github.com/mongodb/mongo-php-library/tree/1.8.0"
+                "source": "https://github.com/mongodb/mongo-php-library/tree/v1.5"
             },
-            "time": "2020-11-25T12:26:02+00:00"
+            "time": "2019-11-15T08:21:00+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -8119,8 +8073,10 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.3"
+        "php": "^7.3 || ~8.0.0"
     },
-    "platform-dev": [],
+    "platform-dev": {
+        "ext-sqlite3": "*"
+    },
     "plugin-api-version": "2.0.0"
 }
