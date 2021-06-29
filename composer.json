@@ -26,7 +26,7 @@
         }
     },
     "require": {
-        "php": "^7.3",
+        "php": "^7.3 || ~8.0.0",
         "laminas-api-tools/api-tools": "^1.4",
         "laminas-api-tools/api-tools-admin-ui": "^1.3.9",
         "laminas-api-tools/api-tools-api-problem": "^1.3",
@@ -56,6 +56,7 @@
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
+        "ext-sqlite3": "*",
         "alcaeus/mongo-php-adapter": "^1.2",
         "laminas/laminas-coding-standard": "~2.3.0",
         "laminas/laminas-config": "^2.6 || ^3.2",

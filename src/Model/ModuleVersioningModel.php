@@ -15,8 +15,11 @@ use function file_get_contents;
 use function file_put_contents;
 use function in_array;
 use function is_array;
+use function is_bool;
 use function is_dir;
+use function is_int;
 use function is_readable;
+use function is_string;
 use function is_writable;
 use function mkdir;
 use function opendir;
@@ -375,11 +378,19 @@ class ModuleVersioningModel
     {
         $result = [];
         foreach ($data as $key => $value) {
+            if (is_int($key)) {
+                $key = (string) $key;
+            }
             $newKey = $this->changeVersionNamespace($key, $previous, $version);
             if (is_array($value)) {
                 $result[$newKey] = $this->changeVersionArray($value, $previous, $version);
             } else {
-                $result[$newKey] = $this->changeVersionNamespace($value, $previous, $version);
+                if (is_bool($value) || is_int($value) || $value === null) {
+                    $value = (string) $value;
+                }
+                if (is_string($value)) {
+                    $result[$newKey] = $this->changeVersionNamespace($value, $previous, $version);
+                }
             }
         }
         return $result;
