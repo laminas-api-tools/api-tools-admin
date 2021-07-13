@@ -1,12 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\ApiTools\Admin;
 
-use Laminas\ServiceManager\ServiceManager;
 use Laminas\Mvc\Service\ServiceManagerConfig;
+use Laminas\ServiceManager\ServiceManager;
+
+use function date_default_timezone_set;
+use function error_reporting;
+use function ini_set;
+
+use const E_ALL;
 
 class Bootstrap
 {
+    /** @var ServiceManager */
     protected static $serviceManager;
 
     public static function init(): void
@@ -24,7 +33,7 @@ class Bootstrap
                 'Laminas\\Filter',
                 'Laminas\\Validator',
                 'Laminas\\InputFilter',
-                'Laminas\\ApiTools\\Admin'
+                'Laminas\\ApiTools\\Admin',
             ],
             'module_listener_options' => [
                 'config_glob_paths'        => [
@@ -41,7 +50,7 @@ class Bootstrap
         ];
 
         $serviceManagerConfig = new ServiceManagerConfig();
-        $serviceManager = new ServiceManager();
+        $serviceManager       = new ServiceManager();
         $serviceManagerConfig->configureServiceManager($serviceManager);
         $serviceManager->setService('ApplicationConfig', $config);
         $moduleManager = $serviceManager->get('ModuleManager');
@@ -50,6 +59,9 @@ class Bootstrap
         static::$serviceManager = $serviceManager;
     }
 
+    /**
+     * @return mixed|object|array
+     */
     public static function getService(string $name)
     {
         $serviceManager = self::getServiceManager();
@@ -59,8 +71,10 @@ class Bootstrap
 
     public static function getServiceManager(): ServiceManager
     {
+        if (! static::$serviceManager) {
+            self::init();
+        }
+
         return static::$serviceManager;
     }
 }
-
-Bootstrap::init();
