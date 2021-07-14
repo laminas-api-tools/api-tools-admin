@@ -1,10 +1,38 @@
-<?php // phpcs:disable Generic.Files.LineLength.TooLong
+<?php
+
+// phpcs:disable Generic.Files.LineLength.TooLong
 
 
 declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin;
 
+use Laminas\ApiTools\Admin\InputFilter\Authentication\BasicAuth;
+use Laminas\ApiTools\Admin\InputFilter\Authentication\BasicInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\Authentication\DigestAuth;
+use Laminas\ApiTools\Admin\InputFilter\Authentication\DigestInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\Authentication\OAuth2;
+use Laminas\ApiTools\Admin\InputFilter\Authentication\OAuth2InputFilter;
+use Laminas\ApiTools\Admin\InputFilter\AuthorizationInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\ContentNegotiation;
+use Laminas\ApiTools\Admin\InputFilter\ContentNegotiationInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\CreateContentNegotiation;
+use Laminas\ApiTools\Admin\InputFilter\CreateContentNegotiationInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\DbAdapter;
+use Laminas\ApiTools\Admin\InputFilter\DbAdapterInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\DocumentationInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\Factory\InputFilterInputFilterFactory;
+use Laminas\ApiTools\Admin\InputFilter\InputFilterInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\Module;
+use Laminas\ApiTools\Admin\InputFilter\ModuleInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\RestService\PATCH;
+use Laminas\ApiTools\Admin\InputFilter\RestService\PatchInputFilter as RestPatchInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\RestService\POST;
+use Laminas\ApiTools\Admin\InputFilter\RestService\PostInputFilter as RestPostInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\RpcService\PatchInputFilter as RpcPatchInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\RpcService\PostInputFilter as RpcPostInputFilter;
+use Laminas\ApiTools\Admin\InputFilter\Version;
+use Laminas\ApiTools\Admin\InputFilter\VersionInputFilter;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\Boolean;
 use Laminas\Filter\Callback;
@@ -176,28 +204,6 @@ use ZF\Apigility\Admin\Controller\Strategy;
 use ZF\Apigility\Admin\Controller\Validators;
 use ZF\Apigility\Admin\Controller\Versioning;
 use ZF\Apigility\Admin\Controller\VersioningController;
-use ZF\Apigility\Admin\InputFilter\Authentication\BasicAuth;
-use ZF\Apigility\Admin\InputFilter\Authentication\BasicInputFilter;
-use ZF\Apigility\Admin\InputFilter\Authentication\DigestAuth;
-use ZF\Apigility\Admin\InputFilter\Authentication\DigestInputFilter;
-use ZF\Apigility\Admin\InputFilter\Authentication\OAuth2;
-use ZF\Apigility\Admin\InputFilter\Authentication\OAuth2InputFilter;
-use ZF\Apigility\Admin\InputFilter\AuthorizationInputFilter;
-use ZF\Apigility\Admin\InputFilter\ContentNegotiation;
-use ZF\Apigility\Admin\InputFilter\ContentNegotiationInputFilter;
-use ZF\Apigility\Admin\InputFilter\CreateContentNegotiation;
-use ZF\Apigility\Admin\InputFilter\CreateContentNegotiationInputFilter;
-use ZF\Apigility\Admin\InputFilter\DbAdapter;
-use ZF\Apigility\Admin\InputFilter\DbAdapterInputFilter;
-use ZF\Apigility\Admin\InputFilter\DocumentationInputFilter;
-use ZF\Apigility\Admin\InputFilter\Module;
-use ZF\Apigility\Admin\InputFilter\ModuleInputFilter;
-use ZF\Apigility\Admin\InputFilter\RestService\PATCH;
-use ZF\Apigility\Admin\InputFilter\RestService\PatchInputFilter;
-use ZF\Apigility\Admin\InputFilter\RestService\POST;
-use ZF\Apigility\Admin\InputFilter\RestService\PostInputFilter;
-use ZF\Apigility\Admin\InputFilter\Version;
-use ZF\Apigility\Admin\InputFilter\VersionInputFilter;
 use ZF\Apigility\Admin\Listener\CryptFilterListener;
 use ZF\Apigility\Admin\Listener\DisableHttpCacheListener;
 use ZF\Apigility\Admin\Listener\EnableHalRenderCollectionsListener;
@@ -323,42 +329,42 @@ return [
             Controller\Versioning::class               => Controller\VersioningController::class,
 
             // Legacy Zend Framework aliases
-            App::class                        => Controller\App::class,
-            Authentication::class             => Controller\Authentication::class,
-            Authorization::class              => Controller\Authorization::class,
-            CacheEnabled::class               => Controller\CacheEnabled::class,
-            Config::class                     => Controller\Config::class,
-            FsPermissions::class              => Controller\FsPermissions::class,
-            HttpBasicAuthentication::class    => Controller\HttpBasicAuthentication::class,
-            HttpDigestAuthentication::class   => Controller\HttpDigestAuthentication::class,
-            ModuleConfig::class               => Controller\ModuleConfig::class,
-            ModuleCreation::class             => Controller\ModuleCreation::class,
-            OAuth2Authentication::class       => Controller\OAuth2Authentication::class,
-            Package::class                    => Controller\Package::class,
-            Source::class                     => Controller\Source::class,
-            Versioning::class                 => Controller\Versioning::class,
-            ApigilityVersionController::class => Controller\ApiToolsVersionController::class,
-            AppController::class              => Controller\AppController::class,
-            AuthenticationController::class   => Controller\AuthenticationController::class,
-            AuthenticationType::class         => Controller\AuthenticationType::class,
-            AuthorizationController::class    => Controller\AuthorizationController::class,
-            CacheEnabledController::class     => Controller\CacheEnabledController::class,
-            ConfigController::class           => Controller\ConfigController::class,
-            Dashboard::class                  => Controller\Dashboard::class,
-            DbAutodiscovery::class            => Controller\DbAutodiscovery::class,
-            Documentation::class              => Controller\Documentation::class,
-            Filters::class                    => Controller\Filters::class,
-            FsPermissionsController::class    => Controller\FsPermissionsController::class,
-            Hydrators::class                  => Controller\Hydrators::class,
-            InputFilter::class                => Controller\InputFilter::class,
-            ModuleConfigController::class     => Controller\ModuleConfigController::class,
-            ModuleCreationController::class   => Controller\ModuleCreationController::class,
-            PackageController::class          => Controller\PackageController::class,
-            SettingsDashboard::class          => Controller\SettingsDashboard::class,
-            SourceController::class           => Controller\SourceController::class,
-            Strategy::class                   => Controller\Strategy::class,
-            Validators::class                 => Controller\Validators::class,
-            VersioningController::class       => Controller\VersioningController::class,
+            App::class                                 => Controller\App::class,
+            Authentication::class                      => Controller\Authentication::class,
+            Authorization::class                       => Controller\Authorization::class,
+            CacheEnabled::class                        => Controller\CacheEnabled::class,
+            Config::class                              => Controller\Config::class,
+            FsPermissions::class                       => Controller\FsPermissions::class,
+            HttpBasicAuthentication::class             => Controller\HttpBasicAuthentication::class,
+            HttpDigestAuthentication::class            => Controller\HttpDigestAuthentication::class,
+            ModuleConfig::class                        => Controller\ModuleConfig::class,
+            ModuleCreation::class                      => Controller\ModuleCreation::class,
+            OAuth2Authentication::class                => Controller\OAuth2Authentication::class,
+            Package::class                             => Controller\Package::class,
+            Source::class                              => Controller\Source::class,
+            Versioning::class                          => Controller\Versioning::class,
+            ApigilityVersionController::class          => Controller\ApiToolsVersionController::class,
+            AppController::class                       => Controller\AppController::class,
+            AuthenticationController::class            => Controller\AuthenticationController::class,
+            AuthenticationType::class                  => Controller\AuthenticationType::class,
+            AuthorizationController::class             => Controller\AuthorizationController::class,
+            CacheEnabledController::class              => Controller\CacheEnabledController::class,
+            ConfigController::class                    => Controller\ConfigController::class,
+            Dashboard::class                           => Controller\Dashboard::class,
+            DbAutodiscovery::class                     => Controller\DbAutodiscovery::class,
+            Documentation::class                       => Controller\Documentation::class,
+            Filters::class                             => Controller\Filters::class,
+            FsPermissionsController::class             => Controller\FsPermissionsController::class,
+            Hydrators::class                           => Controller\Hydrators::class,
+            InputFilter::class                         => Controller\InputFilter::class,
+            ModuleConfigController::class              => Controller\ModuleConfigController::class,
+            ModuleCreationController::class            => Controller\ModuleCreationController::class,
+            PackageController::class                   => Controller\PackageController::class,
+            SettingsDashboard::class                   => Controller\SettingsDashboard::class,
+            SourceController::class                    => Controller\SourceController::class,
+            Strategy::class                            => Controller\Strategy::class,
+            Validators::class                          => Controller\Validators::class,
+            VersioningController::class                => Controller\VersioningController::class,
         ],
         'factories' => [
             Controller\ApiToolsVersionController::class => InvokableFactory::class,
@@ -616,7 +622,8 @@ return [
                                             'doc'          => [
                                                 'type'    => 'Segment',
                                                 'options' => [
-                                                    'route'    => '/doc', // [/:http_method[/:http_direction]]
+                                                    'route'    => '/doc',
+                                                    // [/:http_method[/:http_direction]]
                                                     'defaults' => [
                                                         'controller' => Controller\Documentation::class,
                                                         'action'     => 'index',
@@ -649,7 +656,8 @@ return [
                                             'doc'          => [
                                                 'type'    => 'Segment',
                                                 'options' => [
-                                                    'route'    => '/doc', // [/:rest_resource_type[/:http_method[/:http_direction]]]
+                                                    'route'    => '/doc',
+                                                    // [/:rest_resource_type[/:http_method[/:http_direction]]]
                                                     'defaults' => [
                                                         'controller' => Controller\Documentation::class,
                                                         'action'     => 'index',
@@ -1277,7 +1285,7 @@ return [
      * option key/type pairs. If more than one type is possible, the types are
      * OR'd.
      */
-    'filter_metadata' => [
+    'filter_metadata'               => [
         Alnum::class                        => [
             'allow_white_space' => 'bool',
             'locale'            => 'string',
@@ -1464,8 +1472,8 @@ return [
      * The "__all__" key is a set of options that are true/available for all
      * validators.
      */
-    'validator_metadata'           => [
-        '__all__'                          => [
+    'validator_metadata'            => [
+        '__all__'                                                       => [
             'breakchainonfailure'  => 'bool',
             'message'              => 'string',
             'messagelength'        => 'int',
@@ -1473,75 +1481,76 @@ return [
             'translatortextdomain' => 'string',
             'translatorenabled'    => 'bool',
         ],
-        Codabar::class                     => [],
-        Code128::class                     => [],
-        Code25interleaved::class           => [],
-        Code25::class                      => [],
-        Code39ext::class                   => [],
-        Code39::class                      => [],
-        Code93ext::class                   => [],
-        Code93::class                      => [],
-        Ean12::class                       => [],
-        Ean13::class                       => [],
-        Ean14::class                       => [],
-        Ean18::class                       => [],
-        Ean2::class                        => [],
-        Ean5::class                        => [],
-        Ean8::class                        => [],
-        Gtin12::class                      => [],
-        Gtin13::class                      => [],
-        Gtin14::class                      => [],
-        Identcode::class                   => [],
-        Intelligentmail::class             => [],
-        Issn::class                        => [],
-        Itf14::class                       => [],
-        Leitcode::class                    => [],
-        Barcode::class                     => [
-            'adapter'     => 'string', // this is the validator adapter name to use
+        Codabar::class                                                  => [],
+        Code128::class                                                  => [],
+        Code25interleaved::class                                        => [],
+        Code25::class                                                   => [],
+        Code39ext::class                                                => [],
+        Code39::class                                                   => [],
+        Code93ext::class                                                => [],
+        Code93::class                                                   => [],
+        Ean12::class                                                    => [],
+        Ean13::class                                                    => [],
+        Ean14::class                                                    => [],
+        Ean18::class                                                    => [],
+        Ean2::class                                                     => [],
+        Ean5::class                                                     => [],
+        Ean8::class                                                     => [],
+        Gtin12::class                                                   => [],
+        Gtin13::class                                                   => [],
+        Gtin14::class                                                   => [],
+        Identcode::class                                                => [],
+        Intelligentmail::class                                          => [],
+        Issn::class                                                     => [],
+        Itf14::class                                                    => [],
+        Leitcode::class                                                 => [],
+        Barcode::class                                                  => [
+            'adapter'     => 'string',
+            // this is the validator adapter name to use
             'useChecksum' => 'bool',
         ],
-        Planet::class                      => [],
-        Postnet::class                     => [],
-        Royalmail::class                   => [],
-        Sscc::class                        => [],
-        Upca::class                        => [],
-        Upce::class                        => [],
-        Between::class                     => [
+        Planet::class                                                   => [],
+        Postnet::class                                                  => [],
+        Royalmail::class                                                => [],
+        Sscc::class                                                     => [],
+        Upca::class                                                     => [],
+        Upce::class                                                     => [],
+        Between::class                                                  => [
             'inclusive' => 'bool',
             'max'       => 'int',
             'min'       => 'int',
         ],
-        Bitwise::class                     => [
+        Bitwise::class                                                  => [
             'control'  => 'int',
             'operator' => 'string',
             'strict'   => 'bool',
         ],
-        \Laminas\Validator\Callback::class => [
+        \Laminas\Validator\Callback::class                              => [
             'callback' => 'string',
         ],
-        CreditCard::class                  => [
+        CreditCard::class                                               => [
             'type'    => 'string',
             'service' => 'string',
         ],
-        Csrf::class                        => [
+        Csrf::class                                                     => [
             'name'    => 'string',
             'salt'    => 'string',
             'timeout' => 'int',
         ],
-        Date::class                        => [
+        Date::class                                                     => [
             'format' => 'string',
         ],
-        DateStep::class                    => [
+        DateStep::class                                                 => [
             'format'    => 'string',
             'basevalue' => 'string|int',
         ],
-        NoRecordExists::class              => [
+        NoRecordExists::class                                           => [
             'table'   => 'string',
             'schema'  => 'string',
             'field'   => 'string',
             'exclude' => 'string',
         ],
-        RecordExists::class                => [
+        RecordExists::class                                             => [
             'table'   => 'string',
             'schema'  => 'string',
             'field'   => 'string',
@@ -1752,111 +1761,117 @@ return [
             'service' => 'string',
         ],
     ],
-    'input_filters'                => [
+    'input_filters'                 => [
         'aliases'   => [
-            InputFilter\Authentication\BasicAuth::class  => InputFilter\Authentication\BasicInputFilter::class,
-            InputFilter\Authentication\DigestAuth::class => InputFilter\Authentication\DigestInputFilter::class,
-            InputFilter\Authentication\OAuth2::class     => InputFilter\Authentication\OAuth2InputFilter::class,
-            InputFilter\Authorization::class             => InputFilter\AuthorizationInputFilter::class,
-            InputFilter\ContentNegotiation::class        => InputFilter\ContentNegotiationInputFilter::class,
-            InputFilter\CreateContentNegotiation::class  => InputFilter\CreateContentNegotiationInputFilter::class,
-            InputFilter\DbAdapter::class                 => InputFilter\DbAdapterInputFilter::class,
-            InputFilter\Documentation::class             => InputFilter\DocumentationInputFilter::class,
-            InputFilter\Module::class                    => InputFilter\ModuleInputFilter::class,
-            InputFilter\RestService\PATCH::class         => InputFilter\RestService\PatchInputFilter::class,
-            InputFilter\RestService\POST::class          => InputFilter\RestService\PostInputFilter::class,
-            InputFilter\RpcService\PATCH::class          => InputFilter\RpcService\PatchInputFilter::class,
-            InputFilter\RpcService\POST::class           => InputFilter\RpcService\PostInputFilter::class,
-            InputFilter\Version::class                   => InputFilter\VersionInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\BasicAuth'                       => BasicInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\DigestAuth'                      => DigestInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\OAuth2'                          => OAuth2InputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\Authorization'                   => AuthorizationInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\ContentNegotiation'              => ContentNegotiationInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\CreateContentNegotiation'        => CreateContentNegotiationInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\DbAdapter'                       => DbAdapterInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\Documentation'                   => DocumentationInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\Module'                          => ModuleInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\PATCH'                           => RestPatchInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\POST'                            => RestPostInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\RpcService\PATCH'                => RpcPatchInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\RpcService\POST'                 => RpcPostInputFilter::class,
+            'Laminas\ApiTools\Admin\InputFilter\Version'                         => VersionInputFilter::class,
 
             // Legacy Zend Framework aliases
-            BasicAuth::class                                        => InputFilter\Authentication\BasicAuth::class,
-            DigestAuth::class                                       => InputFilter\Authentication\DigestAuth::class,
-            OAuth2::class                                           => InputFilter\Authentication\OAuth2::class,
-            \ZF\Apigility\Admin\InputFilter\Authorization::class    => InputFilter\Authorization::class,
-            ContentNegotiation::class                               => InputFilter\ContentNegotiation::class,
-            CreateContentNegotiation::class                         => InputFilter\CreateContentNegotiation::class,
-            DbAdapter::class                                        => InputFilter\DbAdapter::class,
-            \ZF\Apigility\Admin\InputFilter\Documentation::class    => InputFilter\Documentation::class,
-            Module::class                                           => InputFilter\Module::class,
-            PATCH::class                                            => InputFilter\RestService\PATCH::class,
-            POST::class                                             => InputFilter\RestService\POST::class,
-            \ZF\Apigility\Admin\InputFilter\RpcService\PATCH::class => InputFilter\RpcService\PATCH::class,
-            \ZF\Apigility\Admin\InputFilter\RpcService\POST::class  => InputFilter\RpcService\POST::class,
-            Version::class                                          => InputFilter\Version::class,
-            BasicInputFilter::class                                 => InputFilter\Authentication\BasicInputFilter::class,
-            DigestInputFilter::class                                => InputFilter\Authentication\DigestInputFilter::class,
-            OAuth2InputFilter::class                                => InputFilter\Authentication\OAuth2InputFilter::class,
-            AuthorizationInputFilter::class                         => InputFilter\AuthorizationInputFilter::class,
-            ContentNegotiationInputFilter::class                    => InputFilter\ContentNegotiationInputFilter::class,
-            CreateContentNegotiationInputFilter::class              => InputFilter\CreateContentNegotiationInputFilter::class,
-            DbAdapterInputFilter::class                             => InputFilter\DbAdapterInputFilter::class,
-            DocumentationInputFilter::class                         => InputFilter\DocumentationInputFilter::class,
-            ModuleInputFilter::class                                => InputFilter\ModuleInputFilter::class,
-            PatchInputFilter::class                                 => InputFilter\RestService\PatchInputFilter::class,
-            PostInputFilter::class                                  => InputFilter\RestService\PostInputFilter::class,
-            \ZF\Apigility\Admin\InputFilter\RpcService\PatchInputFilter::class => InputFilter\RpcService\PatchInputFilter::class,
-            \ZF\Apigility\Admin\InputFilter\RpcService\PostInputFilter::class  => InputFilter\RpcService\PostInputFilter::class,
-            VersionInputFilter::class                                          => InputFilter\VersionInputFilter::class,
-            \ZF\Apigility\Admin\InputFilter\InputFilter::class                 => InputFilter\InputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\Authentication\BasicAuth'            => BasicInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\Authentication\DigestAuth'           => DigestInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\Authentication\OAuth2'               => OAuth2InputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\Authorization'                       => AuthorizationInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\ContentNegotiation'                  => ContentNegotiationInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\CreateContentNegotiation'            => CreateContentNegotiationInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\DbAdapter'                           => DbAdapterInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\Documentation'                       => DocumentationInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\Module'                              => ModuleInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\RestService\PATCH'                   => RestPatchInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\RestService\POST'                    => RestPostInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\RpcService\PATCH'                    => RpcPatchInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\RpcService\POST'                     => RpcPatchInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\Version'                             => VersionInputFilter::class,
+
+            // Legacy Zend Framework aliases v2
+            'ZF\Apigility\Admin\InputFilter\Authentication\BasicInputFilter'     => BasicInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\Authentication\DigestInputFilter'    => DigestInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\Authentication\OAuth2InputFilter'    => OAuth2InputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\AuthorizationInputFilter'            => AuthorizationInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\ContentNegotiationInputFilter'       => ContentNegotiationInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\CreateContentNegotiationInputFilter' => CreateContentNegotiationInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\DbAdapterInputFilter'                => DbAdapterInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\DocumentationInputFilter'            => DocumentationInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\ModuleInputFilter'                   => ModuleInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\PatchInputFilter'                    => RestPatchInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\PostInputFilter'                     => RestPostInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\RpcService\PatchInputFilter'         => RpcPatchInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\RpcService\PostInputFilter'          => RpcPatchInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\VersionInputFilter'                  => VersionInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\InputFilter'                         => InputFilterInputFilter::class,
         ],
         'factories' => [
-            InputFilter\Authentication\BasicInputFilter::class     => InvokableFactory::class,
-            InputFilter\Authentication\DigestInputFilter::class    => InvokableFactory::class,
-            InputFilter\Authentication\OAuth2InputFilter::class    => InvokableFactory::class,
-            InputFilter\AuthorizationInputFilter::class            => InvokableFactory::class,
-            InputFilter\ContentNegotiationInputFilter::class       => InvokableFactory::class,
-            InputFilter\CreateContentNegotiationInputFilter::class => InvokableFactory::class,
-            InputFilter\DbAdapterInputFilter::class                => InvokableFactory::class,
-            InputFilter\DocumentationInputFilter::class            => InvokableFactory::class,
-            InputFilter\ModuleInputFilter::class                   => InvokableFactory::class,
-            InputFilter\RestService\PatchInputFilter::class        => InvokableFactory::class,
-            InputFilter\RestService\PostInputFilter::class         => InvokableFactory::class,
-            InputFilter\RpcService\PatchInputFilter::class         => InvokableFactory::class,
-            InputFilter\RpcService\PostInputFilter::class          => InvokableFactory::class,
-            InputFilter\VersionInputFilter::class                  => InvokableFactory::class,
-            InputFilter\InputFilter::class                         => InputFilter\Factory\InputFilterInputFilterFactory::class,
+            BasicInputFilter::class                    => InvokableFactory::class,
+            DigestInputFilter::class                   => InvokableFactory::class,
+            OAuth2InputFilter::class                   => InvokableFactory::class,
+            AuthorizationInputFilter::class            => InvokableFactory::class,
+            ContentNegotiationInputFilter::class       => InvokableFactory::class,
+            CreateContentNegotiationInputFilter::class => InvokableFactory::class,
+            DbAdapterInputFilter::class                => InvokableFactory::class,
+            DocumentationInputFilter::class            => InvokableFactory::class,
+            ModuleInputFilter::class                   => InvokableFactory::class,
+            RestPatchInputFilter::class                => InvokableFactory::class,
+            RestPostInputFilter::class                 => InvokableFactory::class,
+            RpcPatchInputFilter::class                 => InvokableFactory::class,
+            RpcPostInputFilter::class                  => InvokableFactory::class,
+            VersionInputFilter::class                  => InvokableFactory::class,
+            InputFilterInputFilter::class              => InputFilterInputFilterFactory::class,
         ],
     ],
-    'api-tools-content-validation' => [
+    'api-tools-content-validation'  => [
         Controller\HttpBasicAuthentication::class  => [
-            'input_filter' => InputFilter\Authentication\BasicAuth::class,
+            'input_filter' => BasicInputFilter::class,
         ],
         Controller\HttpDigestAuthentication::class => [
-            'input_filter' => InputFilter\Authentication\DigestAuth::class,
+            'input_filter' => DigestInputFilter::class,
         ],
         Controller\OAuth2Authentication::class     => [
-            'input_filter' => InputFilter\Authentication\OAuth2::class,
+            'input_filter' => OAuth2InputFilter::class,
         ],
         Controller\DbAdapter::class                => [
-            'input_filter' => InputFilter\DbAdapter::class,
+            'input_filter' => DbAdapterInputFilter::class,
         ],
         Controller\ContentNegotiation::class       => [
-            'input_filter' => InputFilter\ContentNegotiation::class,
-            'POST'         => InputFilter\CreateContentNegotiation::class,
+            'input_filter' => ContentNegotiationInputFilter::class,
+            'POST'         => CreateContentNegotiationInputFilter::class,
         ],
         Controller\Module::class                   => [
-            'POST' => InputFilter\Module::class,
+            'POST' => ModuleInputFilter::class,
         ],
         Controller\Versioning::class               => [
-            'PATCH' => InputFilter\Version::class,
+            'PATCH' => VersionInputFilter::class,
         ],
         Controller\RestService::class              => [
-            'POST'  => InputFilter\RestService\POST::class, // for the collection
-            'PATCH' => InputFilter\RestService\PATCH::class, // for the entity
+            'POST'  => RestPostInputFilter::class,
+            // for the collection
+            'PATCH' => RestPatchInputFilter::class,
+            // for the entity
         ],
         Controller\RpcService::class               => [
-            'POST'  => InputFilter\RpcService\POST::class, // for the collection
-            'PATCH' => InputFilter\RpcService\PATCH::class, // for the entity
+            'POST'  => RpcPostInputFilter::class,
+            // for the collection
+            'PATCH' => RpcPatchInputFilter::class,
+            // for the entity
         ],
         Controller\InputFilter::class              => [
-            'input_filter' => InputFilter\InputFilter::class,
+            'input_filter' => InputFilterInputFilter::class,
         ],
         Controller\Documentation::class            => [
-            'input_filter' => InputFilter\Documentation::class,
+            'input_filter' => DocumentationInputFilter::class,
         ],
         Controller\Authorization::class            => [
-            'input_filter' => InputFilter\Authorization::class,
+            'input_filter' => AuthorizationInputFilter::class,
         ],
     ],
 ];
