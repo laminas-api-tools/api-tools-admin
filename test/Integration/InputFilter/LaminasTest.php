@@ -12,6 +12,7 @@ use LaminasTest\ApiTools\Admin\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 use function array_keys;
+use function is_array;
 
 class LaminasTest extends TestCase
 {
@@ -22,7 +23,7 @@ class LaminasTest extends TestCase
     public function inputFilterServiceKeyWillReturnInputFilter(): void
     {
         $inputFilterConfig = $this->getInputFilterAliases();
-        $inputFilterKeys = array_keys($inputFilterConfig);
+        $inputFilterKeys   = array_keys($inputFilterConfig);
 
         /** @var string $key */
         foreach ($inputFilterKeys as $key) {
@@ -35,7 +36,7 @@ class LaminasTest extends TestCase
     {
         $inputFilterManager = Bootstrap::getService(InputFilterPluginManager::class);
 
-        if(!$inputFilterManager instanceof InputFilterPluginManager) {
+        if (! $inputFilterManager instanceof InputFilterPluginManager) {
             throw new Exception('Invalid class.');
         }
 
@@ -48,9 +49,9 @@ class LaminasTest extends TestCase
     private function getInputFilter(string $name): InputFilterInterface
     {
         $inputFilterManager = $this->getInputFilterManager();
-        $inputFilter = $inputFilterManager->get($name);
+        $inputFilter        = $inputFilterManager->get($name);
 
-        if(! $inputFilter instanceof InputFilterInterface) {
+        if (! $inputFilter instanceof InputFilterInterface) {
             throw new Exception('Invalid class.');
         }
 
@@ -61,13 +62,13 @@ class LaminasTest extends TestCase
     {
         $config = Bootstrap::getConfig();
 
-        return is_array($config['input_filters'])? $config['input_filters']: [];
+        return is_array($config['input_filters']) ? $config['input_filters'] : [];
     }
 
     private function getInputFilterAliases(): array
     {
         $config = $this->getInputFilterConfig();
 
-        return is_array($config['aliases'])? $config['aliases']: [];
+        return is_array($config['aliases']) ? $config['aliases'] : [];
     }
 }
