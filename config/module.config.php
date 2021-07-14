@@ -204,8 +204,6 @@ use ZF\Apigility\Admin\Controller\Strategy;
 use ZF\Apigility\Admin\Controller\Validators;
 use ZF\Apigility\Admin\Controller\Versioning;
 use ZF\Apigility\Admin\Controller\VersioningController;
-use ZF\Apigility\Admin\InputFilter\RestService\PatchInputFilter;
-use ZF\Apigility\Admin\InputFilter\RestService\PostInputFilter;
 use ZF\Apigility\Admin\Listener\CryptFilterListener;
 use ZF\Apigility\Admin\Listener\DisableHttpCacheListener;
 use ZF\Apigility\Admin\Listener\EnableHalRenderCollectionsListener;
