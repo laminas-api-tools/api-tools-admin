@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasTest\ApiTools\Admin;
 
+use Laminas\ModuleManager\ModuleManager;
 use Laminas\Mvc\Service\ServiceManagerConfig;
 use Laminas\ServiceManager\ServiceManager;
 
@@ -15,11 +16,22 @@ use const E_ALL;
 
 class Bootstrap
 {
-    /** @var ServiceManager */
+    /**
+     * @var ServiceManager
+     */
     protected static $serviceManager;
+
+    /**
+     * @var bool
+     */
+    private static $initialized = false;
 
     public static function init(): void
     {
+        if(self::$initialized) {
+            return;
+        }
+
         ini_set('display_errors', '1');
         ini_set('display_startup_errors', '1');
         ini_set('log_errors_max_len', '0');
@@ -53,14 +65,18 @@ class Bootstrap
         $serviceManager       = new ServiceManager();
         $serviceManagerConfig->configureServiceManager($serviceManager);
         $serviceManager->setService('ApplicationConfig', $config);
+        /** @var ModuleManager $moduleManager */
         $moduleManager = $serviceManager->get('ModuleManager');
         $moduleManager->loadModules();
 
         static::$serviceManager = $serviceManager;
+        static::$initialized = true;
     }
 
     /**
-     * @return mixed|object|array
+     * @param string $name
+     *
+     * @return mixed|object
      */
     public static function getService(string $name)
     {
@@ -69,11 +85,19 @@ class Bootstrap
         return $serviceManager->get($name);
     }
 
+
+    public static function getConfig(string $name): array
+    {
+        $serviceManager = self::getServiceManager();
+        /** @psalm-suppress MixedAssignment */
+        $config = $serviceManager->get('config');
+
+        return is_array($config) ? $config : [];
+    }
+
     public static function getServiceManager(): ServiceManager
     {
-        if (! static::$serviceManager) {
-            self::init();
-        }
+        self::init();
 
         return static::$serviceManager;
     }
