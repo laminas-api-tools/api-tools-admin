@@ -85,7 +85,8 @@
             "BazConf\\": "test/Model/TestAsset/module/BazConf/",
             "InputFilter\\": "test/Model/TestAsset/module/InputFilter/",
             "Version\\": "test/Model/TestAsset/module/Version/src/Version/",
-            "LaminasTest\\ApiTools\\Admin\\": "test/"
+            "LaminasTest\\ApiTools\\Admin\\": "test/",
+            "LaminasIntegrationTest\\ApiTools\\Admin\\": "test/Integration"
         }
     },
     "bin": [
