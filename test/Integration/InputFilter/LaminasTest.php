@@ -16,17 +16,28 @@ class LaminasTest extends TestCase
     /**
      * @test
      */
-    public function inputFilterServiceKeyWillReturnInputFilter()
+    public function inputFilterServiceKeyWillReturnInputFilter(): void
     {
+        /**
+         * @psalm-suppress MixedAssignment
+         */
         $inputFilterManager = Bootstrap::getService(InputFilterPluginManager::class);
-        $this->assertInstanceOf(InputFilterPluginManager::class, $inputFilterManager);
+        $inputFilterConfig = Bootstrap::getConfig('input_filters');
+        /**
+         * @psalm-suppress MixedArgument
+         */
+        $inputFilterKeys = array_keys($inputFilterConfig['aliases']);
 
-        $config                   = Bootstrap::getService('config');
-        $configInputFilterAliases = $config['input_filters']['aliases'];
-        $configInputFilterKeys    = array_keys($configInputFilterAliases);
+        foreach ($inputFilterKeys as $key) {
+            if(!is_string($key)) {
+                throw new \UnexpectedValueException('$key must be a string.');
+            }
 
-        foreach ($configInputFilterKeys as $inputFilterKey) {
-            $inputFilter = $inputFilterManager->get($inputFilterKey);
+            /**
+             * @psalm-suppress MixedAssignment
+             * @psalm-suppress MixedMethodCall
+             */
+            $inputFilter = $inputFilterManager->get($key);
             $this->assertInstanceOf(InputFilter::class, $inputFilter);
         }
     }
