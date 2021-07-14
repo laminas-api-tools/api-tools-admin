@@ -28,7 +28,7 @@ class Bootstrap
 
     public static function init(): void
     {
-        if(self::$initialized) {
+        if(static::$initialized) {
             return;
         }
 
@@ -85,8 +85,7 @@ class Bootstrap
         return $serviceManager->get($name);
     }
 
-
-    public static function getConfig(string $name): array
+    public static function getConfig(): array
     {
         $serviceManager = self::getServiceManager();
         /** @psalm-suppress MixedAssignment */
