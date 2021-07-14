@@ -11,24 +11,21 @@ use Laminas\ServiceManager\ServiceManager;
 use function date_default_timezone_set;
 use function error_reporting;
 use function ini_set;
+use function is_array;
 
 use const E_ALL;
 
 class Bootstrap
 {
-    /**
-     * @var ServiceManager
-     */
+    /** @var ServiceManager */
     protected static $serviceManager;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private static $initialized = false;
 
     public static function init(): void
     {
-        if(static::$initialized) {
+        if (static::$initialized) {
             return;
         }
 
@@ -70,12 +67,10 @@ class Bootstrap
         $moduleManager->loadModules();
 
         static::$serviceManager = $serviceManager;
-        static::$initialized = true;
+        static::$initialized    = true;
     }
 
     /**
-     * @param string $name
-     *
      * @return mixed|object
      */
     public static function getService(string $name)
