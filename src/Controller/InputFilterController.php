@@ -39,10 +39,12 @@ class InputFilterController extends AbstractActionController
         $event           = $this->getEvent();
         $routeMatch      = $event->getRouteMatch();
         $route           = $this->deriveRouteName($routeMatch->getMatchedRouteName());
-        $request         = $this->getRequest();
         $module          = $this->params()->fromRoute('name', false);
         $controller      = $this->params()->fromRoute('controller_service_name', false);
         $inputFilterName = $this->params()->fromRoute('input_filter_name', false);
+
+        /** @var Request $request */
+        $request = $this->getRequest();
 
         if (! $module || ! $this->model->moduleExists($module)) {
             return new ApiProblemResponse(

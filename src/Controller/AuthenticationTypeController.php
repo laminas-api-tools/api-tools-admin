@@ -8,6 +8,7 @@ use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
 use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\ApiTools\MvcAuth\Authentication\DefaultAuthenticationListener as AuthListener;
+use Laminas\Http\Request;
 
 class AuthenticationTypeController extends AbstractAuthenticationController
 {
@@ -27,6 +28,7 @@ class AuthenticationTypeController extends AbstractAuthenticationController
      */
     public function authTypeAction()
     {
+        /** @var Request $request */
         $request = $this->getRequest();
         $version = $this->getVersion($request);
 

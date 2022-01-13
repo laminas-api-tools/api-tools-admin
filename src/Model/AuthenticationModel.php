@@ -680,8 +680,6 @@ class AuthenticationModel
 
     /**
      * Add a new authentication adapter in local config
-     *
-     * @return true
      */
     protected function saveAuthenticationAdapter(array $adapter): bool
     {

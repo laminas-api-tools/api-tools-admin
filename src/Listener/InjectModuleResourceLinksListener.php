@@ -29,10 +29,10 @@ use function substr;
 
 class InjectModuleResourceLinksListener
 {
-    /** @var RouteMatch|V2RouteMatch */
+    /** @var null|RouteMatch|V2RouteMatch */
     private $routeMatch;
 
-    /** @var callable */
+    /** @var null|callable */
     private $urlHelper;
 
     /** @var ContainerInterface */

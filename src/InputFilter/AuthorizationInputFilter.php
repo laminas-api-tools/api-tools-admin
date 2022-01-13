@@ -6,6 +6,7 @@ namespace Laminas\ApiTools\Admin\InputFilter;
 
 use Laminas\InputFilter\InputFilter;
 
+use function array_keys;
 use function in_array;
 use function is_array;
 use function strpos;
@@ -40,8 +41,8 @@ class AuthorizationInputFilter extends InputFilter
                 continue;
             }
 
-            foreach ($httpMethods as $httpMethod => $isRequired) {
-                if (! in_array($httpMethod, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
+            foreach (array_keys($httpMethods) as $httpMethod) {
+                if (! in_array($httpMethod, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], true)) {
                     $this->messages[$className][] = 'Invalid HTTP method (' . $httpMethod . ') provided.';
                     $isValid                      = false;
                 }

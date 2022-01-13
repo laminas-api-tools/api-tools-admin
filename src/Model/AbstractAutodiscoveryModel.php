@@ -23,7 +23,7 @@ use function sprintf;
  */
 abstract class AbstractAutodiscoveryModel
 {
-    /** @var ServiceLocatorInterface */
+    /** @var null|ServiceLocatorInterface */
     protected $serviceLocator;
 
     /** @var array */
