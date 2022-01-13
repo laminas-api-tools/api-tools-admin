@@ -130,7 +130,7 @@ class PatchInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderIsValidTrue
-     * @param mixed $pageSize
+     * @param string|int $pageSize
      */
     public function testIsValidTrue($pageSize): void
     {
