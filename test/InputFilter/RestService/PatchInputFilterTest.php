@@ -207,7 +207,7 @@ class PatchInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderInvalidPageSizes
-     * @param mixed $pageSize
+     * @param string|int|float $pageSize
      */
     public function testInvalidPageSizes($pageSize): void
     {
