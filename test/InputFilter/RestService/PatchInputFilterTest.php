@@ -55,7 +55,7 @@ class PatchInputFilterTest extends TestCase
                     ],
                     'entity_identifier_name'     => 'id',
                     'hydrator_name'              => ArraySerializableHydrator::class,
-                    'page_size'                  => 25,
+                    'page_size'                  => "25",
                     'page_size_param'            => null,
                     'resource_class'             => 'Foo_Bar\\V1\\Rest\\Baz_Bat\\Baz_BatResource',
                     'route_identifier_name'      => 'foo_bar_id',
