@@ -193,11 +193,7 @@ class PatchInputFilterTest extends TestCase
         self::assertEquals($expectedInvalidKeys, $testKeys);
     }
 
-    /**
-     * @psalm-return array<string, array{
-     *     string|integer|float
-     * }>
-     */
+    /** @psalm-return array<string, array{0: string|int|float}> */
     public function dataProviderInvalidPageSizes(): array
     {
         return [
