@@ -24,7 +24,7 @@ class ModuleVersioningModelFactoryFactoryTest extends TestCase
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    /** @psalm-return array<string, array{0: array<string, bool>}> */
+    /** @psalm-return array<string, array{0: array<class-string, bool>}> */
     public function missingDependencies(): array
     {
         return [

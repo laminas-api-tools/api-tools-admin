@@ -11,9 +11,10 @@ use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
 use Laminas\ApiTools\ContentNegotiation\ViewModel;
 use Laminas\ApiTools\Hal\Entity;
 use Laminas\ApiTools\Hal\Link\Link;
+use Laminas\Http\Request;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\MvcEvent;
-use Laminas\Stdlib\RequestInterface as Request;
+use Laminas\Stdlib\RequestInterface;
 use RuntimeException;
 
 use function sprintf;
@@ -37,6 +38,7 @@ class AuthorizationController extends AbstractActionController
     /** @return ViewModel|ApiProblemResponse */
     public function authorizationAction()
     {
+        /** @var Request $request */
         $request = $this->getRequest();
         $version = $request->getQuery('version', 1);
         $model   = $this->getModel();
@@ -130,7 +132,7 @@ class AuthorizationController extends AbstractActionController
      *
      * @return $this
      */
-    public function setRequest(Request $request)
+    public function setRequest(RequestInterface $request)
     {
         $this->request = $request;
         return $this;

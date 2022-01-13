@@ -29,7 +29,7 @@ class RpcServiceModelFactoryFactoryTest extends TestCase
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    /** @psalm-return array<string, array{0: array<string, bool>}> */
+    /** @psalm-return array<string, array{0: array<non-empty-string, bool>}> */
     public function missingDependencies(): array
     {
         return [

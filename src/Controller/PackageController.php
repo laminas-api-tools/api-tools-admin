@@ -63,6 +63,7 @@ class PackageController extends AbstractActionController
      */
     public function indexAction()
     {
+        /** @var Request $request */
         $request = $this->getRequest();
 
         switch ($request->getMethod()) {
