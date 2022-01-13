@@ -75,6 +75,7 @@ class PatchInputFilter extends PostInputFilter
             'continue_if_empty' => true,
             'validators'        => [
                 new CallbackValidator(function ($value) {
+                    // Make sure that the value is a numeric int or string and that there are no decimals
                     if (! is_numeric($value) || ((string) $value) !== (string) (int) $value) {
                         return false;
                     }
