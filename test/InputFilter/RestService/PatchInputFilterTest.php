@@ -207,6 +207,7 @@ class PatchInputFilterTest extends TestCase
         return [
             'page_size-string-float'           => ['25.5'],
             'page_size-string-wrong-negative'  => ['-2'],
+            'page_size-string-nan'             => ['invalid'],
             'page_size-float'                  => [25.5],
             'page_size-integer-wrong-negative' => [-2],
         ];
