@@ -24,11 +24,7 @@ class PatchInputFilterTest extends TestCase
         ]);
     }
 
-    /**
-     * @psalm-return array<string, array{
-     *     string|integer
-     * }>
-     */
+    /** @psalm-return array<string, array{0: string|int}> */
     public function dataProviderIsValidTrue(): array
     {
         return [
