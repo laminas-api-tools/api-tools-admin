@@ -35,7 +35,7 @@ class PatchInputFilterTest extends TestCase
             'page_size-string'           => ['25'],
             'page_size-string-negative'  => ['-1'],
             'page_size-integer'          => [25],
-            'page_size-integer-negative' => [-1]
+            'page_size-integer-negative' => [-1],
         ];
     }
 
