@@ -42,6 +42,7 @@ class SourceController extends AbstractActionController
      */
     public function sourceAction()
     {
+        /** @var Request $request */
         $request = $this->getRequest();
 
         switch ($request->getMethod()) {

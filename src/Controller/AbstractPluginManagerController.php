@@ -6,6 +6,7 @@ namespace Laminas\ApiTools\Admin\Controller;
 
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\Http\Request;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\JsonModel;
 
@@ -24,6 +25,7 @@ abstract class AbstractPluginManagerController extends AbstractActionController
      */
     public function handleRequest()
     {
+        /** @var Request $request */
         $request = $this->getRequest();
 
         if ($request->getMethod() !== $request::METHOD_GET) {

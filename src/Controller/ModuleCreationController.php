@@ -27,6 +27,7 @@ class ModuleCreationController extends AbstractActionController
     /** @return ApiProblemResponse|ViewModel */
     public function apiEnableAction()
     {
+        /** @var Request $request */
         $request = $this->getRequest();
 
         switch ($request->getMethod()) {

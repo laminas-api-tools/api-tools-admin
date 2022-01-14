@@ -25,6 +25,7 @@ abstract class AbstractConfigController extends AbstractActionController
     /** @return array|ApiProblemResponse */
     public function processAction()
     {
+        /** @var Request $request */
         $request     = $this->getRequest();
         $headers     = $request->getHeaders();
         $accept      = $this->getHeaderType($headers, 'accept');

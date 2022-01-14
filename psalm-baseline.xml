@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.8.1@f73f2299dbc59a3e6c4d66cff4605176e728ee69">
+<files psalm-version="4.18.1@dda05fa913f4dc6eb3386f2f7ce5a45d37a71bcb">
   <file src="config/module.config.php">
     <DeprecatedClass occurrences="4">
       <code>Model\VersioningModelFactory::class</code>
@@ -7,15 +7,14 @@
       <code>Model\VersioningModelFactoryFactory::class</code>
       <code>VersioningModelFactory::class</code>
     </DeprecatedClass>
-    <UndefinedClass occurrences="328">
+    <MixedArrayOffset occurrences="8"/>
+    <UndefinedClass occurrences="225">
       <code>App</code>
       <code>Authentication</code>
       <code>AuthenticationType</code>
       <code>Authorization</code>
-      <code>BasicAuth</code>
       <code>CacheEnabled</code>
       <code>Config</code>
-      <code>ContentNegotiation</code>
       <code>Controller\App</code>
       <code>Controller\App</code>
       <code>Controller\App</code>
@@ -217,11 +216,8 @@
       <code>Controller\Versioning</code>
       <code>Controller\Versioning</code>
       <code>Controller\Versioning</code>
-      <code>CreateContentNegotiation</code>
       <code>Dashboard</code>
-      <code>DbAdapter</code>
       <code>DbAutodiscovery</code>
-      <code>DigestAuth</code>
       <code>Documentation</code>
       <code>Filters</code>
       <code>FsPermissions</code>
@@ -229,113 +225,15 @@
       <code>HttpDigestAuthentication</code>
       <code>Hydrators</code>
       <code>InputFilter</code>
-      <code>InputFilter\Authentication\BasicAuth</code>
-      <code>InputFilter\Authentication\BasicAuth</code>
-      <code>InputFilter\Authentication\BasicAuth</code>
-      <code>InputFilter\Authentication\BasicInputFilter</code>
-      <code>InputFilter\Authentication\BasicInputFilter</code>
-      <code>InputFilter\Authentication\BasicInputFilter</code>
-      <code>InputFilter\Authentication\DigestAuth</code>
-      <code>InputFilter\Authentication\DigestAuth</code>
-      <code>InputFilter\Authentication\DigestAuth</code>
-      <code>InputFilter\Authentication\DigestInputFilter</code>
-      <code>InputFilter\Authentication\DigestInputFilter</code>
-      <code>InputFilter\Authentication\DigestInputFilter</code>
-      <code>InputFilter\Authentication\OAuth2</code>
-      <code>InputFilter\Authentication\OAuth2</code>
-      <code>InputFilter\Authentication\OAuth2</code>
-      <code>InputFilter\Authentication\OAuth2InputFilter</code>
-      <code>InputFilter\Authentication\OAuth2InputFilter</code>
-      <code>InputFilter\Authentication\OAuth2InputFilter</code>
-      <code>InputFilter\Authorization</code>
-      <code>InputFilter\Authorization</code>
-      <code>InputFilter\Authorization</code>
-      <code>InputFilter\AuthorizationInputFilter</code>
-      <code>InputFilter\AuthorizationInputFilter</code>
-      <code>InputFilter\AuthorizationInputFilter</code>
-      <code>InputFilter\ContentNegotiation</code>
-      <code>InputFilter\ContentNegotiation</code>
-      <code>InputFilter\ContentNegotiation</code>
-      <code>InputFilter\ContentNegotiationInputFilter</code>
-      <code>InputFilter\ContentNegotiationInputFilter</code>
-      <code>InputFilter\ContentNegotiationInputFilter</code>
-      <code>InputFilter\CreateContentNegotiation</code>
-      <code>InputFilter\CreateContentNegotiation</code>
-      <code>InputFilter\CreateContentNegotiation</code>
-      <code>InputFilter\CreateContentNegotiationInputFilter</code>
-      <code>InputFilter\CreateContentNegotiationInputFilter</code>
-      <code>InputFilter\CreateContentNegotiationInputFilter</code>
-      <code>InputFilter\DbAdapter</code>
-      <code>InputFilter\DbAdapter</code>
-      <code>InputFilter\DbAdapter</code>
-      <code>InputFilter\DbAdapterInputFilter</code>
-      <code>InputFilter\DbAdapterInputFilter</code>
-      <code>InputFilter\DbAdapterInputFilter</code>
-      <code>InputFilter\Documentation</code>
-      <code>InputFilter\Documentation</code>
-      <code>InputFilter\Documentation</code>
-      <code>InputFilter\DocumentationInputFilter</code>
-      <code>InputFilter\DocumentationInputFilter</code>
-      <code>InputFilter\DocumentationInputFilter</code>
-      <code>InputFilter\Factory\InputFilterInputFilterFactory</code>
-      <code>InputFilter\InputFilter</code>
-      <code>InputFilter\InputFilter</code>
-      <code>InputFilter\InputFilter</code>
-      <code>InputFilter\Module</code>
-      <code>InputFilter\Module</code>
-      <code>InputFilter\Module</code>
-      <code>InputFilter\ModuleInputFilter</code>
-      <code>InputFilter\ModuleInputFilter</code>
-      <code>InputFilter\ModuleInputFilter</code>
-      <code>InputFilter\RestService\PATCH</code>
-      <code>InputFilter\RestService\PATCH</code>
-      <code>InputFilter\RestService\PATCH</code>
-      <code>InputFilter\RestService\POST</code>
-      <code>InputFilter\RestService\POST</code>
-      <code>InputFilter\RestService\POST</code>
-      <code>InputFilter\RestService\PatchInputFilter</code>
-      <code>InputFilter\RestService\PatchInputFilter</code>
-      <code>InputFilter\RestService\PatchInputFilter</code>
-      <code>InputFilter\RestService\PostInputFilter</code>
-      <code>InputFilter\RestService\PostInputFilter</code>
-      <code>InputFilter\RestService\PostInputFilter</code>
-      <code>InputFilter\RpcService\PATCH</code>
-      <code>InputFilter\RpcService\PATCH</code>
-      <code>InputFilter\RpcService\PATCH</code>
-      <code>InputFilter\RpcService\POST</code>
-      <code>InputFilter\RpcService\POST</code>
-      <code>InputFilter\RpcService\POST</code>
-      <code>InputFilter\RpcService\PatchInputFilter</code>
-      <code>InputFilter\RpcService\PatchInputFilter</code>
-      <code>InputFilter\RpcService\PatchInputFilter</code>
-      <code>InputFilter\RpcService\PostInputFilter</code>
-      <code>InputFilter\RpcService\PostInputFilter</code>
-      <code>InputFilter\RpcService\PostInputFilter</code>
-      <code>InputFilter\Version</code>
-      <code>InputFilter\Version</code>
-      <code>InputFilter\Version</code>
-      <code>InputFilter\VersionInputFilter</code>
-      <code>InputFilter\VersionInputFilter</code>
-      <code>InputFilter\VersionInputFilter</code>
-      <code>Module</code>
       <code>ModuleConfig</code>
       <code>ModuleCreation</code>
-      <code>OAuth2</code>
       <code>OAuth2Authentication</code>
-      <code>PATCH</code>
-      <code>POST</code>
       <code>Package</code>
       <code>SettingsDashboard</code>
       <code>Source</code>
       <code>Strategy</code>
       <code>Validators</code>
-      <code>Version</code>
       <code>Versioning</code>
-      <code>\ZF\Apigility\Admin\InputFilter\Authorization</code>
-      <code>\ZF\Apigility\Admin\InputFilter\Documentation</code>
-      <code>\ZF\Apigility\Admin\InputFilter\InputFilter</code>
-      <code>\ZF\Apigility\Admin\InputFilter\RpcService\PATCH</code>
-      <code>\ZF\Apigility\Admin\InputFilter\RpcService\POST</code>
     </UndefinedClass>
   </file>
   <file src="src/Controller/AbstractAuthenticationController.php">
@@ -350,17 +248,14 @@
     </PossiblyUndefinedMethod>
   </file>
   <file src="src/Controller/AbstractConfigController.php">
-    <MixedArgument occurrences="4">
-      <code>$headers</code>
-      <code>$headers</code>
+    <MixedArgument occurrences="2">
       <code>$this-&gt;getRequest()-&gt;getContent()</code>
       <code>$value</code>
     </MixedArgument>
     <MixedArgumentTypeCoercion occurrences="1">
       <code>$key</code>
     </MixedArgumentTypeCoercion>
-    <MixedAssignment occurrences="3">
-      <code>$headers</code>
+    <MixedAssignment occurrences="2">
       <code>$value</code>
       <code>$value</code>
     </MixedAssignment>
@@ -371,6 +266,10 @@
       <code>$this-&gt;bodyParams()</code>
       <code>json_decode($this-&gt;getRequest()-&gt;getContent(), true)</code>
     </MixedReturnStatement>
+    <PossiblyInvalidArgument occurrences="2">
+      <code>$headers</code>
+      <code>$headers</code>
+    </PossiblyInvalidArgument>
     <PossiblyInvalidMethodCall occurrences="1">
       <code>getFieldValue</code>
     </PossiblyInvalidMethodCall>
@@ -380,10 +279,6 @@
     <RedundantConditionGivenDocblockType occurrences="1">
       <code>$config instanceof ConfigResource</code>
     </RedundantConditionGivenDocblockType>
-    <UndefinedInterfaceMethod occurrences="2">
-      <code>getHeaders</code>
-      <code>getMethod</code>
-    </UndefinedInterfaceMethod>
     <UndefinedMagicMethod occurrences="1">
       <code>bodyParams</code>
     </UndefinedMagicMethod>
@@ -392,9 +287,6 @@
     <MixedMethodCall occurrences="1">
       <code>fetchAll</code>
     </MixedMethodCall>
-    <UndefinedInterfaceMethod occurrences="1">
-      <code>getMethod</code>
-    </UndefinedInterfaceMethod>
   </file>
   <file src="src/Controller/AuthenticationController.php">
     <ArgumentTypeCoercion occurrences="5">
@@ -409,11 +301,6 @@
       <code>add</code>
       <code>add</code>
     </DeprecatedMethod>
-    <InvalidScalarArgument occurrences="3">
-      <code>$e-&gt;getCode()</code>
-      <code>$e-&gt;getCode()</code>
-      <code>$e-&gt;getCode()</code>
-    </InvalidScalarArgument>
     <LessSpecificReturnStatement occurrences="1">
       <code>$this-&gt;removeAuthenticationMap($module, $version)</code>
     </LessSpecificReturnStatement>
@@ -521,11 +408,11 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/AuthenticationTypeController.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$request</code>
-    </ArgumentTypeCoercion>
     <PropertyNotSetInConstructor occurrences="5">
       <code>AuthenticationTypeController</code>
       <code>AuthenticationTypeController</code>
@@ -533,9 +420,6 @@
       <code>AuthenticationTypeController</code>
       <code>AuthenticationTypeController</code>
     </PropertyNotSetInConstructor>
-    <UndefinedInterfaceMethod occurrences="1">
-      <code>getMethod</code>
-    </UndefinedInterfaceMethod>
   </file>
   <file src="src/Controller/AuthenticationTypeControllerFactory.php">
     <DeprecatedInterface occurrences="1">
@@ -550,14 +434,14 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/AuthorizationController.php">
     <DeprecatedMethod occurrences="1">
       <code>add</code>
     </DeprecatedMethod>
-    <DocblockTypeContradiction occurrences="1">
-      <code>$event instanceof MvcEvent</code>
-    </DocblockTypeContradiction>
     <MixedArgument occurrences="3">
       <code>$this-&gt;bodyParams()</code>
       <code>$version</code>
@@ -587,10 +471,8 @@
       <code>AuthorizationController</code>
       <code>AuthorizationController</code>
     </PropertyNotSetInConstructor>
-    <UndefinedInterfaceMethod occurrences="3">
+    <UndefinedInterfaceMethod occurrences="1">
       <code>getHeaders</code>
-      <code>getMethod</code>
-      <code>getQuery</code>
     </UndefinedInterfaceMethod>
     <UndefinedMagicMethod occurrences="1">
       <code>bodyParams</code>
@@ -609,6 +491,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/ConfigController.php">
     <ImplementedReturnTypeMismatch occurrences="1">
@@ -635,6 +520,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/DashboardController.php">
     <DeprecatedMethod occurrences="3">
@@ -677,6 +565,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/DbAutodiscoveryController.php">
     <MixedArgument occurrences="3">
@@ -714,6 +605,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/DocumentationController.php">
     <DeprecatedMethod occurrences="3">
@@ -781,6 +675,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/FiltersController.php">
     <LessSpecificReturnStatement occurrences="1">
@@ -810,6 +707,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/FsPermissionsController.php">
     <PropertyNotSetInConstructor occurrences="6">
@@ -846,6 +746,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/InputFilterController.php">
     <DeprecatedMethod occurrences="2">
@@ -910,8 +813,7 @@
       <code>InputFilterController</code>
       <code>InputFilterController</code>
     </PropertyNotSetInConstructor>
-    <UndefinedInterfaceMethod occurrences="2">
-      <code>getMethod</code>
+    <UndefinedInterfaceMethod occurrences="1">
       <code>setStatusCode</code>
     </UndefinedInterfaceMethod>
     <UndefinedMagicMethod occurrences="1">
@@ -931,6 +833,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/ModuleConfigController.php">
     <ImplementedReturnTypeMismatch occurrences="1">
@@ -967,6 +872,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
     <UndefinedClass occurrences="1">
       <code>ConfigResourceFactory</code>
     </UndefinedClass>
@@ -989,9 +897,6 @@
       <code>ModuleCreationController</code>
       <code>ModuleCreationController</code>
     </PropertyNotSetInConstructor>
-    <UndefinedInterfaceMethod occurrences="1">
-      <code>getMethod</code>
-    </UndefinedInterfaceMethod>
     <UndefinedMagicMethod occurrences="1">
       <code>bodyParam</code>
     </UndefinedMagicMethod>
@@ -1009,6 +914,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/PackageController.php">
     <ArgumentTypeCoercion occurrences="1">
@@ -1070,9 +978,6 @@
       <code>! empty($zfdeployPath) &amp;&amp; is_string($zfdeployPath)</code>
       <code>is_string($zfdeployPath)</code>
     </RedundantConditionGivenDocblockType>
-    <UndefinedInterfaceMethod occurrences="1">
-      <code>getMethod</code>
-    </UndefinedInterfaceMethod>
     <UndefinedMagicMethod occurrences="2">
       <code>bodyParam</code>
       <code>bodyParams</code>
@@ -1094,9 +999,6 @@
       <code>SourceController</code>
       <code>SourceController</code>
     </PropertyNotSetInConstructor>
-    <UndefinedInterfaceMethod occurrences="1">
-      <code>getMethod</code>
-    </UndefinedInterfaceMethod>
   </file>
   <file src="src/Controller/SourceControllerFactory.php">
     <DeprecatedInterface occurrences="1">
@@ -1111,6 +1013,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/StrategyController.php">
     <MixedArgument occurrences="1">
@@ -1140,6 +1045,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/ValidatorsController.php">
     <PropertyNotSetInConstructor occurrences="5">
@@ -1163,6 +1071,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Controller/VersioningController.php">
     <InvalidCatch occurrences="1"/>
@@ -1206,6 +1117,9 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/InputFilter/Authentication/BaseInputFilter.php">
     <MissingClosureParamType occurrences="1">
@@ -1290,9 +1204,22 @@
     <LessSpecificImplementedReturnType occurrences="1">
       <code>array</code>
     </LessSpecificImplementedReturnType>
-    <MixedInferredReturnType occurrences="1">
-      <code>bool</code>
-    </MixedInferredReturnType>
+    <MixedArgument occurrences="1">
+      <code>$className</code>
+    </MixedArgument>
+    <MixedArrayOffset occurrences="3">
+      <code>$this-&gt;messages[$className]</code>
+      <code>$this-&gt;messages[$className]</code>
+      <code>$this-&gt;messages[$className]</code>
+    </MixedArrayOffset>
+    <MixedAssignment occurrences="1">
+      <code>$className</code>
+    </MixedAssignment>
+    <MixedPropertyTypeCoercion occurrences="3">
+      <code>$this-&gt;messages</code>
+      <code>$this-&gt;messages</code>
+      <code>$this-&gt;messages</code>
+    </MixedPropertyTypeCoercion>
     <PossiblyNullIterator occurrences="1">
       <code>$this-&gt;data</code>
     </PossiblyNullIterator>
@@ -1354,6 +1281,9 @@
       <code>setPluginManager</code>
       <code>setPluginManager</code>
     </PossiblyNullReference>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$container-&gt;getServiceLocator()</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/InputFilter/InputFilterInputFilter.php">
     <LessSpecificImplementedReturnType occurrences="1">
@@ -1517,9 +1447,6 @@
       <code>add</code>
       <code>add</code>
     </DeprecatedMethod>
-    <DocblockTypeContradiction occurrences="1">
-      <code>! $this-&gt;routeMatch</code>
-    </DocblockTypeContradiction>
     <MissingClosureParamType occurrences="4">
       <code>$reUseMatchedParams</code>
       <code>$routeName</code>
@@ -1591,14 +1518,14 @@
       <code>injectSelfLink</code>
       <code>injectSelfLink</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyNullReference occurrences="2">
+    <PossiblyNullFunctionCall occurrences="1">
+      <code>call_user_func($urlHelper, $routeName, $routeParams, $routeOptions, false)</code>
+    </PossiblyNullFunctionCall>
+    <PossiblyNullReference occurrences="3">
+      <code>getParam</code>
       <code>injectSelfLink</code>
       <code>injectSelfLink</code>
     </PossiblyNullReference>
-    <PropertyNotSetInConstructor occurrences="2">
-      <code>$routeMatch</code>
-      <code>$urlHelper</code>
-    </PropertyNotSetInConstructor>
     <UndefinedClass occurrences="3">
       <code>$this-&gt;routeMatch</code>
       <code>$this-&gt;routeMatch</code>
@@ -1607,7 +1534,7 @@
     <UndefinedDocblockClass occurrences="3">
       <code>$this-&gt;routeMatch</code>
       <code>$this-&gt;routeMatch</code>
-      <code>RouteMatch|V2RouteMatch</code>
+      <code>null|RouteMatch|V2RouteMatch</code>
     </UndefinedDocblockClass>
     <UnusedParam occurrences="1">
       <code>$e</code>
@@ -1635,9 +1562,6 @@
     </MixedAssignment>
   </file>
   <file src="src/Model/AbstractAutodiscoveryModel.php">
-    <DocblockTypeContradiction occurrences="1">
-      <code>$this-&gt;serviceLocator</code>
-    </DocblockTypeContradiction>
     <MixedArgument occurrences="2">
       <code>$resourceName</code>
       <code>$resourceName</code>
@@ -1645,9 +1569,6 @@
     <MixedAssignment occurrences="1">
       <code>$resourceName</code>
     </MixedAssignment>
-    <PropertyNotSetInConstructor occurrences="1">
-      <code>$serviceLocator</code>
-    </PropertyNotSetInConstructor>
     <UndefinedClass occurrences="2">
       <code>DbNoRecordExists</code>
       <code>DbRecordExists</code>
@@ -1745,12 +1666,6 @@
     <InvalidCast occurrences="1">
       <code>$config</code>
     </InvalidCast>
-    <InvalidDocblock occurrences="1">
-      <code>public static function arrayDiffRecursive($a, $b)</code>
-    </InvalidDocblock>
-    <MissingReturnType occurrences="1">
-      <code>arrayDiffRecursive</code>
-    </MissingReturnType>
     <MixedArgument occurrences="19">
       <code>$adapter['oauth2_route']</code>
       <code>$adapter['oauth2_type']</code>
@@ -1918,12 +1833,11 @@
     <MissingClosureParamType occurrences="1">
       <code>$serviceName</code>
     </MissingClosureParamType>
-    <MixedArgument occurrences="10">
+    <MixedArgument occurrences="9">
       <code>$action</code>
       <code>$config</code>
       <code>$entity::TYPE_COLLECTION</code>
       <code>$entity::TYPE_ENTITY</code>
-      <code>$matches['action']</code>
       <code>$serviceConfig</code>
       <code>$serviceName</code>
       <code>$serviceName</code>
@@ -1950,9 +1864,7 @@
       <code>$config[$matches['service']][$type]</code>
       <code>$config[$matches['service']]['actions']</code>
     </MixedArrayAssignment>
-    <MixedArrayOffset occurrences="3">
-      <code>$config[$matches['service']]</code>
-      <code>$config[$matches['service']]</code>
+    <MixedArrayOffset occurrences="1">
       <code>$config['router']['routes'][$route]</code>
     </MixedArrayOffset>
     <MixedAssignment occurrences="17">
@@ -2219,9 +2131,6 @@
     <PossiblyNullReference occurrences="1">
       <code>getReferencedColumns</code>
     </PossiblyNullReference>
-    <PropertyNotSetInConstructor occurrences="1">
-      <code>DbAutodiscoveryModel</code>
-    </PropertyNotSetInConstructor>
     <UnnecessaryVarAnnotation occurrences="2">
       <code>ConstraintObject</code>
       <code>ConstraintObject</code>
@@ -2321,8 +2230,10 @@
     <MixedPropertyFetch occurrences="1">
       <code>$entity-&gt;resourceClass</code>
     </MixedPropertyFetch>
-    <RedundantConditionGivenDocblockType occurrences="1">
+    <RedundantConditionGivenDocblockType occurrences="3">
+      <code>$entity-&gt;hydratorName</code>
       <code>isset($entity-&gt;hydratorName)</code>
+      <code>isset($entity-&gt;hydratorName) &amp;&amp; $entity-&gt;hydratorName</code>
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Model/DoctrineAdapterEntity.php">
@@ -2630,8 +2541,7 @@
     </PossiblyNullPropertyAssignmentValue>
   </file>
   <file src="src/Model/ModuleModel.php">
-    <DocblockTypeContradiction occurrences="3">
-      <code>! $module instanceof ApiToolsProviderInterface &amp;&amp; ! $module instanceof ApiToolsModuleInterface</code>
+    <DocblockTypeContradiction occurrences="1">
       <code>empty(static::$valueGenerator)</code>
     </DocblockTypeContradiction>
     <MissingClosureParamType occurrences="1">
@@ -2779,7 +2689,7 @@
     </MixedArgument>
   </file>
   <file src="src/Model/ModuleVersioningModel.php">
-    <MixedArgument occurrences="14">
+    <MixedArgument occurrences="13">
       <code>$config['api-tools']['db-connected']</code>
       <code>$config['api-tools-content-negotiation'][$key]</code>
       <code>$config['api-tools-content-validation']</code>
@@ -2793,11 +2703,7 @@
       <code>$dir</code>
       <code>$file</code>
       <code>$mediaType</code>
-      <code>$value</code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>$key</code>
-    </MixedArgumentTypeCoercion>
     <MixedArrayAccess occurrences="1">
       <code>$config['api-tools-content-negotiation'][$key]</code>
     </MixedArrayAccess>
@@ -2955,7 +2861,8 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Model/RestServiceModel.php">
-    <DocblockTypeContradiction occurrences="1">
+    <DocblockTypeContradiction occurrences="2">
+      <code>! $this-&gt;events</code>
       <code>$this-&gt;events</code>
     </DocblockTypeContradiction>
     <ImplementedReturnTypeMismatch occurrences="1">
@@ -3126,7 +3033,7 @@
       <code>$renderer</code>
       <code>$routeNameFilter</code>
     </PropertyNotSetInConstructor>
-    <RedundantConditionGivenDocblockType occurrences="2">
+    <RedundantConditionGivenDocblockType occurrences="3">
       <code>$this-&gt;renderer instanceof PhpRenderer</code>
       <code>$this-&gt;routeNameFilter instanceof FilterChain</code>
     </RedundantConditionGivenDocblockType>
@@ -3183,8 +3090,7 @@
     <DeprecatedMethod occurrences="1">
       <code>add</code>
     </DeprecatedMethod>
-    <DocblockTypeContradiction occurrences="2">
-      <code>$service instanceof RestServiceEntity</code>
+    <DocblockTypeContradiction occurrences="1">
       <code>is_array($data)</code>
     </DocblockTypeContradiction>
     <InvalidArgument occurrences="1">
@@ -3193,9 +3099,6 @@
     <InvalidCast occurrences="1">
       <code>$entity</code>
     </InvalidCast>
-    <InvalidScalarArgument occurrences="1">
-      <code>$e-&gt;getCode()</code>
-    </InvalidScalarArgument>
     <MixedArgument occurrences="10">
       <code>$entity-&gt;controllerServiceName</code>
       <code>$id</code>
@@ -3430,10 +3333,6 @@
     <DocblockTypeContradiction occurrences="1">
       <code>is_array($data)</code>
     </DocblockTypeContradiction>
-    <InvalidScalarArgument occurrences="2">
-      <code>$e-&gt;getCode()</code>
-      <code>$e-&gt;getCode()</code>
-    </InvalidScalarArgument>
     <MixedArgument occurrences="15">
       <code>$controller</code>
       <code>$controllerServiceName</code>
@@ -4323,14 +4222,6 @@
       <code>Argument::any()</code>
     </ImplicitToStringCast>
     <InvalidArgument occurrences="6"/>
-    <MissingClosureParamType occurrences="6">
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-    </MissingClosureParamType>
     <MixedArgument occurrences="5">
       <code>$this-&gt;event-&gt;reveal()</code>
       <code>$this-&gt;event-&gt;reveal()</code>
@@ -4489,16 +4380,10 @@
       <code>! $links-&gt;reveal() === $entity-&gt;getLinks()</code>
       <code>$entityType instanceof RestServiceEntity</code>
     </DocblockTypeContradiction>
-    <MissingClosureParamType occurrences="9">
+    <MissingClosureParamType occurrences="3">
       <code>$args</code>
       <code>$args</code>
       <code>$args</code>
-      <code>$entity</code>
-      <code>$entity</code>
-      <code>$entity</code>
-      <code>$entity</code>
-      <code>$halEntity</code>
-      <code>$halEntity</code>
     </MissingClosureParamType>
     <MissingClosureReturnType occurrences="3">
       <code>function (...$args) {</code>
@@ -4912,15 +4797,17 @@
     </UnusedForeachValue>
   </file>
   <file src="test/Model/AuthorizationModelFactoryFactoryTest.php">
-    <InvalidArgument occurrences="1">
-      <code>testFactoryRaisesExceptionIfAnyDependenciesAreMissing</code>
-    </InvalidArgument>
+    <InvalidReturnStatement occurrences="1"/>
+    <InvalidReturnType occurrences="1">
+      <code>array&lt;string, array{0: array&lt;class-string, bool&gt;}&gt;</code>
+    </InvalidReturnType>
     <MixedArgument occurrences="4">
       <code>$this-&gt;container-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
       <code>ConfigResourceFactory::class</code>
       <code>ConfigResourceFactory::class</code>
     </MixedArgument>
+    <MixedArrayOffset occurrences="7"/>
     <MixedMethodCall occurrences="3">
       <code>will</code>
       <code>will</code>
@@ -5214,9 +5101,6 @@
       <code>'BarConf\V1\Rest\Barbaz\BarbazEntity'</code>
       <code>'ReflectionClass'</code>
     </ArgumentTypeCoercion>
-    <MissingFile occurrences="1">
-      <code>include __DIR__ . '/TestAsset/module/BarConf/src/BarConf/V1/Rest/Barbaz/BarbazEntity.php'</code>
-    </MissingFile>
     <MixedArgument occurrences="31">
       <code>$config</code>
       <code>$config</code>
@@ -5488,24 +5372,22 @@
       <code>new $moduleClass()</code>
       <code>new $moduleClass()</code>
     </InvalidStringClass>
-    <MissingClosureParamType occurrences="1">
-      <code>$class</code>
-    </MissingClosureParamType>
-    <MixedArgument occurrences="2">
-      <code>$class</code>
-      <code>$class</code>
-    </MixedArgument>
     <MixedAssignment occurrences="1">
       <code>$file</code>
     </MixedAssignment>
   </file>
   <file src="test/Model/ModuleVersioningModelFactoryFactoryTest.php">
+    <InvalidReturnStatement occurrences="1"/>
+    <InvalidReturnType occurrences="1">
+      <code>array&lt;string, array{0: array&lt;class-string, bool&gt;}&gt;</code>
+    </InvalidReturnType>
     <MixedArgument occurrences="4">
       <code>$this-&gt;container-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
       <code>ConfigResourceFactory::class</code>
       <code>ConfigResourceFactory::class</code>
     </MixedArgument>
+    <MixedArrayOffset occurrences="3"/>
     <MixedMethodCall occurrences="2">
       <code>willReturn</code>
       <code>willReturn</code>
@@ -5528,12 +5410,17 @@
     </UndefinedClass>
   </file>
   <file src="test/Model/RestServiceModelFactoryFactoryTest.php">
+    <InvalidReturnStatement occurrences="1"/>
+    <InvalidReturnType occurrences="1">
+      <code>array&lt;string, array{0: array&lt;non-empty-string, bool&gt;}&gt;</code>
+    </InvalidReturnType>
     <MixedArgument occurrences="4">
       <code>$this-&gt;container-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
       <code>ConfigResourceFactory::class</code>
       <code>ConfigResourceFactory::class</code>
     </MixedArgument>
+    <MixedArrayOffset occurrences="5"/>
     <MixedMethodCall occurrences="5">
       <code>will</code>
       <code>will</code>
@@ -5904,12 +5791,17 @@
     </PossiblyInvalidArgument>
   </file>
   <file src="test/Model/RpcServiceModelFactoryFactoryTest.php">
+    <InvalidReturnStatement occurrences="1"/>
+    <InvalidReturnType occurrences="1">
+      <code>array&lt;string, array{0: array&lt;non-empty-string, bool&gt;}&gt;</code>
+    </InvalidReturnType>
     <MixedArgument occurrences="4">
       <code>$this-&gt;container-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
       <code>ConfigResourceFactory::class</code>
       <code>ConfigResourceFactory::class</code>
     </MixedArgument>
+    <MixedArrayOffset occurrences="5"/>
     <MixedMethodCall occurrences="4">
       <code>willReturn</code>
       <code>willReturn</code>
@@ -6027,15 +5919,15 @@
       <code>$this-&gt;moduleManager</code>
       <code>$this-&gt;moduleManager</code>
     </PossiblyInvalidArgument>
-    <PossiblyInvalidPropertyFetch occurrences="7">
+    <PossiblyInvalidPropertyFetch occurrences="6">
       <code>$result-&gt;class</code>
       <code>$result-&gt;class</code>
       <code>$result-&gt;file</code>
       <code>$result-&gt;file</code>
       <code>$result-&gt;service</code>
       <code>$result-&gt;service</code>
-      <code>$this-&gt;codeRpc-&gt;createController('Baz\Bat\Foo')-&gt;class</code>
     </PossiblyInvalidPropertyFetch>
+    <UnevaluatedCode occurrences="1"/>
     <UnresolvableInclude occurrences="15">
       <code>include $configData-&gt;config_file</code>
       <code>include $configData-&gt;config_file</code>
@@ -6146,15 +6038,17 @@
       <code>$factory</code>
       <code>$factory</code>
     </DeprecatedMethod>
-    <InvalidArgument occurrences="1">
-      <code>testFactoryRaisesExceptionWhenMissingDependencies</code>
-    </InvalidArgument>
+    <InvalidReturnStatement occurrences="1"/>
+    <InvalidReturnType occurrences="1">
+      <code>array&lt;string, array{0: array&lt;class-string, bool&gt;}&gt;</code>
+    </InvalidReturnType>
     <MixedArgument occurrences="4">
       <code>$this-&gt;container-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
       <code>ConfigResourceFactory::class</code>
       <code>ConfigResourceFactory::class</code>
     </MixedArgument>
+    <MixedArrayOffset occurrences="3"/>
     <MixedMethodCall occurrences="2">
       <code>willReturn</code>
       <code>willReturn</code>

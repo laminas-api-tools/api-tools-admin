@@ -11,7 +11,6 @@ use Laminas\Db\Metadata\Metadata;
 use Laminas\Db\Metadata\Object\ColumnObject;
 use Laminas\Db\Metadata\Object\ConstraintObject;
 
-use function array_values;
 use function in_array;
 use function strpos;
 use function strtolower;
@@ -113,7 +112,7 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
 
                 if (in_array(strtolower($column->getDataType()), ['varchar', 'text'])) {
                     $item['length'] = $column->getCharacterMaximumLength();
-                    if (in_array('Primary key', array_values($item['constraints']))) {
+                    if (in_array('Primary key', $item['constraints'])) {
                         unset($item['filters']);
                         unset($item['validators']);
                         $tableData['columns'][] = $item;
@@ -133,7 +132,7 @@ class DbAutodiscoveryModel extends AbstractAutodiscoveryModel
                     ])
                 ) {
                     $item['length'] = $column->getNumericPrecision();
-                    if (in_array('Primary key', array_values($item['constraints']))) {
+                    if (in_array('Primary key', $item['constraints'])) {
                         unset($item['filters']);
                         unset($item['validators']);
                         $tableData['columns'][] = $item;
