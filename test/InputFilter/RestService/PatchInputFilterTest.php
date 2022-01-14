@@ -24,82 +24,14 @@ class PatchInputFilterTest extends TestCase
         ]);
     }
 
-    /** @psalm-return array<string, array{0: array<string, mixed>}> */
+    /** @psalm-return array<string, array{0: string|int}> */
     public function dataProviderIsValidTrue(): array
     {
         return [
-            'all-inputs-present' => [
-                [
-                    'accept_whitelist'           => [
-                        0 => 'application/vnd.foo_bar.v1+json',
-                        1 => 'application/hal+json',
-                        2 => 'application/json',
-                    ],
-                    'collection_class'           => Paginator::class,
-                    'collection_http_methods'    => [
-                        0 => 'GET',
-                        1 => 'POST',
-                    ],
-                    'collection_name'            => 'foo_bar',
-                    'collection_query_whitelist' => [],
-                    'content_type_whitelist'     => [
-                        0 => 'application/vnd.foo_bar.v1+json',
-                        1 => 'application/json',
-                    ],
-                    'entity_class'               => 'StdClass',
-                    'entity_http_methods'        => [
-                        0 => 'GET',
-                        1 => 'PATCH',
-                        2 => 'PUT',
-                        3 => 'DELETE',
-                    ],
-                    'entity_identifier_name'     => 'id',
-                    'hydrator_name'              => ArraySerializableHydrator::class,
-                    'page_size'                  => 25,
-                    'page_size_param'            => null,
-                    'resource_class'             => 'Foo_Bar\\V1\\Rest\\Baz_Bat\\Baz_BatResource',
-                    'route_identifier_name'      => 'foo_bar_id',
-                    'route_match'                => '/foo_bar[/:foo_bar_id]',
-                    'selector'                   => 'HalJson',
-                    'service_name'               => 'Baz_Bat',
-                ],
-            ],
-            'page_size-negative' => [
-                [
-                    'accept_whitelist'           => [
-                        0 => 'application/vnd.foo_bar.v1+json',
-                        1 => 'application/hal+json',
-                        2 => 'application/json',
-                    ],
-                    'collection_class'           => Paginator::class,
-                    'collection_http_methods'    => [
-                        0 => 'GET',
-                        1 => 'POST',
-                    ],
-                    'collection_name'            => 'foo_bar',
-                    'collection_query_whitelist' => [],
-                    'content_type_whitelist'     => [
-                        0 => 'application/vnd.foo_bar.v1+json',
-                        1 => 'application/json',
-                    ],
-                    'entity_class'               => 'StdClass',
-                    'entity_http_methods'        => [
-                        0 => 'GET',
-                        1 => 'PATCH',
-                        2 => 'PUT',
-                        3 => 'DELETE',
-                    ],
-                    'entity_identifier_name'     => 'id',
-                    'hydrator_name'              => ArraySerializableHydrator::class,
-                    'page_size'                  => -1,
-                    'page_size_param'            => null,
-                    'resource_class'             => 'Foo_Bar\\V1\\Rest\\Baz_Bat\\Baz_BatResource',
-                    'route_identifier_name'      => 'foo_bar_id',
-                    'route_match'                => '/foo_bar[/:foo_bar_id]',
-                    'selector'                   => 'HalJson',
-                    'service_name'               => 'Baz_Bat',
-                ],
-            ],
+            'page_size-string'           => ['25'],
+            'page_size-string-negative'  => ['-1'],
+            'page_size-integer'          => [25],
+            'page_size-integer-negative' => [-1],
         ];
     }
 
@@ -198,10 +130,46 @@ class PatchInputFilterTest extends TestCase
 
     /**
      * @dataProvider dataProviderIsValidTrue
-     * @param array<string, mixed> $data
+     * @param string|int $pageSize
      */
-    public function testIsValidTrue(array $data): void
+    public function testIsValidTrue($pageSize): void
     {
+        $data =
+            [
+                'accept_whitelist'           => [
+                    0 => 'application/vnd.foo_bar.v1+json',
+                    1 => 'application/hal+json',
+                    2 => 'application/json',
+                ],
+                'collection_class'           => Paginator::class,
+                'collection_http_methods'    => [
+                    0 => 'GET',
+                    1 => 'POST',
+                ],
+                'collection_name'            => 'foo_bar',
+                'collection_query_whitelist' => [],
+                'content_type_whitelist'     => [
+                    0 => 'application/vnd.foo_bar.v1+json',
+                    1 => 'application/json',
+                ],
+                'entity_class'               => 'StdClass',
+                'entity_http_methods'        => [
+                    0 => 'GET',
+                    1 => 'PATCH',
+                    2 => 'PUT',
+                    3 => 'DELETE',
+                ],
+                'entity_identifier_name'     => 'id',
+                'hydrator_name'              => ArraySerializableHydrator::class,
+                'page_size'                  => $pageSize,
+                'page_size_param'            => null,
+                'resource_class'             => 'Foo_Bar\\V1\\Rest\\Baz_Bat\\Baz_BatResource',
+                'route_identifier_name'      => 'foo_bar_id',
+                'route_match'                => '/foo_bar[/:foo_bar_id]',
+                'selector'                   => 'HalJson',
+                'service_name'               => 'Baz_Bat',
+            ];
+
         $filter = $this->getInputFilter();
         $filter->setData($data);
         self::assertTrue($filter->isValid(), var_export($filter->getMessages(), true));
@@ -223,5 +191,64 @@ class PatchInputFilterTest extends TestCase
         sort($expectedInvalidKeys);
         sort($testKeys);
         self::assertEquals($expectedInvalidKeys, $testKeys);
+    }
+
+    /** @psalm-return array<string, array{0: string|int|float}> */
+    public function dataProviderInvalidPageSizes(): array
+    {
+        return [
+            'page_size-string-float'           => ['25.5'],
+            'page_size-string-wrong-negative'  => ['-2'],
+            'page_size-string-nan'             => ['invalid'],
+            'page_size-float'                  => [25.5],
+            'page_size-integer-wrong-negative' => [-2],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderInvalidPageSizes
+     * @param string|int|float $pageSize
+     */
+    public function testInvalidPageSizes($pageSize): void
+    {
+        $data =
+            [
+                'accept_whitelist'           => [
+                    0 => 'application/vnd.foo_bar.v1+json',
+                    1 => 'application/hal+json',
+                    2 => 'application/json',
+                ],
+                'collection_class'           => Paginator::class,
+                'collection_http_methods'    => [
+                    0 => 'GET',
+                    1 => 'POST',
+                ],
+                'collection_name'            => 'foo_bar',
+                'collection_query_whitelist' => [],
+                'content_type_whitelist'     => [
+                    0 => 'application/vnd.foo_bar.v1+json',
+                    1 => 'application/json',
+                ],
+                'entity_class'               => 'StdClass',
+                'entity_http_methods'        => [
+                    0 => 'GET',
+                    1 => 'PATCH',
+                    2 => 'PUT',
+                    3 => 'DELETE',
+                ],
+                'entity_identifier_name'     => 'id',
+                'hydrator_name'              => ArraySerializableHydrator::class,
+                'page_size'                  => $pageSize,
+                'page_size_param'            => null,
+                'resource_class'             => 'Foo_Bar\\V1\\Rest\\Baz_Bat\\Baz_BatResource',
+                'route_identifier_name'      => 'foo_bar_id',
+                'route_match'                => '/foo_bar[/:foo_bar_id]',
+                'selector'                   => 'HalJson',
+                'service_name'               => 'Baz_Bat',
+            ];
+
+        $filter = $this->getInputFilter();
+        $filter->setData($data);
+        self::assertFalse($filter->isValid(), var_export($filter->getMessages(), true));
     }
 }
