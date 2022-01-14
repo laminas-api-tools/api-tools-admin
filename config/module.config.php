@@ -7,31 +7,21 @@ declare(strict_types=1);
 
 namespace Laminas\ApiTools\Admin;
 
-use Laminas\ApiTools\Admin\InputFilter\Authentication\BasicAuth;
 use Laminas\ApiTools\Admin\InputFilter\Authentication\BasicInputFilter;
-use Laminas\ApiTools\Admin\InputFilter\Authentication\DigestAuth;
 use Laminas\ApiTools\Admin\InputFilter\Authentication\DigestInputFilter;
-use Laminas\ApiTools\Admin\InputFilter\Authentication\OAuth2;
 use Laminas\ApiTools\Admin\InputFilter\Authentication\OAuth2InputFilter;
 use Laminas\ApiTools\Admin\InputFilter\AuthorizationInputFilter;
-use Laminas\ApiTools\Admin\InputFilter\ContentNegotiation;
 use Laminas\ApiTools\Admin\InputFilter\ContentNegotiationInputFilter;
-use Laminas\ApiTools\Admin\InputFilter\CreateContentNegotiation;
 use Laminas\ApiTools\Admin\InputFilter\CreateContentNegotiationInputFilter;
-use Laminas\ApiTools\Admin\InputFilter\DbAdapter;
 use Laminas\ApiTools\Admin\InputFilter\DbAdapterInputFilter;
 use Laminas\ApiTools\Admin\InputFilter\DocumentationInputFilter;
 use Laminas\ApiTools\Admin\InputFilter\Factory\InputFilterInputFilterFactory;
 use Laminas\ApiTools\Admin\InputFilter\InputFilterInputFilter;
-use Laminas\ApiTools\Admin\InputFilter\Module;
 use Laminas\ApiTools\Admin\InputFilter\ModuleInputFilter;
-use Laminas\ApiTools\Admin\InputFilter\RestService\PATCH;
 use Laminas\ApiTools\Admin\InputFilter\RestService\PatchInputFilter as RestPatchInputFilter;
-use Laminas\ApiTools\Admin\InputFilter\RestService\POST;
 use Laminas\ApiTools\Admin\InputFilter\RestService\PostInputFilter as RestPostInputFilter;
 use Laminas\ApiTools\Admin\InputFilter\RpcService\PatchInputFilter as RpcPatchInputFilter;
 use Laminas\ApiTools\Admin\InputFilter\RpcService\PostInputFilter as RpcPostInputFilter;
-use Laminas\ApiTools\Admin\InputFilter\Version;
 use Laminas\ApiTools\Admin\InputFilter\VersionInputFilter;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\Boolean;
@@ -168,72 +158,6 @@ use Laminas\Validator\Step;
 use Laminas\Validator\StringLength;
 use Laminas\Validator\Uri;
 use Laminas\Validator\Uuid;
-use ZF\Apigility\Admin\Controller\ApigilityVersionController;
-use ZF\Apigility\Admin\Controller\App;
-use ZF\Apigility\Admin\Controller\AppController;
-use ZF\Apigility\Admin\Controller\Authentication;
-use ZF\Apigility\Admin\Controller\AuthenticationController;
-use ZF\Apigility\Admin\Controller\AuthenticationType;
-use ZF\Apigility\Admin\Controller\Authorization;
-use ZF\Apigility\Admin\Controller\AuthorizationController;
-use ZF\Apigility\Admin\Controller\CacheEnabled;
-use ZF\Apigility\Admin\Controller\CacheEnabledController;
-use ZF\Apigility\Admin\Controller\Config;
-use ZF\Apigility\Admin\Controller\ConfigController;
-use ZF\Apigility\Admin\Controller\Dashboard;
-use ZF\Apigility\Admin\Controller\DbAutodiscovery;
-use ZF\Apigility\Admin\Controller\Documentation;
-use ZF\Apigility\Admin\Controller\Filters;
-use ZF\Apigility\Admin\Controller\FsPermissions;
-use ZF\Apigility\Admin\Controller\FsPermissionsController;
-use ZF\Apigility\Admin\Controller\HttpBasicAuthentication;
-use ZF\Apigility\Admin\Controller\HttpDigestAuthentication;
-use ZF\Apigility\Admin\Controller\Hydrators;
-use ZF\Apigility\Admin\Controller\InputFilter;
-use ZF\Apigility\Admin\Controller\ModuleConfig;
-use ZF\Apigility\Admin\Controller\ModuleConfigController;
-use ZF\Apigility\Admin\Controller\ModuleCreation;
-use ZF\Apigility\Admin\Controller\ModuleCreationController;
-use ZF\Apigility\Admin\Controller\OAuth2Authentication;
-use ZF\Apigility\Admin\Controller\Package;
-use ZF\Apigility\Admin\Controller\PackageController;
-use ZF\Apigility\Admin\Controller\SettingsDashboard;
-use ZF\Apigility\Admin\Controller\Source;
-use ZF\Apigility\Admin\Controller\SourceController;
-use ZF\Apigility\Admin\Controller\Strategy;
-use ZF\Apigility\Admin\Controller\Validators;
-use ZF\Apigility\Admin\Controller\Versioning;
-use ZF\Apigility\Admin\Controller\VersioningController;
-use ZF\Apigility\Admin\Listener\CryptFilterListener;
-use ZF\Apigility\Admin\Listener\DisableHttpCacheListener;
-use ZF\Apigility\Admin\Listener\EnableHalRenderCollectionsListener;
-use ZF\Apigility\Admin\Listener\InjectModuleResourceLinksListener;
-use ZF\Apigility\Admin\Listener\NormalizeMatchedControllerServiceNameListener;
-use ZF\Apigility\Admin\Listener\NormalizeMatchedInputFilterNameListener;
-use ZF\Apigility\Admin\Model\AuthenticationModel;
-use ZF\Apigility\Admin\Model\AuthorizationModelFactory;
-use ZF\Apigility\Admin\Model\ContentNegotiationModel;
-use ZF\Apigility\Admin\Model\ContentNegotiationResource;
-use ZF\Apigility\Admin\Model\DbAdapterModel;
-use ZF\Apigility\Admin\Model\DbAdapterResource;
-use ZF\Apigility\Admin\Model\DbAutodiscoveryModel;
-use ZF\Apigility\Admin\Model\DoctrineAdapterModel;
-use ZF\Apigility\Admin\Model\DoctrineAdapterResource;
-use ZF\Apigility\Admin\Model\DocumentationModel;
-use ZF\Apigility\Admin\Model\FiltersModel;
-use ZF\Apigility\Admin\Model\HydratorsModel;
-use ZF\Apigility\Admin\Model\InputFilterModel;
-use ZF\Apigility\Admin\Model\ModuleModel;
-use ZF\Apigility\Admin\Model\ModulePathSpec;
-use ZF\Apigility\Admin\Model\ModuleResource;
-use ZF\Apigility\Admin\Model\ModuleVersioningModelFactory;
-use ZF\Apigility\Admin\Model\RestServiceModelFactory;
-use ZF\Apigility\Admin\Model\RestServiceResource;
-use ZF\Apigility\Admin\Model\RpcServiceModelFactory;
-use ZF\Apigility\Admin\Model\RpcServiceResource;
-use ZF\Apigility\Admin\Model\ValidatorMetadataModel;
-use ZF\Apigility\Admin\Model\ValidatorsModel;
-use ZF\Apigility\Admin\Model\VersioningModelFactory;
 
 return [
     'api-tools-admin'               => [
@@ -247,36 +171,36 @@ return [
     'service_manager'               => [
         // Legacy Zend Framework aliases
         'aliases'   => [
-            CryptFilterListener::class                           => Listener\CryptFilterListener::class,
-            DisableHttpCacheListener::class                      => Listener\DisableHttpCacheListener::class,
-            EnableHalRenderCollectionsListener::class            => Listener\EnableHalRenderCollectionsListener::class,
-            InjectModuleResourceLinksListener::class             => Listener\InjectModuleResourceLinksListener::class,
-            NormalizeMatchedControllerServiceNameListener::class => Listener\NormalizeMatchedControllerServiceNameListener::class,
-            NormalizeMatchedInputFilterNameListener::class       => Listener\NormalizeMatchedInputFilterNameListener::class,
-            AuthenticationModel::class                           => Model\AuthenticationModel::class,
-            AuthorizationModelFactory::class                     => Model\AuthorizationModelFactory::class,
-            ContentNegotiationModel::class                       => Model\ContentNegotiationModel::class,
-            ContentNegotiationResource::class                    => Model\ContentNegotiationResource::class,
-            DbAdapterModel::class                                => Model\DbAdapterModel::class,
-            DbAdapterResource::class                             => Model\DbAdapterResource::class,
-            DbAutodiscoveryModel::class                          => Model\DbAutodiscoveryModel::class,
-            DoctrineAdapterModel::class                          => Model\DoctrineAdapterModel::class,
-            DoctrineAdapterResource::class                       => Model\DoctrineAdapterResource::class,
-            DocumentationModel::class                            => Model\DocumentationModel::class,
-            FiltersModel::class                                  => Model\FiltersModel::class,
-            HydratorsModel::class                                => Model\HydratorsModel::class,
-            InputFilterModel::class                              => Model\InputFilterModel::class,
-            ModuleModel::class                                   => Model\ModuleModel::class,
-            ModulePathSpec::class                                => Model\ModulePathSpec::class,
-            ModuleResource::class                                => Model\ModuleResource::class,
-            ModuleVersioningModelFactory::class                  => Model\ModuleVersioningModelFactory::class,
-            RestServiceModelFactory::class                       => Model\RestServiceModelFactory::class,
-            RestServiceResource::class                           => Model\RestServiceResource::class,
-            RpcServiceModelFactory::class                        => Model\RpcServiceModelFactory::class,
-            RpcServiceResource::class                            => Model\RpcServiceResource::class,
-            ValidatorMetadataModel::class                        => Model\ValidatorMetadataModel::class,
-            ValidatorsModel::class                               => Model\ValidatorsModel::class,
-            VersioningModelFactory::class                        => Model\VersioningModelFactory::class,
+            'ZF\Apigility\Admin\Listener\CryptFilterListener'                           => Listener\CryptFilterListener::class,
+            'ZF\Apigility\Admin\Listener\DisableHttpCacheListener'                      => Listener\DisableHttpCacheListener::class,
+            'ZF\Apigility\Admin\Listener\EnableHalRenderCollectionsListener'            => Listener\EnableHalRenderCollectionsListener::class,
+            'ZF\Apigility\Admin\Listener\InjectModuleResourceLinksListener'             => Listener\InjectModuleResourceLinksListener::class,
+            'ZF\Apigility\Admin\Listener\NormalizeMatchedControllerServiceNameListener' => Listener\NormalizeMatchedControllerServiceNameListener::class,
+            'ZF\Apigility\Admin\Listener\NormalizeMatchedInputFilterNameListener'       => Listener\NormalizeMatchedInputFilterNameListener::class,
+            'ZF\Apigility\Admin\Model\AuthenticationModel'                              => Model\AuthenticationModel::class,
+            'ZF\Apigility\Admin\Model\AuthorizationModelFactory'                        => Model\AuthorizationModelFactory::class,
+            'ZF\Apigility\Admin\Model\ContentNegotiationModel'                          => Model\ContentNegotiationModel::class,
+            'ZF\Apigility\Admin\Model\ContentNegotiationResource'                       => Model\ContentNegotiationResource::class,
+            'ZF\Apigility\Admin\Model\DbAdapterModel'                                   => Model\DbAdapterModel::class,
+            'ZF\Apigility\Admin\Model\DbAdapterResource'                                => Model\DbAdapterResource::class,
+            'ZF\Apigility\Admin\Model\DbAutodiscoveryModel'                             => Model\DbAutodiscoveryModel::class,
+            'ZF\Apigility\Admin\Model\DoctrineAdapterModel'                             => Model\DoctrineAdapterModel::class,
+            'ZF\Apigility\Admin\Model\DoctrineAdapterResource'                          => Model\DoctrineAdapterResource::class,
+            'ZF\Apigility\Admin\Model\DocumentationModel'                               => Model\DocumentationModel::class,
+            'ZF\Apigility\Admin\Model\FiltersModel'                                     => Model\FiltersModel::class,
+            'ZF\Apigility\Admin\Model\HydratorsModel'                                   => Model\HydratorsModel::class,
+            'ZF\Apigility\Admin\Model\InputFilterModel'                                 => Model\InputFilterModel::class,
+            'ZF\Apigility\Admin\Model\ModuleModel'                                      => Model\ModuleModel::class,
+            'ZF\Apigility\Admin\Model\ModulePathSpec'                                   => Model\ModulePathSpec::class,
+            'ZF\Apigility\Admin\Model\ModuleResource'                                   => Model\ModuleResource::class,
+            'ZF\Apigility\Admin\Model\ModuleVersioningModelFactory'                     => Model\ModuleVersioningModelFactory::class,
+            'ZF\Apigility\Admin\Model\RestServiceModelFactory'                          => Model\RestServiceModelFactory::class,
+            'ZF\Apigility\Admin\Model\RestServiceResource'                              => Model\RestServiceResource::class,
+            'ZF\Apigility\Admin\Model\RpcServiceModelFactory'                           => Model\RpcServiceModelFactory::class,
+            'ZF\Apigility\Admin\Model\RpcServiceResource'                               => Model\RpcServiceResource::class,
+            'ZF\Apigility\Admin\Model\ValidatorMetadataModel'                           => Model\ValidatorMetadataModel::class,
+            'ZF\Apigility\Admin\Model\ValidatorsModel'                                  => Model\ValidatorsModel::class,
+            'ZF\Apigility\Admin\Model\VersioningModelFactory'                           => Model\VersioningModelFactory::class,
         ],
         'factories' => [
             Listener\CryptFilterListener::class                           => InvokableFactory::class,
@@ -313,58 +237,58 @@ return [
     ],
     'controllers'                   => [
         'aliases'   => [
-            Controller\App::class                      => Controller\AppController::class,
-            Controller\Authentication::class           => Controller\AuthenticationController::class,
-            Controller\Authorization::class            => Controller\AuthorizationController::class,
-            Controller\CacheEnabled::class             => Controller\CacheEnabledController::class,
-            Controller\Config::class                   => Controller\ConfigController::class,
-            Controller\FsPermissions::class            => Controller\FsPermissionsController::class,
-            Controller\HttpBasicAuthentication::class  => Controller\Authentication::class,
-            Controller\HttpDigestAuthentication::class => Controller\Authentication::class,
-            Controller\ModuleConfig::class             => Controller\ModuleConfigController::class,
-            Controller\ModuleCreation::class           => Controller\ModuleCreationController::class,
-            Controller\OAuth2Authentication::class     => Controller\Authentication::class,
-            Controller\Package::class                  => Controller\PackageController::class,
-            Controller\Source::class                   => Controller\SourceController::class,
-            Controller\Versioning::class               => Controller\VersioningController::class,
+            Controller\App::class                                      => Controller\AppController::class,
+            Controller\Authentication::class                           => Controller\AuthenticationController::class,
+            Controller\Authorization::class                            => Controller\AuthorizationController::class,
+            Controller\CacheEnabled::class                             => Controller\CacheEnabledController::class,
+            Controller\Config::class                                   => Controller\ConfigController::class,
+            Controller\FsPermissions::class                            => Controller\FsPermissionsController::class,
+            Controller\HttpBasicAuthentication::class                  => Controller\Authentication::class,
+            Controller\HttpDigestAuthentication::class                 => Controller\Authentication::class,
+            Controller\ModuleConfig::class                             => Controller\ModuleConfigController::class,
+            Controller\ModuleCreation::class                           => Controller\ModuleCreationController::class,
+            Controller\OAuth2Authentication::class                     => Controller\Authentication::class,
+            Controller\Package::class                                  => Controller\PackageController::class,
+            Controller\Source::class                                   => Controller\SourceController::class,
+            Controller\Versioning::class                               => Controller\VersioningController::class,
 
             // Legacy Zend Framework aliases
-            App::class                                 => Controller\App::class,
-            Authentication::class                      => Controller\Authentication::class,
-            Authorization::class                       => Controller\Authorization::class,
-            CacheEnabled::class                        => Controller\CacheEnabled::class,
-            Config::class                              => Controller\Config::class,
-            FsPermissions::class                       => Controller\FsPermissions::class,
-            HttpBasicAuthentication::class             => Controller\HttpBasicAuthentication::class,
-            HttpDigestAuthentication::class            => Controller\HttpDigestAuthentication::class,
-            ModuleConfig::class                        => Controller\ModuleConfig::class,
-            ModuleCreation::class                      => Controller\ModuleCreation::class,
-            OAuth2Authentication::class                => Controller\OAuth2Authentication::class,
-            Package::class                             => Controller\Package::class,
-            Source::class                              => Controller\Source::class,
-            Versioning::class                          => Controller\Versioning::class,
-            ApigilityVersionController::class          => Controller\ApiToolsVersionController::class,
-            AppController::class                       => Controller\AppController::class,
-            AuthenticationController::class            => Controller\AuthenticationController::class,
-            AuthenticationType::class                  => Controller\AuthenticationType::class,
-            AuthorizationController::class             => Controller\AuthorizationController::class,
-            CacheEnabledController::class              => Controller\CacheEnabledController::class,
-            ConfigController::class                    => Controller\ConfigController::class,
-            Dashboard::class                           => Controller\Dashboard::class,
-            DbAutodiscovery::class                     => Controller\DbAutodiscovery::class,
-            Documentation::class                       => Controller\Documentation::class,
-            Filters::class                             => Controller\Filters::class,
-            FsPermissionsController::class             => Controller\FsPermissionsController::class,
-            Hydrators::class                           => Controller\Hydrators::class,
-            InputFilter::class                         => Controller\InputFilter::class,
-            ModuleConfigController::class              => Controller\ModuleConfigController::class,
-            ModuleCreationController::class            => Controller\ModuleCreationController::class,
-            PackageController::class                   => Controller\PackageController::class,
-            SettingsDashboard::class                   => Controller\SettingsDashboard::class,
-            SourceController::class                    => Controller\SourceController::class,
-            Strategy::class                            => Controller\Strategy::class,
-            Validators::class                          => Controller\Validators::class,
-            VersioningController::class                => Controller\VersioningController::class,
+            'ZF\Apigility\Admin\Controller\App'                        => Controller\App::class,
+            'ZF\Apigility\Admin\Controller\Authentication'             => Controller\Authentication::class,
+            'ZF\Apigility\Admin\Controller\Authorization'              => Controller\Authorization::class,
+            'ZF\Apigility\Admin\Controller\CacheEnabled'               => Controller\CacheEnabled::class,
+            'ZF\Apigility\Admin\Controller\Config'                     => Controller\Config::class,
+            'ZF\Apigility\Admin\Controller\FsPermissions'              => Controller\FsPermissions::class,
+            'ZF\Apigility\Admin\Controller\HttpBasicAuthentication'    => Controller\HttpBasicAuthentication::class,
+            'ZF\Apigility\Admin\Controller\HttpDigestAuthentication'   => Controller\HttpDigestAuthentication::class,
+            'ZF\Apigility\Admin\Controller\ModuleConfig'               => Controller\ModuleConfig::class,
+            'ZF\Apigility\Admin\Controller\ModuleCreation'             => Controller\ModuleCreation::class,
+            'ZF\Apigility\Admin\Controller\OAuth2Authentication'       => Controller\OAuth2Authentication::class,
+            'ZF\Apigility\Admin\Controller\Package'                    => Controller\Package::class,
+            'ZF\Apigility\Admin\Controller\Source'                     => Controller\Source::class,
+            'ZF\Apigility\Admin\Controller\Versioning'                 => Controller\Versioning::class,
+            'ZF\Apigility\Admin\Controller\ApigilityVersionController' => Controller\ApiToolsVersionController::class,
+            'ZF\Apigility\Admin\Controller\AppController'              => Controller\AppController::class,
+            'ZF\Apigility\Admin\Controller\AuthenticationController'   => Controller\AuthenticationController::class,
+            'ZF\Apigility\Admin\Controller\AuthenticationType'         => Controller\AuthenticationType::class,
+            'ZF\Apigility\Admin\Controller\AuthorizationController'    => Controller\AuthorizationController::class,
+            'ZF\Apigility\Admin\Controller\CacheEnabledController'     => Controller\CacheEnabledController::class,
+            'ZF\Apigility\Admin\Controller\ConfigController'           => Controller\ConfigController::class,
+            'ZF\Apigility\Admin\Controller\Dashboard'                  => Controller\Dashboard::class,
+            'ZF\Apigility\Admin\Controller\DbAutodiscovery'            => Controller\DbAutodiscovery::class,
+            'ZF\Apigility\Admin\Controller\Documentation'              => Controller\Documentation::class,
+            'ZF\Apigility\Admin\Controller\Filters'                    => Controller\Filters::class,
+            'ZF\Apigility\Admin\Controller\FsPermissionsController'    => Controller\FsPermissionsController::class,
+            'ZF\Apigility\Admin\Controller\Hydrators'                  => Controller\Hydrators::class,
+            'ZF\Apigility\Admin\Controller\InputFilter'                => Controller\InputFilter::class,
+            'ZF\Apigility\Admin\Controller\ModuleConfigController'     => Controller\ModuleConfigController::class,
+            'ZF\Apigility\Admin\Controller\ModuleCreationController'   => Controller\ModuleCreationController::class,
+            'ZF\Apigility\Admin\Controller\PackageController'          => Controller\PackageController::class,
+            'ZF\Apigility\Admin\Controller\SettingsDashboard'          => Controller\SettingsDashboard::class,
+            'ZF\Apigility\Admin\Controller\SourceController'           => Controller\SourceController::class,
+            'ZF\Apigility\Admin\Controller\Strategy'                   => Controller\Strategy::class,
+            'ZF\Apigility\Admin\Controller\Validators'                 => Controller\Validators::class,
+            'ZF\Apigility\Admin\Controller\VersioningController'       => Controller\VersioningController::class,
         ],
         'factories' => [
             Controller\ApiToolsVersionController::class => InvokableFactory::class,
@@ -1763,20 +1687,20 @@ return [
     ],
     'input_filters'                 => [
         'aliases'   => [
-            'Laminas\ApiTools\Admin\InputFilter\BasicAuth'                       => BasicInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\DigestAuth'                      => DigestInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\OAuth2'                          => OAuth2InputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\Authorization'                   => AuthorizationInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\ContentNegotiation'              => ContentNegotiationInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\CreateContentNegotiation'        => CreateContentNegotiationInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\DbAdapter'                       => DbAdapterInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\Documentation'                   => DocumentationInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\Module'                          => ModuleInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\PATCH'                           => RestPatchInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\POST'                            => RestPostInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\RpcService\PATCH'                => RpcPatchInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\RpcService\POST'                 => RpcPostInputFilter::class,
-            'Laminas\ApiTools\Admin\InputFilter\Version'                         => VersionInputFilter::class,
+            InputFilter\BasicAuth::class                                         => BasicInputFilter::class,
+            InputFilter\DigestAuth::class                                        => DigestInputFilter::class,
+            InputFilter\OAuth2::class                                            => OAuth2InputFilter::class,
+            InputFilter\Authorization::class                                     => AuthorizationInputFilter::class,
+            InputFilter\ContentNegotiation::class                                => ContentNegotiationInputFilter::class,
+            InputFilter\CreateContentNegotiation::class                          => CreateContentNegotiationInputFilter::class,
+            InputFilter\DbAdapter::class                                         => DbAdapterInputFilter::class,
+            InputFilter\Documentation::class                                     => DocumentationInputFilter::class,
+            InputFilter\Module::class                                            => ModuleInputFilter::class,
+            InputFilter\RestService\PATCH::class                                 => RestPatchInputFilter::class,
+            InputFilter\RestService\POST::class                                  => RestPostInputFilter::class,
+            InputFilter\RpcService\PATCH::class                                  => RpcPatchInputFilter::class,
+            InputFilter\RpcService\POST::class                                   => RpcPostInputFilter::class,
+            InputFilter\Version::class                                           => VersionInputFilter::class,
 
             // Legacy Zend Framework aliases
             'ZF\Apigility\Admin\InputFilter\Authentication\BasicAuth'            => BasicInputFilter::class,
