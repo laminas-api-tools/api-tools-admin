@@ -2,6 +2,7 @@ namespace <?= $module ?>\V<?= $version ?>\Rest\<?= $resource ?>;
 
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
+use Laminas\Stdlib\Parameters;
 
 class <?= $classname ?> extends AbstractResourceListener
 {
@@ -52,7 +53,7 @@ class <?= $classname ?> extends AbstractResourceListener
     /**
      * Fetch all or a subset of resources
      *
-     * @param  array $params
+     * @param  array|Parameters $params
      * @return ApiProblem|mixed
      */
     public function fetchAll($params = [])
