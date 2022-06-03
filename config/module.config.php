@@ -248,7 +248,6 @@ return [
             Controller\ModuleConfig::class                             => Controller\ModuleConfigController::class,
             Controller\ModuleCreation::class                           => Controller\ModuleCreationController::class,
             Controller\OAuth2Authentication::class                     => Controller\Authentication::class,
-            Controller\Package::class                                  => Controller\PackageController::class,
             Controller\Source::class                                   => Controller\SourceController::class,
             Controller\Versioning::class                               => Controller\VersioningController::class,
 
@@ -264,7 +263,6 @@ return [
             'ZF\Apigility\Admin\Controller\ModuleConfig'               => Controller\ModuleConfig::class,
             'ZF\Apigility\Admin\Controller\ModuleCreation'             => Controller\ModuleCreation::class,
             'ZF\Apigility\Admin\Controller\OAuth2Authentication'       => Controller\OAuth2Authentication::class,
-            'ZF\Apigility\Admin\Controller\Package'                    => Controller\Package::class,
             'ZF\Apigility\Admin\Controller\Source'                     => Controller\Source::class,
             'ZF\Apigility\Admin\Controller\Versioning'                 => Controller\Versioning::class,
             'ZF\Apigility\Admin\Controller\ApigilityVersionController' => Controller\ApiToolsVersionController::class,
@@ -283,7 +281,6 @@ return [
             'ZF\Apigility\Admin\Controller\InputFilter'                => Controller\InputFilter::class,
             'ZF\Apigility\Admin\Controller\ModuleConfigController'     => Controller\ModuleConfigController::class,
             'ZF\Apigility\Admin\Controller\ModuleCreationController'   => Controller\ModuleCreationController::class,
-            'ZF\Apigility\Admin\Controller\PackageController'          => Controller\PackageController::class,
             'ZF\Apigility\Admin\Controller\SettingsDashboard'          => Controller\SettingsDashboard::class,
             'ZF\Apigility\Admin\Controller\SourceController'           => Controller\SourceController::class,
             'ZF\Apigility\Admin\Controller\Strategy'                   => Controller\Strategy::class,
@@ -307,7 +304,6 @@ return [
             Controller\InputFilter::class               => Controller\InputFilterControllerFactory::class,
             Controller\ModuleConfigController::class    => Controller\ModuleConfigControllerFactory::class,
             Controller\ModuleCreationController::class  => Controller\ModuleCreationControllerFactory::class,
-            Controller\PackageController::class         => InvokableFactory::class,
             Controller\SettingsDashboard::class         => Controller\DashboardControllerFactory::class,
             Controller\SourceController::class          => Controller\SourceControllerFactory::class,
             Controller\Strategy::class                  => Controller\StrategyControllerFactory::class,
@@ -669,16 +665,6 @@ return [
                                     ],
                                 ],
                             ],
-                            'package'             => [
-                                'type'    => 'Literal',
-                                'options' => [
-                                    'route'    => '/package',
-                                    'defaults' => [
-                                        'controller' => Controller\Package::class,
-                                        'action'     => 'index',
-                                    ],
-                                ],
-                            ],
                             'authentication-type' => [
                                 'type'    => 'Literal',
                                 'options' => [
@@ -717,7 +703,6 @@ return [
             Controller\Module::class                    => 'HalJson',
             Controller\ModuleCreation::class            => 'HalJson',
             Controller\OAuth2Authentication::class      => 'HalJson',
-            Controller\Package::class                   => 'Json',
             Controller\RestService::class               => 'HalJson',
             Controller\RpcService::class                => 'HalJson',
             Controller\SettingsDashboard::class         => 'HalJson',
@@ -1195,10 +1180,6 @@ return [
         Controller\Strategy::class                  => [
             'http_methods' => ['GET'],
             'route_name'   => 'api-tools/api/strategy',
-        ],
-        Controller\Package::class                   => [
-            'http_methods' => ['GET', 'POST'],
-            'route_name'   => 'api-tools/api/package',
         ],
     ],
 
