@@ -8,6 +8,7 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Laminas\ApiTools\Admin\Exception;
+use ReturnTypeWillChange;
 
 use function array_key_exists;
 use function count;
@@ -48,12 +49,14 @@ class AuthorizationEntity implements
     }
 
     /** @return int */
+    #[ReturnTypeWillChange]
     public function count()
     {
         return count($this->servicePrivileges);
     }
 
     /** @return ArrayIterator */
+    #[ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->servicePrivileges);

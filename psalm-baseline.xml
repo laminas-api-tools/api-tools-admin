@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.18.1@dda05fa913f4dc6eb3386f2f7ce5a45d37a71bcb">
   <file src="config/module.config.php">
-    <DeprecatedClass occurrences="4">
+    <DeprecatedClass occurrences="3">
       <code>Model\VersioningModelFactory::class</code>
       <code>Model\VersioningModelFactory::class</code>
       <code>Model\VersioningModelFactoryFactory::class</code>
-      <code>VersioningModelFactory::class</code>
     </DeprecatedClass>
     <MixedArrayOffset occurrences="8"/>
-    <UndefinedClass occurrences="225">
-      <code>App</code>
-      <code>Authentication</code>
-      <code>AuthenticationType</code>
-      <code>Authorization</code>
-      <code>CacheEnabled</code>
-      <code>Config</code>
+    <UndefinedClass occurrences="196">
       <code>Controller\App</code>
       <code>Controller\App</code>
       <code>Controller\App</code>
@@ -162,11 +155,6 @@
       <code>Controller\OAuth2Authentication</code>
       <code>Controller\OAuth2Authentication</code>
       <code>Controller\OAuth2Authentication</code>
-      <code>Controller\Package</code>
-      <code>Controller\Package</code>
-      <code>Controller\Package</code>
-      <code>Controller\Package</code>
-      <code>Controller\Package</code>
       <code>Controller\RestService</code>
       <code>Controller\RestService</code>
       <code>Controller\RestService</code>
@@ -216,24 +204,6 @@
       <code>Controller\Versioning</code>
       <code>Controller\Versioning</code>
       <code>Controller\Versioning</code>
-      <code>Dashboard</code>
-      <code>DbAutodiscovery</code>
-      <code>Documentation</code>
-      <code>Filters</code>
-      <code>FsPermissions</code>
-      <code>HttpBasicAuthentication</code>
-      <code>HttpDigestAuthentication</code>
-      <code>Hydrators</code>
-      <code>InputFilter</code>
-      <code>ModuleConfig</code>
-      <code>ModuleCreation</code>
-      <code>OAuth2Authentication</code>
-      <code>Package</code>
-      <code>SettingsDashboard</code>
-      <code>Source</code>
-      <code>Strategy</code>
-      <code>Validators</code>
-      <code>Versioning</code>
     </UndefinedClass>
   </file>
   <file src="src/Controller/AbstractAuthenticationController.php">
@@ -917,71 +887,6 @@
     <RedundantConditionGivenDocblockType occurrences="1">
       <code>$container-&gt;getServiceLocator()</code>
     </RedundantConditionGivenDocblockType>
-  </file>
-  <file src="src/Controller/PackageController.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$this-&gt;getResponse()</code>
-    </ArgumentTypeCoercion>
-    <DocblockTypeContradiction occurrences="6">
-      <code>! is_string($assets)</code>
-      <code>! is_string($config)</code>
-      <code>! is_string($format)</code>
-      <code>! is_string($version)</code>
-      <code>! is_string($xml)</code>
-    </DocblockTypeContradiction>
-    <ForbiddenCode occurrences="1">
-      <code>shell_exec($cmd)</code>
-    </ForbiddenCode>
-    <ImplementedReturnTypeMismatch occurrences="1">
-      <code>array|Response|ApiProblemResponse</code>
-    </ImplementedReturnTypeMismatch>
-    <InvalidScalarArgument occurrences="1">
-      <code>filesize($package)</code>
-    </InvalidScalarArgument>
-    <MissingClosureParamType occurrences="1">
-      <code>$entry</code>
-    </MissingClosureParamType>
-    <MixedArgument occurrences="11">
-      <code>$apis</code>
-      <code>$assets</code>
-      <code>$composer</code>
-      <code>$config</code>
-      <code>$entry</code>
-      <code>$this-&gt;bodyParam('format', false)</code>
-      <code>$this-&gt;bodyParams()</code>
-      <code>$this-&gt;params()-&gt;fromQuery('format', false)</code>
-      <code>$this-&gt;params()-&gt;fromQuery('token', false)</code>
-      <code>$version</code>
-      <code>$xml</code>
-    </MixedArgument>
-    <MixedAssignment occurrences="6">
-      <code>$apis</code>
-      <code>$assets</code>
-      <code>$composer</code>
-      <code>$config</code>
-      <code>$version</code>
-      <code>$xml</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="2">
-      <code>fromQuery</code>
-      <code>fromQuery</code>
-    </MixedMethodCall>
-    <PropertyNotSetInConstructor occurrences="6">
-      <code>$sentPackage</code>
-      <code>PackageController</code>
-      <code>PackageController</code>
-      <code>PackageController</code>
-      <code>PackageController</code>
-      <code>PackageController</code>
-    </PropertyNotSetInConstructor>
-    <RedundantConditionGivenDocblockType occurrences="2">
-      <code>! empty($zfdeployPath) &amp;&amp; is_string($zfdeployPath)</code>
-      <code>is_string($zfdeployPath)</code>
-    </RedundantConditionGivenDocblockType>
-    <UndefinedMagicMethod occurrences="2">
-      <code>bodyParam</code>
-      <code>bodyParams</code>
-    </UndefinedMagicMethod>
   </file>
   <file src="src/Controller/SourceController.php">
     <MixedArgument occurrences="2">
@@ -3977,41 +3882,6 @@
     <UndefinedClass occurrences="1">
       <code>Module</code>
     </UndefinedClass>
-  </file>
-  <file src="test/Controller/PackageControllerTest.php">
-    <MixedMethodCall occurrences="2">
-      <code>set</code>
-      <code>set</code>
-    </MixedMethodCall>
-    <MixedOperand occurrences="4">
-      <code>$data['format']</code>
-      <code>$data['token']</code>
-      <code>$result['format']</code>
-      <code>$result['token']</code>
-    </MixedOperand>
-    <MixedReturnTypeCoercion occurrences="2">
-      <code>$result</code>
-      <code>array&lt;string, mixed&gt;</code>
-    </MixedReturnTypeCoercion>
-    <PossiblyInvalidMethodCall occurrences="8">
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>getFieldValue</code>
-      <code>getFieldValue</code>
-      <code>getHeaders</code>
-      <code>getHeaders</code>
-      <code>getRawBody</code>
-      <code>isSuccess</code>
-    </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="4">
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>getFieldValue</code>
-      <code>getFieldValue</code>
-    </PossiblyUndefinedMethod>
-    <UndefinedMethod occurrences="1">
-      <code>getRawBody</code>
-    </UndefinedMethod>
   </file>
   <file src="test/Controller/SourceControllerFactoryTest.php">
     <DeprecatedMethod occurrences="1">
