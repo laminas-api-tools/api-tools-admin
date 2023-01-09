@@ -11,7 +11,6 @@ use Laminas\ServiceManager\ServiceManager;
 use function array_flip;
 use function array_key_exists;
 use function array_walk;
-use function get_class;
 use function is_array;
 use function sprintf;
 
@@ -32,7 +31,7 @@ class FiltersModel extends AbstractPluginManagerModel
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an instance of Laminas\Filter\FilterPluginManager; received "%s"',
                 self::class,
-                get_class($pluginManager)
+                $pluginManager::class
             ));
         }
 

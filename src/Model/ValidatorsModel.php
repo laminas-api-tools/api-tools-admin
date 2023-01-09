@@ -11,7 +11,6 @@ use Laminas\Validator\ValidatorPluginManager;
 use function array_flip;
 use function array_merge;
 use function array_walk;
-use function get_class;
 use function is_array;
 use function sprintf;
 
@@ -30,7 +29,7 @@ class ValidatorsModel extends AbstractPluginManagerModel
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an instance of Laminas\Validator\ValidatorPluginManager; received "%s"',
                 self::class,
-                get_class($pluginManager)
+                $pluginManager::class
             ));
         }
 

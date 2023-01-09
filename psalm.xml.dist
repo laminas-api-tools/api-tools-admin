@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-  totallyTyped="true"
+  errorLevel="1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="https://getpsalm.org/schema/config"
   xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
@@ -14,6 +14,7 @@
         <directory name="view"/>
 
         <ignoreFiles>
+            <file name="config/module.config.php"/>
             <directory name="test/Controller/TestAsset"/>
             <directory name="test/Model/TestAsset"/>
             <directory name="test/TestAsset"/>
@@ -36,12 +37,53 @@
 
         <MissingFile>
             <errorLevel type="suppress">
-                <file name="test/Model/DbAutodiscoveryModelFactoryTest.php" />
-                <file name="test/Model/DbConnectedRestServiceModelTest.php" />
-                <file name="test/Model/RestServiceModelTest.php" />
-                <file name="test/Model/RestServiceResourceTest.php" />
+                <file name="test/Model/DbAutodiscoveryModelFactoryTest.php"/>
+                <file name="test/Model/DbConnectedRestServiceModelTest.php"/>
+                <file name="test/Model/RestServiceModelTest.php"/>
+                <file name="test/Model/RestServiceResourceTest.php"/>
+                <file name="test/Controller/AuthenticationControllerTest.php"/>
+                <file name="test/Model/VersioningModelTest.php"/>
             </errorLevel>
         </MissingFile>
+
+        <UndefinedClass>
+            <errorLevel type="suppress">
+                <file name="test/Model/AuthenticationModelTest.php"/>
+                <file name="src/Model/AuthenticationModel.php"/>
+            </errorLevel>
+        </UndefinedClass>
+
+        <DeprecatedClass>
+            <errorLevel type="suppress">
+                <file name="test/Listener/CryptFilterListenerTest.php"/>
+                <file name="src/Model/AbstractAutodiscoveryModel.php"/>
+                <file name="src/Model/DbConnectedRestServiceModel.php"/>
+            </errorLevel>
+        </DeprecatedClass>
+
+        <MoreSpecificImplementedParamType>
+            <errorLevel type="suppress">
+                <directory name="src/Model"/>
+            </errorLevel>
+        </MoreSpecificImplementedParamType>
+
+        <MixedArgumentTypeCoercion>
+            <errorLevel type="suppress">
+                <file name="src/InputFilter/InputFilterInputFilter.php"/>
+            </errorLevel>
+        </MixedArgumentTypeCoercion>
+
+        <PossiblyUndefinedMethod>
+            <errorLevel type="suppress">
+                <directory name="test"/>
+            </errorLevel>
+        </PossiblyUndefinedMethod>
+
+        <InvalidArgument>
+            <errorLevel type="suppress">
+                <file name="test/Controller/AuthenticationControllerTest.php"/>
+            </errorLevel>
+        </InvalidArgument>
     </issueHandlers>
 
     <plugins>

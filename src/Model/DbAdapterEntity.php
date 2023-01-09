@@ -10,13 +10,10 @@ use function strtolower;
 class DbAdapterEntity
 {
     /**
-     * @param string $name
      * @param array<string, mixed> $config
      */
-    public function __construct($name, $config)
+    public function __construct(public string $name, public array $config)
     {
-        $this->name   = $name;
-        $this->config = $config;
     }
 
     /**
@@ -34,7 +31,7 @@ class DbAdapterEntity
     /**
      * Reset state of entity
      *
-     * @param array<string, mixed> $array
+     * @param array<string,string> $array
      * @return void
      */
     public function exchangeArray(array $array)

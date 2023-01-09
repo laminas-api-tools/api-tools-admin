@@ -9,7 +9,6 @@ use Laminas\ApiTools\Hal\Collection as HalCollection;
 use OutOfRangeException;
 use RuntimeException;
 
-use function get_class;
 use function gettype;
 use function is_array;
 use function is_object;
@@ -94,7 +93,7 @@ class RpcServiceEntity
                             '%s expects an array value for "%s"; received "%s"',
                             self::class,
                             $key,
-                            is_object($value) ? get_class($value) : gettype($value)
+                            is_object($value) ? $value::class : gettype($value)
                         ));
                     }
                     $this->acceptWhitelist = $value;
@@ -105,7 +104,7 @@ class RpcServiceEntity
                             '%s expects an array value for "%s"; received "%s"',
                             self::class,
                             $key,
-                            is_object($value) ? get_class($value) : gettype($value)
+                            is_object($value) ? $value::class : gettype($value)
                         ));
                     }
                     $this->contentTypeWhitelist = $value;
@@ -122,7 +121,7 @@ class RpcServiceEntity
                             '%s expects an array value for "%s"; received "%s"',
                             self::class,
                             $key,
-                            is_object($value) ? get_class($value) : gettype($value)
+                            is_object($value) ? $value::class : gettype($value)
                         ));
                     }
                     $this->httpMethods = $value;
