@@ -304,7 +304,7 @@ class AuthenticationModelTest extends TestCase
         if (
             ! (extension_loaded('mongo') || extension_loaded('mongodb'))
             || ! class_exists(MongoClient::class)
-            || version_compare(MongoClient::VERSION, '1.4.1', '<')
+            || version_compare((string) MongoClient::VERSION, '1.4.1', '<')
         ) {
             $this->markTestSkipped('ext/mongo ^1.4.1 or ext/mongodb + alcaeus/mongo-php-adapter is not available');
         }
@@ -375,7 +375,7 @@ class AuthenticationModelTest extends TestCase
         if (
             ! (extension_loaded('mongo') || extension_loaded('mongodb'))
             || ! class_exists(MongoClient::class)
-            || version_compare(MongoClient::VERSION, '1.4.1', '<')
+            || version_compare((string) MongoClient::VERSION, '1.4.1', '<')
         ) {
             $this->markTestSkipped('ext/mongo ^1.4.1 or ext/mongodb + alcaeus/mongo-php-adapter is not available');
         }
@@ -408,7 +408,7 @@ class AuthenticationModelTest extends TestCase
         if (
             ! (extension_loaded('mongo') || extension_loaded('mongodb'))
             || ! class_exists(MongoClient::class)
-            || version_compare(MongoClient::VERSION, '1.4.1', '<')
+            || version_compare((string) MongoClient::VERSION, '1.4.1', '<')
         ) {
             $this->markTestSkipped('ext/mongo ^1.4.1 or ext/mongodb + alcaeus/mongo-php-adapter is not available');
         }

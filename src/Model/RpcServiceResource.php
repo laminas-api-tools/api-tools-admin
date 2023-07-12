@@ -17,7 +17,6 @@ use ReflectionException;
 use RuntimeException;
 
 use function count;
-use function get_class;
 use function is_array;
 use function is_object;
 use function is_string;
@@ -354,7 +353,7 @@ class RpcServiceResource extends AbstractResourceListener
 
         $controller = $this->controllerManager->get($controllerServiceName);
         $service->exchangeArray([
-            'controller_class' => get_class($controller),
+            'controller_class' => $controller::class,
         ]);
     }
 }

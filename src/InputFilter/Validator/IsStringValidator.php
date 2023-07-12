@@ -6,7 +6,6 @@ namespace Laminas\ApiTools\Admin\InputFilter\Validator;
 
 use Laminas\Validator\AbstractValidator as LaminasAbstractValidator;
 
-use function get_class;
 use function gettype;
 use function is_object;
 use function is_string;
@@ -29,7 +28,7 @@ class IsStringValidator extends LaminasAbstractValidator
     public function isValid($value)
     {
         if (! is_string($value)) {
-            $this->error(self::INVALID_TYPE, is_object($value) ? get_class($value) : gettype($value));
+            $this->error(self::INVALID_TYPE, is_object($value) ? $value::class : gettype($value));
             return false;
         }
 

@@ -26,7 +26,7 @@ class EnableHalRenderCollectionsListener
             return;
         }
 
-        $app      = $e->getTarget();
+        $app      = $e->getApplication();
         $services = $app->getServiceManager();
         $helpers  = $services->get('ViewHelperManager');
         $hal      = $helpers->get('Hal');

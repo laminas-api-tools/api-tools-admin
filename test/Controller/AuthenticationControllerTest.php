@@ -151,6 +151,7 @@ class AuthenticationControllerTest extends TestCase
         self::assertInstanceOf(ViewModel::class, $result);
         $payload = $result->getVariable('payload');
         self::assertInstanceOf(Collection::class, $payload);
+        /** @psalm-var Entity[] */
         $collection = $payload->getCollection();
         foreach ($collection as $entity) {
             self::assertInstanceOf(Entity::class, $entity);

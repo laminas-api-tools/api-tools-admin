@@ -36,34 +36,34 @@ class EnableHalRenderCollectionsListenerTest extends TestCase
     public function testListenerDoesNothingIfEventHasNoRouteMatch(): void
     {
         $listener = new EnableHalRenderCollectionsListener();
-        $this->event->getRouteMatch()->willReturn(null)->shouldBeCalled();
-        $this->event->getTarget()->shouldNotBeCalled();
+        $this->event->getRouteMatch()?->willReturn(null)?->shouldBeCalled();
+        $this->event->getApplication()->shouldNotBeCalled();
         self::assertNull($listener($this->event->reveal()));
     }
 
     public function testListenerDoesNothingIfRouteMatchHasNoControllerParam(): void
     {
         $listener = new EnableHalRenderCollectionsListener();
-        $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal'])->shouldBeCalled();
+        $this->event->getRouteMatch()?->will([$this->routeMatch, 'reveal'])?->shouldBeCalled();
         $this->routeMatch
             ->getParam('controller')
             ->willReturn(null)
             ->shouldBeCalled();
 
-        $this->event->getTarget()->shouldNotBeCalled();
+        $this->event->getApplication()->shouldNotBeCalled();
         self::assertNull($listener($this->event->reveal()));
     }
 
     public function testListenerDoesNothingIfRouteMatchControllerParamDoesNotMatchAdminNamespace(): void
     {
         $listener = new EnableHalRenderCollectionsListener();
-        $this->event->getRouteMatch()->will([$this->routeMatch, 'reveal'])->shouldBeCalled();
+        $this->event->getRouteMatch()?->will([$this->routeMatch, 'reveal'])?->shouldBeCalled();
         $this->routeMatch
             ->getParam('controller')
             ->willReturn('Foo\Bar\Baz')
             ->shouldBeCalled();
 
-        $this->event->getTarget()->shouldNotBeCalled();
+        $this->event->getApplication()->shouldNotBeCalled();
         self::assertNull($listener($this->event->reveal()));
     }
 
@@ -89,7 +89,7 @@ class EnableHalRenderCollectionsListenerTest extends TestCase
             ->willReturn(RestServiceModel::class)
             ->shouldBeCalled();
 
-        $this->event->getTarget()->will([$app, 'reveal'])->shouldBeCalled();
+        $this->event->getApplication()->will([$app, 'reveal'])->shouldBeCalled();
         self::assertNull($listener($this->event->reveal()));
     }
 }

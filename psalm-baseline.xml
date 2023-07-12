@@ -1,211 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.18.1@dda05fa913f4dc6eb3386f2f7ce5a45d37a71bcb">
-  <file src="config/module.config.php">
-    <DeprecatedClass occurrences="3">
-      <code>Model\VersioningModelFactory::class</code>
-      <code>Model\VersioningModelFactory::class</code>
-      <code>Model\VersioningModelFactoryFactory::class</code>
-    </DeprecatedClass>
-    <MixedArrayOffset occurrences="8"/>
-    <UndefinedClass occurrences="196">
-      <code>Controller\App</code>
-      <code>Controller\App</code>
-      <code>Controller\App</code>
-      <code>Controller\Authentication</code>
-      <code>Controller\Authentication</code>
-      <code>Controller\Authentication</code>
-      <code>Controller\Authentication</code>
-      <code>Controller\Authentication</code>
-      <code>Controller\Authentication</code>
-      <code>Controller\Authentication</code>
-      <code>Controller\Authentication</code>
-      <code>Controller\Authentication</code>
-      <code>Controller\Authentication</code>
-      <code>Controller\AuthenticationType</code>
-      <code>Controller\AuthenticationType</code>
-      <code>Controller\AuthenticationType</code>
-      <code>Controller\AuthenticationType</code>
-      <code>Controller\AuthenticationType</code>
-      <code>Controller\Authorization</code>
-      <code>Controller\Authorization</code>
-      <code>Controller\Authorization</code>
-      <code>Controller\Authorization</code>
-      <code>Controller\Authorization</code>
-      <code>Controller\Authorization</code>
-      <code>Controller\Authorization</code>
-      <code>Controller\Authorization</code>
-      <code>Controller\CacheEnabled</code>
-      <code>Controller\CacheEnabled</code>
-      <code>Controller\CacheEnabled</code>
-      <code>Controller\CacheEnabled</code>
-      <code>Controller\CacheEnabled</code>
-      <code>Controller\CacheEnabled</code>
-      <code>Controller\CacheEnabled</code>
-      <code>Controller\Config</code>
-      <code>Controller\Config</code>
-      <code>Controller\Config</code>
-      <code>Controller\Config</code>
-      <code>Controller\ContentNegotiation</code>
-      <code>Controller\ContentNegotiation</code>
-      <code>Controller\ContentNegotiation</code>
-      <code>Controller\ContentNegotiation</code>
-      <code>Controller\ContentNegotiation</code>
-      <code>Controller\ContentNegotiation</code>
-      <code>Controller\Dashboard</code>
-      <code>Controller\Dashboard</code>
-      <code>Controller\Dashboard</code>
-      <code>Controller\Dashboard</code>
-      <code>Controller\Dashboard</code>
-      <code>Controller\Dashboard</code>
-      <code>Controller\Dashboard</code>
-      <code>Controller\DbAdapter</code>
-      <code>Controller\DbAdapter</code>
-      <code>Controller\DbAdapter</code>
-      <code>Controller\DbAdapter</code>
-      <code>Controller\DbAdapter</code>
-      <code>Controller\DbAdapter</code>
-      <code>Controller\DbAutodiscovery</code>
-      <code>Controller\DbAutodiscovery</code>
-      <code>Controller\DbAutodiscovery</code>
-      <code>Controller\DbAutodiscovery</code>
-      <code>Controller\DbAutodiscovery</code>
-      <code>Controller\DbAutodiscovery</code>
-      <code>Controller\DbAutodiscovery</code>
-      <code>Controller\DoctrineAdapter</code>
-      <code>Controller\DoctrineAdapter</code>
-      <code>Controller\DoctrineAdapter</code>
-      <code>Controller\DoctrineAdapter</code>
-      <code>Controller\DoctrineAdapter</code>
-      <code>Controller\Documentation</code>
-      <code>Controller\Documentation</code>
-      <code>Controller\Documentation</code>
-      <code>Controller\Documentation</code>
-      <code>Controller\Documentation</code>
-      <code>Controller\Documentation</code>
-      <code>Controller\Documentation</code>
-      <code>Controller\Documentation</code>
-      <code>Controller\Filters</code>
-      <code>Controller\Filters</code>
-      <code>Controller\Filters</code>
-      <code>Controller\Filters</code>
-      <code>Controller\Filters</code>
-      <code>Controller\Filters</code>
-      <code>Controller\Filters</code>
-      <code>Controller\FsPermissions</code>
-      <code>Controller\FsPermissions</code>
-      <code>Controller\FsPermissions</code>
-      <code>Controller\FsPermissions</code>
-      <code>Controller\FsPermissions</code>
-      <code>Controller\FsPermissions</code>
-      <code>Controller\FsPermissions</code>
-      <code>Controller\HttpBasicAuthentication</code>
-      <code>Controller\HttpBasicAuthentication</code>
-      <code>Controller\HttpBasicAuthentication</code>
-      <code>Controller\HttpBasicAuthentication</code>
-      <code>Controller\HttpBasicAuthentication</code>
-      <code>Controller\HttpBasicAuthentication</code>
-      <code>Controller\HttpBasicAuthentication</code>
-      <code>Controller\HttpBasicAuthentication</code>
-      <code>Controller\HttpDigestAuthentication</code>
-      <code>Controller\HttpDigestAuthentication</code>
-      <code>Controller\HttpDigestAuthentication</code>
-      <code>Controller\HttpDigestAuthentication</code>
-      <code>Controller\HttpDigestAuthentication</code>
-      <code>Controller\HttpDigestAuthentication</code>
-      <code>Controller\HttpDigestAuthentication</code>
-      <code>Controller\HttpDigestAuthentication</code>
-      <code>Controller\Hydrators</code>
-      <code>Controller\Hydrators</code>
-      <code>Controller\Hydrators</code>
-      <code>Controller\Hydrators</code>
-      <code>Controller\Hydrators</code>
-      <code>Controller\Hydrators</code>
-      <code>Controller\Hydrators</code>
-      <code>Controller\InputFilter</code>
-      <code>Controller\InputFilter</code>
-      <code>Controller\InputFilter</code>
-      <code>Controller\InputFilter</code>
-      <code>Controller\InputFilter</code>
-      <code>Controller\InputFilter</code>
-      <code>Controller\InputFilter</code>
-      <code>Controller\InputFilter</code>
-      <code>Controller\InputFilter</code>
-      <code>Controller\Module</code>
-      <code>Controller\Module</code>
-      <code>Controller\Module</code>
-      <code>Controller\Module</code>
-      <code>Controller\Module</code>
-      <code>Controller\Module</code>
-      <code>Controller\ModuleConfig</code>
-      <code>Controller\ModuleConfig</code>
-      <code>Controller\ModuleConfig</code>
-      <code>Controller\ModuleConfig</code>
-      <code>Controller\ModuleCreation</code>
-      <code>Controller\ModuleCreation</code>
-      <code>Controller\ModuleCreation</code>
-      <code>Controller\ModuleCreation</code>
-      <code>Controller\ModuleCreation</code>
-      <code>Controller\ModuleCreation</code>
-      <code>Controller\ModuleCreation</code>
-      <code>Controller\OAuth2Authentication</code>
-      <code>Controller\OAuth2Authentication</code>
-      <code>Controller\OAuth2Authentication</code>
-      <code>Controller\OAuth2Authentication</code>
-      <code>Controller\OAuth2Authentication</code>
-      <code>Controller\OAuth2Authentication</code>
-      <code>Controller\OAuth2Authentication</code>
-      <code>Controller\OAuth2Authentication</code>
-      <code>Controller\RestService</code>
-      <code>Controller\RestService</code>
-      <code>Controller\RestService</code>
-      <code>Controller\RestService</code>
-      <code>Controller\RestService</code>
-      <code>Controller\RestService</code>
-      <code>Controller\RpcService</code>
-      <code>Controller\RpcService</code>
-      <code>Controller\RpcService</code>
-      <code>Controller\RpcService</code>
-      <code>Controller\RpcService</code>
-      <code>Controller\RpcService</code>
-      <code>Controller\SettingsDashboard</code>
-      <code>Controller\SettingsDashboard</code>
-      <code>Controller\SettingsDashboard</code>
-      <code>Controller\SettingsDashboard</code>
-      <code>Controller\SettingsDashboard</code>
-      <code>Controller\SettingsDashboard</code>
-      <code>Controller\SettingsDashboard</code>
-      <code>Controller\Source</code>
-      <code>Controller\Source</code>
-      <code>Controller\Source</code>
-      <code>Controller\Source</code>
-      <code>Controller\Source</code>
-      <code>Controller\Source</code>
-      <code>Controller\Source</code>
-      <code>Controller\Strategy</code>
-      <code>Controller\Strategy</code>
-      <code>Controller\Strategy</code>
-      <code>Controller\Strategy</code>
-      <code>Controller\Strategy</code>
-      <code>Controller\Strategy</code>
-      <code>Controller\Strategy</code>
-      <code>Controller\Validators</code>
-      <code>Controller\Validators</code>
-      <code>Controller\Validators</code>
-      <code>Controller\Validators</code>
-      <code>Controller\Validators</code>
-      <code>Controller\Validators</code>
-      <code>Controller\Validators</code>
-      <code>Controller\Versioning</code>
-      <code>Controller\Versioning</code>
-      <code>Controller\Versioning</code>
-      <code>Controller\Versioning</code>
-      <code>Controller\Versioning</code>
-      <code>Controller\Versioning</code>
-      <code>Controller\Versioning</code>
-      <code>Controller\Versioning</code>
-      <code>Controller\Versioning</code>
-    </UndefinedClass>
-  </file>
+<files psalm-version="4.30.0@d0bc6e25d89f649e4f36a534f330f8bb4643dd69">
   <file src="src/Controller/AbstractAuthenticationController.php">
     <MixedArgument occurrences="1">
       <code>$accept-&gt;getFieldValue()</code>
@@ -271,6 +65,7 @@
       <code>add</code>
       <code>add</code>
     </DeprecatedMethod>
+    <InvalidArgument occurrences="2"/>
     <LessSpecificReturnStatement occurrences="1">
       <code>$this-&gt;removeAuthenticationMap($module, $version)</code>
     </LessSpecificReturnStatement>
@@ -500,6 +295,7 @@
       <code>add</code>
       <code>add</code>
     </DeprecatedMethod>
+    <InvalidArgument occurrences="2"/>
     <MissingClosureParamType occurrences="1">
       <code>$value</code>
     </MissingClosureParamType>
@@ -728,6 +524,7 @@
     <ImplementedReturnTypeMismatch occurrences="1">
       <code>ApiProblemResponse|Response|ResponseInterface|ViewModel</code>
     </ImplementedReturnTypeMismatch>
+    <InvalidArgument occurrences="2"/>
     <MixedArgument occurrences="19">
       <code>$controller</code>
       <code>$controller</code>
@@ -853,6 +650,7 @@
     <DeprecatedMethod occurrences="1">
       <code>add</code>
     </DeprecatedMethod>
+    <InvalidArgument occurrences="1"/>
     <MixedArgument occurrences="2">
       <code>$module</code>
       <code>$module</code>
@@ -1027,11 +825,13 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/InputFilter/Authentication/BaseInputFilter.php">
+    <InvalidArgument occurrences="2"/>
     <MissingClosureParamType occurrences="1">
       <code>$value</code>
     </MissingClosureParamType>
   </file>
   <file src="src/InputFilter/Authentication/BasicInputFilter.php">
+    <InvalidArgument occurrences="3"/>
     <MissingClosureParamType occurrences="2">
       <code>$value</code>
       <code>$value</code>
@@ -1044,6 +844,7 @@
     </MixedAssignment>
   </file>
   <file src="src/InputFilter/Authentication/BasicInputFilter2.php">
+    <InvalidArgument occurrences="2"/>
     <MissingClosureParamType occurrences="1">
       <code>$value</code>
     </MissingClosureParamType>
@@ -1052,6 +853,7 @@
     </MixedArgument>
   </file>
   <file src="src/InputFilter/Authentication/DigestInputFilter.php">
+    <InvalidArgument occurrences="5"/>
     <MissingClosureParamType occurrences="2">
       <code>$value</code>
       <code>$value</code>
@@ -1064,6 +866,7 @@
     </MixedAssignment>
   </file>
   <file src="src/InputFilter/Authentication/DigestInputFilter2.php">
+    <InvalidArgument occurrences="4"/>
     <MissingClosureParamType occurrences="2">
       <code>$value</code>
       <code>$value</code>
@@ -1077,6 +880,7 @@
       <code>$data instanceof Traversable</code>
       <code>is_object($data)</code>
     </DocblockTypeContradiction>
+    <InvalidArgument occurrences="6"/>
     <MissingClosureParamType occurrences="4">
       <code>$context</code>
       <code>$context</code>
@@ -1094,12 +898,14 @@
     </MoreSpecificImplementedParamType>
   </file>
   <file src="src/InputFilter/Authentication/OAuth2MongoInputFilter2.php">
+    <InvalidArgument occurrences="6"/>
     <MissingClosureParamType occurrences="2">
       <code>$value</code>
       <code>$value</code>
     </MissingClosureParamType>
   </file>
   <file src="src/InputFilter/Authentication/OAuth2PdoInputFilter2.php">
+    <InvalidArgument occurrences="6"/>
     <MissingClosureParamType occurrences="2">
       <code>$value</code>
       <code>$value</code>
@@ -1129,24 +935,13 @@
       <code>$this-&gt;data</code>
     </PossiblyNullIterator>
   </file>
-  <file src="src/InputFilter/ContentNegotiationInputFilter.php">
-    <PropertyNotSetInConstructor occurrences="3">
-      <code>ContentNegotiationInputFilter</code>
-      <code>ContentNegotiationInputFilter</code>
-      <code>ContentNegotiationInputFilter</code>
-    </PropertyNotSetInConstructor>
-  </file>
   <file src="src/InputFilter/CreateContentNegotiationInputFilter.php">
     <PossiblyUndefinedMethod occurrences="1">
       <code>setRequired</code>
     </PossiblyUndefinedMethod>
-    <PropertyNotSetInConstructor occurrences="3">
-      <code>CreateContentNegotiationInputFilter</code>
-      <code>CreateContentNegotiationInputFilter</code>
-      <code>CreateContentNegotiationInputFilter</code>
-    </PropertyNotSetInConstructor>
   </file>
   <file src="src/InputFilter/DbAdapterInputFilter.php">
+    <InvalidArgument occurrences="10"/>
     <MissingClosureParamType occurrences="1">
       <code>$value</code>
     </MissingClosureParamType>
@@ -1182,33 +977,29 @@
     <ParamNameMismatch occurrences="1">
       <code>$container</code>
     </ParamNameMismatch>
-    <PossiblyNullReference occurrences="2">
-      <code>setPluginManager</code>
-      <code>setPluginManager</code>
-    </PossiblyNullReference>
     <RedundantConditionGivenDocblockType occurrences="1">
       <code>$container-&gt;getServiceLocator()</code>
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/InputFilter/InputFilterInputFilter.php">
+    <InvalidArgument occurrences="1">
+      <code>$this-&gt;data</code>
+    </InvalidArgument>
     <LessSpecificImplementedReturnType occurrences="1">
       <code>array</code>
     </LessSpecificImplementedReturnType>
-    <PossiblyNullArgument occurrences="1">
-      <code>$this-&gt;data</code>
-    </PossiblyNullArgument>
-    <PropertyNotSetInConstructor occurrences="3">
-      <code>InputFilterInputFilter</code>
-      <code>InputFilterInputFilter</code>
-      <code>InputFilterInputFilter</code>
-    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/InputFilter/ModuleInputFilter.php">
+    <InvalidArgument occurrences="1"/>
   </file>
   <file src="src/InputFilter/RestService/PatchInputFilter.php">
+    <InvalidArgument occurrences="16"/>
     <MissingClosureParamType occurrences="1">
       <code>$value</code>
     </MissingClosureParamType>
   </file>
   <file src="src/InputFilter/RestService/PostInputFilter.php">
+    <InvalidArgument occurrences="3"/>
     <LessSpecificImplementedReturnType occurrences="1">
       <code>array</code>
     </LessSpecificImplementedReturnType>
@@ -1225,6 +1016,12 @@
     <RedundantConditionGivenDocblockType occurrences="1">
       <code>is_array($this-&gt;localMessages)</code>
     </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="src/InputFilter/RpcService/PatchInputFilter.php">
+    <InvalidArgument occurrences="5"/>
+  </file>
+  <file src="src/InputFilter/RpcService/PostInputFilter.php">
+    <InvalidArgument occurrences="2"/>
   </file>
   <file src="src/InputFilter/Validator/ContentNegotiationSelectorsValidator.php">
     <DocblockTypeContradiction occurrences="1">
@@ -1257,9 +1054,6 @@
     <DocblockTypeContradiction occurrences="1">
       <code>is_object($value)</code>
     </DocblockTypeContradiction>
-    <MixedArgument occurrences="1">
-      <code>$value</code>
-    </MixedArgument>
     <MoreSpecificImplementedParamType occurrences="1">
       <code>$value</code>
     </MoreSpecificImplementedParamType>
@@ -1286,6 +1080,9 @@
     <MixedArgument occurrences="1">
       <code>$value</code>
     </MixedArgument>
+  </file>
+  <file src="src/InputFilter/VersionInputFilter.php">
+    <InvalidArgument occurrences="2"/>
   </file>
   <file src="src/Listener/CryptFilterListener.php">
     <MixedArgument occurrences="3">
@@ -1329,20 +1126,14 @@
     <MixedArgument occurrences="1">
       <code>$matches-&gt;getParam('controller') ?? ''</code>
     </MixedArgument>
-    <MixedAssignment occurrences="3">
+    <MixedAssignment occurrences="2">
       <code>$hal</code>
       <code>$helpers</code>
-      <code>$services</code>
     </MixedAssignment>
-    <MixedMethodCall occurrences="4">
+    <MixedMethodCall occurrences="2">
       <code>get</code>
-      <code>get</code>
-      <code>getServiceManager</code>
       <code>setRenderCollections</code>
     </MixedMethodCall>
-    <PossiblyInvalidMethodCall occurrences="1">
-      <code>getServiceManager</code>
-    </PossiblyInvalidMethodCall>
   </file>
   <file src="src/Listener/InjectModuleResourceLinksListener.php">
     <DeprecatedMethod occurrences="5">
@@ -1352,6 +1143,7 @@
       <code>add</code>
       <code>add</code>
     </DeprecatedMethod>
+    <InvalidArgument occurrences="4"/>
     <MissingClosureParamType occurrences="4">
       <code>$reUseMatchedParams</code>
       <code>$routeName</code>
@@ -1571,7 +1363,7 @@
     <InvalidCast occurrences="1">
       <code>$config</code>
     </InvalidCast>
-    <MixedArgument occurrences="19">
+    <MixedArgument occurrences="18">
       <code>$adapter['oauth2_route']</code>
       <code>$adapter['oauth2_type']</code>
       <code>$adapter['oauth2_type']</code>
@@ -1579,7 +1371,6 @@
       <code>$adapter['storage']['route']</code>
       <code>$adapter['type']</code>
       <code>$config</code>
-      <code>$msg[$field][0]</code>
       <code>$name</code>
       <code>$password</code>
       <code>$realm</code>
@@ -1592,7 +1383,7 @@
       <code>$username</code>
       <code>$version</code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="29">
+    <MixedArrayAccess occurrences="28">
       <code>$adapter['adapter']</code>
       <code>$adapter['adapter']</code>
       <code>$adapter['options']</code>
@@ -1621,7 +1412,6 @@
       <code>$config['router']['routes']['oauth']</code>
       <code>$config['storage']</code>
       <code>$localConfig['api-tools-mvc-auth']['authentication']['http']</code>
-      <code>$msg[$field][0]</code>
     </MixedArrayAccess>
     <MixedArrayAssignment occurrences="1">
       <code>$config['storage']</code>
@@ -1825,25 +1615,6 @@
       <code>ConfigResourceFactory</code>
     </UndefinedClass>
   </file>
-  <file src="src/Model/ContentNegotiationEntity.php">
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>$key</code>
-    </MixedArgumentTypeCoercion>
-    <MixedAssignment occurrences="1">
-      <code>$value</code>
-    </MixedAssignment>
-    <UndefinedThisPropertyAssignment occurrences="5">
-      <code>$this-&gt;config</code>
-      <code>$this-&gt;config</code>
-      <code>$this-&gt;config</code>
-      <code>$this-&gt;name</code>
-      <code>$this-&gt;name</code>
-    </UndefinedThisPropertyAssignment>
-    <UndefinedThisPropertyFetch occurrences="2">
-      <code>$this-&gt;config</code>
-      <code>$this-&gt;name</code>
-    </UndefinedThisPropertyFetch>
-  </file>
   <file src="src/Model/ContentNegotiationModel.php">
     <MixedArgument occurrences="2">
       <code>$contentConfig</code>
@@ -1888,13 +1659,6 @@
       <code>$this-&gt;model-&gt;fetchAll()</code>
       <code>ContentNegotiationEntity[]</code>
     </MixedReturnTypeCoercion>
-    <MoreSpecificImplementedParamType occurrences="5">
-      <code>$data</code>
-      <code>$data</code>
-      <code>$id</code>
-      <code>$id</code>
-      <code>$id</code>
-    </MoreSpecificImplementedParamType>
     <PossiblyNullReference occurrences="2">
       <code>getValues</code>
       <code>getValues</code>
@@ -1909,28 +1673,6 @@
   </file>
   <file src="src/Model/ContentNegotiationResourceFactory.php">
     <MixedArgument occurrences="1"/>
-  </file>
-  <file src="src/Model/DbAdapterEntity.php">
-    <MixedArgument occurrences="1">
-      <code>$this-&gt;config</code>
-    </MixedArgument>
-    <MixedAssignment occurrences="1">
-      <code>$value</code>
-    </MixedAssignment>
-    <MixedReturnTypeCoercion occurrences="2">
-      <code>array&lt;string, mixed&gt;</code>
-    </MixedReturnTypeCoercion>
-    <UndefinedThisPropertyAssignment occurrences="5">
-      <code>$this-&gt;config</code>
-      <code>$this-&gt;config</code>
-      <code>$this-&gt;config</code>
-      <code>$this-&gt;name</code>
-      <code>$this-&gt;name</code>
-    </UndefinedThisPropertyAssignment>
-    <UndefinedThisPropertyFetch occurrences="2">
-      <code>$this-&gt;config</code>
-      <code>$this-&gt;name</code>
-    </UndefinedThisPropertyFetch>
   </file>
   <file src="src/Model/DbAdapterModel.php">
     <MixedArgument occurrences="3">
@@ -1976,13 +1718,6 @@
     <MixedAssignment occurrences="1">
       <code>$name</code>
     </MixedAssignment>
-    <MoreSpecificImplementedParamType occurrences="5">
-      <code>$data</code>
-      <code>$data</code>
-      <code>$id</code>
-      <code>$id</code>
-      <code>$id</code>
-    </MoreSpecificImplementedParamType>
     <PropertyNotSetInConstructor occurrences="5">
       <code>DbAdapterResource</code>
       <code>DbAdapterResource</code>
@@ -2146,9 +1881,6 @@
       <code>$this-&gt;name</code>
       <code>$value</code>
     </MixedAssignment>
-    <MoreSpecificImplementedParamType occurrences="1">
-      <code>$array</code>
-    </MoreSpecificImplementedParamType>
   </file>
   <file src="src/Model/DoctrineAdapterModel.php">
     <MixedArgument occurrences="1">
@@ -2193,13 +1925,6 @@
     <MixedAssignment occurrences="1">
       <code>$name</code>
     </MixedAssignment>
-    <MoreSpecificImplementedParamType occurrences="5">
-      <code>$data</code>
-      <code>$data</code>
-      <code>$id</code>
-      <code>$id</code>
-      <code>$id</code>
-    </MoreSpecificImplementedParamType>
     <PropertyNotSetInConstructor occurrences="5">
       <code>DoctrineAdapterResource</code>
       <code>DoctrineAdapterResource</code>
@@ -2421,9 +2146,6 @@
     <DocblockTypeContradiction occurrences="1">
       <code>null === $this-&gt;isVendor</code>
     </DocblockTypeContradiction>
-    <InvalidScalarArgument occurrences="1">
-      <code>is_object($value) ? get_class($value) : gettype($value)</code>
-    </InvalidScalarArgument>
     <MixedArgumentTypeCoercion occurrences="1">
       <code>$key</code>
     </MixedArgumentTypeCoercion>
@@ -2568,11 +2290,6 @@
       <code>$recursive</code>
       <code>$version</code>
     </MixedAssignment>
-    <MoreSpecificImplementedParamType occurrences="3">
-      <code>$data</code>
-      <code>$id</code>
-      <code>$id</code>
-    </MoreSpecificImplementedParamType>
     <PossiblyNullReference occurrences="1">
       <code>getQuery</code>
     </PossiblyNullReference>
@@ -2676,9 +2393,6 @@
     <MissingConstructor occurrences="1">
       <code>$serviceName</code>
     </MissingConstructor>
-    <MoreSpecificImplementedParamType occurrences="1">
-      <code>$data</code>
-    </MoreSpecificImplementedParamType>
   </file>
   <file src="src/Model/RestServiceEntity.php">
     <MissingConstructor occurrences="38">
@@ -2998,7 +2712,7 @@
     <DocblockTypeContradiction occurrences="1">
       <code>is_array($data)</code>
     </DocblockTypeContradiction>
-    <InvalidArgument occurrences="1">
+    <InvalidArgument occurrences="2">
       <code>$entity</code>
     </InvalidArgument>
     <InvalidCast occurrences="1">
@@ -3038,12 +2752,6 @@
     <MixedReturnStatement occurrences="1">
       <code>$moduleName</code>
     </MixedReturnStatement>
-    <MoreSpecificImplementedParamType occurrences="4">
-      <code>$data</code>
-      <code>$data</code>
-      <code>$id</code>
-      <code>$id</code>
-    </MoreSpecificImplementedParamType>
     <PossiblyNullReference occurrences="1">
       <code>getQuery</code>
     </PossiblyNullReference>
@@ -3238,8 +2946,8 @@
     <DocblockTypeContradiction occurrences="1">
       <code>is_array($data)</code>
     </DocblockTypeContradiction>
-    <MixedArgument occurrences="15">
-      <code>$controller</code>
+    <InvalidArgument occurrences="1"/>
+    <MixedArgument occurrences="14">
       <code>$controllerServiceName</code>
       <code>$controllerServiceName</code>
       <code>$inputFilter</code>
@@ -3280,13 +2988,6 @@
     <MixedReturnStatement occurrences="1">
       <code>$moduleName</code>
     </MixedReturnStatement>
-    <MoreSpecificImplementedParamType occurrences="5">
-      <code>$data</code>
-      <code>$data</code>
-      <code>$id</code>
-      <code>$id</code>
-      <code>$id</code>
-    </MoreSpecificImplementedParamType>
     <PossiblyFalseArgument occurrences="3">
       <code>$service</code>
       <code>$service</code>
@@ -3450,8 +3151,7 @@
       <code>$sm</code>
       <code>$urlHelper</code>
     </MissingConstructor>
-    <MixedArgument occurrences="6">
-      <code>$_SERVER['SERVER_SOFTWARE']</code>
+    <MixedArgument occurrences="5">
       <code>$services-&gt;get(Listener\DisableHttpCacheListener::class)</code>
       <code>$services-&gt;get(Listener\EnableHalRenderCollectionsListener::class)</code>
       <code>$services-&gt;get(Listener\InjectModuleResourceLinksListener::class)</code>
@@ -3476,19 +3176,11 @@
       <code>$controllers-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>will</code>
-    </PossiblyUndefinedMethod>
     <UndefinedMethod occurrences="1">
       <code>[$this-&gt;container, 'reveal']</code>
     </UndefinedMethod>
   </file>
   <file src="test/Controller/AuthenticationControllerTest.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$collection</code>
-    </ArgumentTypeCoercion>
     <DocblockTypeContradiction occurrences="1">
       <code>assertInstanceOf</code>
     </DocblockTypeContradiction>
@@ -3521,19 +3213,6 @@
     <MoreSpecificReturnType occurrences="1">
       <code>array&lt;string, array{0: array&lt;string, null|string&gt;}&gt;</code>
     </MoreSpecificReturnType>
-    <PossiblyInvalidArgument occurrences="11">
-      <code>$metadata</code>
-      <code>$router</code>
-      <code>$this-&gt;routeMatch</code>
-      <code>$this-&gt;routeMatch</code>
-      <code>$this-&gt;routeMatch</code>
-      <code>$this-&gt;routeMatch</code>
-      <code>$this-&gt;routeMatch</code>
-      <code>$this-&gt;routeMatch</code>
-      <code>$this-&gt;routeMatch</code>
-      <code>$this-&gt;routeMatch</code>
-      <code>$this-&gt;routeMatch</code>
-    </PossiblyInvalidArgument>
     <PossiblyInvalidArrayAccess occurrences="1">
       <code>$metadata['name']</code>
     </PossiblyInvalidArrayAccess>
@@ -3568,31 +3247,6 @@
       <code>getRouteParams</code>
       <code>getRouteParams</code>
     </PossiblyNullReference>
-    <PossiblyUndefinedMethod occurrences="23">
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>getRoute</code>
-      <code>getRoute</code>
-      <code>getRouteParams</code>
-      <code>getRouteParams</code>
-    </PossiblyUndefinedMethod>
     <UndefinedDocblockClass occurrences="7">
       <code>$this-&gt;routeMatch</code>
       <code>$this-&gt;routeMatch</code>
@@ -3602,10 +3256,8 @@
       <code>$this-&gt;routeMatch</code>
       <code>V2RouteMatch|RouteMatch</code>
     </UndefinedDocblockClass>
-    <UnresolvableInclude occurrences="3">
+    <UnresolvableInclude occurrences="1">
       <code>require $this-&gt;globalFile</code>
-      <code>require $this-&gt;globalFile</code>
-      <code>require $this-&gt;localFile</code>
     </UnresolvableInclude>
   </file>
   <file src="test/Controller/AuthenticationTypeControllerFactoryTest.php">
@@ -3616,21 +3268,15 @@
       <code>$controllers-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>will</code>
-    </PossiblyUndefinedMethod>
     <UndefinedMethod occurrences="1">
       <code>[$this-&gt;container, 'reveal']</code>
     </UndefinedMethod>
   </file>
   <file src="test/Controller/AuthenticationTypeControllerTest.php">
-    <MixedArgument occurrences="4">
+    <MixedArgument occurrences="3">
       <code>$adapterConfig['adapter']</code>
       <code>$adapterConfig['adapter']</code>
       <code>$config['api-tools-mvc-auth']['authentication']['adapters']</code>
-      <code>require $globalFile</code>
     </MixedArgument>
     <MixedArrayAccess occurrences="5">
       <code>$adapterConfig['adapter']</code>
@@ -3663,11 +3309,6 @@
       <code>addHeaderLine</code>
       <code>addHeaderLine</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-    </PossiblyUndefinedMethod>
     <UndefinedDocblockClass occurrences="2">
       <code>$routeMatch</code>
       <code>$routeMatch</code>
@@ -3686,11 +3327,6 @@
       <code>$controllers-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>will</code>
-    </PossiblyUndefinedMethod>
     <UndefinedMethod occurrences="1">
       <code>[$this-&gt;container, 'reveal']</code>
     </UndefinedMethod>
@@ -3699,9 +3335,6 @@
     <MixedArgument occurrences="1">
       <code>$this-&gt;container-&gt;reveal()</code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="1">
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedMethod occurrences="1">
       <code>[$this-&gt;container, 'reveal']</code>
     </UndefinedMethod>
@@ -3722,14 +3355,6 @@
       <code>addHeaderLine</code>
       <code>addHeaderLine</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="6">
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="test/Controller/DashboardControllerFactoryTest.php">
     <DeprecatedMethod occurrences="1">
@@ -3739,11 +3364,6 @@
       <code>$controllers-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>will</code>
-    </PossiblyUndefinedMethod>
     <UndefinedMethod occurrences="1">
       <code>[$this-&gt;container, 'reveal']</code>
     </UndefinedMethod>
@@ -3808,24 +3428,13 @@
       <code>addHeaderLine</code>
       <code>addHeaderLine</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="8">
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-    </PossiblyUndefinedMethod>
     <UndefinedDocblockClass occurrences="4">
       <code>$routeMatch</code>
       <code>$routeMatch</code>
       <code>$routeMatch</code>
       <code>$routeMatch</code>
     </UndefinedDocblockClass>
-    <UnresolvableInclude occurrences="2">
-      <code>include $this-&gt;basePath . '/module.config.php'</code>
+    <UnresolvableInclude occurrences="1">
       <code>include $this-&gt;basePath . '/module.config.php'</code>
     </UnresolvableInclude>
   </file>
@@ -3833,9 +3442,6 @@
     <MixedArgument occurrences="1">
       <code>$this-&gt;container-&gt;reveal()</code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="1">
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="1">
       <code>ConfigResourceFactory</code>
     </UndefinedClass>
@@ -3851,11 +3457,6 @@
       <code>$controllers-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>will</code>
-    </PossiblyUndefinedMethod>
     <UndefinedMethod occurrences="1">
       <code>[$this-&gt;container, 'reveal']</code>
     </UndefinedMethod>
@@ -3875,10 +3476,6 @@
       <code>addHeaderLine</code>
       <code>getName</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>addHeaderLine</code>
-      <code>addHeaderLine</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="1">
       <code>Module</code>
     </UndefinedClass>
@@ -3891,11 +3488,6 @@
       <code>$controllers-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>will</code>
-    </PossiblyUndefinedMethod>
     <UndefinedMethod occurrences="1">
       <code>[$this-&gt;container, 'reveal']</code>
     </UndefinedMethod>
@@ -3921,10 +3513,6 @@
     <MixedArgument occurrences="1">
       <code>$controllers-&gt;reveal()</code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>willReturn</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="test/Controller/VersioningControllerFactoryTest.php">
     <DeprecatedMethod occurrences="1">
@@ -3934,11 +3522,6 @@
       <code>$controllers-&gt;reveal()</code>
       <code>$this-&gt;container-&gt;reveal()</code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>will</code>
-    </PossiblyUndefinedMethod>
     <UndefinedMethod occurrences="1">
       <code>[$this-&gt;container, 'reveal']</code>
     </UndefinedMethod>
@@ -3950,6 +3533,7 @@
     </PossiblyInvalidArgument>
   </file>
   <file src="test/InputFilter/Authentication/BasicInputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <LessSpecificReturnStatement occurrences="3"/>
     <MoreSpecificReturnType occurrences="3">
       <code>BasicInputFilter</code>
@@ -3957,6 +3541,7 @@
     </MoreSpecificReturnType>
   </file>
   <file src="test/InputFilter/Authentication/DigestInputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <LessSpecificReturnStatement occurrences="1"/>
     <MixedArgument occurrences="1">
       <code>$data['htdigest']</code>
@@ -3966,18 +3551,21 @@
     </MoreSpecificReturnType>
   </file>
   <file src="test/InputFilter/Authentication/OAuth2InputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <LessSpecificReturnStatement occurrences="1"/>
     <MoreSpecificReturnType occurrences="1">
       <code>OAuth2InputFilter</code>
     </MoreSpecificReturnType>
   </file>
   <file src="test/InputFilter/DbAdapterInputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <LessSpecificReturnStatement occurrences="1"/>
     <MoreSpecificReturnType occurrences="1">
       <code>DbAdapterInputFilter</code>
     </MoreSpecificReturnType>
   </file>
   <file src="test/InputFilter/DocumentationInputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <LessSpecificReturnStatement occurrences="2"/>
     <MoreSpecificReturnType occurrences="2">
       <code>DocumentationInputFilter</code>
@@ -3993,6 +3581,7 @@
     </PossiblyInvalidArgument>
   </file>
   <file src="test/InputFilter/ModuleInputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <InvalidDocblock occurrences="1">
       <code>public function dataProviderIsInvalid(): array</code>
     </InvalidDocblock>
@@ -4005,30 +3594,35 @@
     </MoreSpecificReturnType>
   </file>
   <file src="test/InputFilter/RestService/PatchInputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <LessSpecificReturnStatement occurrences="1"/>
     <MoreSpecificReturnType occurrences="1">
       <code>PatchInputFilter</code>
     </MoreSpecificReturnType>
   </file>
   <file src="test/InputFilter/RestService/PostInputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <LessSpecificReturnStatement occurrences="1"/>
     <MoreSpecificReturnType occurrences="1">
       <code>PostInputFilter</code>
     </MoreSpecificReturnType>
   </file>
   <file src="test/InputFilter/RpcService/PatchInputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <LessSpecificReturnStatement occurrences="1"/>
     <MoreSpecificReturnType occurrences="1">
       <code>PatchInputFilter</code>
     </MoreSpecificReturnType>
   </file>
   <file src="test/InputFilter/RpcService/PostInputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <LessSpecificReturnStatement occurrences="1"/>
     <MoreSpecificReturnType occurrences="1">
       <code>PostInputFilter</code>
     </MoreSpecificReturnType>
   </file>
   <file src="test/InputFilter/VersionInputFilterTest.php">
+    <InvalidArgument occurrences="1"/>
     <InvalidDocblock occurrences="1">
       <code>public function dataProviderIsInvalid(): array</code>
     </InvalidDocblock>
@@ -4075,12 +3669,6 @@
       <code>$this-&gt;routeMatch</code>
       <code>$this-&gt;routeMatch</code>
     </PossiblyInvalidArgument>
-    <PossiblyUndefinedMethod occurrences="4">
-      <code>expects</code>
-      <code>expects</code>
-      <code>expects</code>
-      <code>expects</code>
-    </PossiblyUndefinedMethod>
     <UndefinedDocblockClass occurrences="3">
       <code>$this-&gt;routeMatch</code>
       <code>$this-&gt;routeMatch</code>
@@ -4121,36 +3709,6 @@
       <code>will</code>
       <code>willReturn</code>
     </PossiblyNullReference>
-    <PossiblyUndefinedMethod occurrences="28">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>willReturn</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="4">
       <code>[$this-&gt;routeMatch, 'reveal']</code>
       <code>[$this-&gt;routeMatch, 'reveal']</code>
@@ -4182,7 +3740,7 @@
       <code>$this-&gt;event-&gt;reveal()</code>
       <code>$this-&gt;event-&gt;reveal()</code>
     </MixedArgument>
-    <MixedMethodCall occurrences="15">
+    <MixedMethodCall occurrences="11">
       <code>shouldBeCalled</code>
       <code>shouldBeCalled</code>
       <code>shouldBeCalled</code>
@@ -4191,36 +3749,13 @@
       <code>shouldBeCalled</code>
       <code>shouldBeCalled</code>
       <code>shouldBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>will</code>
       <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
     </MixedMethodCall>
-    <PossiblyInvalidMethodCall occurrences="4">
-      <code>shouldNotBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>shouldNotBeCalled</code>
+    <PossiblyNullReference occurrences="1">
       <code>will</code>
-    </PossiblyInvalidMethodCall>
-    <PossiblyNullReference occurrences="4">
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>willReturn</code>
     </PossiblyNullReference>
-    <PossiblyUndefinedMethod occurrences="8">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>willReturn</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="3">
       <code>[$this-&gt;routeMatch, 'reveal']</code>
       <code>[$this-&gt;routeMatch, 'reveal']</code>
@@ -4240,9 +3775,6 @@
     <MixedMethodCall occurrences="1">
       <code>willReturn</code>
     </MixedMethodCall>
-    <PossiblyUndefinedMethod occurrences="1">
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="test/Listener/InjectModuleResourceLinksListenerTest.php">
     <DocblockTypeContradiction occurrences="3">
@@ -4345,30 +3877,6 @@
       <code>will</code>
       <code>willReturn</code>
     </PossiblyNullReference>
-    <PossiblyUndefinedMethod occurrences="22">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>willReturn</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="4">
       <code>$this-&gt;routeMatch</code>
       <code>$this-&gt;routeMatch</code>
@@ -4412,16 +3920,6 @@
       <code>will</code>
       <code>willReturn</code>
     </PossiblyNullReference>
-    <PossiblyUndefinedMethod occurrences="8">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>shouldBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>will</code>
-      <code>will</code>
-      <code>willReturn</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="4">
       <code>$this-&gt;routeMatch</code>
       <code>$this-&gt;routeMatch</code>
@@ -4454,16 +3952,6 @@
       <code>will</code>
       <code>willReturn</code>
     </PossiblyNullReference>
-    <PossiblyUndefinedMethod occurrences="8">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>shouldBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>will</code>
-      <code>will</code>
-      <code>willReturn</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="4">
       <code>$this-&gt;routeMatch</code>
       <code>$this-&gt;routeMatch</code>
@@ -4503,10 +3991,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="1">
       <code>ConfigWriter</code>
     </UndefinedClass>
@@ -4689,10 +4173,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="9">
       <code>ConfigResourceFactory</code>
       <code>ConfigResourceFactory</code>
@@ -4767,10 +4247,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="3">
       <code>ConfigWriter</code>
       <code>ConfigWriter</code>
@@ -4790,17 +4266,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
-  </file>
-  <file src="test/Model/ContentNegotiationResourceTest.php">
-    <UndefinedPropertyFetch occurrences="3">
-      <code>$entity-&gt;config</code>
-      <code>$entity-&gt;name</code>
-      <code>$entity-&gt;name</code>
-    </UndefinedPropertyFetch>
   </file>
   <file src="test/Model/ContentNegotiationTest.php">
     <MixedArgument occurrences="7">
@@ -4856,10 +4321,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="1">
       <code>ConfigWriter</code>
     </UndefinedClass>
@@ -4938,10 +4399,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="test/Model/DbAutodiscoveryModelFactoryTest.php">
     <MixedArgument occurrences="4">
@@ -4957,11 +4414,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="1">
       <code>WriterInterface</code>
     </UndefinedClass>
@@ -5068,10 +4520,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="1">
       <code>ConfigWriter</code>
     </UndefinedClass>
@@ -5098,10 +4546,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="test/Model/DocumentationModelTest.php">
     <MixedAssignment occurrences="1">
@@ -5148,8 +4592,7 @@
     <MixedAssignment occurrences="1">
       <code>$config</code>
     </MixedAssignment>
-    <UnresolvableInclude occurrences="2">
-      <code>include $this-&gt;basePath . '/module.config.php'</code>
+    <UnresolvableInclude occurrences="1">
       <code>include $this-&gt;basePath . '/module.config.php'</code>
     </UnresolvableInclude>
   </file>
@@ -5172,11 +4615,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="test/Model/ModuleModelTest.php">
     <ArgumentTypeCoercion occurrences="1">
@@ -5228,11 +4666,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="test/Model/ModuleResourceTest.php">
     <ArgumentTypeCoercion occurrences="1">
@@ -5267,10 +4700,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="5">
       <code>ConfigResourceFactory</code>
       <code>ConfigResourceFactory</code>
@@ -5305,10 +4734,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="8">
       <code>ConfigResourceFactory</code>
       <code>ConfigResourceFactory</code>
@@ -5595,10 +5020,6 @@
     <PossiblyInvalidCast occurrences="1">
       <code>$value</code>
     </PossiblyInvalidCast>
-    <UnresolvableInclude occurrences="2">
-      <code>include $path</code>
-      <code>include $path . '/config/module.config.php'</code>
-    </UnresolvableInclude>
     <UnusedClosureParam occurrences="1">
       <code>$e</code>
     </UnusedClosureParam>
@@ -5623,11 +5044,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="test/Model/RestServiceResourceTest.php">
     <MixedArgument occurrences="6">
@@ -5685,10 +5101,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="7">
       <code>ConfigResourceFactory</code>
       <code>ConfigResourceFactory</code>
@@ -5710,12 +5122,21 @@
     <DeprecatedClass occurrences="1">
       <code>new VersioningModel($this-&gt;resource-&gt;factory('FooConf'))</code>
     </DeprecatedClass>
-    <DeprecatedMethod occurrences="1">
+    <DeprecatedMethod occurrences="7">
       <code>createVersion</code>
+      <code>self::assertObjectHasAttribute('class', $result)</code>
+      <code>self::assertObjectHasAttribute('class', $result)</code>
+      <code>self::assertObjectHasAttribute('file', $result)</code>
+      <code>self::assertObjectHasAttribute('file', $result)</code>
+      <code>self::assertObjectHasAttribute('service', $result)</code>
+      <code>self::assertObjectHasAttribute('service', $result)</code>
     </DeprecatedMethod>
     <DocblockTypeContradiction occurrences="1">
       <code>empty($this-&gt;modulePathSpec)</code>
     </DocblockTypeContradiction>
+    <MissingFile occurrences="1">
+      <code>include $path . '/config/module.config.php'</code>
+    </MissingFile>
     <MixedArgument occurrences="25">
       <code>$configData-&gt;config_file</code>
       <code>$configData-&gt;config_file</code>
@@ -5798,7 +5219,7 @@
       <code>$result-&gt;service</code>
     </PossiblyInvalidPropertyFetch>
     <UnevaluatedCode occurrences="1"/>
-    <UnresolvableInclude occurrences="15">
+    <UnresolvableInclude occurrences="14">
       <code>include $configData-&gt;config_file</code>
       <code>include $configData-&gt;config_file</code>
       <code>include $configFile</code>
@@ -5811,7 +5232,6 @@
       <code>include $configFile</code>
       <code>include $configFile</code>
       <code>include $configFile</code>
-      <code>include $path . '/config/module.config.php'</code>
       <code>require_once $fileName</code>
       <code>require_once $fileName</code>
     </UnresolvableInclude>
@@ -5842,12 +5262,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="4">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
   </file>
   <file src="test/Model/ValidatorMetadataModelTest.php">
     <MixedArgument occurrences="2">
@@ -5928,10 +5342,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
     <UndefinedClass occurrences="5">
       <code>ConfigResourceFactory</code>
       <code>ConfigResourceFactory</code>
@@ -5954,12 +5364,6 @@
       <code>getModuleVersions</code>
       <code>setDefaultVersion</code>
     </DeprecatedMethod>
-    <MissingFile occurrences="4">
-      <code>include __DIR__ . '/TestAsset/module/Version/config/module.config.php'</code>
-      <code>include __DIR__ . '/TestAsset/module/Version/config/module.config.php'</code>
-      <code>include __DIR__ . '/TestAsset/module/Version/config/module.config.php'</code>
-      <code>include __DIR__ . '/TestAsset/module/Version/config/module.config.php'</code>
-    </MissingFile>
     <MixedArgument occurrences="45">
       <code>$config</code>
       <code>$config</code>
@@ -6089,12 +5493,10 @@
       <code>$updatedConfig</code>
       <code>$updatedConfig</code>
     </MixedAssignment>
-    <UnresolvableInclude occurrences="7">
+    <UnresolvableInclude occurrences="5">
       <code>include $this-&gt;moduleConfigFile</code>
       <code>include $this-&gt;moduleConfigFile</code>
       <code>include $this-&gt;moduleConfigFile</code>
-      <code>include $this-&gt;moduleConfigFile</code>
-      <code>include $this-&gt;moduleDocsConfigFile</code>
       <code>include $this-&gt;moduleDocsConfigFile</code>
       <code>include $this-&gt;moduleDocsConfigFile</code>
     </UnresolvableInclude>

@@ -9,7 +9,6 @@ use Laminas\View\Model\ModelInterface;
 
 use function class_exists;
 use function class_implements;
-use function get_class;
 use function gettype;
 use function in_array;
 use function is_array;
@@ -47,7 +46,7 @@ class ContentNegotiationSelectorsValidator extends LaminasAbstractValidator
         if (! is_array($value)) {
             $this->error(
                 self::INVALID_VALUE,
-                is_object($value) ? get_class($value) : gettype($value)
+                is_object($value) ? $value::class : gettype($value)
             );
             return false;
         }
