@@ -5134,6 +5134,9 @@
     <DocblockTypeContradiction occurrences="1">
       <code>empty($this-&gt;modulePathSpec)</code>
     </DocblockTypeContradiction>
+    <MissingFile occurrences="1">
+      <code>include $path . '/config/module.config.php'</code>
+    </MissingFile>
     <MixedArgument occurrences="25">
       <code>$configData-&gt;config_file</code>
       <code>$configData-&gt;config_file</code>
