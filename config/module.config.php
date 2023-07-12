@@ -1605,7 +1605,7 @@ return [
             'type'      => 'string',
             'separator' => 'string',
         ],
-		IsCountable::class                                              => [
+        IsCountable::class                                              => [
             'min'   => 'int',
             'max'   => 'int',
             'count' => 'int',
