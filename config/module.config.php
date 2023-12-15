@@ -1696,7 +1696,7 @@ return [
             'ZF\Apigility\Admin\InputFilter\RestService\PATCH'                   => RestPatchInputFilter::class,
             'ZF\Apigility\Admin\InputFilter\RestService\POST'                    => RestPostInputFilter::class,
             'ZF\Apigility\Admin\InputFilter\RpcService\PATCH'                    => RpcPatchInputFilter::class,
-            'ZF\Apigility\Admin\InputFilter\RpcService\POST'                     => RpcPatchInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\RpcService\POST'                     => RpcPostInputFilter::class,
             'ZF\Apigility\Admin\InputFilter\Version'                             => VersionInputFilter::class,
 
             // Legacy Zend Framework aliases v2
@@ -1712,7 +1712,7 @@ return [
             'ZF\Apigility\Admin\InputFilter\PatchInputFilter'                    => RestPatchInputFilter::class,
             'ZF\Apigility\Admin\InputFilter\PostInputFilter'                     => RestPostInputFilter::class,
             'ZF\Apigility\Admin\InputFilter\RpcService\PatchInputFilter'         => RpcPatchInputFilter::class,
-            'ZF\Apigility\Admin\InputFilter\RpcService\PostInputFilter'          => RpcPatchInputFilter::class,
+            'ZF\Apigility\Admin\InputFilter\RpcService\PostInputFilter'          => RpcPostInputFilter::class,
             'ZF\Apigility\Admin\InputFilter\VersionInputFilter'                  => VersionInputFilter::class,
             'ZF\Apigility\Admin\InputFilter\InputFilter'                         => InputFilterInputFilter::class,
         ],
