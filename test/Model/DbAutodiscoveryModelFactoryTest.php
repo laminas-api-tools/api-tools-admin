@@ -41,8 +41,6 @@ class DbAutodiscoveryModelFactoryTest extends TestCase
     {
         $factory = new DbAutodiscoveryModelFactory();
 
-        $this->prophesize(WriterInterface::class)->reveal();
-
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn([]);
 
