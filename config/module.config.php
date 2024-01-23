@@ -146,6 +146,7 @@ use Laminas\Validator\Identical;
 use Laminas\Validator\InArray;
 use Laminas\Validator\Ip;
 use Laminas\Validator\Isbn;
+use Laminas\Validator\IsCountable;
 use Laminas\Validator\IsInstanceOf;
 use Laminas\Validator\LessThan;
 use Laminas\Validator\NotEmpty;
@@ -1603,6 +1604,11 @@ return [
         Isbn::class                                                     => [
             'type'      => 'string',
             'separator' => 'string',
+        ],
+        IsCountable::class                                              => [
+            'min'   => 'int',
+            'max'   => 'int',
+            'count' => 'int',
         ],
         IsInstanceOf::class                                             => [
             'classname' => 'string',
