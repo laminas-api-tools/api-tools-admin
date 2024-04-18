@@ -176,9 +176,9 @@ class RpcServiceModelTest extends TestCase
 
         $result = $this->codeRpc->createController($serviceName);
         self::assertInstanceOf('stdClass', $result);
-        self::assertObjectHasAttribute('class', $result);
-        self::assertObjectHasAttribute('file', $result);
-        self::assertObjectHasAttribute('service', $result);
+        self::assertObjectHasProperty('class', $result);
+        self::assertObjectHasProperty('file', $result);
+        self::assertObjectHasProperty('service', $result);
 
         $className         = sprintf("%s\\V1\\Rpc\\%s\\%sController", $this->module, $serviceName, $serviceName);
         $fileName          = sprintf(
@@ -242,9 +242,9 @@ class RpcServiceModelTest extends TestCase
 
         $result = $this->codeRpc->createController($serviceName);
         self::assertInstanceOf('stdClass', $result);
-        self::assertObjectHasAttribute('class', $result);
-        self::assertObjectHasAttribute('file', $result);
-        self::assertObjectHasAttribute('service', $result);
+        self::assertObjectHasProperty('class', $result);
+        self::assertObjectHasProperty('file', $result);
+        self::assertObjectHasProperty('service', $result);
 
         $className         = sprintf("%s\\V1\\Rpc\\%s\\%sController", $this->module, $serviceName, $serviceName);
         $fileName          = sprintf(
